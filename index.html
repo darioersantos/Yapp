@@ -1,1403 +1,169 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<title>Casa do Gerês</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<div id="yw-wrap">
+  <div id="yw-card">
+    <div id="yw-top">
+      <div>
+        <div id="yw-temp">--°</div>
+        <div id="yw-loc">A localizar...</div>
+      </div>
+      <div id="yw-right">
+        <div id="yw-icon">🌡️</div>
+        <div id="yw-desc">--</div>
+      </div>
+    </div>
+    <div id="yw-details">
+      <div class="yw-box"><div class="yw-lbl">Vento</div><div class="yw-val" id="yw-wind">--</div><div class="yw-unit">km/h</div></div>
+      <div class="yw-box"><div class="yw-lbl">Humidade</div><div class="yw-val" id="yw-hum">--</div><div class="yw-unit">%</div></div>
+      <div class="yw-box"><div class="yw-lbl">Máx / Mín</div><div class="yw-val" id="yw-minmax" style="font-size:15px;">--</div></div>
+    </div>
+  </div>
+  <div id="yw-forecast"></div>
+</div>
+
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --stone: #1a1a17;
-    --bark: #3d3328;
-    --moss: #4a5c3f;
-    --sage: #7a9168;
-    --mist: #c8d5be;
-    --cream: #f5f0e8;
-    --warm: #e8dfc8;
-    --gold: #c4a35a;
-    --water: #5b7fa6;
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--stone);
-    max-width: 430px;
-    margin: 0 auto;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ── HERO ── */
-  .hero {
-    position: relative;
-    height: 100svh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-  }
-
-  .hero-img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(0.72);
-  }
-
-  .hero-gradient {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to bottom,
-      transparent 30%,
-      rgba(26,26,23,0.3) 60%,
-      rgba(26,26,23,0.85) 100%
-    );
-  }
-
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    padding: 0 24px 40px;
-  }
-
-  .hero-tag {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--mist);
-    margin-bottom: 10px;
-    opacity: 0.85;
-  }
-
-  .hero-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 52px;
-    font-weight: 300;
-    line-height: 1.0;
-    color: #fff;
-    margin-bottom: 6px;
-  }
-
-  .hero-title em {
-    font-style: italic;
-    color: var(--mist);
-  }
-
-  .hero-subtitle {
-    font-size: 13px;
-    color: rgba(255,255,255,0.65);
-    font-weight: 300;
-    letter-spacing: 0.5px;
-    margin-bottom: 28px;
-  }
-
-  /* Weather in hero */
-  .weather-strip {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 14px;
-    padding: 14px 18px;
-  }
-
-  .weather-icon-wrap {
-    font-size: 32px;
-    line-height: 1;
-  }
-
-  .weather-main {
-    flex: 1;
-  }
-
-  .weather-temp {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 300;
-    color: #fff;
-    line-height: 1;
-  }
-
-  .weather-desc {
-    font-size: 11px;
-    color: rgba(255,255,255,0.65);
-    margin-top: 2px;
-    text-transform: capitalize;
-  }
-
-  .weather-location {
-    font-size: 10px;
-    color: rgba(255,255,255,0.45);
-    letter-spacing: 0.5px;
-  }
-
-  .weather-extras {
-    text-align: right;
-  }
-
-  .weather-extra-item {
-    font-size: 11px;
-    color: rgba(255,255,255,0.6);
-    line-height: 1.6;
-  }
-
-  .weather-loading {
-    font-size: 12px;
-    color: rgba(255,255,255,0.5);
-    font-style: italic;
-  }
-
-  /* ── SCROLL INDICATOR ── */
-  .scroll-hint {
-    position: absolute;
-    bottom: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    opacity: 0.45;
-  }
-
-  .scroll-hint span {
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #fff;
-  }
-
-  .scroll-arrow {
-    width: 1px;
-    height: 28px;
-    background: linear-gradient(to bottom, #fff, transparent);
-    animation: scrollPulse 2s ease-in-out infinite;
-  }
-
-  @keyframes scrollPulse {
-    0%, 100% { opacity: 0.3; transform: scaleY(1); }
-    50% { opacity: 0.9; transform: scaleY(1.15); }
-  }
-
-  /* ── NAV TABS ── */
-  .nav-tabs {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: var(--cream);
-    border-bottom: 1px solid rgba(74,92,63,0.15);
-    display: flex;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .nav-tabs::-webkit-scrollbar { display: none; }
-
-  .nav-tab {
-    flex: none;
-    padding: 14px 20px;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--bark);
-    opacity: 0.45;
-    cursor: pointer;
-    white-space: nowrap;
-    border-bottom: 2px solid transparent;
-    transition: all 0.25s;
-    background: none;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  .nav-tab.active {
-    opacity: 1;
-    color: var(--moss);
-    border-bottom-color: var(--moss);
-  }
-
-  /* ── SECTIONS ── */
-  .section {
-    padding: 36px 20px;
-    display: none;
-  }
-
-  .section.active { display: block; }
-
-  .section-header {
-    margin-bottom: 24px;
-  }
-
-  .section-label {
-    font-size: 9px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--sage);
-    font-weight: 500;
-    margin-bottom: 6px;
-  }
-
-  .section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 34px;
-    font-weight: 300;
-    color: var(--bark);
-    line-height: 1.1;
-  }
-
-  /* ── CASA SECTION ── */
-  .amenities-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-
-  .amenity-card {
-    background: #fff;
-    border-radius: 14px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  }
-
-  .amenity-card:active {
-    transform: scale(0.97);
-  }
-
-  .amenity-img {
-    width: 100%;
-    height: 100px;
-    object-fit: cover;
-    display: block;
-  }
-
-  .amenity-label {
-    padding: 10px 12px;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    color: var(--bark);
-  }
-
-  .amenity-card.full-width {
-    grid-column: 1 / -1;
-  }
-
-  .amenity-card.full-width .amenity-img {
-    height: 140px;
-  }
-
-  /* Info card */
-  .info-card {
-    background: var(--moss);
-    border-radius: 16px;
-    padding: 22px;
-    color: #fff;
-    margin-bottom: 16px;
-  }
-
-  .info-card-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 300;
-    margin-bottom: 12px;
-    color: var(--mist);
-  }
-
-  .info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    font-size: 13px;
-  }
-
-  .info-row:last-child { border-bottom: none; }
-
-  .info-row-label { opacity: 0.65; }
-  .info-row-val { font-weight: 500; }
-
-  /* ── MODAL overlay for amenity detail ── */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(26,26,23,0.7);
-    backdrop-filter: blur(4px);
-    z-index: 200;
-    display: flex;
-    align-items: flex-end;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-  }
-
-  .modal-overlay.open {
-    opacity: 1;
-    pointer-events: all;
-  }
-
-  .modal-sheet {
-    width: 100%;
-    max-width: 430px;
-    margin: 0 auto;
-    background: var(--cream);
-    border-radius: 24px 24px 0 0;
-    padding: 20px 24px 48px;
-    transform: translateY(100%);
-    transition: transform 0.35s cubic-bezier(0.32,0.72,0,1);
-  }
-
-  .modal-overlay.open .modal-sheet {
-    transform: translateY(0);
-  }
-
-  .modal-handle {
-    width: 40px;
-    height: 4px;
-    background: rgba(0,0,0,0.15);
-    border-radius: 2px;
-    margin: 0 auto 20px;
-  }
-
-  .modal-img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 14px;
-    margin-bottom: 20px;
-  }
-
-  .modal-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 300;
-    color: var(--bark);
-    margin-bottom: 10px;
-  }
-
-  .modal-body {
-    font-size: 14px;
-    color: var(--bark);
-    opacity: 0.75;
-    line-height: 1.7;
-  }
-
-  /* ── DINING SECTION ── */
-  .restaurant-card {
-    background: #fff;
-    border-radius: 16px;
-    overflow: hidden;
-    margin-bottom: 14px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    display: flex;
-    flex-direction: column;
-  }
-
-  .restaurant-img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-  }
-
-  .restaurant-body {
-    padding: 16px;
-  }
-
-  .restaurant-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 400;
-    color: var(--bark);
-    margin-bottom: 4px;
-  }
-
-  .restaurant-cuisine {
-    font-size: 11px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--sage);
-    margin-bottom: 8px;
-  }
-
-  .restaurant-desc {
-    font-size: 13px;
-    color: var(--bark);
-    opacity: 0.65;
-    line-height: 1.6;
-    margin-bottom: 14px;
-  }
-
-  .restaurant-actions {
-    display: flex;
-    gap: 8px;
-  }
-
-  .btn-outline {
-    flex: 1;
-    padding: 10px;
-    border: 1.5px solid var(--moss);
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--moss);
-    background: none;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    text-align: center;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    transition: background 0.2s, color 0.2s;
-  }
-
-  .btn-outline:active {
-    background: var(--moss);
-    color: #fff;
-  }
-
-  .btn-solid {
-    flex: 1;
-    padding: 10px;
-    background: var(--moss);
-    border: none;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 500;
-    color: #fff;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    text-align: center;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    transition: background 0.2s;
-  }
-
-  .btn-solid:active { background: var(--bark); }
-
-  /* ── ACTIVITIES ── */
-  .activity-card {
-    position: relative;
-    border-radius: 18px;
-    overflow: hidden;
-    margin-bottom: 14px;
-    height: 200px;
-    cursor: pointer;
-  }
-
-  .activity-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s;
-  }
-
-  .activity-card:active .activity-img {
-    transform: scale(1.04);
-  }
-
-  .activity-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(26,26,23,0.8) 0%, transparent 55%);
-  }
-
-  .activity-content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 18px;
-  }
-
-  .activity-tag {
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--mist);
-    margin-bottom: 5px;
-  }
-
-  .activity-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
-    font-weight: 300;
-    color: #fff;
-    line-height: 1.1;
-  }
-
-  .activity-distance {
-    font-size: 11px;
-    color: rgba(255,255,255,0.55);
-    margin-top: 4px;
-  }
-
-  /* ── CONTACTS ── */
-  .contact-block {
-    margin-bottom: 14px;
-  }
-
-  .contact-card-hero {
-    background: var(--bark);
-    border-radius: 18px;
-    padding: 24px;
-    color: #fff;
-    margin-bottom: 14px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .contact-card-hero::before {
-    content: '';
-    position: absolute;
-    top: -30px;
-    right: -30px;
-    width: 130px;
-    height: 130px;
-    background: var(--moss);
-    border-radius: 50%;
-    opacity: 0.25;
-  }
-
-  .contact-host-label {
-    font-size: 10px;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    color: var(--mist);
-    opacity: 0.7;
-    margin-bottom: 8px;
-  }
-
-  .contact-host-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 30px;
-    font-weight: 300;
-    margin-bottom: 20px;
-  }
-
-  .contact-btn-row {
-    display: flex;
-    gap: 10px;
-  }
-
-  .contact-btn {
-    flex: 1;
-    padding: 12px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 500;
-    text-align: center;
-    text-decoration: none;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    border: none;
-    transition: transform 0.15s;
-  }
-
-  .contact-btn:active { transform: scale(0.96); }
-
-  .contact-btn-whatsapp {
-    background: #25D366;
-    color: #fff;
-  }
-
-  .contact-btn-phone {
-    background: rgba(255,255,255,0.12);
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.2);
-  }
-
-  .util-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .util-item {
-    background: #fff;
-    border-radius: 14px;
-    padding: 16px 18px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    text-decoration: none;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    transition: transform 0.15s;
-  }
-
-  .util-item:active { transform: scale(0.98); }
-
-  .util-item-info { flex: 1; }
-
-  .util-item-name {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--bark);
-    margin-bottom: 2px;
-  }
-
-  .util-item-desc {
-    font-size: 11px;
-    color: var(--bark);
-    opacity: 0.5;
-  }
-
-  .util-item-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    flex-shrink: 0;
-  }
-
-  .util-item-arrow {
-    font-size: 16px;
-    color: var(--sage);
-    margin-left: 10px;
-  }
-
-  /* ── WEATHER FORECAST BAR ── */
-  .forecast-bar {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding-bottom: 4px;
-    margin-top: 20px;
-  }
-
-  .forecast-bar::-webkit-scrollbar { display: none; }
-
-  .forecast-item {
-    flex: none;
-    background: #fff;
-    border-radius: 12px;
-    padding: 12px 14px;
-    text-align: center;
-    min-width: 64px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  }
-
-  .forecast-day {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: var(--bark);
-    opacity: 0.5;
-    margin-bottom: 6px;
-  }
-
-  .forecast-icon { font-size: 22px; margin-bottom: 4px; }
-
-  .forecast-temp {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    color: var(--bark);
-  }
-
-  /* ── DIVIDER ── */
-  .divider {
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--mist), transparent);
-    margin: 24px 0;
-  }
-
-  /* ── FLOATING CTA (Navigate) ── */
-  .fab {
-    position: fixed;
-    bottom: 24px;
-    right: 20px;
-    z-index: 150;
-    background: var(--moss);
-    color: #fff;
-    border: none;
-    border-radius: 50px;
-    padding: 14px 20px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    box-shadow: 0 6px 24px rgba(74,92,63,0.45);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    transition: transform 0.15s, box-shadow 0.15s;
-  }
-
-  .fab:active {
-    transform: scale(0.96);
-    box-shadow: 0 3px 14px rgba(74,92,63,0.35);
-  }
-
-  .fab-icon { font-size: 16px; }
-
-  /* ── WIFI CODE CARD ── */
-  .wifi-card {
-    background: linear-gradient(135deg, var(--water) 0%, #3d6b8c 100%);
-    border-radius: 18px;
-    padding: 24px;
-    color: #fff;
-    margin-bottom: 14px;
-  }
-
-  .wifi-label {
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    opacity: 0.7;
-    margin-bottom: 6px;
-  }
-
-  .wifi-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
-    font-weight: 300;
-    margin-bottom: 16px;
-  }
-
-  .wifi-code-wrap {
-    background: rgba(255,255,255,0.12);
-    border-radius: 12px;
-    padding: 14px 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .wifi-code {
-    font-size: 20px;
-    font-weight: 500;
-    letter-spacing: 2px;
-  }
-
-  .copy-btn {
-    background: rgba(255,255,255,0.2);
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 500;
-    padding: 6px 12px;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    transition: background 0.2s;
-  }
-
-  .copy-btn:active { background: rgba(255,255,255,0.35); }
-
-  /* ── ENTRANCE ANIMATION ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .section.active > * {
-    animation: fadeUp 0.4s ease both;
-  }
-
-  .section.active > *:nth-child(1) { animation-delay: 0.05s; }
-  .section.active > *:nth-child(2) { animation-delay: 0.1s; }
-  .section.active > *:nth-child(3) { animation-delay: 0.15s; }
-  .section.active > *:nth-child(4) { animation-delay: 0.2s; }
-  .section.active > *:nth-child(5) { animation-delay: 0.25s; }
-
-  /* ── WEATHER SECTION CARD ── */
-  .weather-card-full {
-    background: linear-gradient(160deg, var(--moss) 0%, #2d3e27 100%);
-    border-radius: 20px;
-    padding: 26px;
-    color: #fff;
-    margin-bottom: 14px;
-  }
-
-  .weather-card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 20px;
-  }
-
-  .weather-big-temp {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 72px;
-    font-weight: 300;
-    line-height: 1;
-    color: #fff;
-  }
-
-  .weather-big-unit {
-    font-size: 22px;
-    vertical-align: super;
-    opacity: 0.6;
-  }
-
-  .weather-right { text-align: right; }
-
-  .weather-condition {
-    font-size: 14px;
-    font-weight: 400;
-    opacity: 0.85;
-    text-transform: capitalize;
-    margin-bottom: 6px;
-  }
-
-  .weather-location-name {
-    font-size: 11px;
-    opacity: 0.5;
-    letter-spacing: 0.5px;
-  }
-
-  .weather-details-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-  }
-
-  .weather-detail-box {
-    background: rgba(255,255,255,0.1);
-    border-radius: 12px;
-    padding: 12px;
-    text-align: center;
-  }
-
-  .weather-detail-label {
-    font-size: 9px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    opacity: 0.5;
-    margin-bottom: 4px;
-  }
-
-  .weather-detail-value {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 20px;
-    font-weight: 300;
-  }
+#yw-wrap {
+  font-family: sans-serif;
+  max-width: 420px;
+  margin: 0 auto;
+}
+#yw-card {
+  background: linear-gradient(160deg, #4a5c3f 0%, #2d3e27 100%);
+  border-radius: 18px;
+  padding: 24px;
+  color: #fff;
+  margin-bottom: 12px;
+}
+#yw-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+#yw-temp {
+  font-size: 58px;
+  font-weight: 300;
+  line-height: 1;
+}
+#yw-loc {
+  font-size: 12px;
+  opacity: 0.5;
+  margin-top: 6px;
+}
+#yw-right { text-align: right; }
+#yw-icon { font-size: 42px; line-height: 1; }
+#yw-desc {
+  font-size: 13px;
+  opacity: 0.8;
+  margin-top: 4px;
+  text-transform: capitalize;
+}
+#yw-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.yw-box {
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+}
+.yw-lbl {
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.5;
+  margin-bottom: 4px;
+}
+.yw-val {
+  font-size: 20px;
+  font-weight: 300;
+}
+.yw-unit {
+  font-size: 9px;
+  opacity: 0.4;
+  margin-top: 2px;
+}
+#yw-forecast {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+#yw-forecast::-webkit-scrollbar { display: none; }
+.yw-fday {
+  flex: none;
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  min-width: 62px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.yw-fd-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #666;
+  margin-bottom: 6px;
+}
+.yw-fd-icon { font-size: 22px; margin-bottom: 4px; }
+.yw-fd-max { font-size: 16px; color: #333; font-weight: 500; }
+.yw-fd-min { font-size: 11px; color: #aaa; }
 </style>
-</head>
-<body>
-
-<!-- HERO -->
-<div class="hero">
-  <img class="hero-img" src="https://images.pexels.com/photos/1367192/pexels-photo-1367192.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Gerês" loading="eager">
-  <div class="hero-gradient"></div>
-  <div class="hero-content">
-    <p class="hero-tag">Parque Nacional da Peneda-Gerês</p>
-    <h1 class="hero-title">Casa do<br><em>Gerês</em></h1>
-    <p class="hero-subtitle">Bem-vindo à sua casa na natureza</p>
-    <!-- Weather strip -->
-    <div class="weather-strip" id="heroWeather">
-      <div class="weather-loading">A carregar meteorologia...</div>
-    </div>
-  </div>
-  <div class="scroll-hint">
-    <span>ver mais</span>
-    <div class="scroll-arrow"></div>
-  </div>
-</div>
-
-<!-- NAV TABS -->
-<nav class="nav-tabs" id="navTabs">
-  <button class="nav-tab active" data-section="casa">A Casa</button>
-  <button class="nav-tab" data-section="tempo">Tempo</button>
-  <button class="nav-tab" data-section="comer">Comer</button>
-  <button class="nav-tab" data-section="atividades">Descobrir</button>
-  <button class="nav-tab" data-section="contactos">Contactos</button>
-</nav>
-
-<!-- SECTION: CASA -->
-<section class="section active" id="sec-casa">
-  <div class="section-header">
-    <p class="section-label">A sua estadia</p>
-    <h2 class="section-title">A Casa</h2>
-  </div>
-
-  <div class="info-card">
-    <div class="info-card-title">Informações Práticas</div>
-    <div class="info-row">
-      <span class="info-row-label">Check-in</span>
-      <span class="info-row-val">a partir das 16:00</span>
-    </div>
-    <div class="info-row">
-      <span class="info-row-label">Check-out</span>
-      <span class="info-row-val">até às 11:00</span>
-    </div>
-    <div class="info-row">
-      <span class="info-row-label">Capacidade</span>
-      <span class="info-row-val">8 pessoas</span>
-    </div>
-    <div class="info-row">
-      <span class="info-row-label">Animais</span>
-      <span class="info-row-val">Não permitidos</span>
-    </div>
-    <div class="info-row">
-      <span class="info-row-label">Fumar</span>
-      <span class="info-row-val">Exterior apenas</span>
-    </div>
-  </div>
-
-  <div class="wifi-card">
-    <div class="wifi-label">Wi-Fi</div>
-    <div class="wifi-name">CasaGeres_5G</div>
-    <div class="wifi-code-wrap">
-      <span class="wifi-code">gerês2024</span>
-      <button class="copy-btn" onclick="copyWifi()">Copiar</button>
-    </div>
-  </div>
-
-  <div class="amenities-grid">
-    <div class="amenity-card" onclick="openModal('piscina')">
-      <img class="amenity-img" src="https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg?auto=compress&cs=tinysrgb&w=400&h=200&fit=crop" alt="Piscina">
-      <div class="amenity-label">Piscina</div>
-    </div>
-    <div class="amenity-card" onclick="openModal('churrasqueira')">
-      <img class="amenity-img" src="https://images.pexels.com/photos/1268558/pexels-photo-1268558.jpeg?auto=compress&cs=tinysrgb&w=400&h=200&fit=crop" alt="Churrasqueira">
-      <div class="amenity-label">Churrasqueira</div>
-    </div>
-    <div class="amenity-card" onclick="openModal('cozinha')">
-      <img class="amenity-img" src="https://images.pexels.com/photos/1599791/pexels-photo-1599791.jpeg?auto=compress&cs=tinysrgb&w=400&h=200&fit=crop" alt="Cozinha">
-      <div class="amenity-label">Cozinha</div>
-    </div>
-    <div class="amenity-card" onclick="openModal('quartos')">
-      <img class="amenity-img" src="https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=400&h=200&fit=crop" alt="Quartos">
-      <div class="amenity-label">Quartos</div>
-    </div>
-    <div class="amenity-card full-width" onclick="openModal('bicicletas')">
-      <img class="amenity-img" src="https://images.pexels.com/photos/100582/pexels-photo-100582.jpeg?auto=compress&cs=tinysrgb&w=800&h=280&fit=crop" alt="Bicicletas">
-      <div class="amenity-label">Aluguer de Bicicletas BTT &mdash; 9€ / 19€ por dia</div>
-    </div>
-  </div>
-</section>
-
-<!-- SECTION: TEMPO -->
-<section class="section" id="sec-tempo">
-  <div class="section-header">
-    <p class="section-label">Hoje e esta semana</p>
-    <h2 class="section-title">Meteorologia</h2>
-  </div>
-
-  <div id="weatherFull">
-    <div style="text-align:center;padding:40px 0;color:var(--bark);opacity:0.5;font-style:italic;font-size:14px;">A carregar previsão...</div>
-  </div>
-</section>
-
-<!-- SECTION: COMER -->
-<section class="section" id="sec-comer">
-  <div class="section-header">
-    <p class="section-label">Sugestões próximas</p>
-    <h2 class="section-title">Gastronomia</h2>
-  </div>
-
-  <div class="restaurant-card">
-    <img class="restaurant-img" src="https://images.pexels.com/photos/262047/pexels-photo-262047.jpeg?auto=compress&cs=tinysrgb&w=600&h=320&fit=crop" alt="Restaurante">
-    <div class="restaurant-body">
-      <div class="restaurant-cuisine">Cozinha Regional</div>
-      <div class="restaurant-name">Restaurante Vidoeiro</div>
-      <div class="restaurant-desc">Especialidades do Minho com produtos locais. Cabrito assado e rojões imperdíveis.</div>
-      <div class="restaurant-actions">
-        <a class="btn-outline" href="tel:+351253390105">Ligar</a>
-        <a class="btn-solid" href="https://maps.google.com/?q=Restaurante+Vidoeiro+Gerês" target="_blank">Ver no mapa</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="restaurant-card">
-    <img class="restaurant-img" src="https://images.pexels.com/photos/67468/pexels-photo-67468.jpeg?auto=compress&cs=tinysrgb&w=600&h=320&fit=crop" alt="Restaurante">
-    <div class="restaurant-body">
-      <div class="restaurant-cuisine">Grill &amp; Petiscos</div>
-      <div class="restaurant-name">Tasca do Parque</div>
-      <div class="restaurant-desc">Ambiente acolhedor, petiscos variados e boa seleção de vinhos verdes da região.</div>
-      <div class="restaurant-actions">
-        <a class="btn-outline" href="tel:+351253391200">Ligar</a>
-        <a class="btn-solid" href="https://maps.google.com/?q=Gerês+restaurante" target="_blank">Ver no mapa</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="restaurant-card">
-    <img class="restaurant-img" src="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=600&h=320&fit=crop" alt="Café">
-    <div class="restaurant-body">
-      <div class="restaurant-cuisine">Café &amp; Pastelaria</div>
-      <div class="restaurant-name">Café do Rio</div>
-      <div class="restaurant-desc">Pequeno-almoço e lanches com vista para o rio. Broa de milho caseira.</div>
-      <div class="restaurant-actions">
-        <a class="btn-outline" href="tel:+351253390200">Ligar</a>
-        <a class="btn-solid" href="https://maps.google.com/?q=Café+Gerês" target="_blank">Ver no mapa</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SECTION: ATIVIDADES -->
-<section class="section" id="sec-atividades">
-  <div class="section-header">
-    <p class="section-label">Parque Nacional</p>
-    <h2 class="section-title">Descobrir</h2>
-  </div>
-
-  <div class="activity-card">
-    <img class="activity-img" src="https://images.pexels.com/photos/1271619/pexels-photo-1271619.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop" alt="Trilhos">
-    <div class="activity-overlay"></div>
-    <div class="activity-content">
-      <div class="activity-tag">Natureza</div>
-      <div class="activity-name">Trilhos e<br>Percursos</div>
-      <div class="activity-distance">Vários pontos de partida próximos</div>
-    </div>
-  </div>
-
-  <div class="activity-card">
-    <img class="activity-img" src="https://images.pexels.com/photos/210186/pexels-photo-210186.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop" alt="Cascatas">
-    <div class="activity-overlay"></div>
-    <div class="activity-content">
-      <div class="activity-tag">Água</div>
-      <div class="activity-name">Cascatas e<br>Lagoas</div>
-      <div class="activity-distance">Cascata do Tahiti &mdash; 4 km</div>
-    </div>
-  </div>
-
-  <div class="activity-card">
-    <img class="activity-img" src="https://images.pexels.com/photos/1430672/pexels-photo-1430672.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop" alt="Kayak">
-    <div class="activity-overlay"></div>
-    <div class="activity-content">
-      <div class="activity-tag">Aventura</div>
-      <div class="activity-name">Canoagem e<br>Kayak</div>
-      <div class="activity-distance">Albufeira da Caniçada &mdash; 8 km</div>
-    </div>
-  </div>
-
-  <div class="activity-card">
-    <img class="activity-img" src="https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop" alt="Miradouro">
-    <div class="activity-overlay"></div>
-    <div class="activity-content">
-      <div class="activity-tag">Panorâmica</div>
-      <div class="activity-name">Miradouros</div>
-      <div class="activity-distance">Pedra Bela &mdash; 6 km</div>
-    </div>
-  </div>
-</section>
-
-<!-- SECTION: CONTACTOS -->
-<section class="section" id="sec-contactos">
-  <div class="section-header">
-    <p class="section-label">Estamos disponíveis</p>
-    <h2 class="section-title">Contactos</h2>
-  </div>
-
-  <div class="contact-card-hero">
-    <div class="contact-host-label">Anfitrião</div>
-    <div class="contact-host-name">Casa do Gerês</div>
-    <div class="contact-btn-row">
-      <a class="contact-btn contact-btn-whatsapp" href="https://wa.me/351910000000">WhatsApp</a>
-      <a class="contact-btn contact-btn-phone" href="tel:+351910000000">Ligar</a>
-    </div>
-  </div>
-
-  <div class="util-list">
-    <a class="util-item" href="https://goo.gl/maps/HkESG9wss1hZ1gtg9" target="_blank">
-      <div class="util-item-icon" style="background:#f0f4ee;">🗺️</div>
-      <div class="util-item-info" style="margin-left:12px;">
-        <div class="util-item-name">Navegar até à Casa</div>
-        <div class="util-item-desc">Abrir no Google Maps</div>
-      </div>
-      <div class="util-item-arrow">›</div>
-    </a>
-    <a class="util-item" href="https://www.farmaciasdeservico.net/localidade/braga/celorico_de_basto" target="_blank">
-      <div class="util-item-icon" style="background:#fef2f2;">💊</div>
-      <div class="util-item-info" style="margin-left:12px;">
-        <div class="util-item-name">Farmácias de Serviço</div>
-        <div class="util-item-desc">Celorico de Basto e arredores</div>
-      </div>
-      <div class="util-item-arrow">›</div>
-    </a>
-    <a class="util-item" href="tel:112">
-      <div class="util-item-icon" style="background:#fff3e0;">🚨</div>
-      <div class="util-item-info" style="margin-left:12px;">
-        <div class="util-item-name">Emergências</div>
-        <div class="util-item-desc">112 &mdash; Número de socorro</div>
-      </div>
-      <div class="util-item-arrow">›</div>
-    </a>
-    <a class="util-item" href="https://beachcam.meo.pt/livecams/" target="_blank">
-      <div class="util-item-icon" style="background:#e8f0fe;">📡</div>
-      <div class="util-item-info" style="margin-left:12px;">
-        <div class="util-item-name">LiveCams Praias</div>
-        <div class="util-item-desc">Ver webcams em tempo real</div>
-      </div>
-      <div class="util-item-arrow">›</div>
-    </a>
-    <a class="util-item" href="https://exemplo.yapp.pt/reservas/" target="_blank">
-      <div class="util-item-icon" style="background:#f0f4ee;">📅</div>
-      <div class="util-item-info" style="margin-left:12px;">
-        <div class="util-item-name">Reservar Bicicletas</div>
-        <div class="util-item-desc">BTT &mdash; 9€ / 19€ por dia</div>
-      </div>
-      <div class="util-item-arrow">›</div>
-    </a>
-    <a class="util-item" href="mailto:geres@exemplo.pt">
-      <div class="util-item-icon" style="background:#f5f0e8;">✉️</div>
-      <div class="util-item-info" style="margin-left:12px;">
-        <div class="util-item-name">Email</div>
-        <div class="util-item-desc">geres@exemplo.pt</div>
-      </div>
-      <div class="util-item-arrow">›</div>
-    </a>
-  </div>
-
-  <div style="height:90px;"></div>
-</section>
-
-<!-- FAB: navigate -->
-<a class="fab" href="https://goo.gl/maps/HkESG9wss1hZ1gtg9" target="_blank">
-  <span class="fab-icon">📍</span>
-  <span>Como Chegar</span>
-</a>
-
-<!-- MODAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <img class="modal-img" id="modalImg" src="" alt="">
-    <div class="modal-title" id="modalTitle"></div>
-    <div class="modal-body" id="modalBody"></div>
-  </div>
-</div>
 
 <script>
-// ── TAB NAV ──
-document.querySelectorAll('.nav-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById('sec-' + tab.dataset.section).classList.add('active');
-    tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-  });
-});
+(function(){
+  const ICONS = {
+    0:'☀️',1:'🌤️',2:'⛅',3:'☁️',
+    45:'🌫️',48:'🌫️',
+    51:'🌦️',53:'🌦️',55:'🌧️',
+    61:'🌧️',63:'🌧️',65:'🌧️',
+    71:'❄️',73:'❄️',75:'❄️',
+    80:'🌦️',81:'🌧️',82:'⛈️',
+    95:'⛈️',96:'⛈️',99:'⛈️'
+  };
+  const DESC = {
+    0:'Céu limpo',1:'Maioritariamente limpo',2:'Parcialmente nublado',3:'Nublado',
+    45:'Nevoeiro',48:'Nevoeiro glaciar',
+    51:'Chuvisco leve',53:'Chuvisco',55:'Chuvisco intenso',
+    61:'Chuva leve',63:'Chuva',65:'Chuva intensa',
+    71:'Neve leve',73:'Neve',75:'Neve intensa',
+    80:'Aguaceiros',81:'Aguaceiros',82:'Aguaceiros intensos',
+    95:'Trovoada',96:'Trovoada c/ saraiva',99:'Trovoada intensa'
+  };
+  const DAYS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 
-// ── MODAL DATA ──
-const amenities = {
-  piscina: {
-    img: 'https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg?auto=compress&cs=tinysrgb&w=400&h=200&fit=crop
-    title: 'Piscina',
-    body: 'Piscina exterior com vista para o parque natural. Disponível de maio a setembro. Aberta das 9h às 21h. Não há salva-vidas, é obrigatória a supervisão de adultos com crianças.'
-  },
-  churrasqueira: {
-    img: 'https://images.pexels.com/photos/1268558/pexels-photo-1268558.jpeg?auto=compress&cs=tinysrgb&w=400&h=200&fit=crop
-    title: 'Churrasqueira',
-    body: 'Churrasqueira coberta no exterior com mesa para 10 pessoas. Carvão disponível na casa. Pedimos que apague completamente o lume antes de entrar.'
-  },
-  cozinha: {
-    img: 'https://images.pexels.com/photos/1599791/pexels-photo-1599791.jpeg?auto=compress&cs=tinysrgb&w=400&h=200&fit=crop
-    title: 'Cozinha',
-    body: 'Cozinha equipada com placa de indução, forno, micro-ondas, frigorífico grande, máquina de café e todos os utensílios necessários. Detergentes e esponjas fornecidos.'
-  },
-  quartos: {
-    img: 'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=400&h=200&fit=crop
-    title: 'Quartos',
-    body: '4 quartos no total: 2 quartos com cama de casal, 1 quarto twin e 1 quarto com 2 beliches. Roupa de cama e toalhas incluídas. Ar condicionado em todos os quartos.'
-  },
-  bicicletas: {
-    img: 'https://images.pexels.com/photos/100582/pexels-photo-100582.jpeg?auto=compress&cs=tinysrgb&w=800&h=280&fit=crop
-    title: 'Aluguer de Bicicletas BTT',
-    body: 'Frota de bicicletas BTT para explorar os trilhos do Gerês. Preço: 9€ meio-dia, 19€ dia completo. Reserve com antecedência pelo separador Contactos. Capacetes incluídos.'
-  }
-};
+  (async () => {
+    const lat = 41.7258, lon = -8.1583;
+    const city = 'Gerês';
 
-function openModal(key) {
-  const d = amenities[key];
-  document.getElementById('modalImg').src = d.img;
-  document.getElementById('modalTitle').textContent = d.title;
-  document.getElementById('modalBody').textContent = d.body;
-  document.getElementById('modalOverlay').classList.add('open');
-}
-
-function closeModal(e) {
-  if (e.target === document.getElementById('modalOverlay')) {
-    document.getElementById('modalOverlay').classList.remove('open');
-  }
-}
-
-// ── COPY WIFI ──
-function copyWifi() {
-  navigator.clipboard.writeText('gerês2024').then(() => {
-    const btn = document.querySelector('.copy-btn');
-    btn.textContent = 'Copiado!';
-    setTimeout(() => btn.textContent = 'Copiar', 2000);
-  }).catch(() => alert('Palavra-passe: gerês2024'));
-}
-
-// ── WEATHER ──
-const WEATHER_ICONS = {
-  0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️',
-  45: '🌫️', 48: '🌫️',
-  51: '🌦️', 53: '🌦️', 55: '🌧️',
-  61: '🌧️', 63: '🌧️', 65: '🌧️',
-  71: '❄️', 73: '❄️', 75: '❄️',
-  80: '🌦️', 81: '🌧️', 82: '⛈️',
-  95: '⛈️', 96: '⛈️', 99: '⛈️'
-};
-
-const WEATHER_DESC = {
-  0: 'Céu limpo', 1: 'Maioritariamente limpo', 2: 'Parcialmente nublado', 3: 'Nublado',
-  45: 'Nevoeiro', 48: 'Nevoeiro glaciar',
-  51: 'Chuvisco leve', 53: 'Chuvisco', 55: 'Chuvisco intenso',
-  61: 'Chuva leve', 63: 'Chuva', 65: 'Chuva intensa',
-  71: 'Neve leve', 73: 'Neve', 75: 'Neve intensa',
-  80: 'Aguaceiros', 81: 'Aguaceiros', 82: 'Aguaceiros intensos',
-  95: 'Trovoada', 96: 'Trovoada c/ saraiva', 99: 'Trovoada intensa'
-};
-
-const DAYS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-
-async function loadWeather() {
-  try {
-    const pos = await new Promise((res, rej) =>
-      navigator.geolocation.getCurrentPosition(res, rej, { timeout: 8000 })
-    );
-    const { latitude: lat, longitude: lon } = pos.coords;
-
-    // Reverse geocode
-    let locationName = 'Gerês';
-    try {
-      const geo = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
-      const geoData = await geo.json();
-      locationName = geoData.address.city || geoData.address.town || geoData.address.village || geoData.address.municipality || 'Gerês';
-    } catch(_) {}
-
-    // Open-Meteo (free, no key)
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode,windspeed_10m,relative_humidity_2m&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=7`;
-    const r = await fetch(url);
+    const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode,windspeed_10m,relative_humidity_2m&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=7`);
     const d = await r.json();
+    const c = d.current;
 
-    const curr = d.current;
-    const temp = Math.round(curr.temperature_2m);
-    const wcode = curr.weathercode;
-    const icon = WEATHER_ICONS[wcode] || '🌡️';
-    const desc = WEATHER_DESC[wcode] || 'Sem dados';
-    const wind = Math.round(curr.windspeed_10m);
-    const hum = curr.relative_humidity_2m;
+    document.getElementById('yw-temp').textContent = Math.round(c.temperature_2m) + '°';
+    document.getElementById('yw-loc').textContent = city;
+    document.getElementById('yw-icon').textContent = ICONS[c.weathercode] || '🌡️';
+    document.getElementById('yw-desc').textContent = DESC[c.weathercode] || '';
+    document.getElementById('yw-wind').textContent = Math.round(c.windspeed_10m);
+    document.getElementById('yw-hum').textContent = c.relative_humidity_2m;
+    document.getElementById('yw-minmax').textContent =
+      Math.round(d.daily.temperature_2m_max[0]) + '° / ' + Math.round(d.daily.temperature_2m_min[0]) + '°';
 
-    // Hero strip
-    document.getElementById('heroWeather').innerHTML = `
-      <div class="weather-icon-wrap">${icon}</div>
-      <div class="weather-main">
-        <div class="weather-temp">${temp}°C</div>
-        <div class="weather-desc">${desc}</div>
-        <div class="weather-location">${locationName}</div>
-      </div>
-      <div class="weather-extras">
-        <div class="weather-extra-item">💨 ${wind} km/h</div>
-        <div class="weather-extra-item">💧 ${hum}%</div>
-      </div>
-    `;
-
-    // Full weather section
-    let forecastHTML = '<div class="forecast-bar">';
-    for (let i = 0; i < 7; i++) {
+    let html = '';
+    for(let i = 0; i < 7; i++){
       const date = new Date(d.daily.time[i]);
-      const day = i === 0 ? 'Hoje' : DAYS[date.getDay()];
-      const fIcon = WEATHER_ICONS[d.daily.weathercode[i]] || '🌡️';
-      const max = Math.round(d.daily.temperature_2m_max[i]);
-      const min = Math.round(d.daily.temperature_2m_min[i]);
-      forecastHTML += `
-        <div class="forecast-item">
-          <div class="forecast-day">${day}</div>
-          <div class="forecast-icon">${fIcon}</div>
-          <div class="forecast-temp">${max}°</div>
-          <div style="font-size:11px;color:var(--bark);opacity:0.4;">${min}°</div>
-        </div>`;
+      const label = i === 0 ? 'Hoje' : DAYS[date.getDay()];
+      html += `<div class="yw-fday">
+        <div class="yw-fd-label">${label}</div>
+        <div class="yw-fd-icon">${ICONS[d.daily.weathercode[i]] || '🌡️'}</div>
+        <div class="yw-fd-max">${Math.round(d.daily.temperature_2m_max[i])}°</div>
+        <div class="yw-fd-min">${Math.round(d.daily.temperature_2m_min[i])}°</div>
+      </div>`;
     }
-    forecastHTML += '</div>';
+    document.getElementById('yw-forecast').innerHTML = html;
 
-    document.getElementById('weatherFull').innerHTML = `
-      <div class="weather-card-full">
-        <div class="weather-card-top">
-          <div>
-            <div class="weather-big-temp">${temp}<span class="weather-big-unit">°C</span></div>
-          </div>
-          <div class="weather-right">
-            <div style="font-size:42px;line-height:1;">${icon}</div>
-            <div class="weather-condition">${desc}</div>
-            <div class="weather-location-name">${locationName}</div>
-          </div>
-        </div>
-        <div class="weather-details-row">
-          <div class="weather-detail-box">
-            <div class="weather-detail-label">Vento</div>
-            <div class="weather-detail-value">${wind}</div>
-            <div style="font-size:9px;opacity:0.45;">km/h</div>
-          </div>
-          <div class="weather-detail-box">
-            <div class="weather-detail-label">Humidade</div>
-            <div class="weather-detail-value">${hum}</div>
-            <div style="font-size:9px;opacity:0.45;">%</div>
-          </div>
-          <div class="weather-detail-box">
-            <div class="weather-detail-label">Máx / Mín</div>
-            <div class="weather-detail-value" style="font-size:16px;">${Math.round(d.daily.temperature_2m_max[0])}° / ${Math.round(d.daily.temperature_2m_min[0])}°</div>
-          </div>
-        </div>
-      </div>
-      <div class="section-header" style="margin-top:8px;margin-bottom:12px;">
-        <p class="section-label">Próximos 7 dias</p>
-        <h3 style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--bark);">Previsão Semanal</h3>
-      </div>
-      ${forecastHTML}
-    `;
-
-  } catch(err) {
-    // Geolocation denied or failed: show Gerês defaults
-    document.getElementById('heroWeather').innerHTML = `
-      <div class="weather-icon-wrap">🌿</div>
-      <div class="weather-main">
-        <div class="weather-desc" style="color:rgba(255,255,255,0.7);font-size:12px;">Ative a localização<br>para ver a meteorologia</div>
-      </div>
-    `;
-    document.getElementById('weatherFull').innerHTML = `
-      <div style="text-align:center;padding:40px 20px;color:var(--bark);opacity:0.55;">
-        <div style="font-size:40px;margin-bottom:14px;">📍</div>
-        <p style="font-size:14px;line-height:1.6;">Para ver a meteorologia em tempo real, active a localização no seu browser.</p>
-      </div>
-    `;
-  }
-}
-
-// Run on load
-loadWeather();
+  })();
+})();
 </script>
-</body>
-</html>
