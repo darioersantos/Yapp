@@ -1,169 +1,815 @@
-<div id="yw-wrap">
-  <div id="yw-card">
-    <div id="yw-top">
-      <div>
-        <div id="yw-temp">--°</div>
-        <div id="yw-loc">A localizar...</div>
-      </div>
-      <div id="yw-right">
-        <div id="yw-icon">🌡️</div>
-        <div id="yw-desc">--</div>
-      </div>
-    </div>
-    <div id="yw-details">
-      <div class="yw-box"><div class="yw-lbl">Vento</div><div class="yw-val" id="yw-wind">--</div><div class="yw-unit">km/h</div></div>
-      <div class="yw-box"><div class="yw-lbl">Humidade</div><div class="yw-val" id="yw-hum">--</div><div class="yw-unit">%</div></div>
-      <div class="yw-box"><div class="yw-lbl">Máx / Mín</div><div class="yw-val" id="yw-minmax" style="font-size:15px;">--</div></div>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="theme-color" content="#2d4a1e"/>
+<title>Casa do Gerês · Guia do Hóspede</title>
+<link rel="manifest" href="#"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --forest: #2d4a1e;
+  --forest-mid: #3d6428;
+  --forest-light: #5a8a3c;
+  --sage: #8aab6e;
+  --sage-light: #b8d4a0;
+  --cream: #f5f0e8;
+  --cream-dark: #ede5d4;
+  --earth: #8b6f47;
+  --earth-light: #c4a882;
+  --bark: #4a3728;
+  --text-dark: #1e2d14;
+  --text-mid: #4a5e38;
+  --text-light: #7a8f6a;
+  --white: #ffffff;
+  --card-bg: rgba(255,255,255,0.92);
+  --card-border: rgba(90,138,60,0.18);
+  --shadow: 0 4px 24px rgba(45,74,30,0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-dark);min-height:100vh;overflow-x:hidden;}
+
+/* SPLASH / HERO */
+#splash{position:relative;height:100dvh;min-height:560px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transform:scale(1.08);animation:parallax-in 1.4s ease forwards;}
+@keyframes parallax-in{from{transform:scale(1.15);}to{transform:scale(1.05);}}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(20,35,12,0.2) 0%,rgba(20,35,12,0.1) 40%,rgba(20,35,12,0.75) 80%,rgba(20,35,12,0.9) 100%);}
+.hero-content{position:relative;z-index:2;padding:2rem 1.5rem 2.5rem;color:var(--white);}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:1rem;animation:fade-up 0.8s 0.4s ease both;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:600;line-height:1.1;margin-bottom:0.4rem;animation:fade-up 0.8s 0.5s ease both;}
+.hero-subtitle{font-size:0.95rem;font-weight:300;opacity:0.85;margin-bottom:1.8rem;animation:fade-up 0.8s 0.6s ease both;}
+.hero-scroll{display:flex;align-items:center;gap:10px;animation:fade-up 0.8s 0.8s ease both;}
+.scroll-btn{background:var(--forest-light);color:var(--white);border:none;border-radius:30px;padding:13px 28px;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:500;cursor:pointer;transition:background 0.2s;}
+.scroll-btn:hover{background:var(--sage);}
+.weather-pill{background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:8px 14px;font-size:0.85rem;display:flex;align-items:center;gap:6px;}
+@keyframes fade-up{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* LOGO pill top */
+.hero-logo{position:absolute;top:1.4rem;left:1.5rem;right:1.5rem;z-index:3;display:flex;justify-content:space-between;align-items:center;}
+.logo-name{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;color:var(--white);letter-spacing:0.02em;}
+.wifi-quick{background:rgba(255,255,255,0.18);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:6px 12px;font-size:0.75rem;color:var(--white);cursor:pointer;display:flex;align-items:center;gap:5px;}
+
+/* NAV TABS */
+#main-nav{position:sticky;top:0;z-index:100;background:var(--cream);border-bottom:1px solid var(--cream-dark);padding:0 0.5rem;overflow-x:auto;scrollbar-width:none;display:flex;gap:2px;white-space:nowrap;}
+#main-nav::-webkit-scrollbar{display:none;}
+.nav-tab{display:inline-flex;flex-direction:column;align-items:center;gap:3px;padding:10px 14px;font-size:11px;font-weight:500;color:var(--text-light);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;flex-shrink:0;background:none;border-top:none;border-left:none;border-right:none;}
+.nav-tab.active{color:var(--forest);border-bottom-color:var(--forest-light);}
+.nav-tab svg{width:20px;height:20px;}
+
+/* SECTIONS */
+.section{padding:1.8rem 1.25rem;}
+.section-header{margin-bottom:1.4rem;}
+.section-tag{font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--sage);margin-bottom:4px;}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:600;color:var(--forest);line-height:1.2;}
+.section-sub{font-size:0.88rem;color:var(--text-light);margin-top:4px;line-height:1.5;}
+
+/* CARDS */
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:1.1rem 1.25rem;box-shadow:var(--shadow);}
+.card+.card{margin-top:0.75rem;}
+
+/* INFO GRID */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
+.info-item{background:var(--white);border:1px solid var(--card-border);border-radius:var(--radius-sm);padding:1rem;display:flex;flex-direction:column;align-items:flex-start;gap:6px;}
+.info-icon{width:36px;height:36px;border-radius:8px;background:rgba(90,138,60,0.12);display:flex;align-items:center;justify-content:center;}
+.info-icon svg{width:18px;height:18px;stroke:var(--forest-light);}
+.info-label{font-size:11px;font-weight:500;color:var(--text-light);text-transform:uppercase;letter-spacing:0.06em;}
+.info-value{font-size:0.9rem;font-weight:500;color:var(--text-dark);}
+
+/* WIFI CARD */
+.wifi-card{background:var(--forest);border-radius:var(--radius);padding:1.4rem;color:var(--white);position:relative;overflow:hidden;}
+.wifi-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.06);}
+.wifi-card::after{content:'';position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.04);}
+.wifi-net{font-size:0.78rem;opacity:0.7;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em;}
+.wifi-name{font-size:1.1rem;font-weight:500;margin-bottom:1rem;}
+.wifi-pass-row{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.12);border-radius:10px;padding:10px 14px;}
+.wifi-pass{font-family:monospace;font-size:1rem;letter-spacing:0.08em;}
+.copy-btn{background:rgba(255,255,255,0.2);border:none;border-radius:6px;padding:5px 10px;color:var(--white);font-size:0.75rem;cursor:pointer;transition:background 0.2s;}
+.copy-btn:hover{background:rgba(255,255,255,0.3);}
+
+/* WEATHER */
+.weather-main{display:flex;align-items:center;justify-content:space-between;}
+.weather-temp{font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:600;color:var(--forest);line-height:1;}
+.weather-desc{font-size:0.95rem;color:var(--text-mid);margin-top:4px;}
+.weather-icon-big{font-size:3rem;}
+.weather-details{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-top:1.2rem;}
+.w-detail{text-align:center;padding:0.75rem 0.5rem;background:rgba(90,138,60,0.08);border-radius:var(--radius-sm);}
+.w-detail-val{font-size:1rem;font-weight:500;color:var(--forest);}
+.w-detail-label{font-size:10px;color:var(--text-light);margin-top:2px;}
+.forecast{display:flex;gap:0.5rem;margin-top:1rem;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.forecast::-webkit-scrollbar{display:none;}
+.fc-day{min-width:64px;background:var(--white);border:1px solid var(--card-border);border-radius:var(--radius-sm);padding:0.6rem 0.4rem;text-align:center;flex-shrink:0;}
+.fc-dow{font-size:11px;font-weight:600;color:var(--text-light);text-transform:uppercase;}
+.fc-ico{font-size:1.4rem;margin:4px 0;}
+.fc-t{font-size:0.85rem;font-weight:500;color:var(--forest);}
+
+/* SERVICES */
+.services-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
+.service-card{background:var(--white);border:1px solid var(--card-border);border-radius:var(--radius);padding:1.1rem;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;cursor:pointer;transition:all 0.18s;}
+.service-card:active{transform:scale(0.97);}
+.svc-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;}
+.svc-label{font-size:0.82rem;font-weight:500;color:var(--text-dark);}
+.svc-sub{font-size:0.72rem;color:var(--text-light);}
+
+/* PLACES / RESTAURANTS */
+.place-card{background:var(--white);border:1px solid var(--card-border);border-radius:var(--radius);overflow:hidden;display:flex;gap:0;margin-bottom:0.75rem;}
+.place-img{width:90px;min-width:90px;background:var(--sage-light);display:flex;align-items:center;justify-content:center;font-size:2rem;}
+.place-info{padding:0.9rem 1rem;}
+.place-name{font-weight:500;font-size:0.92rem;color:var(--text-dark);}
+.place-type{font-size:0.75rem;color:var(--text-light);margin-top:2px;}
+.place-dist{display:inline-flex;align-items:center;gap:4px;font-size:0.75rem;color:var(--forest-light);margin-top:6px;font-weight:500;}
+.stars{color:#e8a020;font-size:0.75rem;margin-top:4px;}
+
+/* CONTACT */
+.contact-big{display:flex;flex-direction:column;gap:0.75rem;}
+.contact-btn{display:flex;align-items:center;gap:14px;background:var(--white);border:1px solid var(--card-border);border-radius:var(--radius);padding:1rem 1.25rem;cursor:pointer;transition:all 0.18s;text-decoration:none;}
+.contact-btn:active{transform:scale(0.98);}
+.contact-btn-icon{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.contact-btn-label{font-weight:500;font-size:0.92rem;color:var(--text-dark);}
+.contact-btn-sub{font-size:0.78rem;color:var(--text-light);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(20,35,12,0.6);z-index:999;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-sheet{background:var(--cream);border-radius:24px 24px 0 0;padding:1.5rem 1.5rem 2.5rem;width:100%;max-width:500px;max-height:85dvh;overflow-y:auto;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);}
+.modal-overlay.open .modal-sheet{transform:translateY(0);}
+.modal-handle{width:40px;height:4px;border-radius:2px;background:var(--earth-light);margin:0 auto 1.2rem;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--forest);margin-bottom:1rem;}
+
+/* FEEDBACK */
+.feedback-stars{display:flex;gap:8px;margin:1rem 0;}
+.star-btn{font-size:2rem;cursor:pointer;transition:transform 0.15s;background:none;border:none;padding:0;}
+.star-btn:hover{transform:scale(1.2);}
+.form-input{width:100%;background:var(--white);border:1px solid var(--card-border);border-radius:var(--radius-sm);padding:0.85rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.9rem;color:var(--text-dark);margin-bottom:0.75rem;outline:none;resize:vertical;}
+.form-input:focus{border-color:var(--sage);}
+.form-btn{width:100%;background:var(--forest);color:var(--white);border:none;border-radius:var(--radius-sm);padding:1rem;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:500;cursor:pointer;margin-top:0.5rem;transition:background 0.2s;}
+.form-btn:hover{background:var(--forest-mid);}
+
+/* SPONSOR */
+.sponsor-card{background:linear-gradient(135deg,var(--earth) 0%,var(--bark) 100%);border-radius:var(--radius);padding:1.2rem 1.4rem;color:var(--white);display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem;}
+.sponsor-logo{width:50px;height:50px;border-radius:10px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.sponsor-label{font-size:9px;text-transform:uppercase;letter-spacing:0.1em;opacity:0.7;margin-bottom:2px;}
+.sponsor-name{font-weight:500;font-size:0.95rem;}
+.sponsor-cta{font-size:0.78rem;opacity:0.8;margin-top:3px;}
+
+/* STREAMING / CLEAN UP */
+.chip{display:inline-flex;align-items:center;gap:4px;background:rgba(90,138,60,0.12);color:var(--forest);border-radius:20px;padding:4px 10px;font-size:0.75rem;font-weight:500;}
+.divider{height:1px;background:var(--cream-dark);margin:0.5rem 0;}
+.social-row{display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:0.75rem;}
+.social-btn{display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--card-border);border-radius:30px;padding:8px 16px;font-size:0.82rem;font-weight:500;color:var(--text-dark);cursor:pointer;text-decoration:none;}
+.newsletter-form{display:flex;flex-direction:column;gap:0.5rem;}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--forest);color:var(--white);padding:10px 22px;border-radius:30px;font-size:0.85rem;font-weight:500;z-index:9999;opacity:0;transition:all 0.3s;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* BOTTOM NAV */
+#bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--cream);border-top:1px solid var(--cream-dark);display:flex;z-index:200;padding:0 0 env(safe-area-inset-bottom,0);}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 8px;font-size:10px;font-weight:500;color:var(--text-light);cursor:pointer;background:none;border:none;transition:color 0.2s;}
+.bnav-item.active{color:var(--forest);}
+.bnav-dot{width:4px;height:4px;border-radius:50%;background:var(--forest-light);margin:0 auto;opacity:0;}
+.bnav-item.active .bnav-dot{opacity:1;}
+
+/* PAGE TRANSITIONS */
+.page{display:none;}
+.page.active{display:block;}
+.page-animate{animation:page-in 0.3s ease both;}
+@keyframes page-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+
+<!-- HERO SPLASH -->
+<div id="splash">
+  <img class="hero-img" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&auto=format&fit=crop&q=80" alt="Parque Nacional da Peneda-Gerês"/>
+  <div class="hero-overlay"></div>
+  <div class="hero-logo">
+    <span class="logo-name">Casa do Gerês</span>
+    <button class="wifi-quick" onclick="showModal('modal-wifi')">📶 Wi-Fi</button>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">🌿 Bem-vindo ao Gerês</div>
+    <h1 class="hero-title">Torna-te parte<br/>da natureza.</h1>
+    <p class="hero-subtitle">O teu guia completo para uma estadia perfeita</p>
+    <div class="hero-scroll">
+      <button class="scroll-btn" onclick="goToApp()">Explorar →</button>
+      <div class="weather-pill" id="hero-weather">🌤️ Carregando...</div>
     </div>
   </div>
-  <div id="yw-forecast"></div>
 </div>
 
-<style>
-#yw-wrap {
-  font-family: sans-serif;
-  max-width: 420px;
-  margin: 0 auto;
-}
-#yw-card {
-  background: linear-gradient(160deg, #4a5c3f 0%, #2d3e27 100%);
-  border-radius: 18px;
-  padding: 24px;
-  color: #fff;
-  margin-bottom: 12px;
-}
-#yw-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 20px;
-}
-#yw-temp {
-  font-size: 58px;
-  font-weight: 300;
-  line-height: 1;
-}
-#yw-loc {
-  font-size: 12px;
-  opacity: 0.5;
-  margin-top: 6px;
-}
-#yw-right { text-align: right; }
-#yw-icon { font-size: 42px; line-height: 1; }
-#yw-desc {
-  font-size: 13px;
-  opacity: 0.8;
-  margin-top: 4px;
-  text-transform: capitalize;
-}
-#yw-details {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-.yw-box {
-  background: rgba(255,255,255,0.1);
-  border-radius: 10px;
-  padding: 10px;
-  text-align: center;
-}
-.yw-lbl {
-  font-size: 9px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  opacity: 0.5;
-  margin-bottom: 4px;
-}
-.yw-val {
-  font-size: 20px;
-  font-weight: 300;
-}
-.yw-unit {
-  font-size: 9px;
-  opacity: 0.4;
-  margin-top: 2px;
-}
-#yw-forecast {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding-bottom: 4px;
-}
-#yw-forecast::-webkit-scrollbar { display: none; }
-.yw-fday {
-  flex: none;
-  background: #fff;
-  border-radius: 12px;
-  padding: 12px;
-  text-align: center;
-  min-width: 62px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-}
-.yw-fd-label {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: #666;
-  margin-bottom: 6px;
-}
-.yw-fd-icon { font-size: 22px; margin-bottom: 4px; }
-.yw-fd-max { font-size: 16px; color: #333; font-weight: 500; }
-.yw-fd-min { font-size: 11px; color: #aaa; }
-</style>
+<!-- APP CONTAINER -->
+<div id="app" style="display:none;padding-bottom:70px;">
+
+  <!-- NAV TABS -->
+  <nav id="main-nav">
+    <button class="nav-tab active" onclick="switchPage('casa')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Casa
+    </button>
+    <button class="nav-tab" onclick="switchPage('servicos')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 115 19.07M21.17 8A10 10 0 119 21.17"/></svg>
+      Serviços
+    </button>
+    <button class="nav-tab" onclick="switchPage('meteo')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17.5 19H9a7 7 0 116.71-9h1.79a4.5 4.5 0 010 9z"/></svg>
+      Meteo
+    </button>
+    <button class="nav-tab" onclick="switchPage('descobrir')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Descobrir
+    </button>
+    <button class="nav-tab" onclick="switchPage('contacto')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.63A2 2 0 012 .92h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      Contacto
+    </button>
+  </nav>
+
+  <!-- PAGE: CASA -->
+  <div id="page-casa" class="page active page-animate">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-tag">A tua estadia</div>
+        <h2 class="section-title">Casa do Gerês</h2>
+        <p class="section-sub">Tudo o que precisas de saber sobre a tua casa durante estes dias.</p>
+      </div>
+
+      <!-- Wi-Fi -->
+      <div class="wifi-card" style="margin-bottom:0.75rem;" onclick="showModal('modal-wifi')">
+        <div class="wifi-net">Rede Wi-Fi</div>
+        <div class="wifi-name">CasaGeres_5G</div>
+        <div class="wifi-pass-row">
+          <span class="wifi-pass">natureza2024</span>
+          <button class="copy-btn" onclick="copyWifi(event)">Copiar</button>
+        </div>
+      </div>
+
+      <!-- Info Grid -->
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+          <div class="info-label">Check-in</div>
+          <div class="info-value">16:00</div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div class="info-label">Check-out</div>
+          <div class="info-value">11:00</div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+          <div class="info-label">Capacidade</div>
+          <div class="info-value">6 pessoas</div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div>
+          <div class="info-label">Quartos</div>
+          <div class="info-value">3 quartos</div>
+        </div>
+      </div>
+
+      <!-- Casa features -->
+      <div class="card" style="margin-top:0.75rem;">
+        <div style="font-size:0.8rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.9rem;">Comodidades da casa</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1rem;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--text-mid);"><span>🍳</span> Cozinha completa</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--text-mid);"><span>🔥</span> Churrasqueira</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--text-mid);"><span>🌊</span> Piscina</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--text-mid);"><span>📺</span> Smart TV</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--text-mid);"><span>🅿️</span> Estacionamento</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--text-mid);"><span>🐾</span> Pet friendly</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--text-mid);"><span>♿</span> Acess. mobilidade</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--text-mid);"><span>🌿</span> Jardim</div>
+        </div>
+      </div>
+
+      <!-- TV Streaming -->
+      <div class="card" style="margin-top:0.75rem;">
+        <div style="font-size:0.8rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.9rem;">TV & Streaming</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+          <span class="chip">📺 NOS TV</span>
+          <span class="chip">🎬 Netflix</span>
+          <span class="chip">🎥 Prime Video</span>
+          <span class="chip">📡 Canal+</span>
+          <span class="chip">🎞️ Disney+</span>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-light);margin-top:0.75rem;">Credenciais de acesso disponíveis no dossier físico junto à televisão.</p>
+      </div>
+
+      <!-- Patrocinador -->
+      <div class="sponsor-card" style="margin-top:0.75rem;cursor:pointer;">
+        <div class="sponsor-logo">🍷</div>
+        <div>
+          <div class="sponsor-label">Patrocinador local</div>
+          <div class="sponsor-name">Adega do Gerês</div>
+          <div class="sponsor-cta">10% desconto a apresentar esta app →</div>
+        </div>
+      </div>
+
+      <!-- Feedback rápido -->
+      <div class="card" style="margin-top:0.75rem;">
+        <div style="font-size:0.8rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.6rem;">Como está a tua estadia?</div>
+        <div class="feedback-stars" id="quick-stars">
+          <button class="star-btn" onclick="rateStar(1)">⭐</button>
+          <button class="star-btn" onclick="rateStar(2)">⭐</button>
+          <button class="star-btn" onclick="rateStar(3)">⭐</button>
+          <button class="star-btn" onclick="rateStar(4)">⭐</button>
+          <button class="star-btn" onclick="rateStar(5)">⭐</button>
+        </div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <button onclick="showModal('modal-feedback')" style="background:var(--forest);color:var(--white);border:none;border-radius:30px;padding:8px 16px;font-size:0.8rem;font-weight:500;cursor:pointer;">Deixar feedback</button>
+          <a href="https://g.page/r/placeholder" style="display:flex;align-items:center;gap:6px;background:var(--white);border:1px solid var(--card-border);border-radius:30px;padding:8px 16px;font-size:0.8rem;font-weight:500;color:var(--text-dark);text-decoration:none;">⭐ Google Reviews</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: SERVIÇOS -->
+  <div id="page-servicos" class="page">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-tag">Extras & pedidos</div>
+        <h2 class="section-title">Serviços</h2>
+        <p class="section-sub">Tudo o que precisas para uma estadia ainda mais confortável.</p>
+      </div>
+
+      <div class="services-grid">
+        <div class="service-card" onclick="showModal('modal-limpeza')">
+          <div class="svc-icon" style="background:rgba(90,138,60,0.12);">🧹</div>
+          <div class="svc-label">Limpeza extra</div>
+          <div class="svc-sub">Pedido rápido</div>
+        </div>
+        <div class="service-card" onclick="showModal('modal-bicicletas')">
+          <div class="svc-icon" style="background:rgba(139,111,71,0.12);">🚲</div>
+          <div class="svc-label">Aluguer bikes</div>
+          <div class="svc-sub">A partir de €10/dia</div>
+        </div>
+        <div class="service-card" onclick="showModal('modal-churrasco')">
+          <div class="svc-icon" style="background:rgba(180,80,40,0.1);">🔥</div>
+          <div class="svc-label">Churrasqueira</div>
+          <div class="svc-sub">Instruções de uso</div>
+        </div>
+        <div class="service-card" onclick="showModal('modal-cozinha')">
+          <div class="svc-icon" style="background:rgba(90,138,60,0.12);">🍳</div>
+          <div class="svc-label">Cozinha</div>
+          <div class="svc-sub">Utensílios & uso</div>
+        </div>
+        <div class="service-card" onclick="showModal('modal-farmacia')">
+          <div class="svc-icon" style="background:rgba(200,50,50,0.1);">💊</div>
+          <div class="svc-label">Farmácias</div>
+          <div class="svc-sub">Serviço noturno</div>
+        </div>
+        <div class="service-card" onclick="showModal('modal-newsletter')">
+          <div class="svc-icon" style="background:rgba(139,111,71,0.12);">✉️</div>
+          <div class="svc-label">Newsletter</div>
+          <div class="svc-sub">Promoções & datas</div>
+        </div>
+      </div>
+
+      <!-- Sponsor 2 -->
+      <div class="sponsor-card" style="margin-top:1.2rem;cursor:pointer;">
+        <div class="sponsor-logo">🏊</div>
+        <div>
+          <div class="sponsor-label">Parceiro local</div>
+          <div class="sponsor-name">Gerês Aventura</div>
+          <div class="sponsor-cta">Rafting, canyoning e trilhos guiados →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: METEO -->
+  <div id="page-meteo" class="page">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-tag">Peneda-Gerês</div>
+        <h2 class="section-title">Meteorologia</h2>
+      </div>
+      <div class="card">
+        <div class="weather-main">
+          <div>
+            <div style="font-size:0.8rem;color:var(--text-light);margin-bottom:4px;" id="weather-location">Gerês, Braga</div>
+            <div class="weather-temp" id="weather-temp">--°</div>
+            <div class="weather-desc" id="weather-desc">A carregar...</div>
+          </div>
+          <div class="weather-icon-big" id="weather-icon">🌤️</div>
+        </div>
+        <div class="weather-details">
+          <div class="w-detail"><div class="w-detail-val" id="w-humidity">--%</div><div class="w-detail-label">Humidade</div></div>
+          <div class="w-detail"><div class="w-detail-val" id="w-wind">--</div><div class="w-detail-label">Vento km/h</div></div>
+          <div class="w-detail"><div class="w-detail-val" id="w-uv">--</div><div class="w-detail-label">Índice UV</div></div>
+        </div>
+      </div>
+      <div class="section-header" style="margin-top:1.4rem;margin-bottom:0.75rem;">
+        <div class="section-tag">Próximos 7 dias</div>
+      </div>
+      <div class="forecast" id="forecast-row">
+        <div class="fc-day"><div class="fc-dow">Seg</div><div class="fc-ico">⛅</div><div class="fc-t">18°</div></div>
+        <div class="fc-day"><div class="fc-dow">Ter</div><div class="fc-ico">☀️</div><div class="fc-t">22°</div></div>
+        <div class="fc-day"><div class="fc-dow">Qua</div><div class="fc-ico">🌦️</div><div class="fc-t">16°</div></div>
+        <div class="fc-day"><div class="fc-dow">Qui</div><div class="fc-ico">🌧️</div><div class="fc-t">14°</div></div>
+        <div class="fc-day"><div class="fc-dow">Sex</div><div class="fc-ico">⛅</div><div class="fc-t">19°</div></div>
+        <div class="fc-day"><div class="fc-dow">Sáb</div><div class="fc-ico">☀️</div><div class="fc-t">24°</div></div>
+        <div class="fc-day"><div class="fc-dow">Dom</div><div class="fc-ico">☀️</div><div class="fc-t">25°</div></div>
+      </div>
+      <div style="font-size:0.75rem;color:var(--text-light);margin-top:0.75rem;text-align:center;">Dados: Open-Meteo API · Gerês 41.72°N, 8.20°W</div>
+    </div>
+  </div>
+
+  <!-- PAGE: DESCOBRIR -->
+  <div id="page-descobrir" class="page">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-tag">Nas redondezas</div>
+        <h2 class="section-title">Descobrir</h2>
+        <p class="section-sub">Os melhores sítios a visitar e onde comer perto de ti.</p>
+      </div>
+
+      <div style="font-size:0.8rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.75rem;">Atrações próximas</div>
+
+      <div class="place-card">
+        <div class="place-img">🏞️</div>
+        <div class="place-info">
+          <div class="place-name">Cascata do Arado</div>
+          <div class="place-type">Natureza · Trilho 2h</div>
+          <div class="stars">★★★★★</div>
+          <div class="place-dist"><span>📍</span> 4,2 km</div>
+        </div>
+      </div>
+      <div class="place-card">
+        <div class="place-img">💧</div>
+        <div class="place-info">
+          <div class="place-name">Praia Fluvial de Ermida</div>
+          <div class="place-type">Praia fluvial · Parque infantil</div>
+          <div class="stars">★★★★☆</div>
+          <div class="place-dist"><span>📍</span> 6,8 km</div>
+        </div>
+      </div>
+      <div class="place-card">
+        <div class="place-img">🦌</div>
+        <div class="place-info">
+          <div class="place-name">Centro de Interpretação</div>
+          <div class="place-type">Museu · Fauna & Flora</div>
+          <div class="stars">★★★★☆</div>
+          <div class="place-dist"><span>📍</span> 2,1 km</div>
+        </div>
+      </div>
+      <div class="place-card">
+        <div class="place-img">⛰️</div>
+        <div class="place-info">
+          <div class="place-name">Trilho Pedra Bela</div>
+          <div class="place-type">Trilho panorâmico · Média dificuldade</div>
+          <div class="stars">★★★★★</div>
+          <div class="place-dist"><span>📍</span> 8,5 km</div>
+        </div>
+      </div>
+
+      <div style="font-size:0.8rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:0.07em;margin:1.2rem 0 0.75rem;">Restaurantes sugeridos</div>
+
+      <div class="place-card">
+        <div class="place-img" style="background:rgba(139,111,71,0.15);">🍖</div>
+        <div class="place-info">
+          <div class="place-name">Taberna do Gerês</div>
+          <div class="place-type">Cozinha regional · Cabrito assado</div>
+          <div class="stars">★★★★★</div>
+          <div class="place-dist"><span>📍</span> 1,3 km</div>
+        </div>
+      </div>
+      <div class="place-card">
+        <div class="place-img" style="background:rgba(139,111,71,0.15);">🐟</div>
+        <div class="place-info">
+          <div class="place-name">Tasca da Ribeira</div>
+          <div class="place-type">Peixe grelhado · Petiscos</div>
+          <div class="stars">★★★★☆</div>
+          <div class="place-dist"><span>📍</span> 3,7 km</div>
+        </div>
+      </div>
+      <div class="place-card">
+        <div class="place-img" style="background:rgba(139,111,71,0.15);">🥗</div>
+        <div class="place-info">
+          <div class="place-name">Café Serra Verde</div>
+          <div class="place-type">Pequenos-almoços · Snacks</div>
+          <div class="stars">★★★★☆</div>
+          <div class="place-dist"><span>📍</span> 0,9 km</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: CONTACTO -->
+  <div id="page-contacto" class="page">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-tag">Fala connosco</div>
+        <h2 class="section-title">Contacto</h2>
+        <p class="section-sub">O proprietário está sempre disponível para ajudar na tua estadia.</p>
+      </div>
+
+      <div class="contact-big">
+        <a href="https://wa.me/351912345678" class="contact-btn">
+          <div class="contact-btn-icon" style="background:#25D366;font-size:1.4rem;">💬</div>
+          <div>
+            <div class="contact-btn-label">WhatsApp</div>
+            <div class="contact-btn-sub">Resposta rápida · Carlos</div>
+          </div>
+        </a>
+        <a href="tel:+351912345678" class="contact-btn">
+          <div class="contact-btn-icon" style="background:rgba(90,138,60,0.15);font-size:1.3rem;">📞</div>
+          <div>
+            <div class="contact-btn-label">Ligar</div>
+            <div class="contact-btn-sub">+351 912 345 678</div>
+          </div>
+        </a>
+        <a href="mailto:carlos@casadogeres.pt" class="contact-btn">
+          <div class="contact-btn-icon" style="background:rgba(139,111,71,0.15);font-size:1.3rem;">✉️</div>
+          <div>
+            <div class="contact-btn-label">E-mail</div>
+            <div class="contact-btn-sub">carlos@casadogeres.pt</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="card" style="margin-top:1.2rem;">
+        <div style="font-size:0.8rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.75rem;">Redes sociais</div>
+        <div class="social-row">
+          <a href="#" class="social-btn">📸 Instagram</a>
+          <a href="#" class="social-btn">👍 Facebook</a>
+          <a href="#" class="social-btn">🌐 Website</a>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:0.75rem;">
+        <div style="font-size:0.8rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.75rem;">Fique informado</div>
+        <p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:0.75rem;line-height:1.5;">Receba promoções exclusivas e datas disponíveis diretamente no seu email.</p>
+        <div class="newsletter-form">
+          <input class="form-input" type="text" placeholder="O seu nome" id="nl-nome"/>
+          <input class="form-input" type="email" placeholder="O seu email" id="nl-email"/>
+          <button class="form-btn" onclick="subscribeNewsletter()">Subscrever newsletter</button>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:1.5rem;">
+        <div style="font-size:0.75rem;color:var(--text-light);">Powered by</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--forest);letter-spacing:0.05em;margin-top:2px;">YAPP · Guia do Hóspede</div>
+        <div style="font-size:0.7rem;color:var(--text-light);margin-top:2px;">yapp.pt</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div id="bottom-nav" style="display:none;">
+  <button class="bnav-item active" onclick="switchPage('casa')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Casa
+    <div class="bnav-dot"></div>
+  </button>
+  <button class="bnav-item" onclick="switchPage('servicos')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 115 19.07"/></svg>
+    Serviços
+    <div class="bnav-dot"></div>
+  </button>
+  <button class="bnav-item" onclick="switchPage('meteo')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17.5 19H9a7 7 0 116.71-9h1.79a4.5 4.5 0 010 9z"/></svg>
+    Meteo
+    <div class="bnav-dot"></div>
+  </button>
+  <button class="bnav-item" onclick="switchPage('descobrir')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    Descobrir
+    <div class="bnav-dot"></div>
+  </button>
+  <button class="bnav-item" onclick="switchPage('contacto')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.63A2 2 0 012 .92h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+    Contacto
+    <div class="bnav-dot"></div>
+  </button>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-wifi" onclick="closeModal('modal-wifi')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📶 Wi-Fi</div>
+    <div class="wifi-card">
+      <div class="wifi-net">Rede principal</div>
+      <div class="wifi-name">CasaGeres_5G</div>
+      <div class="wifi-pass-row"><span class="wifi-pass">natureza2024</span><button class="copy-btn" onclick="copyText('natureza2024')">Copiar</button></div>
+    </div>
+    <div style="margin-top:0.75rem;" class="wifi-card" style="background:var(--forest-mid);">
+      <div class="wifi-net">Rede secundária</div>
+      <div class="wifi-name">CasaGeres_2.4G</div>
+      <div class="wifi-pass-row"><span class="wifi-pass">natureza2024</span><button class="copy-btn" onclick="copyText('natureza2024')">Copiar</button></div>
+    </div>
+    <p style="font-size:0.82rem;color:var(--text-light);margin-top:1rem;line-height:1.5;">Em caso de problemas de ligação contacta o proprietário via WhatsApp.</p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-limpeza" onclick="closeModal('modal-limpeza')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🧹 Limpeza extra</div>
+    <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.5;">Pede uma limpeza adicional durante a tua estadia. Serviço disponível das 10h às 16h.</p>
+    <select class="form-input" style="height:44px;">
+      <option>Hoje</option><option>Amanhã</option><option>Depois de amanhã</option>
+    </select>
+    <select class="form-input" style="height:44px;margin-top:0.5rem;">
+      <option>10:00</option><option>12:00</option><option>14:00</option>
+    </select>
+    <input class="form-input" placeholder="Observações (opcional)" style="margin-top:0.5rem;"/>
+    <button class="form-btn" onclick="pedidoEnviado('modal-limpeza')">Enviar pedido</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-bicicletas" onclick="closeModal('modal-bicicletas')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🚲 Aluguer de Bicicletas</div>
+    <div class="card" style="margin-bottom:0.75rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:500;">Bicicleta de montanha</span><span class="chip">€12/dia</span></div>
+      <div style="font-size:0.8rem;color:var(--text-light);margin-top:4px;">21 velocidades · Capacete incluído</div>
+    </div>
+    <div class="card" style="margin-bottom:0.75rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:500;">Bicicleta de estrada</span><span class="chip">€10/dia</span></div>
+      <div style="font-size:0.8rem;color:var(--text-light);margin-top:4px;">Ideal para ciclovia do rio Cávado</div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:500;">E-Bike elétrica</span><span class="chip">€20/dia</span></div>
+      <div style="font-size:0.8rem;color:var(--text-light);margin-top:4px;">Bateria 80km · Carregamento incluído</div>
+    </div>
+    <button class="form-btn" style="margin-top:1rem;" onclick="pedidoEnviado('modal-bicicletas')">Reservar via WhatsApp</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-churrasco" onclick="closeModal('modal-churrasco')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🔥 Churrasqueira</div>
+    <div style="display:flex;flex-direction:column;gap:0.75rem;">
+      <div class="card"><strong style="font-size:0.85rem;color:var(--forest);">1. Preparação</strong><p style="font-size:0.82rem;color:var(--text-mid);margin-top:4px;line-height:1.5;">Carvão e acendalha disponíveis no armário exterior. Usar sempre no local designado.</p></div>
+      <div class="card"><strong style="font-size:0.85rem;color:var(--forest);">2. Utilização</strong><p style="font-size:0.82rem;color:var(--text-mid);margin-top:4px;line-height:1.5;">Grelha dobrável na prateleira inferior. Pinça e espátula no gancho à direita.</p></div>
+      <div class="card"><strong style="font-size:0.85rem;color:var(--forest);">3. Limpeza</strong><p style="font-size:0.82rem;color:var(--text-mid);margin-top:4px;line-height:1.5;">Aguardar arrefecimento total. Cinzas no balde metálico. Grelha limpar com escova própria.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-cozinha" onclick="closeModal('modal-cozinha')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🍳 Cozinha</div>
+    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;">
+      <span class="chip">Fogão a gás</span><span class="chip">Forno elétrico</span><span class="chip">Micro-ondas</span><span class="chip">Frigorífico</span><span class="chip">Máq. café</span><span class="chip">Torradeira</span><span class="chip">Liquidificador</span><span class="chip">Máq. loiça</span>
+    </div>
+    <div class="card"><strong style="font-size:0.85rem;color:var(--forest);">Máquina de café</strong><p style="font-size:0.82rem;color:var(--text-mid);margin-top:4px;line-height:1.5;">Cápsulas Nespresso no armário superior esquerdo. Compatível com marcas genéricas.</p></div>
+    <div class="card" style="margin-top:0.5rem;"><strong style="font-size:0.85rem;color:var(--forest);">Detergentes e limpeza</strong><p style="font-size:0.82rem;color:var(--text-mid);margin-top:4px;line-height:1.5;">Armário debaixo do lava-loiça. Pastilhas para máquina de loiça incluídas.</p></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-farmacia" onclick="closeModal('modal-farmacia')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title">💊 Farmácias de Serviço</div>
+    <div class="card" style="margin-bottom:0.75rem;">
+      <div style="display:flex;justify-content:space-between;"><span style="font-weight:500;font-size:0.9rem;">Farmácia Gerês</span><span class="chip">Aberta</span></div>
+      <div style="font-size:0.8rem;color:var(--text-light);margin-top:4px;">Rua Central, 12 · Gerês</div>
+      <a href="tel:+351253391234" style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:0.82rem;color:var(--forest);font-weight:500;text-decoration:none;">📞 253 391 234</a>
+    </div>
+    <div class="card">
+      <div style="font-weight:500;font-size:0.9rem;">Farmácia Caldas do Gerês</div>
+      <div style="font-size:0.8rem;color:var(--text-light);margin-top:4px;">Av. Manuel Francisco Costa · Caldas</div>
+      <a href="tel:+351253391500" style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:0.82rem;color:var(--forest);font-weight:500;text-decoration:none;">📞 253 391 500</a>
+    </div>
+    <p style="font-size:0.78rem;color:var(--text-light);margin-top:1rem;">Serviços de urgência rotativo. Verifique sempre o turno atual.</p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-newsletter" onclick="closeModal('modal-newsletter')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title">✉️ Newsletter</div>
+    <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.5;">Recebe promoções exclusivas, datas disponíveis e novidades da Casa do Gerês diretamente no teu email.</p>
+    <input class="form-input" type="text" placeholder="O teu nome" id="nl-nome2"/>
+    <input class="form-input" type="email" placeholder="O teu email" id="nl-email2" style="margin-top:0.5rem;"/>
+    <label style="display:flex;align-items:flex-start;gap:8px;margin:0.75rem 0;cursor:pointer;"><input type="checkbox" style="margin-top:3px;accent-color:var(--forest);"/><span style="font-size:0.78rem;color:var(--text-light);line-height:1.4;">Aceito receber comunicações de marketing da Casa do Gerês. Pode cancelar a qualquer momento.</span></label>
+    <button class="form-btn" onclick="pedidoEnviado('modal-newsletter')">Subscrever</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-feedback" onclick="closeModal('modal-feedback')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⭐ Feedback</div>
+    <p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:0.5rem;">A tua opinião ajuda-nos a melhorar.</p>
+    <div class="feedback-stars" id="modal-stars">
+      <button class="star-btn" onclick="rateStar(1,'modal')">⭐</button>
+      <button class="star-btn" onclick="rateStar(2,'modal')">⭐</button>
+      <button class="star-btn" onclick="rateStar(3,'modal')">⭐</button>
+      <button class="star-btn" onclick="rateStar(4,'modal')">⭐</button>
+      <button class="star-btn" onclick="rateStar(5,'modal')">⭐</button>
+    </div>
+    <textarea class="form-input" rows="4" placeholder="Conta-nos a tua experiência..."></textarea>
+    <input class="form-input" type="email" placeholder="Email (opcional, para resposta)"/>
+    <button class="form-btn" onclick="pedidoEnviado('modal-feedback')">Enviar feedback</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <script>
-(function(){
-  const ICONS = {
-    0:'☀️',1:'🌤️',2:'⛅',3:'☁️',
-    45:'🌫️',48:'🌫️',
-    51:'🌦️',53:'🌦️',55:'🌧️',
-    61:'🌧️',63:'🌧️',65:'🌧️',
-    71:'❄️',73:'❄️',75:'❄️',
-    80:'🌦️',81:'🌧️',82:'⛈️',
-    95:'⛈️',96:'⛈️',99:'⛈️'
-  };
-  const DESC = {
-    0:'Céu limpo',1:'Maioritariamente limpo',2:'Parcialmente nublado',3:'Nublado',
-    45:'Nevoeiro',48:'Nevoeiro glaciar',
-    51:'Chuvisco leve',53:'Chuvisco',55:'Chuvisco intenso',
-    61:'Chuva leve',63:'Chuva',65:'Chuva intensa',
-    71:'Neve leve',73:'Neve',75:'Neve intensa',
-    80:'Aguaceiros',81:'Aguaceiros',82:'Aguaceiros intensos',
-    95:'Trovoada',96:'Trovoada c/ saraiva',99:'Trovoada intensa'
-  };
-  const DAYS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+function goToApp(){
+  document.getElementById('splash').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('bottom-nav').style.display='flex';
+  loadWeather();
+}
 
-  (async () => {
-    const lat = 41.7258, lon = -8.1583;
-    const city = 'Gerês';
+function switchPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active','page-animate'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.bnav-item').forEach(t=>t.classList.remove('active'));
+  const page=document.getElementById('page-'+name);
+  page.classList.add('active','page-animate');
+  document.querySelectorAll('[onclick*="switchPage(\''+name+'\')"]').forEach(el=>el.classList.add('active'));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 
-    const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode,windspeed_10m,relative_humidity_2m&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=7`);
-    const d = await r.json();
-    const c = d.current;
+function showModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
 
-    document.getElementById('yw-temp').textContent = Math.round(c.temperature_2m) + '°';
-    document.getElementById('yw-loc').textContent = city;
-    document.getElementById('yw-icon').textContent = ICONS[c.weathercode] || '🌡️';
-    document.getElementById('yw-desc').textContent = DESC[c.weathercode] || '';
-    document.getElementById('yw-wind').textContent = Math.round(c.windspeed_10m);
-    document.getElementById('yw-hum').textContent = c.relative_humidity_2m;
-    document.getElementById('yw-minmax').textContent =
-      Math.round(d.daily.temperature_2m_max[0]) + '° / ' + Math.round(d.daily.temperature_2m_min[0]) + '°';
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
 
-    let html = '';
-    for(let i = 0; i < 7; i++){
-      const date = new Date(d.daily.time[i]);
-      const label = i === 0 ? 'Hoje' : DAYS[date.getDay()];
-      html += `<div class="yw-fday">
-        <div class="yw-fd-label">${label}</div>
-        <div class="yw-fd-icon">${ICONS[d.daily.weathercode[i]] || '🌡️'}</div>
-        <div class="yw-fd-max">${Math.round(d.daily.temperature_2m_max[i])}°</div>
-        <div class="yw-fd-min">${Math.round(d.daily.temperature_2m_min[i])}°</div>
-      </div>`;
+function copyWifi(e){e.stopPropagation();copyText('natureza2024');}
+function copyText(txt){
+  navigator.clipboard.writeText(txt).then(()=>showToast('✓ Copiado!')).catch(()=>showToast('Copiar: '+txt));
+}
+
+function pedidoEnviado(modal){
+  closeModal(modal);
+  showToast('✓ Pedido enviado com sucesso!');
+}
+
+function subscribeNewsletter(){
+  const email=document.getElementById('nl-email').value;
+  if(!email){showToast('Introduz o teu email');return;}
+  showToast('✓ Subscrito! Obrigado.');
+}
+
+function rateStar(n,ctx){
+  const container=ctx==='modal'?document.getElementById('modal-stars'):document.getElementById('quick-stars');
+  const stars=container.querySelectorAll('.star-btn');
+  stars.forEach((s,i)=>s.textContent=i<n?'⭐':'☆');
+  if(n>=4)showToast('Obrigado! Que bom 😊');
+  else if(n>=3)showToast('Obrigado pelo feedback');
+  else{showToast('Lamentamos. Fala connosco!');setTimeout(()=>showModal('modal-feedback'),800);}
+}
+
+async function loadWeather(){
+  try{
+    const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.72&longitude=-8.20&current=temperature_2m,relative_humidity_2m,wind_speed_10m,uv_index,weather_code&timezone=Europe/Lisbon&forecast_days=7&daily=weather_code,temperature_2m_max');
+    const d=await r.json();
+    const c=d.current;
+    const temp=Math.round(c.temperature_2m);
+    const icon=wIcon(c.weather_code);
+    const desc=wDesc(c.weather_code);
+    document.getElementById('weather-temp').textContent=temp+'°C';
+    document.getElementById('weather-icon').textContent=icon;
+    document.getElementById('weather-desc').textContent=desc;
+    document.getElementById('w-humidity').textContent=Math.round(c.relative_humidity_2m)+'%';
+    document.getElementById('w-wind').textContent=Math.round(c.wind_speed_10m);
+    document.getElementById('w-uv').textContent=Math.round(c.uv_index||0);
+    document.getElementById('hero-weather').textContent=icon+' '+temp+'°C · '+desc;
+    const days=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    const today=new Date().getDay();
+    const fc=document.getElementById('forecast-row');
+    fc.innerHTML='';
+    for(let i=0;i<7;i++){
+      const dow=days[(today+i)%7];
+      const ico=wIcon(d.daily.weather_code[i]);
+      const t=Math.round(d.daily.temperature_2m_max[i]);
+      fc.innerHTML+=`<div class="fc-day"><div class="fc-dow">${dow}</div><div class="fc-ico">${ico}</div><div class="fc-t">${t}°</div></div>`;
     }
-    document.getElementById('yw-forecast').innerHTML = html;
+  }catch(e){document.getElementById('hero-weather').textContent='🌤️ Gerês';}
+}
 
-  })();
-})();
+function wIcon(code){
+  if(code===0)return'☀️';if(code<=2)return'⛅';if(code===3)return'☁️';
+  if(code<=49)return'🌫️';if(code<=59)return'🌦️';if(code<=69)return'🌧️';
+  if(code<=79)return'❄️';if(code<=84)return'🌧️';if(code<=99)return'⛈️';
+  return'🌤️';
+}
+function wDesc(code){
+  if(code===0)return'Céu limpo';if(code<=2)return'Parcialmente nublado';if(code===3)return'Nublado';
+  if(code<=49)return'Nevoeiro';if(code<=59)return'Chuviscos';if(code<=69)return'Chuva';
+  if(code<=79)return'Neve';if(code<=84)return'Aguaceiros';if(code<=99)return'Trovoada';
+  return'Variável';
+}
 </script>
+</body>
+</html>
