@@ -660,9 +660,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 ═══════════════════════════════════════════════════════ */
 const GUESTS = {
   'admin':       { pass: 'geres2026', checkout: '2099-12-31' },
-  'hospede2024': { pass: 'geres2024', checkout: '2025-12-31' },
-  'familia':     { pass: 'natureza',  checkout: '2025-12-31' },
-  'casa':        { pass: 'yapp',      checkout: '2025-12-31' }
+  'hospede2024': { pass: 'geres2024', checkout: '2026-12-31' },
+  'familia':     { pass: 'natureza',  checkout: '2026-12-31' },
+  'casa':        { pass: 'yapp',      checkout: '2026-12-31' }
 };
 const SESSION_KEY = 'yapp_cdg_session';
 const LANG_KEY    = 'yapp_cdg_lang';
@@ -676,7 +676,7 @@ const T = {
   de:{ nav_casa:'Zuhause',nav_servicos:'Dienste',nav_meteo:'Wetter',nav_descobrir:'Entdecken',nav_contacto:'Kontakt',install_title:'App installieren',install_sub:'Direktzugriff auf Ihrem Handy',install_btn:'Installieren',qr_title:'QR-Code scannen',qr_sub:'Halten Sie die Kamera auf den QR-Code am Eingang.',qr_scanning:'Kamera wird gestartet...',qr_close:'Kamera schließen',login_error:'Falscher Benutzername oder Code.',copy_ok:'Passwort kopiert',pedido_ok:'Anfrage gesendet',nl_ok:'Abonniert. Danke!',nl_err:'Bitte Email eingeben',rate_hi:'Danke für die Bewertung!',rate_lo:'Danke für Ihr Feedback' }
 };
 let lang = 'pt';
-function tr(k){ return (T[lang]&&T[lang][k])||T.pt[k]||k; }
+function tr(k){ try{ return (T[lang]&&T[lang][k])||T.pt[k]||k; }catch{ return k; } }
 
 function setLang(l){
   lang=l; localStorage.setItem(LANG_KEY,l);
@@ -690,37 +690,60 @@ function setLang(l){
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===l));
 }
 
+function setLang(l){
+  try{
+    lang=l; localStorage.setItem(LANG_KEY,l);
+    document.querySelectorAll('[data-i18n]').forEach(el=>{ try{el.textContent=tr(el.dataset.i18n);}catch{} });
+    const navKeys=['casa','servicos','meteo','descobrir','contacto'];
+    document.querySelectorAll('#bottom-nav .bnav-item').forEach((btn,i)=>{
+      try{ btn.childNodes.forEach(n=>{ if(n.nodeType===3&&n.textContent.trim())n.textContent=tr('nav_'+navKeys[i]); }); }catch{}
+    });
+    document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===l));
+  }catch(e){ console.warn('setLang error',e); }
+}
+
 function detectLang(){
-  const s=localStorage.getItem(LANG_KEY); if(s) return s;
-  const n=(navigator.language||'pt').substring(0,2).toLowerCase();
-  return ['pt','en','es','fr','de'].includes(n)?n:'pt';
+  try{
+    const s=localStorage.getItem(LANG_KEY); if(s) return s;
+    const n=(navigator.language||'pt').substring(0,2).toLowerCase();
+    return ['pt','en','es','fr','de'].includes(n)?n:'pt';
+  }catch{ return 'pt'; }
 }
 
 /* ═══ SESSÃO ═══════════════════════════════════════════ */
 function getSession(){ try{return JSON.parse(localStorage.getItem(SESSION_KEY));}catch{return null;} }
-function saveSession(u,co){ localStorage.setItem(SESSION_KEY,JSON.stringify({user:u,checkout:co,ts:Date.now()})); }
+function saveSession(u,co){ try{localStorage.setItem(SESSION_KEY,JSON.stringify({user:u,checkout:co,ts:Date.now()}));}catch{} }
 function isExpired(co){ return new Date()>new Date(co+'T23:59:59'); }
 
 window.addEventListener('DOMContentLoaded',()=>{
-  lang=detectLang(); setLang(lang);
-  const s=getSession();
-  if(s){ isExpired(s.checkout)?showExpired():(showSplash(),loadWeather()); }
-  document.getElementById('login-pass').addEventListener('keydown',e=>{ if(e.key==='Enter')doLogin(); });
-  document.getElementById('login-user').addEventListener('keydown',e=>{ if(e.key==='Enter')document.getElementById('login-pass').focus(); });
-  initPWA();
+  try{ lang=detectLang(); setLang(lang); }catch(e){ console.warn(e); }
+  try{
+    const s=getSession();
+    if(s){ isExpired(s.checkout)?showExpired():(showSplash(),loadWeather()); }
+  }catch(e){ console.warn(e); }
+  try{ document.getElementById('login-pass').addEventListener('keydown',e=>{ if(e.key==='Enter')doLogin(); }); }catch{}
+  try{ document.getElementById('login-user').addEventListener('keydown',e=>{ if(e.key==='Enter')document.getElementById('login-pass').focus(); }); }catch{}
+  try{ initPWA(); }catch(e){ console.warn(e); }
 });
 
 /* ═══ LOGIN ════════════════════════════════════════════ */
 function doLogin(){
-  const user=document.getElementById('login-user').value.trim().toLowerCase();
-  const pass=document.getElementById('login-pass').value;
-  const err=document.getElementById('login-error');
-  const g=GUESTS[user];
-  if(!g||g.pass!==pass){ err.textContent=tr('login_error'); document.getElementById('login-pass').value=''; return; }
-  saveSession(user,g.checkout);
-  if(isExpired(g.checkout)){ showExpired(); return; }
-  document.getElementById('login-screen').classList.add('hidden');
-  showSplash(); loadWeather();
+  try{
+    const user=document.getElementById('login-user').value.trim().toLowerCase();
+    const pass=document.getElementById('login-pass').value.trim();
+    const err=document.getElementById('login-error');
+    const g=GUESTS[user];
+    if(!g||g.pass!==pass){
+      err.textContent=tr('login_error');
+      document.getElementById('login-pass').value='';
+      return;
+    }
+    saveSession(user,g.checkout);
+    if(isExpired(g.checkout)){ showExpired(); return; }
+    document.getElementById('login-screen').classList.add('hidden');
+    showSplash();
+    loadWeather();
+  }catch(e){ console.error('doLogin error',e); }
 }
 function showSplash(){ document.getElementById('login-screen').classList.add('hidden'); document.getElementById('splash').style.display='block'; setTheme('#0f1908'); }
 function showExpired(){ ['login-screen','splash','app','bottom-nav'].forEach(id=>{const el=document.getElementById(id);if(el){el.style.display='none';}}); document.getElementById('expired-screen').classList.add('show'); setTheme('#0f1908'); }
