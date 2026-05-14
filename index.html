@@ -72,15 +72,38 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 /* APP */
 #app{display:none;padding-bottom:70px;}
 
-/* PAGES */
-.page{display:none;will-change:opacity,transform;}
-.page.active{display:block;}
-.page.anim-in{animation:pg-in 0.38s cubic-bezier(0.22,1,0.36,1) both;}
-.page.anim-left{animation:pg-left 0.38s cubic-bezier(0.22,1,0.36,1) both;}
-.page.anim-right{animation:pg-right 0.38s cubic-bezier(0.22,1,0.36,1) both;}
-@keyframes pg-in{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-@keyframes pg-left{from{opacity:0;transform:translateX(28px);}to{opacity:1;transform:translateX(0);}}
-@keyframes pg-right{from{opacity:0;transform:translateX(-28px);}to{opacity:1;transform:translateX(0);}}
+/* PAGES — transform-based transitions (GPU, no layout recalc) */
+#pages-container{position:relative;overflow:hidden;}
+.page{
+  display:block;
+  position:absolute;top:0;left:0;width:100%;
+  opacity:0;
+  pointer-events:none;
+  transform:translateX(100%);
+  transition:transform 0.42s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+  will-change:transform,opacity;
+  min-height:calc(100svh - 130px);
+}
+.page.active{
+  position:relative;
+  opacity:1;
+  pointer-events:all;
+  transform:translateX(0);
+}
+.page.slide-out-left{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+  transform:translateX(-100%);
+  transition:transform 0.42s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+}
+.page.slide-out-right{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+  transform:translateX(100%);
+  transition:transform 0.42s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+}
 .section{padding:1.6rem 1.2rem 1.2rem;}
 .section-tag{font-size:10px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;color:var(--sage);margin-bottom:5px;}
 .section-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--forest);line-height:1.15;}
@@ -298,10 +321,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
   <div class="hero-top">
     <span class="logo-name">Casa do Gerês</span>
     <div class="hero-pills">
-      <button class="nav-pill" onclick="showModal('m-qr')">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>
-        QR
-      </button>
       <a class="nav-pill" href="https://www.google.com/maps/dir/?api=1&destination=41.7214,-8.1583" target="_blank">
         <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke-linecap="round"/><circle cx="12" cy="9" r="2.5"/></svg>
         Como chegar
@@ -324,6 +343,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 
 <!-- APP -->
 <div id="app">
+<div id="pages-container">
 
   <!-- CASA -->
   <div id="page-casa" class="page active">
@@ -526,13 +546,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         <div id="meteo-forecast-wrap">
           <div id="fc-row"></div>
         </div>
-        <div id="meteo-sunset-row" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-sm);padding:0.7rem 1rem;margin-bottom:0.5rem;">
-          <div style="font-size:1.4rem;">🌅</div>
-          <div>
-            <div style="font-size:10px;opacity:0.65;text-transform:uppercase;letter-spacing:0.06em;">Pôr do sol hoje</div>
-            <div style="font-size:1rem;font-weight:600;" id="sunset-time">A calcular...</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.5rem;">
+          <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-sm);padding:0.75rem 1rem;">
+            <div style="font-size:1.3rem;">🌄</div>
+            <div>
+              <div style="font-size:9px;opacity:0.6;text-transform:uppercase;letter-spacing:0.06em;">Nascer do sol</div>
+              <div style="font-size:1rem;font-weight:600;" id="sunrise-time">--h--</div>
+            </div>
           </div>
-          <div style="margin-left:auto;font-size:0.72rem;opacity:0.7;text-align:right;" id="sunset-countdown"></div>
+          <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-sm);padding:0.75rem 1rem;">
+            <div style="font-size:1.3rem;">🌅</div>
+            <div>
+              <div style="font-size:9px;opacity:0.6;text-transform:uppercase;letter-spacing:0.06em;">Pôr do sol</div>
+              <div style="font-size:1rem;font-weight:600;" id="sunset-time">--h--</div>
+            </div>
+          </div>
         </div>
         <div id="meteo-source">Open-Meteo · Gerês 41.72°N 8.20°W</div>
       </div>
@@ -687,6 +715,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
     </div>
   </div>
 </div>
+
+</div><!-- /pages-container -->
 
 <!-- BOTTOM NAV -->
 <div id="bottom-nav" style="display:none;">
@@ -1068,33 +1098,33 @@ function toggleCheck(i) {
 }
 function resetChecklist() { checkDone = []; renderChecklist(); }
 
-/* ═══ PÔR DO SOL ════════════════════════════════ */
+/* ═══ NASCER E PÔR DO SOL ═══════════════════════ */
 function calcSunset() {
   var lat = 41.72 * Math.PI / 180;
   var now = new Date();
   var dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
   var decl = 0.4093 * Math.sin(2 * Math.PI / 365 * (dayOfYear - 81));
-  var timeOffset = 8.20 / 15;
+  var lonOffset = 8.20 / 15;
+  var isDST = now.getTimezoneOffset() < -60;
+  var tzOffset = isDST ? 2 : 1;
   var cosH = (Math.sin(-0.0145) - Math.sin(lat) * Math.sin(decl)) / (Math.cos(lat) * Math.cos(decl));
   if (cosH < -1 || cosH > 1) return;
   var H = Math.acos(cosH) * 180 / Math.PI;
-  var sunsetUTC = (360 - H) / 15 + 12 + timeOffset;
-  var isDST = now.getTimezoneOffset() < -60;
-  var local = sunsetUTC + (isDST ? 2 : 1);
-  if (local >= 24) local -= 24;
-  var h = Math.floor(local);
-  var m = Math.floor((local - h) * 60);
-  var el = document.getElementById('sunset-time');
-  if (el) el.textContent = h + 'h' + (m < 10 ? '0' : '') + m;
-  var sunset = new Date(); sunset.setHours(h, m, 0, 0);
-  var diff = sunset - now;
-  var cd = document.getElementById('sunset-countdown');
-  if (cd) {
-    if (diff > 0) {
-      var hL = Math.floor(diff / 3600000), mL = Math.floor((diff % 3600000) / 60000);
-      cd.textContent = 'Faltam ' + (hL > 0 ? hL + 'h ' : '') + mL + 'min · Perfeito para fotografias';
-    } else { cd.textContent = 'Já ocorreu hoje'; }
+  // Noon UTC adjusted for longitude
+  var noonUTC = 12 + lonOffset;
+  // Sunrise and sunset in local time
+  var sunriseLocal = noonUTC - H / 15 + tzOffset;
+  var sunsetLocal  = noonUTC + H / 15 + tzOffset;
+  function fmt(t) {
+    if (t >= 24) t -= 24;
+    var h = Math.floor(t), m = Math.floor((t - h) * 60);
+    return h + 'h' + (m < 10 ? '0' : '') + m;
   }
+  var srEl = document.getElementById('sunrise-time');
+  var ssEl = document.getElementById('sunset-time');
+  if (srEl) srEl.textContent = fmt(sunriseLocal);
+  if (ssEl) ssEl.textContent = fmt(sunsetLocal);
+  // keep countdown hidden (no element anymore)
 }
 
 /* ═══ CARTÃO DESPEDIDA ══════════════════════════ */
