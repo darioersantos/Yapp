@@ -57,9 +57,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 .hero-label{font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--sage-light);margin-bottom:0.8rem;animation:fade-up 0.7s 0.3s ease both;}
 .hero-title{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:600;line-height:1.05;margin-bottom:0.6rem;animation:fade-up 0.7s 0.45s ease both;}
 .hero-sub{font-size:0.9rem;font-weight:300;opacity:0.8;line-height:1.55;margin-bottom:2rem;animation:fade-up 0.7s 0.55s ease both;}
-.hero-actions{display:flex;align-items:center;gap:0.75rem;animation:fade-up 0.7s 0.7s ease both;}
+.hero-actions{display:flex;align-items:center;gap:0.6rem;animation:fade-up 0.7s 0.7s ease both;max-width:100%;overflow:hidden;}
 .btn-primary{background:#fff;color:var(--forest);border:none;border-radius:30px;padding:16px 40px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:500;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.25);}
-.weather-pill{background:rgba(255,255,255,0.12);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);border-radius:30px;padding:10px 16px;font-size:0.82rem;color:#fff;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.weather-pill{background:rgba(255,255,255,0.12);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);border-radius:30px;padding:8px 12px;font-size:0.75rem;color:#fff;display:flex;align-items:center;gap:5px;max-width:48vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .weather-pill svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;flex-shrink:0;}
 @keyframes fade-up{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
 
@@ -122,7 +122,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 
 /* SERVICES */
 .services-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;}
-.svc-card{background:#fff;border:1px solid var(--card-border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:transform 0.18s;}
+.svc-card{background:#fff;border:1px solid var(--card-border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:transform 0.18s;}.svc-card-full{grid-column:1/-1;display:block;}
 .svc-card:active{transform:scale(0.97);}
 .svc-card img{width:100%;height:90px;object-fit:cover;display:block;}
 .svc-card-body{padding:0.75rem;}
@@ -309,45 +309,50 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         <p class="section-sub">Bem-vindo. Tudo o que precisas para uma estadia inesquecível.</p>
       </div>
 
-      <!-- Grid de divisões -->
+      <!-- Grid de divisões - Info úteis largura total -->
+      <div class="svc-card svc-card-full" onclick="showModal('m-info')" style="margin-bottom:0.6rem;">
+        <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&auto=format&fit=crop&q=75" alt="Info" style="height:110px;"/>
+        <div class="svc-card-body"><div class="svc-card-label">Informações úteis</div><div class="svc-card-sub">Bem-vindo à Casa do Gerês — leia antes de explorar</div></div>
+      </div>
+      <!-- 2 colunas -->
       <div class="services-grid" style="margin-bottom:0.75rem;">
-        <div class="svc-card" onclick="showModal('m-info')">
-          <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400&auto=format&fit=crop&q=75" alt="Info"/>
-          <div class="svc-card-body"><div class="svc-card-label">Informações úteis</div><div class="svc-card-sub">Bem-vindo à casa</div></div>
-        </div>
-        <div class="svc-card" onclick="showModal('m-piscina')">
-          <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400&auto=format&fit=crop&q=75" alt="Piscina"/>
-          <div class="svc-card-body"><div class="svc-card-label">Piscina</div><div class="svc-card-sub">Regras & horários</div></div>
-        </div>
         <div class="svc-card" onclick="showModal('m-quartos')">
           <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&auto=format&fit=crop&q=75" alt="Quartos"/>
           <div class="svc-card-body"><div class="svc-card-label">Quartos</div><div class="svc-card-sub">3 quartos</div></div>
         </div>
         <div class="svc-card" onclick="showModal('m-sala')">
           <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&auto=format&fit=crop&q=75" alt="Sala"/>
-          <div class="svc-card-body"><div class="svc-card-label">Sala</div><div class="svc-card-sub">TV & lareira</div></div>
+          <div class="svc-card-body"><div class="svc-card-label">Sala de estar</div><div class="svc-card-sub">TV & lareira</div></div>
         </div>
         <div class="svc-card" onclick="showModal('m-cozinha')">
           <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=400&auto=format&fit=crop&q=75" alt="Cozinha"/>
           <div class="svc-card-body"><div class="svc-card-label">Cozinha</div><div class="svc-card-sub">Utensílios & eletros</div></div>
         </div>
-        <div class="svc-card" onclick="showModal('m-churrasco')">
-          <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400&auto=format&fit=crop&q=75" alt="Churrasqueira"/>
-          <div class="svc-card-body"><div class="svc-card-label">Churrasqueira</div><div class="svc-card-sub">Como utilizar</div></div>
-        </div>
         <div class="svc-card" onclick="showModal('m-wc')">
           <img src="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=400&auto=format&fit=crop&q=75" alt="WC"/>
           <div class="svc-card-body"><div class="svc-card-label">WC</div><div class="svc-card-sub">Casa de banho</div></div>
+        </div>
+        <div class="svc-card" onclick="showModal('m-piscina')">
+          <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=400&auto=format&fit=crop&q=75" alt="Piscina"/>
+          <div class="svc-card-body"><div class="svc-card-label">Piscina</div><div class="svc-card-sub">Regras & horários</div></div>
+        </div>
+        <div class="svc-card" onclick="showModal('m-churrasco')">
+          <img src="churrasco-real.jpg" alt="Churrasqueira"/>
+          <div class="svc-card-body"><div class="svc-card-label">Churrasqueira</div><div class="svc-card-sub">Como utilizar</div></div>
+        </div>
+        <div class="svc-card svc-card-full" onclick="showModal('m-exterior')" style="grid-column:1/-1;">
+          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop&q=75" alt="Espaço exterior" style="height:110px;"/>
+          <div class="svc-card-body"><div class="svc-card-label">Espaço exterior</div><div class="svc-card-sub">Jardim, terraço e vistas</div></div>
         </div>
       </div>
 
       <!-- Wi-Fi -->
       <div class="wifi-hero" onclick="showModal('m-wifi')">
-        <div class="wifi-net-label">Rede Wi-Fi · toca para ver</div>
+        <div class="wifi-net-label">Rede Wi-Fi · toca para copiar</div>
         <div class="wifi-ssid">CasaGeres_5G</div>
         <div class="wifi-row">
-          <span class="wifi-pass">natureza2024</span>
-          <button class="copy-btn" onclick="copyText(event,'natureza2024')">Copiar</button>
+          <span class="wifi-pass">natureza2026</span>
+          <button class="copy-btn" onclick="copyText(event,'natureza2026')">Copiar</button>
         </div>
       </div>
 
@@ -390,21 +395,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         </div>
       </div>
 
-      <!-- Feedback -->
-      <div class="card">
-        <div class="block-label">Como está a tua estadia?</div>
-        <div class="star-row" id="quick-stars">
-          <button class="star-btn" onclick="rateStar(1,'quick')">★</button>
-          <button class="star-btn" onclick="rateStar(2,'quick')">★</button>
-          <button class="star-btn" onclick="rateStar(3,'quick')">★</button>
-          <button class="star-btn" onclick="rateStar(4,'quick')">★</button>
-          <button class="star-btn" onclick="rateStar(5,'quick')">★</button>
-        </div>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-          <button onclick="showModal('m-feedback')" style="background:var(--forest);color:#fff;border:none;border-radius:30px;padding:8px 18px;font-size:0.78rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;">Deixar feedback</button>
-          <a href="#" style="display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--card-border);border-radius:30px;padding:8px 16px;font-size:0.78rem;font-weight:500;color:var(--text-dark);text-decoration:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Google Reviews</a>
-        </div>
-      </div>
     </div>
   </div>
   <div id="page-servicos" class="page">
@@ -418,11 +408,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
       <!-- Serviços principais -->
       <div class="services-grid" style="margin-bottom:0.75rem;">
         <div class="svc-card" onclick="showModal('m-limpeza')">
-          <img src="https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&auto=format&fit=crop&q=75" alt="Limpeza"/>
+          <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&auto=format&fit=crop&q=75" alt="Limpeza"/>
           <div class="svc-card-body"><div class="svc-card-label">Limpeza extra</div><div class="svc-card-sub">Pedido rápido</div></div>
         </div>
         <div class="svc-card" onclick="showModal('m-bicicletas')">
-          <img src="https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=400&auto=format&fit=crop&q=75" alt="Bicicletas"/>
+          <img src="https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=400&auto=format&fit=crop&q=75" alt="Bicicletas"/>
           <div class="svc-card-body"><div class="svc-card-label">Aluguer de bicicletas</div><div class="svc-card-sub">A partir de €10/dia</div></div>
         </div>
         <div class="svc-card" onclick="showModal('m-checkout')">
@@ -442,13 +432,26 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
           <div class="svc-card-body"><div class="svc-card-label">Caixa de fusíveis</div><div class="svc-card-sub">Se a luz cair</div></div>
         </div>
         <div class="svc-card" onclick="showModal('m-compras')">
-          <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&auto=format&fit=crop&q=75" alt="Compras"/>
+          <img src="https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=400&auto=format&fit=crop&q=75" alt="Compras"/>
           <div class="svc-card-body"><div class="svc-card-label">Compras locais</div><div class="svc-card-sub">Mercado, padaria...</div></div>
         </div>
         <div class="svc-card" onclick="showModal('m-transportes')">
           <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&auto=format&fit=crop&q=75" alt="Transportes"/>
           <div class="svc-card-body"><div class="svc-card-label">Transportes</div><div class="svc-card-sub">Autocarro & táxi</div></div>
         </div>
+      </div>
+
+      <!-- Livro de registos virtual -->
+      <div class="block-label">Livro de hóspedes</div>
+      <div class="card" style="margin-bottom:0.75rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+          <div>
+            <div style="font-size:0.88rem;font-weight:500;color:var(--text-dark);">Feedback dos hóspedes</div>
+            <div style="font-size:0.75rem;color:var(--text-light);margin-top:2px;">Registo de estadias anteriores</div>
+          </div>
+          <button onclick="showModal('m-guestbook')" style="background:var(--forest);color:#fff;border:none;border-radius:30px;padding:6px 14px;font-size:0.75rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;">Ver tudo</button>
+        </div>
+        <div id="guestbook-preview"></div>
       </div>
 
       <!-- Pôr do sol ao vivo -->
@@ -488,7 +491,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         <div id="meteo-main">
           <div id="meteo-emoji">🌤️</div>
           <div id="meteo-temp-big">--°</div>
-          <div id="meteo-cond" id="wcond">A carregar...</div>
+          <div id="meteo-cond">A carregar...</div>
         </div>
         <div id="meteo-stats-row">
           <div class="meteo-stat">
@@ -608,12 +611,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
       <div class="card" style="margin-bottom:0.6rem;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;"><span style="font-size:0.92rem;font-weight:500;">Farmácia Gerês</span><span class="chip" style="background:rgba(90,138,60,0.15);color:var(--forest);">Aberta</span></div>
         <div style="font-size:0.78rem;color:var(--text-light);">Rua Central, 12 · Gerês</div>
-        <a href="tel:+351253391234" style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:0.82rem;color:var(--forest);font-weight:500;text-decoration:none;">253 391 234</a>
+        <a href="https://www.google.com/maps/search/Farmácia+Gerês" target="_blank" style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:0.82rem;color:var(--forest);font-weight:500;text-decoration:none;">Ver no mapa →</a>
       </div>
       <div class="card" style="margin-bottom:1.2rem;">
         <div style="font-size:0.92rem;font-weight:500;margin-bottom:5px;">Farmácia Caldas do Gerês</div>
         <div style="font-size:0.78rem;color:var(--text-light);">Av. Manuel Francisco Costa · Caldas</div>
-        <a href="tel:+351253391500" style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:0.82rem;color:var(--forest);font-weight:500;text-decoration:none;">253 391 500</a>
+        <a href="https://www.google.com/maps/search/Farmácia+Caldas+do+Gerês" target="_blank" style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:0.82rem;color:var(--forest);font-weight:500;text-decoration:none;">Ver no mapa →</a>
       </div>
       <div class="block-label">Redes sociais</div>
       <div class="card" style="margin-bottom:0.75rem;">
@@ -623,19 +626,43 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
           <a href="#" class="social-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>Website</a>
         </div>
       </div>
-      <div class="block-label">Newsletter</div>
+      <!-- Avaliação da estadia -->
+      <div class="block-label">Como foi a sua estadia?</div>
       <div class="card" style="margin-bottom:0.75rem;">
-        <p style="font-size:0.82rem;color:var(--text-mid);margin-bottom:0.75rem;line-height:1.5;">Recebe promoções exclusivas e novidades da Casa do Gerês.</p>
+        <div class="star-row" id="quick-stars" style="justify-content:center;margin:0.5rem 0 1rem;">
+          <button class="star-btn active" onclick="rateStar(1,'quick')">★</button>
+          <button class="star-btn active" onclick="rateStar(2,'quick')">★</button>
+          <button class="star-btn active" onclick="rateStar(3,'quick')">★</button>
+          <button class="star-btn active" onclick="rateStar(4,'quick')">★</button>
+          <button class="star-btn active" onclick="rateStar(5,'quick')">★</button>
+        </div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <button onclick="showModal('m-feedback')" style="flex:1;background:var(--forest);color:#fff;border:none;border-radius:var(--radius-sm);padding:10px 18px;font-size:0.82rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;">Escrever feedback</button>
+          <a href="#" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#fff;border:1px solid var(--card-border);border-radius:var(--radius-sm);padding:10px 12px;font-size:0.8rem;font-weight:500;color:var(--text-dark);text-decoration:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Google Reviews</a>
+        </div>
+      </div>
+
+      <!-- Newsletter impactante -->
+      <div class="block-label">Newsletter</div>
+      <div style="border-radius:var(--radius);overflow:hidden;margin-bottom:0.75rem;position:relative;">
+        <img src="https://images.unsplash.com/photo-1486299267070-83823f5448dd?w=800&auto=format&fit=crop&q=75" alt="Ofertas" style="width:100%;height:140px;object-fit:cover;display:block;"/>
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(45,74,30,0.3),rgba(45,74,30,0.85));display:flex;flex-direction:column;justify-content:flex-end;padding:1.2rem;color:#fff;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;opacity:0.8;margin-bottom:3px;">Ofertas exclusivas</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;">Receba promoções da Casa do Gerês</div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:0.75rem;">
         <div class="form-stack">
           <input class="form-input" type="text" placeholder="O seu nome" id="nl-nome"/>
           <input class="form-input" type="email" placeholder="O seu email" id="nl-email"/>
-          <button class="form-btn" onclick="subscribeNewsletter()">Subscrever</button>
+          <button class="form-btn" onclick="subscribeNewsletter()">Subscrever newsletter</button>
         </div>
       </div>
-      <div class="yapp-footer">
+      <a href="https://yapp.pt" target="_blank" class="yapp-footer" style="display:block;text-decoration:none;">
+        <img src="yapp-logo.png" alt="YAPP" style="width:60px;height:60px;object-fit:contain;margin-bottom:6px;border-radius:12px;"/>
         <div class="yapp-footer-brand">YAPP · Guia do Hóspede</div>
         <div class="yapp-footer-sub">yapp.pt</div>
-      </div>
+      </a>
     </div>
   </div>
 </div>
@@ -650,17 +677,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 </div>
 
 <!-- MODALS -->
-<div class="modal-overlay" id="m-wifi" onclick="cm('m-wifi')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Wi-Fi</div><div class="wifi-hero" style="margin-bottom:0.6rem;"><div class="wifi-net-label">Rede principal · 5 GHz</div><div class="wifi-ssid">CasaGeres_5G</div><div class="wifi-row"><span class="wifi-pass">natureza2024</span><button class="copy-btn" onclick="copyText(event,'natureza2024')">Copiar</button></div></div><div class="wifi-hero" style="background:var(--forest-mid);"><div class="wifi-net-label">Rede secundária · 2.4 GHz</div><div class="wifi-ssid">CasaGeres_2G</div><div class="wifi-row"><span class="wifi-pass">natureza2024</span><button class="copy-btn" onclick="copyText(event,'natureza2024')">Copiar</button></div></div></div></div>
-<div class="modal-overlay" id="m-limpeza" onclick="cm('m-limpeza')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><img class="modal-img" src="https://images.unsplash.com/photo-1563453392212-326f5e854473?w=600&auto=format&fit=crop&q=75" alt="Limpeza"/><div class="modal-title">Limpeza extra</div><p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.5;">Serviço disponível das 10h às 16h. Pedido confirmado por WhatsApp.</p><div class="form-stack"><select class="form-input" style="height:46px;"><option>Hoje</option><option>Amanhã</option><option>Depois de amanhã</option></select><select class="form-input" style="height:46px;"><option>10:00</option><option>12:00</option><option>14:00</option></select><input class="form-input" placeholder="Observações (opcional)"/><button class="form-btn" onclick="pedidoOk('m-limpeza')">Enviar pedido</button></div></div></div>
-<div class="modal-overlay" id="m-bicicletas" onclick="cm('m-bicicletas')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><img class="modal-img" src="https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=600&auto=format&fit=crop&q=75" alt="Bicicletas"/><div class="modal-title">Aluguer de bicicletas</div><div class="card" style="margin-bottom:0.6rem;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.9rem;font-weight:500;">Bicicleta de montanha</span><span class="chip">€12/dia</span></div><div style="font-size:0.78rem;color:var(--text-light);margin-top:4px;">21 velocidades · Capacete incluído</div></div><div class="card" style="margin-bottom:0.6rem;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.9rem;font-weight:500;">Bicicleta de estrada</span><span class="chip">€10/dia</span></div><div style="font-size:0.78rem;color:var(--text-light);margin-top:4px;">Ciclovia do rio Cávado</div></div><div class="card" style="margin-bottom:1rem;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.9rem;font-weight:500;">E-Bike elétrica</span><span class="chip">€20/dia</span></div><div style="font-size:0.78rem;color:var(--text-light);margin-top:4px;">Bateria 80 km · Carregamento incluído</div></div><button class="form-btn" onclick="pedidoOk('m-bicicletas')">Reservar via WhatsApp</button></div></div>
-<div class="modal-overlay" id="m-churrasco" onclick="cm('m-churrasco')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><img class="modal-img" src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600&auto=format&fit=crop&q=75" alt="Churrasqueira"/><div class="modal-title">Churrasqueira</div><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">1. Preparação</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Carvão e acendalha no armário exterior. Utilizar no local designado no jardim.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">2. Utilização</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Grelha na prateleira inferior. Pinça e espátula no gancho à direita.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">3. Limpeza</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Aguardar arrefecimento. Cinzas no balde metálico. Grelha limpar com escova própria.</p></div></div></div></div>
+<div class="modal-overlay" id="m-wifi" onclick="cm('m-wifi')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Wi-Fi</div><div class="wifi-hero" style="margin-bottom:0.6rem;"><div class="wifi-net-label">Rede principal · 5 GHz</div><div class="wifi-ssid">CasaGeres_5G</div><div class="wifi-row"><span class="wifi-pass">natureza2026</span><button class="copy-btn" onclick="copyText(event,'natureza2026')">Copiar</button></div></div><div class="wifi-hero" style="background:var(--forest-mid);"><div class="wifi-net-label">Rede secundária · 2.4 GHz</div><div class="wifi-ssid">CasaGeres_2G</div><div class="wifi-row"><span class="wifi-pass">natureza2026</span><button class="copy-btn" onclick="copyText(event,'natureza2026')">Copiar</button></div></div></div></div>
+<div class="modal-overlay" id="m-limpeza" onclick="cm('m-limpeza')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><img class="modal-img" src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&auto=format&fit=crop&q=75" alt="Limpeza"/><div class="modal-title">Limpeza extra</div><p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.5;">Serviço disponível das 10h às 16h. Pedido confirmado por WhatsApp.</p><div class="form-stack"><select class="form-input" style="height:46px;"><option>Hoje</option><option>Amanhã</option><option>Depois de amanhã</option></select><select class="form-input" style="height:46px;"><option>10:00</option><option>12:00</option><option>14:00</option></select><input class="form-input" placeholder="Observações (opcional)"/><button class="form-btn" onclick="pedidoOk('m-limpeza')">Enviar pedido</button></div></div></div>
+<div class="modal-overlay" id="m-bicicletas" onclick="cm('m-bicicletas')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><img class="modal-img" src="https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=600&auto=format&fit=crop&q=75" alt="Bicicletas"/><div class="modal-title">Aluguer de bicicletas</div><div class="card" style="margin-bottom:0.6rem;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.9rem;font-weight:500;">Bicicleta de montanha</span><span class="chip">€12/dia</span></div><div style="font-size:0.78rem;color:var(--text-light);margin-top:4px;">21 velocidades · Capacete incluído</div></div><div class="card" style="margin-bottom:0.6rem;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.9rem;font-weight:500;">Bicicleta de estrada</span><span class="chip">€10/dia</span></div><div style="font-size:0.78rem;color:var(--text-light);margin-top:4px;">Ciclovia do rio Cávado</div></div><div class="card" style="margin-bottom:1rem;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.9rem;font-weight:500;">E-Bike elétrica</span><span class="chip">€20/dia</span></div><div style="font-size:0.78rem;color:var(--text-light);margin-top:4px;">Bateria 80 km · Carregamento incluído</div></div><button class="form-btn" onclick="pedidoOk('m-bicicletas')">Reservar via WhatsApp</button></div></div>
+<div class="modal-overlay" id="m-churrasco" onclick="cm('m-churrasco')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><img class="modal-img" src="churrasco-real.jpg" alt="Churrasqueira"/><div class="modal-title">Churrasqueira</div><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">1. Preparação</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Carvão e acendalha no armário exterior. Utilizar no local designado no jardim.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">2. Utilização</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Grelha na prateleira inferior. Pinça e espátula no gancho à direita.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">3. Limpeza</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Aguardar arrefecimento. Cinzas no balde metálico. Grelha limpar com escova própria.</p></div></div></div></div>
 <div class="modal-overlay" id="m-cozinha" onclick="cm('m-cozinha')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><img class="modal-img" src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&auto=format&fit=crop&q=75" alt="Cozinha"/><div class="modal-title">Cozinha</div><div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem;"><span class="chip">Fogão a gás</span><span class="chip">Forno elétrico</span><span class="chip">Micro-ondas</span><span class="chip">Frigorífico</span><span class="chip">Nespresso</span><span class="chip">Torradeira</span><span class="chip">Máq. loiça</span></div><div class="card" style="margin-bottom:0.6rem;"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Máquina de café</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Cápsulas Nespresso no armário superior esquerdo.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Detergentes</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Armário debaixo do lava-loiça. Pastilhas para máquina de loiça incluídas.</p></div></div></div>
-<div class="modal-overlay" id="m-feedback" onclick="cm('m-feedback')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">O teu feedback</div><p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:0.5rem;">A tua opinião ajuda-nos a melhorar.</p><div class="star-row" id="modal-stars"><button class="star-btn" onclick="rateStar(1,'modal')">★</button><button class="star-btn" onclick="rateStar(2,'modal')">★</button><button class="star-btn" onclick="rateStar(3,'modal')">★</button><button class="star-btn" onclick="rateStar(4,'modal')">★</button><button class="star-btn" onclick="rateStar(5,'modal')">★</button></div><div class="form-stack"><textarea class="form-input" rows="4" placeholder="Conta-nos a tua experiência..."></textarea><input class="form-input" type="email" placeholder="Email (opcional)"/><button class="form-btn" onclick="pedidoOk('m-feedback')">Enviar</button></div></div></div>
+<div class="modal-overlay" id="m-feedback" onclick="cm('m-feedback')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">O teu feedback</div><p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:0.5rem;">A tua opinião ajuda-nos a melhorar.</p><div class="star-row" id="modal-stars"><button class="star-btn" onclick="rateStar(1,'modal')">★</button><button class="star-btn" onclick="rateStar(2,'modal')">★</button><button class="star-btn" onclick="rateStar(3,'modal')">★</button><button class="star-btn" onclick="rateStar(4,'modal')">★</button><button class="star-btn" onclick="rateStar(5,'modal')">★</button></div><div class="form-stack"><textarea class="form-input" rows="4" placeholder="Conta-nos a tua experiência..."></textarea><input class="form-input" type="text" placeholder="Nome (opcional, ex: Família Silva)"/><button class="form-btn" onclick="submitFeedback()">Enviar</button></div></div></div>
 <div class="modal-overlay" id="m-qr" onclick="closeQR()"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Ler QR Code</div><p style="font-size:0.82rem;color:var(--text-light);margin-bottom:1rem;line-height:1.5;">Aponta a câmara para o QR code na entrada da Casa do Gerês.</p><div id="qr-video-wrap"><video id="qr-video" playsinline autoplay muted></video><div class="qr-frame"></div></div><div id="qr-result">A iniciar câmara...</div><button class="form-btn" style="margin-top:0.75rem;" onclick="closeQR()">Fechar câmara</button></div></div>
 
 <div class="modal-overlay" id="m-info" onclick="cm('m-info')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle" data-modal="m-info"></div><div class="modal-title">Informações úteis</div><p style="font-size:0.95rem;color:var(--text-mid);line-height:1.8;">Bem-vindo à Casa do Gerês.</p><p style="font-size:0.88rem;color:var(--text-mid);line-height:1.8;margin-top:0.75rem;">Queremos que a sua visita seja verdadeiramente inesquecível, envolvendo todos os seus sentidos. Na casa, na piscina, na churrasqueira e nesta beleza natural envolvente da serra do Gerês.</p><p style="font-size:0.88rem;color:var(--text-mid);line-height:1.8;margin-top:0.75rem;">Aqui encontrará uma ampla gama de serviços e experiências que temos para oferecer e outras informações importantes relacionadas com a nossa/sua casa, os produtos locais, as nossas gentes e nossa região.</p><p style="font-size:0.88rem;color:var(--text-mid);line-height:1.8;margin-top:0.75rem;">Em nome da família Pereira, desejamos-lhe uma excelente estadia!</p></div></div>
 
-<div class="modal-overlay" id="m-piscina" onclick="cm('m-piscina')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle" data-modal="m-piscina"></div><img class="modal-img" src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=600&auto=format&fit=crop&q=75" alt="Piscina"/><div class="modal-title">Piscina</div><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Horário</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Disponível das 09h às 21h. Fora deste horário, por favor respeitar o silêncio dos vizinhos.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Regras</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Duche obrigatório antes de entrar. Crianças devem ser sempre acompanhadas. Não mergulhar de cabeça.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Equipamento</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Espreguiçadeiras e guarda-sol disponíveis junto à piscina. Toalhas no armário do corredor.</p></div></div></div></div>
+<div class="modal-overlay" id="m-piscina" onclick="cm('m-piscina')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle" data-modal="m-piscina"></div><img class="modal-img" src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600&auto=format&fit=crop&q=75" alt="Piscina"/><div class="modal-title">Piscina</div><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Horário</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Disponível das 09h às 21h. Fora deste horário, por favor respeitar o silêncio dos vizinhos.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Regras</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Duche obrigatório antes de entrar. Crianças devem ser sempre acompanhadas. Não mergulhar de cabeça.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Equipamento</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Espreguiçadeiras e guarda-sol disponíveis junto à piscina. Toalhas no armário do corredor.</p></div></div></div></div>
 
 <div class="modal-overlay" id="m-quartos" onclick="cm('m-quartos')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle" data-modal="m-quartos"></div><img class="modal-img" src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&auto=format&fit=crop&q=75" alt="Quartos"/><div class="modal-title">Quartos</div><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Quarto 1 · Suite</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Cama king size, casa de banho privativa, varanda com vista para a serra.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Quarto 2</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Cama de casal, roupeiro embutido, janela com vista para o jardim.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Quarto 3</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Duas camas individuais, ideal para crianças ou jovens.</p></div></div></div></div>
 
@@ -682,6 +709,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 <div class="modal-overlay" id="m-transportes" onclick="cm('m-transportes')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Transportes</div><div class="form-stack"><a href="tel:+351912345678" class="contact-link" style="text-decoration:none;"><div class="contact-icon" style="background:rgba(230,126,34,0.12);font-size:1.4rem;width:46px;height:46px;display:flex;align-items:center;justify-content:center;">🚕</div><div><div class="contact-label">Táxi local · António</div><div class="contact-sub">+351 912 345 678 · Disponível 24h</div></div></a><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:8px;">🚌 Autocarro Gerês–Braga</div><div style="display:flex;flex-direction:column;gap:5px;"><div style="display:flex;justify-content:space-between;font-size:0.78rem;"><span style="color:var(--text-mid);">Partida Gerês</span><span style="font-weight:500;">07h30 · 12h00 · 17h45</span></div><div style="display:flex;justify-content:space-between;font-size:0.78rem;"><span style="color:var(--text-mid);">Chegada Braga</span><span style="font-weight:500;">~09h00 · ~13h30 · ~19h15</span></div><div style="font-size:0.72rem;color:var(--text-light);margin-top:4px;">Operador: TUB · Paragem 50m da entrada</div></div></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">🚌 Autocarro Braga–Gerês</div><div style="display:flex;flex-direction:column;gap:5px;"><div style="display:flex;justify-content:space-between;font-size:0.78rem;"><span style="color:var(--text-mid);">Partida Braga</span><span style="font-weight:500;">08h00 · 13h30 · 18h30</span></div></div></div></div></div></div>
 
 <div class="modal-overlay" id="m-primeiros-socorros" onclick="cm('m-primeiros-socorros')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Primeiros socorros</div><div class="form-stack"><div class="card" style="border-left:4px solid var(--danger);"><div style="font-size:0.82rem;font-weight:600;color:var(--danger);margin-bottom:5px;">Emergência · 112</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Para situações graves, ligue imediatamente para o 112. Mencione: <strong>Rua da Serra, Casa do Gerês, Gerês, Braga</strong>.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Kit de primeiros socorros</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Casa de banho da suite · Armário do espelho · Caixa vermelha.</p><p style="font-size:0.78rem;color:var(--text-light);margin-top:6px;">Contém: pensos, desinfetante, ligaduras, tesoura, pinças.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">DEA (Desfibrilhador)</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Centro de saúde de Terras de Bouro · 8 km · Tel: 253 352 100</p></div></div></div></div>
+
+<div class="modal-overlay" id="m-exterior" onclick="cm('m-exterior')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><img class="modal-img" src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&auto=format&fit=crop&q=75" alt="Espaço exterior"/><div class="modal-title">Espaço exterior</div><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Jardim & terraço</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Jardim com relva natural e terraço coberto com vista para a serra. Mesa e cadeiras para refeições ao ar livre.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Equipamento exterior</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Espreguiçadeiras, guarda-sol, mesa de jardim (6 lugares), churrasqueira e zona de lazer.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Notas</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Piscina encerra às 21h. Respeitar silêncio após as 22h. Portão do jardim trancar sempre que sair.</p></div></div></div></div>
+
+<div class="modal-overlay" id="m-guestbook" onclick="cm('m-guestbook')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Livro de hóspedes</div><p style="font-size:0.82rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.5;">Registo de feedback de estadias anteriores.</p><div id="guestbook-list" style="margin-bottom:1rem;"></div><button class="form-btn" onclick="showModal('m-feedback');cm('m-guestbook');">Adicionar o meu feedback</button></div></div>
 
 <div class="toast" id="toast"></div>
 
@@ -762,6 +793,7 @@ function goToApp() {
   calcSunset();
   checkFarewell();
   renderChecklist();
+  renderGuestbook();
 }
 
 /* ═══ NAVEGAÇÃO ═════════════════════════════════ */
@@ -780,6 +812,7 @@ function showModal(id) {
   document.body.style.position = 'fixed';
   document.body.style.width = '100%';
   if (id === 'm-qr') startQR();
+  if (id === 'm-guestbook') renderGuestbook();
   if (id === 'm-checkout') renderChecklist();
 }
 function cm(id) {
@@ -806,10 +839,45 @@ function subscribeNewsletter() {
   if (!email) { showToast('Introduz o teu email'); return; }
   showToast('Subscrito. Obrigado!');
 }
+var currentRating = 5;
 function rateStar(n, ctx) {
+  currentRating = n;
   var id = ctx === 'modal' ? 'modal-stars' : 'quick-stars';
   document.getElementById(id).querySelectorAll('.star-btn').forEach(function(b, i) { b.classList.toggle('active', i < n); });
   setTimeout(function() { showToast(n >= 4 ? 'Obrigado pela avaliação!' : 'Obrigado pelo feedback'); }, 100);
+}
+
+// Guestbook
+var GUESTBOOK_KEY = 'yapp_guestbook';
+function getGuestbook() { try { return JSON.parse(localStorage.getItem(GUESTBOOK_KEY)) || []; } catch(e) { return []; } }
+function saveGuestEntry(name, text, rating) {
+  var entries = getGuestbook();
+  var now = new Date();
+  entries.unshift({ name: name || 'Hóspede', text: text, rating: rating, date: now.toLocaleDateString('pt-PT') });
+  if (entries.length > 50) entries = entries.slice(0, 50);
+  localStorage.setItem(GUESTBOOK_KEY, JSON.stringify(entries));
+  renderGuestbook();
+}
+function renderGuestbook() {
+  var entries = getGuestbook();
+  var stars = function(n) { var s = ''; for(var i=0;i<5;i++) s += i<n ? '★' : '☆'; return s; };
+  var html = '';
+  if (entries.length === 0) { html = '<div style="font-size:0.82rem;color:var(--text-light);text-align:center;padding:1rem;">Ainda não há registos.</div>'; }
+  else {
+    entries.slice(0,3).forEach(function(e) {
+      html += '<div style="padding:0.75rem;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--card-border);margin-bottom:0.5rem;">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.8rem;font-weight:600;color:var(--text-dark);">' + e.name + '</span><span style="font-size:0.7rem;color:var(--text-light);">' + e.date + '</span></div>';
+      html += '<div style="color:var(--earth);font-size:0.8rem;margin:2px 0;">' + stars(e.rating) + '</div>';
+      html += '<div style="font-size:0.78rem;color:var(--text-mid);line-height:1.4;">' + e.text + '</div></div>';
+    });
+  }
+  var preview = document.getElementById('guestbook-preview');
+  if (preview) preview.innerHTML = html;
+  var full = entries.map(function(e) {
+    return '<div style="padding:0.75rem;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--card-border);margin-bottom:0.5rem;"><div style="display:flex;justify-content:space-between;"><span style="font-size:0.8rem;font-weight:600;color:var(--text-dark);">' + e.name + '</span><span style="font-size:0.7rem;color:var(--text-light);">' + e.date + '</span></div><div style="color:var(--earth);font-size:0.8rem;margin:2px 0;">' + stars(e.rating) + '</div><div style="font-size:0.78rem;color:var(--text-mid);line-height:1.4;">' + e.text + '</div></div>';
+  }).join('') || '<div style="font-size:0.82rem;color:var(--text-light);text-align:center;padding:1rem;">Ainda não há registos.</div>';
+  var list = document.getElementById('guestbook-list');
+  if (list) list.innerHTML = full;
 }
 
 /* ═══ MODAL DRAG TO CLOSE (touch only) ══════════ */
@@ -856,6 +924,19 @@ function initDragToClose() {
   });
 }
 
+function submitFeedback() {
+  var textEl = document.querySelector('#m-feedback textarea');
+  var nameEl = document.querySelector('#m-feedback input[type=email]');
+  var text = textEl ? textEl.value.trim() : '';
+  var name = nameEl ? nameEl.value.trim() : '';
+  if (!text) { showToast('Escreve o teu feedback antes de enviar'); return; }
+  saveGuestEntry(name || 'Hóspede', text, currentRating);
+  cm('m-feedback');
+  showToast('Obrigado! Feedback guardado no livro de hóspedes.');
+  if (textEl) textEl.value = '';
+  if (nameEl) nameEl.value = '';
+}
+
 /* ═══ CHECKLIST DE SAÍDA ════════════════════════ */
 var CHECKLIST = [
   'Fechar todas as janelas e portas',
@@ -888,6 +969,7 @@ function toggleCheck(i) {
   var idx = checkDone.indexOf(i);
   if (idx === -1) checkDone.push(i); else checkDone.splice(idx, 1);
   renderChecklist();
+  renderGuestbook();
 }
 function resetChecklist() { checkDone = []; renderChecklist(); }
 
