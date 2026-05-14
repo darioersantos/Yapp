@@ -53,7 +53,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 .hero-pills{display:flex;gap:0.5rem;align-items:center;}
 .nav-pill{background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.28);border-radius:20px;padding:7px 14px;font-size:0.75rem;font-weight:500;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;letter-spacing:0.03em;text-decoration:none;white-space:nowrap;}
 .nav-pill svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;flex-shrink:0;}
-.hero-content{position:relative;z-index:2;padding:2rem 1.5rem 2.8rem;color:#fff;}
+.hero-content{position:relative;z-index:2;padding:2rem 1.5rem 2.8rem;color:#fff;margin-top:auto;}
 .hero-label{font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--sage-light);margin-bottom:0.8rem;animation:fade-up 0.7s 0.3s ease both;}
 .hero-title{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:600;line-height:1.05;margin-bottom:0.6rem;animation:fade-up 0.7s 0.45s ease both;}
 .hero-sub{font-size:0.9rem;font-weight:300;opacity:0.8;line-height:1.55;margin-bottom:2rem;animation:fade-up 0.7s 0.55s ease both;}
@@ -62,6 +62,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 .weather-pill{background:rgba(255,255,255,0.12);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);border-radius:30px;padding:10px 16px;font-size:0.82rem;color:#fff;display:flex;align-items:center;gap:6px;white-space:nowrap;}
 .weather-pill svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;flex-shrink:0;}
 @keyframes fade-up{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+/* MODAL drag-to-close handle */
+.modal-handle{width:38px;height:4px;border-radius:2px;background:var(--earth-light);margin:0 auto 1.2rem;cursor:grab;touch-action:none;}
 
 /* APP */
 #app{display:none;padding-bottom:70px;}
@@ -281,8 +284,38 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
       <div class="section-header">
         <div class="section-tag">A tua estadia</div>
         <h2 class="section-title">Casa do Gerês</h2>
-        <p class="section-sub">Tudo o que precisas saber para te sentires em casa.</p>
+        <p class="section-sub">Bem-vindo. Tudo o que precisas para uma estadia inesquecível.</p>
       </div>
+
+      <!-- Grid de divisões -->
+      <div class="services-grid" style="margin-bottom:0.75rem;">
+        <div class="svc-card" onclick="showModal('m-info')">
+          <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400&auto=format&fit=crop&q=75" alt="Info"/>
+          <div class="svc-card-body"><div class="svc-card-label">Informações úteis</div><div class="svc-card-sub">Bem-vindo à casa</div></div>
+        </div>
+        <div class="svc-card" onclick="showModal('m-piscina')">
+          <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400&auto=format&fit=crop&q=75" alt="Piscina"/>
+          <div class="svc-card-body"><div class="svc-card-label">Piscina</div><div class="svc-card-sub">Regras & horários</div></div>
+        </div>
+        <div class="svc-card" onclick="showModal('m-quartos')">
+          <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&auto=format&fit=crop&q=75" alt="Quartos"/>
+          <div class="svc-card-body"><div class="svc-card-label">Quartos</div><div class="svc-card-sub">3 quartos</div></div>
+        </div>
+        <div class="svc-card" onclick="showModal('m-sala')">
+          <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&auto=format&fit=crop&q=75" alt="Sala"/>
+          <div class="svc-card-body"><div class="svc-card-label">Sala</div><div class="svc-card-sub">TV & lareira</div></div>
+        </div>
+        <div class="svc-card" onclick="showModal('m-cozinha')">
+          <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=400&auto=format&fit=crop&q=75" alt="Cozinha"/>
+          <div class="svc-card-body"><div class="svc-card-label">Cozinha</div><div class="svc-card-sub">Utensílios & eletros</div></div>
+        </div>
+        <div class="svc-card" onclick="showModal('m-wc')">
+          <img src="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=400&auto=format&fit=crop&q=75" alt="WC"/>
+          <div class="svc-card-body"><div class="svc-card-label">WC</div><div class="svc-card-sub">Casa de banho</div></div>
+        </div>
+      </div>
+
+      <!-- Wi-Fi -->
       <div class="wifi-hero" onclick="showModal('m-wifi')">
         <div class="wifi-net-label">Rede Wi-Fi · toca para ver</div>
         <div class="wifi-ssid">CasaGeres_5G</div>
@@ -291,6 +324,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
           <button class="copy-btn" onclick="copyText(event,'natureza2024')">Copiar</button>
         </div>
       </div>
+
+      <!-- Info check-in/out -->
       <div class="info-grid">
         <div class="info-cell">
           <div class="info-cell-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
@@ -309,21 +344,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
           <div class="info-cell-label">Quartos</div><div class="info-cell-val">3 quartos</div>
         </div>
       </div>
-      <div class="card" style="margin-bottom:0.75rem;">
-        <div class="block-label">Comodidades</div>
-        <div class="amenities-list">
-          <div class="amenity"><div class="amenity-dot"></div>Cozinha completa</div>
-          <div class="amenity"><div class="amenity-dot"></div>Churrasqueira</div>
-          <div class="amenity"><div class="amenity-dot"></div>Piscina exterior</div>
-          <div class="amenity"><div class="amenity-dot"></div>Smart TV 55"</div>
-          <div class="amenity"><div class="amenity-dot"></div>Estacionamento</div>
-          <div class="amenity"><div class="amenity-dot"></div>Pet friendly</div>
-          <div class="amenity"><div class="amenity-dot"></div>Jardim privado</div>
-          <div class="amenity"><div class="amenity-dot"></div>Lareira interior</div>
-          <div class="amenity"><div class="amenity-dot"></div>Máquina de café</div>
-          <div class="amenity"><div class="amenity-dot"></div>Máq. de lavar roupa</div>
-        </div>
-      </div>
+
+      <!-- TV & Streaming -->
       <div class="card" style="margin-bottom:0.75rem;">
         <div class="block-label">TV &amp; Streaming</div>
         <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
@@ -331,6 +353,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         </div>
         <p style="font-size:0.78rem;color:var(--text-light);margin-top:0.7rem;line-height:1.5;">Credenciais no dossier junto à televisão.</p>
       </div>
+
+      <!-- Sponsor -->
       <div class="sponsor" onclick="window.open('https://www.google.com/maps/search/Adega+Geres','_blank')">
         <img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format&fit=crop&q=75" alt="Adega"/>
         <div class="sponsor-body">
@@ -339,6 +363,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
           <div class="sponsor-cta">10% desconto a apresentar esta app</div>
         </div>
       </div>
+
+      <!-- Feedback -->
       <div class="card">
         <div class="block-label">Como está a tua estadia?</div>
         <div class="star-row" id="quick-stars">
@@ -351,19 +377,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
           <button onclick="showModal('m-feedback')" style="background:var(--forest);color:#fff;border:none;border-radius:30px;padding:8px 18px;font-size:0.78rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;">Deixar feedback</button>
           <a href="#" style="display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--card-border);border-radius:30px;padding:8px 16px;font-size:0.78rem;font-weight:500;color:var(--text-dark);text-decoration:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Google Reviews</a>
-        </div>
-      </div>
-      <div class="card" style="margin-top:0.75rem;background:linear-gradient(135deg,rgba(45,74,30,0.06),rgba(90,138,60,0.06));border-style:dashed;">
-        <div class="block-label" style="margin-top:0;">Guardar app no telemóvel</div>
-        <div style="display:flex;gap:1rem;">
-          <div style="flex:1;">
-            <div style="font-size:0.78rem;font-weight:600;color:var(--forest);margin-bottom:6px;">iPhone (Safari)</div>
-            <div style="font-size:0.75rem;color:var(--text-mid);line-height:1.6;">1. Abre no Safari<br/>2. Toca em <strong>Partilhar</strong> ⬆<br/>3. "Adicionar ao ecrã inicial"</div>
-          </div>
-          <div style="flex:1;">
-            <div style="font-size:0.78rem;font-weight:600;color:var(--forest);margin-bottom:6px;">Android (Chrome)</div>
-            <div style="font-size:0.75rem;color:var(--text-mid);line-height:1.6;">1. Abre no Chrome<br/>2. Toca em <strong>⋮ Menu</strong><br/>3. "Adicionar ao ecrã inicial"</div>
-          </div>
         </div>
       </div>
     </div>
@@ -430,21 +443,44 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         <h2 class="section-title">Descobrir</h2>
         <p class="section-sub">Clica em qualquer lugar para abrir no GPS.</p>
       </div>
+
       <div class="sponsor" onclick="window.open('https://www.google.com/maps/search/Gerês+Aventura','_blank')">
         <img src="https://images.unsplash.com/photo-1530866495561-507c9faab2ed?w=800&auto=format&fit=crop&q=75" alt="Aventura"/>
         <div class="sponsor-body"><div class="sponsor-badge">Atividades locais</div><div class="sponsor-name">Gerês Aventura</div><div class="sponsor-cta">Rafting · Canyoning · Trilhos guiados</div></div>
       </div>
-      <div class="block-label">Cascatas</div>
-      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7351,-8.1689" target="_blank"><img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=700&auto=format&fit=crop&q=80" alt="Cascata do Arado"/><div class="img-card-body"><div class="img-card-tag">Cascata · Trilho</div><div class="img-card-title">Cascata do Arado</div><div class="img-card-sub">Trilho circular de 2h em floresta densa.</div><div class="img-card-meta"><span class="dist-badge">4,2 km</span><span class="rating">★★★★★ 4.9</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
-      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.6956,-8.1782" target="_blank"><img src="https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=700&auto=format&fit=crop&q=80" alt="Fecha de Barjas"/><div class="img-card-body"><div class="img-card-tag">Cascata · Natureza</div><div class="img-card-title">Cascata da Fecha de Barjas</div><div class="img-card-sub">Uma das mais imponentes do Gerês. Trilho de 40 min.</div><div class="img-card-meta"><span class="dist-badge">9,1 km</span><span class="rating">★★★★★ 4.8</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
-      <div class="block-label">Praias fluviais</div>
-      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7498,-8.1321" target="_blank"><img src="https://images.unsplash.com/photo-1543039625-14dc3f55fad5?w=700&auto=format&fit=crop&q=80" alt="Ermida"/><div class="img-card-body"><div class="img-card-tag">Praia fluvial</div><div class="img-card-title">Praia Fluvial de Ermida</div><div class="img-card-sub">Águas cristalinas no rio Homem. Ideal para famílias.</div><div class="img-card-meta"><span class="dist-badge">6,8 km</span><span class="rating">★★★★☆ 4.5</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
+
+      <!-- SECÇÃO 1: ATRAÇÕES -->
+      <div style="display:flex;align-items:center;gap:10px;margin:1.2rem 0 0.75rem;">
+        <div style="flex:1;height:1px;background:var(--cream-dark);"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--forest);white-space:nowrap;padding:0 4px;">Atrações Próximas</div>
+        <div style="flex:1;height:1px;background:var(--cream-dark);"></div>
+      </div>
+
+      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7351,-8.1689" target="_blank"><img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=700&auto=format&fit=crop&q=80" alt="Cascata do Arado"/><div class="img-card-body"><div class="img-card-tag">Cascata · Trilho</div><div class="img-card-title">Cascata do Arado</div><div class="img-card-sub">Trilho circular de 2h em floresta densa. Um dos percursos mais icónicos do parque.</div><div class="img-card-meta"><span class="dist-badge">4,2 km</span><span class="rating">★★★★★ 4.9</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
+
+      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.6956,-8.1782" target="_blank"><img src="https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=700&auto=format&fit=crop&q=80" alt="Fecha de Barjas"/><div class="img-card-body"><div class="img-card-tag">Cascata · Natureza</div><div class="img-card-title">Cascata da Fecha de Barjas</div><div class="img-card-sub">Uma das mais imponentes do Gerês. Trilho de 40 min pela floresta.</div><div class="img-card-meta"><span class="dist-badge">9,1 km</span><span class="rating">★★★★★ 4.8</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
+
+      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7498,-8.1321" target="_blank"><img src="https://images.unsplash.com/photo-1543039625-14dc3f55fad5?w=700&auto=format&fit=crop&q=80" alt="Ermida"/><div class="img-card-body"><div class="img-card-tag">Praia fluvial</div><div class="img-card-title">Praia Fluvial de Ermida</div><div class="img-card-sub">Águas cristalinas no rio Homem. Ideal para famílias, com estacionamento gratuito.</div><div class="img-card-meta"><span class="dist-badge">6,8 km</span><span class="rating">★★★★☆ 4.5</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
+
       <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7281,-8.1574" target="_blank"><img src="https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=700&auto=format&fit=crop&q=80" alt="Vilarinho"/><div class="img-card-body"><div class="img-card-tag">Praia fluvial · Barragem</div><div class="img-card-title">Praia de Vilarinho das Furnas</div><div class="img-card-sub">Vista para as ruínas da aldeia submersa. Espetacular.</div><div class="img-card-meta"><span class="dist-badge">3,9 km</span><span class="rating">★★★★★ 4.7</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
-      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.6823,-8.1956" target="_blank"><img src="https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?w=700&auto=format&fit=crop&q=80" alt="Cabril"/><div class="img-card-body"><div class="img-card-tag">Praia fluvial · Tranquila</div><div class="img-card-title">Praia Fluvial de Cabril</div><div class="img-card-sub">Ambiente sereno, menos frequentado, vista para o vale.</div><div class="img-card-meta"><span class="dist-badge">12,4 km</span><span class="rating">★★★★☆ 4.4</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
-      <div class="block-label">Restaurantes</div>
-      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7214,-8.1583" target="_blank"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=700&auto=format&fit=crop&q=80" alt="Taberna" style="height:130px;"/><div class="img-card-body"><div class="img-card-tag">Cozinha regional</div><div class="img-card-title">Taberna do Gerês</div><div class="img-card-sub">Cabrito assado no forno a lenha.</div><div class="img-card-meta"><span class="dist-badge">1,3 km</span><span class="rating">★★★★★ 4.9</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
-      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7198,-8.1901" target="_blank"><img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=700&auto=format&fit=crop&q=80" alt="Tasca" style="height:130px;"/><div class="img-card-body"><div class="img-card-tag">Peixe &amp; petiscos</div><div class="img-card-title">Tasca da Ribeira</div><div class="img-card-sub">Trutas do rio e petiscos com vista para a ribeira.</div><div class="img-card-meta"><span class="dist-badge">3,7 km</span><span class="rating">★★★★☆ 4.4</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
+
+      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.6823,-8.1956" target="_blank"><img src="https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?w=700&auto=format&fit=crop&q=80" alt="Cabril"/><div class="img-card-body"><div class="img-card-tag">Praia fluvial · Tranquila</div><div class="img-card-title">Praia Fluvial de Cabril</div><div class="img-card-sub">Ambiente sereno, menos frequentado. Vista para o vale.</div><div class="img-card-meta"><span class="dist-badge">12,4 km</span><span class="rating">★★★★☆ 4.4</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
+
+      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7890,-8.1245" target="_blank"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=700&auto=format&fit=crop&q=80" alt="Pedra Bela"/><div class="img-card-body"><div class="img-card-tag">Trilho panorâmico</div><div class="img-card-title">Pedra Bela</div><div class="img-card-sub">Vista de 360° sobre o parque. Média dificuldade, 3h ida e volta.</div><div class="img-card-meta"><span class="dist-badge">8,5 km</span><span class="rating">★★★★★ 4.8</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
+
+      <!-- SECÇÃO 2: RESTAURANTES -->
+      <div style="display:flex;align-items:center;gap:10px;margin:1.4rem 0 0.75rem;">
+        <div style="flex:1;height:1px;background:var(--cream-dark);"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--forest);white-space:nowrap;padding:0 4px;">Restaurantes</div>
+        <div style="flex:1;height:1px;background:var(--cream-dark);"></div>
+      </div>
+
+      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7214,-8.1583" target="_blank"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=700&auto=format&fit=crop&q=80" alt="Taberna" style="height:130px;"/><div class="img-card-body"><div class="img-card-tag">Cozinha regional</div><div class="img-card-title">Taberna do Gerês</div><div class="img-card-sub">Cabrito assado no forno a lenha. Reserva recomendada ao fim de semana.</div><div class="img-card-meta"><span class="dist-badge">1,3 km</span><span class="rating">★★★★★ 4.9</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
+
+      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7198,-8.1901" target="_blank"><img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=700&auto=format&fit=crop&q=80" alt="Tasca" style="height:130px;"/><div class="img-card-body"><div class="img-card-tag">Peixe &amp; petiscos</div><div class="img-card-title">Tasca da Ribeira</div><div class="img-card-sub">Trutas do rio e petiscos regionais com vista para a ribeira.</div><div class="img-card-meta"><span class="dist-badge">3,7 km</span><span class="rating">★★★★☆ 4.4</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
+
       <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7301,-8.1423" target="_blank"><img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=700&auto=format&fit=crop&q=80" alt="Caldas" style="height:130px;"/><div class="img-card-body"><div class="img-card-tag">Restaurante</div><div class="img-card-title">Restaurante Caldas</div><div class="img-card-sub">Vista para o lago termal. Vitela barrosã e caldo verde.</div><div class="img-card-meta"><span class="dist-badge">2,1 km</span><span class="rating">★★★★☆ 4.3</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
+
     </div>
   </div>
 
@@ -538,6 +574,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 <div class="modal-overlay" id="m-feedback" onclick="cm('m-feedback')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">O teu feedback</div><p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:0.5rem;">A tua opinião ajuda-nos a melhorar.</p><div class="star-row" id="modal-stars"><button class="star-btn" onclick="rateStar(1,'modal')">★</button><button class="star-btn" onclick="rateStar(2,'modal')">★</button><button class="star-btn" onclick="rateStar(3,'modal')">★</button><button class="star-btn" onclick="rateStar(4,'modal')">★</button><button class="star-btn" onclick="rateStar(5,'modal')">★</button></div><div class="form-stack"><textarea class="form-input" rows="4" placeholder="Conta-nos a tua experiência..."></textarea><input class="form-input" type="email" placeholder="Email (opcional)"/><button class="form-btn" onclick="pedidoOk('m-feedback')">Enviar</button></div></div></div>
 <div class="modal-overlay" id="m-qr" onclick="closeQR()"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Ler QR Code</div><p style="font-size:0.82rem;color:var(--text-light);margin-bottom:1rem;line-height:1.5;">Aponta a câmara para o QR code na entrada da Casa do Gerês.</p><div id="qr-video-wrap"><video id="qr-video" playsinline autoplay muted></video><div class="qr-frame"></div></div><div id="qr-result">A iniciar câmara...</div><button class="form-btn" style="margin-top:0.75rem;" onclick="closeQR()">Fechar câmara</button></div></div>
 
+<div class="modal-overlay" id="m-info" onclick="cm('m-info')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle" data-modal="m-info"></div><div class="modal-title">Informações úteis</div><p style="font-size:0.95rem;color:var(--text-mid);line-height:1.8;">Bem-vindo à Casa do Gerês.</p><p style="font-size:0.88rem;color:var(--text-mid);line-height:1.8;margin-top:0.75rem;">Queremos que a sua visita seja verdadeiramente inesquecível, envolvendo todos os seus sentidos. Na casa, na piscina, na churrasqueira e nesta beleza natural envolvente da serra do Gerês.</p><p style="font-size:0.88rem;color:var(--text-mid);line-height:1.8;margin-top:0.75rem;">Aqui encontrará uma ampla gama de serviços e experiências que temos para oferecer e outras informações importantes relacionadas com a nossa/sua casa, os produtos locais, as nossas gentes e nossa região.</p><p style="font-size:0.88rem;color:var(--text-mid);line-height:1.8;margin-top:0.75rem;">Em nome da família Pereira, desejamos-lhe uma excelente estadia!</p></div></div>
+
+<div class="modal-overlay" id="m-piscina" onclick="cm('m-piscina')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle" data-modal="m-piscina"></div><img class="modal-img" src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=600&auto=format&fit=crop&q=75" alt="Piscina"/><div class="modal-title">Piscina</div><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Horário</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Disponível das 09h às 21h. Fora deste horário, por favor respeitar o silêncio dos vizinhos.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Regras</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Duche obrigatório antes de entrar. Crianças devem ser sempre acompanhadas. Não mergulhar de cabeça.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Equipamento</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Espreguiçadeiras e guarda-sol disponíveis junto à piscina. Toalhas no armário do corredor.</p></div></div></div></div>
+
+<div class="modal-overlay" id="m-quartos" onclick="cm('m-quartos')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle" data-modal="m-quartos"></div><img class="modal-img" src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&auto=format&fit=crop&q=75" alt="Quartos"/><div class="modal-title">Quartos</div><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Quarto 1 · Suite</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Cama king size, casa de banho privativa, varanda com vista para a serra.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Quarto 2</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Cama de casal, roupeiro embutido, janela com vista para o jardim.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Quarto 3</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Duas camas individuais, ideal para crianças ou jovens.</p></div></div></div></div>
+
+<div class="modal-overlay" id="m-sala" onclick="cm('m-sala')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle" data-modal="m-sala"></div><img class="modal-img" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&auto=format&fit=crop&q=75" alt="Sala"/><div class="modal-title">Sala</div><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Smart TV 55"</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">NOS TV, Netflix, Amazon Prime, Disney+ e Canal+. Credenciais no dossier.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Lareira</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Lenha no cesto junto à lareira. Acendalha no armário da entrada. Não deixar sem vigilância.</p></div></div></div></div>
+
+<div class="modal-overlay" id="m-wc" onclick="cm('m-wc')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle" data-modal="m-wc"></div><img class="modal-img" src="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=600&auto=format&fit=crop&q=75" alt="WC"/><div class="modal-title">Casa de banho</div><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Produtos de higiene</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Shampoo, gel de banho e sabão disponíveis. Toalhas limpas no armário branco.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Máquina de lavar roupa</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Disponível na casa de banho de serviço. Detergente no armário de baixo.</p></div></div></div></div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -576,6 +622,7 @@ window.addEventListener('DOMContentLoaded', function() {
   }
   document.getElementById('login-user').addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('login-pass').focus(); });
   document.getElementById('login-pass').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
+  initDragToClose();
 });
 
 /* ═══ LOGIN ═════════════════════════════════════ */
@@ -651,7 +698,46 @@ function rateStar(n, ctx) {
   setTimeout(function() { showToast(n >= 4 ? 'Obrigado pela avaliação!' : 'Obrigado pelo feedback'); }, 100);
 }
 
-/* ═══ QR SCANNER ════════════════════════════════ */
+/* ═══ MODAL DRAG TO CLOSE ═══════════════════════ */
+function initDragToClose() {
+  document.querySelectorAll('.modal-handle').forEach(function(handle) {
+    var sheet = handle.closest('.modal-sheet');
+    var overlay = handle.closest('.modal-overlay');
+    if (!sheet || !overlay) return;
+    var startY = 0, currentY = 0, isDragging = false;
+
+    function onStart(e) {
+      isDragging = true;
+      startY = e.touches ? e.touches[0].clientY : e.clientY;
+      sheet.style.transition = 'none';
+    }
+    function onMove(e) {
+      if (!isDragging) return;
+      currentY = (e.touches ? e.touches[0].clientY : e.clientY) - startY;
+      if (currentY < 0) currentY = 0;
+      sheet.style.transform = 'translateY(' + currentY + 'px)';
+    }
+    function onEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      sheet.style.transition = '';
+      if (currentY > 100) {
+        overlay.classList.remove('open');
+        sheet.style.transform = '';
+      } else {
+        sheet.style.transform = '';
+      }
+      currentY = 0;
+    }
+    handle.addEventListener('touchstart', onStart, { passive: true });
+    handle.addEventListener('touchmove', onMove, { passive: true });
+    handle.addEventListener('touchend', onEnd);
+    handle.addEventListener('mousedown', onStart);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onEnd);
+  });
+}
+
 var qrStream = null, qrTimer = null;
 function startQR() {
   var res = document.getElementById('qr-result');
