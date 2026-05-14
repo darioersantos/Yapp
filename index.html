@@ -43,6 +43,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 .login-leaf{position:absolute;opacity:0.06;font-size:180px;pointer-events:none;user-select:none;}
 
 /* ── EXPIRED ────────────────────────────────── */
+#login-screen.hidden{display:none !important;}
 #expired-screen{position:fixed;inset:0;z-index:9000;background:#0f1908;display:none;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;}
 #expired-screen.show{display:flex;}
 .expired-icon{font-size:3rem;margin-bottom:1rem;opacity:0.6;}
@@ -679,18 +680,6 @@ let lang = 'pt';
 function tr(k){ try{ return (T[lang]&&T[lang][k])||T.pt[k]||k; }catch{ return k; } }
 
 function setLang(l){
-  lang=l; localStorage.setItem(LANG_KEY,l);
-  // update data-i18n elements
-  document.querySelectorAll('[data-i18n]').forEach(el=>el.textContent=tr(el.dataset.i18n));
-  // update bottom nav text nodes
-  const navKeys=['casa','servicos','meteo','descobrir','contacto'];
-  document.querySelectorAll('#bottom-nav .bnav-item').forEach((btn,i)=>{
-    btn.childNodes.forEach(n=>{ if(n.nodeType===3 && n.textContent.trim()) n.textContent=tr('nav_'+navKeys[i]); });
-  });
-  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===l));
-}
-
-function setLang(l){
   try{
     lang=l; localStorage.setItem(LANG_KEY,l);
     document.querySelectorAll('[data-i18n]').forEach(el=>{ try{el.textContent=tr(el.dataset.i18n);}catch{} });
@@ -699,7 +688,7 @@ function setLang(l){
       try{ btn.childNodes.forEach(n=>{ if(n.nodeType===3&&n.textContent.trim())n.textContent=tr('nav_'+navKeys[i]); }); }catch{}
     });
     document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===l));
-  }catch(e){ console.warn('setLang error',e); }
+  }catch(e){}
 }
 
 function detectLang(){
@@ -716,39 +705,67 @@ function saveSession(u,co){ try{localStorage.setItem(SESSION_KEY,JSON.stringify(
 function isExpired(co){ return new Date()>new Date(co+'T23:59:59'); }
 
 window.addEventListener('DOMContentLoaded',()=>{
-  try{ lang=detectLang(); setLang(lang); }catch(e){ console.warn(e); }
+  try{ lang=detectLang(); setLang(lang); }catch(e){}
   try{
     const s=getSession();
-    if(s){ isExpired(s.checkout)?showExpired():(showSplash(),loadWeather()); }
-  }catch(e){ console.warn(e); }
+    if(s){
+      if(isExpired(s.checkout)){
+        localStorage.removeItem(SESSION_KEY); // limpar sessão expirada
+        showExpired();
+      } else {
+        showSplash();
+        loadWeather();
+      }
+    }
+  }catch(e){ localStorage.removeItem(SESSION_KEY); } // limpar sessão corrompida
   try{ document.getElementById('login-pass').addEventListener('keydown',e=>{ if(e.key==='Enter')doLogin(); }); }catch{}
   try{ document.getElementById('login-user').addEventListener('keydown',e=>{ if(e.key==='Enter')document.getElementById('login-pass').focus(); }); }catch{}
-  try{ initPWA(); }catch(e){ console.warn(e); }
+  try{ initPWA(); }catch(e){}
 });
 
 /* ═══ LOGIN ════════════════════════════════════════════ */
 function doLogin(){
-  try{
-    const user=document.getElementById('login-user').value.trim().toLowerCase();
-    const pass=document.getElementById('login-pass').value.trim();
-    const err=document.getElementById('login-error');
-    const g=GUESTS[user];
-    if(!g||g.pass!==pass){
-      err.textContent=tr('login_error');
-      document.getElementById('login-pass').value='';
-      return;
-    }
-    saveSession(user,g.checkout);
-    if(isExpired(g.checkout)){ showExpired(); return; }
-    document.getElementById('login-screen').classList.add('hidden');
-    showSplash();
-    loadWeather();
-  }catch(e){ console.error('doLogin error',e); }
+  const userEl = document.getElementById('login-user');
+  const passEl = document.getElementById('login-pass');
+  const errEl  = document.getElementById('login-error');
+  const user = userEl.value.trim().toLowerCase();
+  const pass = passEl.value.trim();
+  const g = GUESTS[user];
+  if(!g || g.pass !== pass){
+    errEl.textContent = tr('login_error');
+    passEl.value = '';
+    passEl.focus();
+    return;
+  }
+  saveSession(user, g.checkout);
+  if(isExpired(g.checkout)){
+    showExpired();
+    return;
+  }
+  document.getElementById('login-screen').style.display = 'none';
+  showSplash();
+  loadWeather();
 }
-function showSplash(){ document.getElementById('login-screen').classList.add('hidden'); document.getElementById('splash').style.display='block'; setTheme('#0f1908'); }
-function showExpired(){ ['login-screen','splash','app','bottom-nav'].forEach(id=>{const el=document.getElementById(id);if(el){el.style.display='none';}}); document.getElementById('expired-screen').classList.add('show'); setTheme('#0f1908'); }
+function showSplash(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('splash').style.display='block';
+  setTheme('#0f1908');
+}
+function showExpired(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('splash').style.display='none';
+  document.getElementById('app').style.display='none';
+  document.getElementById('bottom-nav').style.display='none';
+  document.getElementById('expired-screen').style.display='flex';
+  setTheme('#0f1908');
+}
 function setTheme(c){ document.getElementById('theme-meta').setAttribute('content',c); }
-function goToApp(){ document.getElementById('splash').style.display='none'; document.getElementById('app').style.display='block'; document.getElementById('bottom-nav').style.display='flex'; setTheme('#f5f0e8'); }
+function goToApp(){
+  document.getElementById('splash').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('bottom-nav').style.display='flex';
+  setTheme('#f5f0e8');
+}
 
 /* ═══ NAVEGAÇÃO ════════════════════════════════════════ */
 function sp(name){
@@ -795,7 +812,7 @@ async function startQR(){
       const det=new BarcodeDetector({formats:['qr_code']});
       qrTimer=setInterval(async()=>{ try{ const c=await det.detect(vid); if(c.length){const v=c[0].rawValue; stopQR(); cm('m-qr'); if(v.startsWith('http'))window.open(v,'_blank'); else showToast(v); }}catch{} },500);
     } else { res.textContent='Câmara ativa. Para melhor suporte use Chrome.'; }
-  }catch(){ res.textContent='Sem acesso à câmara. Verifique as permissões.'; }
+  }catch(e){ res.textContent='Sem acesso à câmara. Verifique as permissões.'; }
 }
 function stopQR(){ if(qrTimer){clearInterval(qrTimer);qrTimer=null;} if(qrStream){qrStream.getTracks().forEach(t=>t.stop());qrStream=null;} const v=document.getElementById('qr-video'); if(v)v.srcObject=null; }
 function closeQR(){ stopQR(); cm('m-qr'); }
@@ -816,7 +833,7 @@ async function loadWeather(){
     const days=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'], today=new Date().getDay();
     const fc=document.getElementById('fc-row');
     if(fc){ fc.innerHTML=''; for(let i=0;i<7;i++){ const tp=Math.round(d.daily.temperature_2m_max[i]); fc.innerHTML+=`<div class="fc-pill"><div class="fc-dow">${days[(today+i)%7]}</div><div class="fc-icon-txt">${wLabel(d.daily.weather_code[i])}</div><div class="fc-t">${tp}°</div></div>`; } }
-  }catch(){ const hw=document.getElementById('hero-weather'); if(hw)hw.textContent='Gerês · Portugal'; }
+  }catch(e){ const hw=document.getElementById('hero-weather'); if(hw)hw.textContent='Gerês · Portugal'; }
 }
 function wLabel(c){ if(c===0)return'Sol';if(c<=2)return'Nbd';if(c===3)return'Cob';if(c<=49)return'Nev';if(c<=69)return'Chu';if(c<=99)return'Tro';return'Var'; }
 function wDesc(c){ if(c===0)return'Céu limpo';if(c<=2)return'Parcialmente nublado';if(c===3)return'Nublado';if(c<=49)return'Nevoeiro';if(c<=59)return'Chuviscos';if(c<=69)return'Chuva';if(c<=79)return'Neve';if(c<=99)return'Trovoada';return'Variável'; }
