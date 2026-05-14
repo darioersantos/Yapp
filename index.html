@@ -129,23 +129,34 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 .svc-card-label{font-size:0.85rem;font-weight:500;color:var(--text-dark);}
 .svc-card-sub{font-size:0.73rem;color:var(--text-light);margin-top:2px;}
 
-/* WEATHER */
-.weather-card{background:#fff;border:1px solid var(--card-border);border-radius:var(--radius);overflow:hidden;}
-.weather-banner{width:100%;height:140px;object-fit:cover;display:block;}
-.weather-body{padding:1.2rem;}
-.weather-row{display:flex;align-items:flex-end;justify-content:space-between;}
-.weather-temp{font-family:'Cormorant Garamond',serif;font-size:4rem;font-weight:600;color:var(--forest);line-height:1;}
-.weather-cond{font-size:0.9rem;font-weight:500;color:var(--text-mid);}
-.w-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-top:1rem;}
-.w-stat{background:rgba(90,138,60,0.07);border-radius:var(--radius-sm);padding:0.7rem;text-align:center;}
-.w-stat-val{font-size:0.95rem;font-weight:500;color:var(--forest);}
-.w-stat-label{font-size:10px;color:var(--text-light);margin-top:2px;}
-.forecast{display:flex;gap:0.5rem;margin-top:0.75rem;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;}
-.forecast::-webkit-scrollbar{display:none;}
-.fc-pill{min-width:56px;background:rgba(90,138,60,0.06);border:1px solid var(--card-border);border-radius:var(--radius-sm);padding:0.6rem 0.3rem;text-align:center;flex-shrink:0;}
-.fc-dow{font-size:10px;font-weight:600;color:var(--text-light);text-transform:uppercase;}
-.fc-icon-txt{font-size:0.9rem;margin:4px 0;color:var(--text-mid);}
-.fc-t{font-size:0.82rem;font-weight:500;color:var(--forest);}
+/* METEO FULL PAGE */
+#page-meteo{padding:0 !important;}
+#meteo-full{position:relative;height:calc(100svh - 60px);min-height:500px;display:flex;flex-direction:column;overflow:hidden;}
+#meteo-bg{position:absolute;inset:0;}
+#meteo-bg img{width:100%;height:100%;object-fit:cover;display:block;}
+#meteo-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,20,8,0.45) 0%,rgba(10,20,8,0.25) 40%,rgba(10,20,8,0.75) 75%,rgba(10,20,8,0.95) 100%);}
+#meteo-content{position:relative;z-index:2;display:flex;flex-direction:column;height:100%;padding:1.6rem 1.5rem 1.8rem;color:#fff;}
+#meteo-top{display:flex;justify-content:space-between;align-items:flex-start;}
+#meteo-location{font-size:0.82rem;font-weight:500;opacity:0.75;letter-spacing:0.04em;}
+#meteo-time-display{font-size:0.78rem;opacity:0.6;}
+#meteo-main{text-align:center;flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;}
+#meteo-emoji{font-size:5rem;margin-bottom:0.2rem;line-height:1;}
+#meteo-temp-big{font-family:'Cormorant Garamond',serif;font-size:6.5rem;font-weight:600;line-height:1;margin-bottom:0.3rem;}
+#meteo-cond{font-size:1rem;font-weight:300;opacity:0.85;letter-spacing:0.02em;}
+#meteo-stats-row{display:flex;gap:0;margin-bottom:1.2rem;background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:var(--radius);border:1px solid rgba(255,255,255,0.15);overflow:hidden;}
+.meteo-stat{flex:1;padding:1rem 0.5rem;text-align:center;border-right:1px solid rgba(255,255,255,0.1);}
+.meteo-stat:last-child{border-right:none;}
+.meteo-stat-icon{font-size:1.1rem;margin-bottom:4px;}
+.meteo-stat-val{font-size:1.1rem;font-weight:600;}
+.meteo-stat-label{font-size:10px;opacity:0.65;margin-top:2px;letter-spacing:0.04em;}
+#meteo-forecast-wrap{overflow-x:auto;scrollbar-width:none;margin-bottom:0.8rem;}
+#meteo-forecast-wrap::-webkit-scrollbar{display:none;}
+#fc-row{display:flex;gap:0.5rem;padding-bottom:2px;}
+.fc-pill{min-width:58px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);border-radius:var(--radius-sm);padding:0.65rem 0.3rem;text-align:center;flex-shrink:0;backdrop-filter:blur(6px);}
+.fc-dow{font-size:10px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:0.05em;}
+.fc-icon-txt{font-size:1.1rem;margin:4px 0;}
+.fc-t{font-size:0.85rem;font-weight:500;color:#fff;}
+#meteo-source{font-size:10px;opacity:0.4;text-align:center;letter-spacing:0.04em;}
 
 /* DISCOVER */
 .img-card{background:#fff;border:1px solid var(--card-border);border-radius:var(--radius);overflow:hidden;margin-bottom:0.75rem;text-decoration:none;display:block;}
@@ -193,6 +204,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 #qr-video{width:100%;height:100%;object-fit:cover;display:block;}
 .qr-frame{position:absolute;inset:20%;border:2px solid var(--sage-light);border-radius:12px;pointer-events:none;}
 #qr-result{font-size:0.82rem;color:var(--text-mid);text-align:center;min-height:1.2rem;margin-top:0.5rem;}
+
+/* CHECKLIST */
+.check-item{display:flex;align-items:center;gap:12px;padding:0.85rem 1rem;background:#fff;border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:0.5rem;cursor:pointer;transition:all 0.18s;}
+.check-item.done{background:rgba(90,138,60,0.07);border-color:rgba(90,138,60,0.25);}
+.check-box{width:24px;height:24px;border-radius:6px;border:2px solid var(--card-border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.18s;}
+.check-item.done .check-box{background:var(--forest-light);border-color:var(--forest-light);}
+.check-box svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;display:none;}
+.check-item.done .check-box svg{display:block;}
+.check-text{font-size:0.85rem;color:var(--text-dark);line-height:1.3;}
+.check-item.done .check-text{text-decoration:line-through;color:var(--text-light);}
+.emergency-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:1.2rem;}
 
 /* BOTTOM NAV */
 #bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--cream);border-top:1px solid var(--cream-dark);display:none;z-index:200;}
@@ -392,7 +414,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         <h2 class="section-title">Serviços</h2>
         <p class="section-sub">Tudo para tornar a tua estadia ainda mais confortável.</p>
       </div>
-      <div class="services-grid">
+
+      <!-- Serviços principais -->
+      <div class="services-grid" style="margin-bottom:0.75rem;">
         <div class="svc-card" onclick="showModal('m-limpeza')">
           <img src="https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&auto=format&fit=crop&q=75" alt="Limpeza"/>
           <div class="svc-card-body"><div class="svc-card-label">Limpeza extra</div><div class="svc-card-sub">Pedido rápido</div></div>
@@ -401,33 +425,93 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
           <img src="https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=400&auto=format&fit=crop&q=75" alt="Bicicletas"/>
           <div class="svc-card-body"><div class="svc-card-label">Aluguer de bicicletas</div><div class="svc-card-sub">A partir de €10/dia</div></div>
         </div>
+        <div class="svc-card" onclick="showModal('m-checkout')">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&auto=format&fit=crop&q=75" alt="Check-out"/>
+          <div class="svc-card-body"><div class="svc-card-label">Checklist saída</div><div class="svc-card-sub">Antes de partir</div></div>
+        </div>
+        <div class="svc-card" onclick="showModal('m-regras')">
+          <img src="https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=400&auto=format&fit=crop&q=75" alt="Regras"/>
+          <div class="svc-card-body"><div class="svc-card-label">Regras da casa</div><div class="svc-card-sub">Silêncio, lixo, pets</div></div>
+        </div>
+        <div class="svc-card" onclick="showModal('m-reciclagem')">
+          <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=400&auto=format&fit=crop&q=75" alt="Reciclagem"/>
+          <div class="svc-card-body"><div class="svc-card-label">Reciclagem</div><div class="svc-card-sub">Contentores & recolha</div></div>
+        </div>
+        <div class="svc-card" onclick="showModal('m-avaria')">
+          <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&auto=format&fit=crop&q=75" alt="Avaria"/>
+          <div class="svc-card-body"><div class="svc-card-label">Caixa de fusíveis</div><div class="svc-card-sub">Se a luz cair</div></div>
+        </div>
+        <div class="svc-card" onclick="showModal('m-compras')">
+          <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&auto=format&fit=crop&q=75" alt="Compras"/>
+          <div class="svc-card-body"><div class="svc-card-label">Compras locais</div><div class="svc-card-sub">Mercado, padaria...</div></div>
+        </div>
+        <div class="svc-card" onclick="showModal('m-transportes')">
+          <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&auto=format&fit=crop&q=75" alt="Transportes"/>
+          <div class="svc-card-body"><div class="svc-card-label">Transportes</div><div class="svc-card-sub">Autocarro & táxi</div></div>
+        </div>
+      </div>
+
+      <!-- Pôr do sol ao vivo -->
+      <div class="card" style="background:linear-gradient(135deg,rgba(139,111,71,0.12),rgba(45,74,30,0.08));border-color:rgba(139,111,71,0.25);">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div class="block-label" style="margin:0 0 4px;">Pôr do sol hoje</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--earth);" id="sunset-time">A calcular...</div>
+            <div style="font-size:0.78rem;color:var(--text-light);margin-top:3px;" id="sunset-countdown"></div>
+          </div>
+          <div style="font-size:3rem;opacity:0.8;">🌅</div>
+        </div>
+      </div>
+
+      <!-- Despedida com desconto -->
+      <div id="despedida-card" class="card" style="margin-top:0.75rem;display:none;background:linear-gradient(135deg,var(--forest),var(--forest-mid));color:#fff;border:none;">
+        <div style="font-size:0.78rem;opacity:0.7;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">Até breve!</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;margin-bottom:8px;">Obrigado pela visita, família Pereira agradece!</div>
+        <div style="font-size:0.82rem;opacity:0.85;line-height:1.5;margin-bottom:12px;">Na próxima reserva, apresente o código abaixo e receba <strong>10% de desconto</strong>.</div>
+        <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:10px 14px;font-family:monospace;font-size:1.1rem;letter-spacing:0.1em;text-align:center;">VOLTAR2024</div>
       </div>
     </div>
   </div>
 
   <!-- METEO -->
   <div id="page-meteo" class="page">
-    <div class="section">
-      <div class="section-header">
-        <div class="section-tag">Ao vivo</div>
-        <h2 class="section-title">Meteorologia</h2>
+    <div id="meteo-full">
+      <div id="meteo-bg">
+        <img id="weather-banner" src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=900&auto=format&fit=crop&q=80" alt="Gerês"/>
+        <div id="meteo-overlay"></div>
       </div>
-      <div class="weather-card">
-        <img class="weather-banner" id="weather-banner" src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=800&auto=format&fit=crop&q=75" alt="Gerês"/>
-        <div class="weather-body">
-          <div class="weather-row">
-            <div><div class="weather-temp" id="wtemp">--°</div><div class="weather-cond" id="wcond">A carregar</div></div>
-            <div style="text-align:right;"><div style="font-size:0.8rem;color:var(--text-light);">Gerês, Braga</div><div style="font-size:0.75rem;color:var(--text-light);margin-top:4px;" id="wtime">--:--</div></div>
-          </div>
-          <div class="w-stats">
-            <div class="w-stat"><div class="w-stat-val" id="whumid">--%</div><div class="w-stat-label">Humidade</div></div>
-            <div class="w-stat"><div class="w-stat-val" id="wwind">--</div><div class="w-stat-label">Vento km/h</div></div>
-            <div class="w-stat"><div class="w-stat-val" id="wuv">--</div><div class="w-stat-label">Índice UV</div></div>
-          </div>
-          <div class="forecast" id="fc-row"></div>
+      <div id="meteo-content">
+        <div id="meteo-top">
+          <div id="meteo-location">Gerês, Braga</div>
+          <div id="meteo-time-display" id="wtime">--:--</div>
         </div>
+        <div id="meteo-main">
+          <div id="meteo-emoji">🌤️</div>
+          <div id="meteo-temp-big">--°</div>
+          <div id="meteo-cond" id="wcond">A carregar...</div>
+        </div>
+        <div id="meteo-stats-row">
+          <div class="meteo-stat">
+            <div class="meteo-stat-icon">💧</div>
+            <div class="meteo-stat-val" id="whumid">--%</div>
+            <div class="meteo-stat-label">Humidade</div>
+          </div>
+          <div class="meteo-stat">
+            <div class="meteo-stat-icon">💨</div>
+            <div class="meteo-stat-val" id="wwind">--</div>
+            <div class="meteo-stat-label">Vento km/h</div>
+          </div>
+          <div class="meteo-stat">
+            <div class="meteo-stat-icon">☀️</div>
+            <div class="meteo-stat-val" id="wuv">--</div>
+            <div class="meteo-stat-label">Índice UV</div>
+          </div>
+        </div>
+        <div id="meteo-forecast-wrap">
+          <div id="fc-row"></div>
+        </div>
+        <div id="meteo-source">Open-Meteo · Gerês 41.72°N 8.20°W</div>
       </div>
-      <p style="font-size:0.72rem;color:var(--text-light);margin-top:0.6rem;text-align:center;">Fonte: Open-Meteo · Gerês 41.72°N 8.20°W</p>
     </div>
   </div>
 
@@ -489,7 +573,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         <p class="section-sub">O Carlos está sempre disponível para ajudar.</p>
       </div>
       <div class="block-label">Acesso rápido</div>
-      <div class="emergency-grid">
+      <div class="emergency-grid" style="grid-template-columns:1fr 1fr 1fr 1fr;">
         <a class="emg-btn" href="tel:+351912345678">
           <div class="emg-icon" style="background:rgba(230,126,34,0.12);color:#e67e22;"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
           <span class="emg-label">Táxi local</span>
@@ -501,6 +585,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         <a class="emg-btn" href="tel:+351253617070">
           <div class="emg-icon" style="background:rgba(45,74,30,0.1);color:var(--forest);"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
           <span class="emg-label">Veterinário</span>
+        </a>
+        <a class="emg-btn" onclick="showModal('m-primeiros-socorros')">
+          <div class="emg-icon" style="background:rgba(192,57,43,0.1);color:#c0392b;"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+          <span class="emg-label">Primeiros socorros</span>
         </a>
       </div>
       <div class="block-label">Proprietário</div>
@@ -580,6 +668,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 
 <div class="modal-overlay" id="m-wc" onclick="cm('m-wc')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle" data-modal="m-wc"></div><img class="modal-img" src="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=600&auto=format&fit=crop&q=75" alt="WC"/><div class="modal-title">Casa de banho</div><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Produtos de higiene</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Shampoo, gel de banho e sabão disponíveis. Toalhas limpas no armário branco.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Máquina de lavar roupa</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Disponível na casa de banho de serviço. Detergente no armário de baixo.</p></div></div></div></div>
 
+<!-- MODAIS NOVOS -->
+<div class="modal-overlay" id="m-checkout" onclick="cm('m-checkout')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">✅ Checklist de saída</div><p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.5;">Marca cada item antes de sair. Check-out até às 11h00.</p><div id="checklist-items"></div><button class="form-btn" style="margin-top:1rem;" onclick="resetChecklist()">Reiniciar lista</button></div></div>
+
+<div class="modal-overlay" id="m-regras" onclick="cm('m-regras')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Regras da casa</div><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">🔇 Silêncio</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Respeitar silêncio entre as 22h00 e as 08h00. Piscina encerra às 21h00.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">🐾 Animais</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Animais de estimação permitidos. Não devem entrar na piscina. Responsabilidade do dono por danos.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">🚗 Estacionamento</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Dois lugares cobertos no lado esquerdo do portão. Não bloquear a entrada.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">🚭 Tabaco</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Proibido fumar dentro da casa. Área exterior permitida com cinzeiro próprio.</p></div></div></div></div>
+
+<div class="modal-overlay" id="m-reciclagem" onclick="cm('m-reciclagem')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Reciclagem</div><p style="font-size:0.82rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.5;">Sacos de reciclagem no armário debaixo do lava-loiça. Ecoponto a 200m da entrada.</p><div class="form-stack"><div class="card" style="border-left:4px solid #1a6e3c;"><div style="font-size:0.85rem;font-weight:600;color:#1a6e3c;margin-bottom:4px;">Verde · Vidro</div><p style="font-size:0.78rem;color:var(--text-mid);">Garrafas, frascos, potes de vidro</p></div><div class="card" style="border-left:4px solid #0066cc;"><div style="font-size:0.85rem;font-weight:600;color:#0066cc;margin-bottom:4px;">Azul · Papel</div><p style="font-size:0.78rem;color:var(--text-mid);">Jornais, revistas, caixas de cartão</p></div><div class="card" style="border-left:4px solid #e8a020;"><div style="font-size:0.85rem;font-weight:600;color:#b8820a;margin-bottom:4px;">Amarelo · Plástico</div><p style="font-size:0.78rem;color:var(--text-mid);">Garrafas PET, embalagens, latas metálicas</p></div><div class="card" style="border-left:4px solid #555;"><div style="font-size:0.85rem;font-weight:600;color:#555;margin-bottom:4px;">Preto · Indiferenciado</div><p style="font-size:0.78rem;color:var(--text-mid);">Resíduos não recicláveis. Recolha às terças e sextas.</p></div></div></div></div>
+
+<div class="modal-overlay" id="m-avaria" onclick="cm('m-avaria')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Caixa de fusíveis</div><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Localização</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Corredor da entrada, armário branco à direita, segundo compartimento. Chave no gancho da cozinha.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Se a luz cair</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">1. Desligue os aparelhos elétricos.<br/>2. Abra o quadro e verifique se algum disjuntor está para baixo.<br/>3. Levante o disjuntor falhado.<br/>4. Se repetir, contacte o Carlos via WhatsApp.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Linterna</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Gaveta da cozinha (lado direito). Pilhas de reserva no mesmo local.</p></div></div></div></div>
+
+<div class="modal-overlay" id="m-compras" onclick="cm('m-compras')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Compras locais</div><div class="form-stack"><a href="https://www.google.com/maps/search/supermercado+Gerês" target="_blank" class="contact-link" style="text-decoration:none;"><div class="contact-icon" style="background:rgba(90,138,60,0.12);font-size:1.4rem;width:46px;height:46px;display:flex;align-items:center;justify-content:center;">🛒</div><div><div class="contact-label">Supermercado Gerês</div><div class="contact-sub">Aberto 9h–20h · 0,8 km</div></div></a><a href="https://www.google.com/maps/search/padaria+Gerês" target="_blank" class="contact-link" style="text-decoration:none;"><div class="contact-icon" style="background:rgba(139,111,71,0.12);font-size:1.4rem;width:46px;height:46px;display:flex;align-items:center;justify-content:center;">🍞</div><div><div class="contact-label">Padaria Central</div><div class="contact-sub">Aberta 7h30–13h · 0,5 km</div></div></a><a href="https://www.google.com/maps/search/talho+Gerês" target="_blank" class="contact-link" style="text-decoration:none;"><div class="contact-icon" style="background:rgba(192,57,43,0.1);font-size:1.4rem;width:46px;height:46px;display:flex;align-items:center;justify-content:center;">🥩</div><div><div class="contact-label">Talho local</div><div class="contact-sub">Aberto 8h–13h e 15h–18h · 1,2 km</div></div></a><a href="https://www.google.com/maps/search/mercado+Terras+Bouro" target="_blank" class="contact-link" style="text-decoration:none;"><div class="contact-icon" style="background:rgba(90,138,60,0.12);font-size:1.4rem;width:46px;height:46px;display:flex;align-items:center;justify-content:center;">🌿</div><div><div class="contact-label">Mercado semanal · Terras de Bouro</div><div class="contact-sub">Às quartas-feiras · 8 km</div></div></a></div></div></div>
+
+<div class="modal-overlay" id="m-transportes" onclick="cm('m-transportes')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Transportes</div><div class="form-stack"><a href="tel:+351912345678" class="contact-link" style="text-decoration:none;"><div class="contact-icon" style="background:rgba(230,126,34,0.12);font-size:1.4rem;width:46px;height:46px;display:flex;align-items:center;justify-content:center;">🚕</div><div><div class="contact-label">Táxi local · António</div><div class="contact-sub">+351 912 345 678 · Disponível 24h</div></div></a><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:8px;">🚌 Autocarro Gerês–Braga</div><div style="display:flex;flex-direction:column;gap:5px;"><div style="display:flex;justify-content:space-between;font-size:0.78rem;"><span style="color:var(--text-mid);">Partida Gerês</span><span style="font-weight:500;">07h30 · 12h00 · 17h45</span></div><div style="display:flex;justify-content:space-between;font-size:0.78rem;"><span style="color:var(--text-mid);">Chegada Braga</span><span style="font-weight:500;">~09h00 · ~13h30 · ~19h15</span></div><div style="font-size:0.72rem;color:var(--text-light);margin-top:4px;">Operador: TUB · Paragem 50m da entrada</div></div></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">🚌 Autocarro Braga–Gerês</div><div style="display:flex;flex-direction:column;gap:5px;"><div style="display:flex;justify-content:space-between;font-size:0.78rem;"><span style="color:var(--text-mid);">Partida Braga</span><span style="font-weight:500;">08h00 · 13h30 · 18h30</span></div></div></div></div></div></div>
+
+<div class="modal-overlay" id="m-primeiros-socorros" onclick="cm('m-primeiros-socorros')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Primeiros socorros</div><div class="form-stack"><div class="card" style="border-left:4px solid var(--danger);"><div style="font-size:0.82rem;font-weight:600;color:var(--danger);margin-bottom:5px;">Emergência · 112</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Para situações graves, ligue imediatamente para o 112. Mencione: <strong>Rua da Serra, Casa do Gerês, Gerês, Braga</strong>.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Kit de primeiros socorros</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Casa de banho da suite · Armário do espelho · Caixa vermelha.</p><p style="font-size:0.78rem;color:var(--text-light);margin-top:6px;">Contém: pensos, desinfetante, ligaduras, tesoura, pinças.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">DEA (Desfibrilhador)</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Centro de saúde de Terras de Bouro · 8 km · Tel: 253 352 100</p></div></div></div></div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -656,6 +759,9 @@ function goToApp() {
   document.getElementById('app').style.display = 'block';
   document.getElementById('bottom-nav').style.display = 'flex';
   setTheme('#f5f0e8');
+  calcSunset();
+  checkFarewell();
+  renderChecklist();
 }
 
 /* ═══ NAVEGAÇÃO ═════════════════════════════════ */
@@ -674,6 +780,7 @@ function showModal(id) {
   document.body.style.position = 'fixed';
   document.body.style.width = '100%';
   if (id === 'm-qr') startQR();
+  if (id === 'm-checkout') renderChecklist();
 }
 function cm(id) {
   document.getElementById(id).classList.remove('open');
@@ -749,6 +856,80 @@ function initDragToClose() {
   });
 }
 
+/* ═══ CHECKLIST DE SAÍDA ════════════════════════ */
+var CHECKLIST = [
+  'Fechar todas as janelas e portas',
+  'Desligar ar condicionado e aquecimento',
+  'Desligar luzes em todos os compartimentos',
+  'Retirar todos os pertences pessoais',
+  'Colocar toalhas usadas no chão da casa de banho',
+  'Verificar frigorífico e tirar alimentos',
+  'Fechar torneiras',
+  'Separar lixo e colocar nos contentores',
+  'Trancar o portão do jardim',
+  'Entregar as chaves ao proprietário'
+];
+var checkDone = [];
+function renderChecklist() {
+  var container = document.getElementById('checklist-items');
+  if (!container) return;
+  container.innerHTML = '';
+  CHECKLIST.forEach(function(item, i) {
+    var done = checkDone.indexOf(i) !== -1;
+    var el = document.createElement('div');
+    el.className = 'check-item' + (done ? ' done' : '');
+    el.innerHTML = '<div class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="check-text">' + item + '</div>';
+    el.addEventListener('click', function() { toggleCheck(i); });
+    container.appendChild(el);
+  });
+  if (checkDone.length === CHECKLIST.length) showToast('Checklist completa! Boa viagem! 🎉');
+}
+function toggleCheck(i) {
+  var idx = checkDone.indexOf(i);
+  if (idx === -1) checkDone.push(i); else checkDone.splice(idx, 1);
+  renderChecklist();
+}
+function resetChecklist() { checkDone = []; renderChecklist(); }
+
+/* ═══ PÔR DO SOL ════════════════════════════════ */
+function calcSunset() {
+  var lat = 41.72 * Math.PI / 180;
+  var now = new Date();
+  var dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
+  var decl = 0.4093 * Math.sin(2 * Math.PI / 365 * (dayOfYear - 81));
+  var timeOffset = 8.20 / 15;
+  var cosH = (Math.sin(-0.0145) - Math.sin(lat) * Math.sin(decl)) / (Math.cos(lat) * Math.cos(decl));
+  if (cosH < -1 || cosH > 1) return;
+  var H = Math.acos(cosH) * 180 / Math.PI;
+  var sunsetUTC = (360 - H) / 15 + 12 + timeOffset;
+  var isDST = now.getTimezoneOffset() < -60;
+  var local = sunsetUTC + (isDST ? 2 : 1);
+  if (local >= 24) local -= 24;
+  var h = Math.floor(local);
+  var m = Math.floor((local - h) * 60);
+  var el = document.getElementById('sunset-time');
+  if (el) el.textContent = h + 'h' + (m < 10 ? '0' : '') + m;
+  var sunset = new Date(); sunset.setHours(h, m, 0, 0);
+  var diff = sunset - now;
+  var cd = document.getElementById('sunset-countdown');
+  if (cd) {
+    if (diff > 0) {
+      var hL = Math.floor(diff / 3600000), mL = Math.floor((diff % 3600000) / 60000);
+      cd.textContent = 'Faltam ' + (hL > 0 ? hL + 'h ' : '') + mL + 'min · Perfeito para fotografias';
+    } else { cd.textContent = 'Já ocorreu hoje'; }
+  }
+}
+
+/* ═══ CARTÃO DESPEDIDA ══════════════════════════ */
+function checkFarewell() {
+  var s = getSession();
+  if (!s) return;
+  var checkout = new Date(s.checkout + 'T00:00:00');
+  var now = new Date();
+  var diffDays = Math.ceil((checkout - now) / 86400000);
+  if (diffDays <= 1) { var c = document.getElementById('despedida-card'); if (c) c.style.display = 'block'; }
+}
+
 var qrStream = null, qrTimer = null;
 function startQR() {
   var res = document.getElementById('qr-result');
@@ -799,15 +980,24 @@ function loadWeather() {
       var hw = document.getElementById('hero-weather');
       if (hw) hw.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 116.71-9h1.79a4.5 4.5 0 010 9z"/></svg> ' + temp + '° · ' + emoji + ' ' + cond;
       function set(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
-      set('wtemp', temp + '°'); set('wcond', emoji + '  ' + cond);
+      // hero pill
+      var hw = document.getElementById('hero-weather');
+      if (hw) hw.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 116.71-9h1.79a4.5 4.5 0 010 9z"/></svg> ' + temp + '° · ' + emoji + ' ' + cond;
+      // full-page meteo
+      set('meteo-emoji', emoji);
+      set('meteo-temp-big', temp + '°');
+      set('meteo-cond', cond);
+      var now = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+      set('meteo-time-display', now);
+      // stats (shared IDs)
       set('whumid', Math.round(c.relative_humidity_2m) + '%');
       set('wwind', Math.round(c.wind_speed_10m));
       set('wuv', Math.round(c.uv_index || 0));
-      set('wtime', new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }));
+      // banner image
       var wb = document.getElementById('weather-banner');
       if (wb) wb.src = (c.weather_code === 0 || c.weather_code <= 2)
-        ? 'https://images.unsplash.com/photo-1530908295418-a12e326966ba?w=800&auto=format&fit=crop&q=75'
-        : 'https://images.unsplash.com/photo-1501691223387-dd0500403074?w=800&auto=format&fit=crop&q=75';
+        ? 'https://images.unsplash.com/photo-1530908295418-a12e326966ba?w=900&auto=format&fit=crop&q=80'
+        : 'https://images.unsplash.com/photo-1501691223387-dd0500403074?w=900&auto=format&fit=crop&q=80';
       var days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
       var today = new Date().getDay();
       var fc = document.getElementById('fc-row');
