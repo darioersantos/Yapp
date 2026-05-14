@@ -72,37 +72,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 /* APP */
 #app{display:none;padding-bottom:70px;}
 
-/* PAGES — transform-based transitions (GPU, no layout recalc) */
-#pages-container{position:relative;overflow:hidden;}
+/* PAGES — fade + scale parallax effect */
 .page{
-  display:block;
-  position:absolute;top:0;left:0;width:100%;
-  opacity:0;
-  pointer-events:none;
-  transform:translateX(100%);
-  transition:transform 0.42s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
-  will-change:transform,opacity;
-  min-height:calc(100svh - 130px);
+  display:none;
 }
 .page.active{
-  position:relative;
-  opacity:1;
-  pointer-events:all;
-  transform:translateX(0);
+  display:block;
+  animation:page-appear 0.5s cubic-bezier(0.16,1,0.3,1) both;
 }
-.page.slide-out-left{
-  position:absolute;
-  opacity:0;
-  pointer-events:none;
-  transform:translateX(-100%);
-  transition:transform 0.42s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+@keyframes page-appear{
+  0%  {opacity:0;transform:scale(0.97) translateY(10px);}
+  60% {opacity:1;}
+  100%{opacity:1;transform:scale(1) translateY(0);}
 }
-.page.slide-out-right{
-  position:absolute;
-  opacity:0;
-  pointer-events:none;
-  transform:translateX(100%);
-  transition:transform 0.42s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+/* Section parallax on scroll */
+.section{padding:1.6rem 1.2rem 1.2rem;}
+.parallax-section{
+  transform:translateY(0);
+  transition:transform 0.1s linear;
 }
 .section{padding:1.6rem 1.2rem 1.2rem;}
 .section-tag{font-size:10px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;color:var(--sage);margin-bottom:5px;}
@@ -236,6 +223,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 .qr-frame{position:absolute;inset:20%;border:2px solid var(--sage-light);border-radius:12px;pointer-events:none;}
 #qr-result{font-size:0.82rem;color:var(--text-mid);text-align:center;min-height:1.2rem;margin-top:0.5rem;}
 
+/* ACCORDION */
+.acc-item{background:#fff;border:1px solid var(--card-border);border-radius:var(--radius);overflow:hidden;margin-bottom:0.6rem;}
+.acc-header{display:flex;align-items:center;gap:12px;padding:1rem 1.1rem;cursor:pointer;-webkit-user-select:none;user-select:none;}
+.acc-header-img{width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;}
+.acc-header-text{flex:1;}
+.acc-header-label{font-size:0.9rem;font-weight:500;color:var(--text-dark);}
+.acc-header-sub{font-size:0.75rem;color:var(--text-light);margin-top:2px;}
+.acc-chevron{width:20px;height:20px;flex-shrink:0;stroke:var(--text-light);fill:none;stroke-width:2;transition:transform 0.3s ease;}
+.acc-item.open .acc-chevron{transform:rotate(180deg);}
+.acc-body{max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1);}
+.acc-item.open .acc-body{max-height:800px;}
+.acc-inner{padding:0 1.1rem 1.1rem;}
+.acc-inner .form-stack{display:flex;flex-direction:column;gap:0.5rem;}
+
 /* CHECKLIST */
 .check-item{display:flex;align-items:center;gap:12px;padding:0.85rem 1rem;background:#fff;border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:0.5rem;cursor:pointer;transition:all 0.18s;}
 .check-item.done{background:rgba(90,138,60,0.07);border-color:rgba(90,138,60,0.25);}
@@ -343,7 +344,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 
 <!-- APP -->
 <div id="app">
-<div id="pages-container">
 
   <!-- CASA -->
   <div id="page-casa" class="page active">
@@ -450,41 +450,88 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         <p class="section-sub">Tudo para tornar a tua estadia ainda mais confortável.</p>
       </div>
 
-      <!-- Serviços principais -->
-      <div class="services-grid" style="margin-bottom:0.75rem;">
-        <div class="svc-card" onclick="showModal('m-limpeza')">
-          <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&auto=format&fit=crop&q=75" alt="Limpeza"/>
-          <div class="svc-card-body"><div class="svc-card-label">Limpeza extra</div><div class="svc-card-sub">Pedido rápido</div></div>
+      <!-- Acordeão de serviços -->
+
+      <!-- Limpeza extra -->
+      <div class="acc-item" id="acc-limpeza">
+        <div class="acc-header" onclick="toggleAcc('acc-limpeza')">
+          <img class="acc-header-img" src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=200&auto=format&fit=crop&q=75" alt="Limpeza"/>
+          <div class="acc-header-text"><div class="acc-header-label">Limpeza extra</div><div class="acc-header-sub">Pedido rápido</div></div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-        <div class="svc-card" onclick="showModal('m-bicicletas')">
-          <img src="https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=400&auto=format&fit=crop&q=75" alt="Bicicletas"/>
-          <div class="svc-card-body"><div class="svc-card-label">Aluguer de bicicletas</div><div class="svc-card-sub">A partir de €10/dia</div></div>
-        </div>
-        <div class="svc-card" onclick="showModal('m-checkout')">
-          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&auto=format&fit=crop&q=75" alt="Check-out"/>
-          <div class="svc-card-body"><div class="svc-card-label">Checklist saída</div><div class="svc-card-sub">Antes de partir</div></div>
-        </div>
-        <div class="svc-card" onclick="showModal('m-regras')">
-          <img src="https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=400&auto=format&fit=crop&q=75" alt="Regras"/>
-          <div class="svc-card-body"><div class="svc-card-label">Regras da casa</div><div class="svc-card-sub">Silêncio, lixo, pets</div></div>
-        </div>
-        <div class="svc-card" onclick="showModal('m-reciclagem')">
-          <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=400&auto=format&fit=crop&q=75" alt="Reciclagem"/>
-          <div class="svc-card-body"><div class="svc-card-label">Reciclagem</div><div class="svc-card-sub">Contentores & recolha</div></div>
-        </div>
-        <div class="svc-card" onclick="showModal('m-avaria')">
-          <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&auto=format&fit=crop&q=75" alt="Avaria"/>
-          <div class="svc-card-body"><div class="svc-card-label">Caixa de fusíveis</div><div class="svc-card-sub">Se a luz cair</div></div>
-        </div>
-        <div class="svc-card" onclick="showModal('m-compras')">
-          <img src="https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=400&auto=format&fit=crop&q=75" alt="Compras"/>
-          <div class="svc-card-body"><div class="svc-card-label">Compras locais</div><div class="svc-card-sub">Mercado, padaria...</div></div>
-        </div>
-        <div class="svc-card" onclick="showModal('m-transportes')">
-          <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&auto=format&fit=crop&q=75" alt="Transportes"/>
-          <div class="svc-card-body"><div class="svc-card-label">Transportes</div><div class="svc-card-sub">Autocarro & táxi</div></div>
-        </div>
+        <div class="acc-body"><div class="acc-inner"><p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.5;">Serviço disponível das 10h às 16h. O pedido será confirmado por WhatsApp.</p><div class="form-stack"><select class="form-input" style="height:46px;"><option>Hoje</option><option>Amanhã</option><option>Depois de amanhã</option></select><select class="form-input" style="height:46px;"><option>10:00</option><option>12:00</option><option>14:00</option></select><input class="form-input" placeholder="Observações (opcional)"/><button class="form-btn" onclick="pedidoOk(null)">Enviar pedido</button></div></div></div>
       </div>
+
+      <!-- Aluguer de bicicletas -->
+      <div class="acc-item" id="acc-bicicletas">
+        <div class="acc-header" onclick="toggleAcc('acc-bicicletas')">
+          <img class="acc-header-img" src="https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=200&auto=format&fit=crop&q=75" alt="Bicicletas"/>
+          <div class="acc-header-text"><div class="acc-header-label">Aluguer de bicicletas</div><div class="acc-header-sub">A partir de €10/dia</div></div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body"><div class="acc-inner"><div class="form-stack"><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.9rem;font-weight:500;">Bicicleta de montanha</span><span class="chip">€12/dia</span></div><div style="font-size:0.78rem;color:var(--text-light);margin-top:4px;">21 velocidades · Capacete incluído</div></div><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.9rem;font-weight:500;">Bicicleta de estrada</span><span class="chip">€10/dia</span></div><div style="font-size:0.78rem;color:var(--text-light);margin-top:4px;">Ciclovia do rio Cávado</div></div><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.9rem;font-weight:500;">E-Bike elétrica</span><span class="chip">€20/dia</span></div><div style="font-size:0.78rem;color:var(--text-light);margin-top:4px;">Bateria 80 km · Carregamento incluído</div></div><button class="form-btn" onclick="pedidoOk(null)">Reservar via WhatsApp</button></div></div></div>
+      </div>
+
+      <!-- Checklist de saída -->
+      <div class="acc-item" id="acc-checkout">
+        <div class="acc-header" onclick="toggleAcc('acc-checkout');renderChecklist()">
+          <img class="acc-header-img" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&auto=format&fit=crop&q=75" alt="Check-out"/>
+          <div class="acc-header-text"><div class="acc-header-label">Checklist de saída</div><div class="acc-header-sub">Antes de partir</div></div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body"><div class="acc-inner"><p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:0.75rem;line-height:1.5;">Marca cada item antes de sair. Check-out até às 11h00.</p><div id="checklist-items-acc"></div><button class="form-btn" style="margin-top:0.75rem;" onclick="resetChecklistAcc()">Reiniciar lista</button></div></div>
+      </div>
+
+      <!-- Regras da casa -->
+      <div class="acc-item" id="acc-regras">
+        <div class="acc-header" onclick="toggleAcc('acc-regras')">
+          <img class="acc-header-img" src="https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=200&auto=format&fit=crop&q=75" alt="Regras"/>
+          <div class="acc-header-text"><div class="acc-header-label">Regras da casa</div><div class="acc-header-sub">Silêncio, lixo, animais</div></div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body"><div class="acc-inner"><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Silêncio</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Respeitar silêncio entre as 22h00 e as 08h00. Piscina encerra às 21h00.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Animais</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Animais de estimação permitidos. Não devem entrar na piscina.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Estacionamento</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Dois lugares cobertos no lado esquerdo do portão.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Tabaco</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Proibido fumar dentro da casa. Área exterior permitida.</p></div></div></div></div>
+      </div>
+
+      <!-- Reciclagem -->
+      <div class="acc-item" id="acc-reciclagem">
+        <div class="acc-header" onclick="toggleAcc('acc-reciclagem')">
+          <img class="acc-header-img" src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=200&auto=format&fit=crop&q=75" alt="Reciclagem"/>
+          <div class="acc-header-text"><div class="acc-header-label">Reciclagem</div><div class="acc-header-sub">Contentores e recolha</div></div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body"><div class="acc-inner"><p style="font-size:0.82rem;color:var(--text-mid);margin-bottom:0.75rem;line-height:1.5;">Ecoponto a 200m da entrada.</p><div class="form-stack"><div class="card" style="border-left:4px solid #1a6e3c;"><div style="font-size:0.85rem;font-weight:600;color:#1a6e3c;margin-bottom:4px;">Verde · Vidro</div><p style="font-size:0.78rem;color:var(--text-mid);">Garrafas, frascos, potes de vidro</p></div><div class="card" style="border-left:4px solid #0066cc;"><div style="font-size:0.85rem;font-weight:600;color:#0066cc;margin-bottom:4px;">Azul · Papel</div><p style="font-size:0.78rem;color:var(--text-mid);">Jornais, revistas, caixas de cartão</p></div><div class="card" style="border-left:4px solid #e8a020;"><div style="font-size:0.85rem;font-weight:600;color:#b8820a;margin-bottom:4px;">Amarelo · Plástico</div><p style="font-size:0.78rem;color:var(--text-mid);">Garrafas PET, embalagens, latas</p></div><div class="card" style="border-left:4px solid #555;"><div style="font-size:0.85rem;font-weight:600;color:#555;margin-bottom:4px;">Preto · Indiferenciado</div><p style="font-size:0.78rem;color:var(--text-mid);">Resíduos não recicláveis. Recolha terças e sextas.</p></div></div></div></div>
+      </div>
+
+      <!-- Caixa de fusíveis -->
+      <div class="acc-item" id="acc-avaria">
+        <div class="acc-header" onclick="toggleAcc('acc-avaria')">
+          <img class="acc-header-img" src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=200&auto=format&fit=crop&q=75" alt="Avaria"/>
+          <div class="acc-header-text"><div class="acc-header-label">Caixa de fusíveis</div><div class="acc-header-sub">Se a luz cair</div></div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body"><div class="acc-inner"><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Localização</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Corredor da entrada, armário branco à direita. Chave no gancho da cozinha.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">O que fazer</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">1. Desligue os aparelhos.<br/>2. Abra o quadro e levante o disjuntor falhado.<br/>3. Se repetir, contacte o Carlos via WhatsApp.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Lanterna</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Gaveta da cozinha, lado direito. Pilhas de reserva no mesmo local.</p></div></div></div></div>
+      </div>
+
+      <!-- Compras locais -->
+      <div class="acc-item" id="acc-compras">
+        <div class="acc-header" onclick="toggleAcc('acc-compras')">
+          <img class="acc-header-img" src="https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=200&auto=format&fit=crop&q=75" alt="Compras"/>
+          <div class="acc-header-text"><div class="acc-header-label">Compras locais</div><div class="acc-header-sub">Mercado, padaria, talho</div></div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body"><div class="acc-inner"><div class="form-stack"><a href="https://www.google.com/maps/search/supermercado+Gerês" target="_blank" class="contact-link" style="text-decoration:none;"><div class="contact-icon" style="background:rgba(90,138,60,0.12);font-size:1.3rem;width:46px;height:46px;display:flex;align-items:center;justify-content:center;">🛒</div><div><div class="contact-label">Supermercado Gerês</div><div class="contact-sub">9h–20h · 0,8 km</div></div></a><a href="https://www.google.com/maps/search/padaria+Gerês" target="_blank" class="contact-link" style="text-decoration:none;"><div class="contact-icon" style="background:rgba(139,111,71,0.12);font-size:1.3rem;width:46px;height:46px;display:flex;align-items:center;justify-content:center;">🍞</div><div><div class="contact-label">Padaria Central</div><div class="contact-sub">7h30–13h · 0,5 km</div></div></a><a href="https://www.google.com/maps/search/talho+Gerês" target="_blank" class="contact-link" style="text-decoration:none;"><div class="contact-icon" style="background:rgba(192,57,43,0.1);font-size:1.3rem;width:46px;height:46px;display:flex;align-items:center;justify-content:center;">🥩</div><div><div class="contact-label">Talho local</div><div class="contact-sub">8h–13h · 1,2 km</div></div></a><a href="https://www.google.com/maps/search/mercado+Terras+Bouro" target="_blank" class="contact-link" style="text-decoration:none;"><div class="contact-icon" style="background:rgba(90,138,60,0.12);font-size:1.3rem;width:46px;height:46px;display:flex;align-items:center;justify-content:center;">🌿</div><div><div class="contact-label">Mercado Terras de Bouro</div><div class="contact-sub">Quartas-feiras · 8 km</div></div></a></div></div></div>
+      </div>
+
+      <!-- Transportes -->
+      <div class="acc-item" id="acc-transportes">
+        <div class="acc-header" onclick="toggleAcc('acc-transportes')">
+          <img class="acc-header-img" src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=200&auto=format&fit=crop&q=75" alt="Transportes"/>
+          <div class="acc-header-text"><div class="acc-header-label">Transportes</div><div class="acc-header-sub">Autocarro e táxi</div></div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body"><div class="acc-inner"><div class="form-stack"><a href="tel:+351912345678" class="contact-link" style="text-decoration:none;"><div class="contact-icon" style="background:rgba(230,126,34,0.12);font-size:1.3rem;width:46px;height:46px;display:flex;align-items:center;justify-content:center;">🚕</div><div><div class="contact-label">Táxi local · António</div><div class="contact-sub">+351 912 345 678 · 24h</div></div></a><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:8px;">Autocarro Gerês–Braga</div><div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:4px;"><span style="color:var(--text-mid);">Partida Gerês</span><span style="font-weight:500;">07h30 · 12h00 · 17h45</span></div><div style="font-size:0.72rem;color:var(--text-light);">Operador: TUB · Paragem 50m da entrada</div></div></div></div></div>
+      </div>
+
 
       <!-- Livro de registos virtual -->
       <div class="block-label">Livro de hóspedes</div>
@@ -708,7 +755,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         </div>
       </div>
       <a href="https://yapp.pt" target="_blank" class="yapp-footer" style="display:block;text-decoration:none;">
-        <img src="yapp-logo.png" alt="YAPP" style="width:60px;height:60px;object-fit:contain;margin-bottom:6px;border-radius:12px;"/>
+        <img src="yapp-logo.png" alt="YAPP" style="width:60px;height:60px;object-fit:contain;margin-bottom:6px;mix-blend-mode:multiply;"/>
         <div class="yapp-footer-brand">YAPP · Guia do Hóspede</div>
         <div class="yapp-footer-sub">yapp.pt</div>
       </a>
@@ -716,7 +763,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
   </div>
 </div>
 
-</div><!-- /pages-container -->
 
 <!-- BOTTOM NAV -->
 <div id="bottom-nav" style="display:none;">
@@ -844,6 +890,7 @@ function goToApp() {
   calcSunset();
   checkFarewell();
   renderChecklist();
+  renderChecklistAcc();
   renderGuestbook();
   initScrollHideNav();
 }
@@ -931,26 +978,27 @@ function saveGuestEntry(name, text, rating) {
   localStorage.setItem(GUESTBOOK_KEY, JSON.stringify(entries));
   renderGuestbook();
 }
+// Static pre-seeded entries (visible to ALL guests on ALL devices)
+var STATIC_ENTRIES = [
+  { name:'Família Rodrigues', rating:5, date:'12/04/2025', text:'Uma estadia absolutamente fantástica! A casa é linda, a piscina perfeita e a churrasqueira foi um highlight. Voltamos com certeza!' },
+  { name:'João & Ana Ferreira', rating:5, date:'28/03/2025', text:'Tudo impecável. O Carlos foi sempre muito disponível e atencioso. A localização no meio da natureza é única. Recomendamos a 100%.' },
+  { name:'Família Costa', rating:5, date:'10/03/2025', text:'Casa bem equipada, confortável e com uma vista deslumbrante. Os miúdos adoraram a piscina e a zona dos trilhos é incrível.' }
+];
+
 function renderGuestbook() {
-  var entries = getGuestbook();
+  var localEntries = getGuestbook();
+  var allEntries = STATIC_ENTRIES.concat(localEntries);
   var stars = function(n) { var s = ''; for(var i=0;i<5;i++) s += i<n ? '★' : '☆'; return s; };
-  var html = '';
-  if (entries.length === 0) { html = '<div style="font-size:0.82rem;color:var(--text-light);text-align:center;padding:1rem;">Ainda não há registos.</div>'; }
-  else {
-    entries.slice(0,3).forEach(function(e) {
-      html += '<div style="padding:0.75rem;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--card-border);margin-bottom:0.5rem;">';
-      html += '<div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.8rem;font-weight:600;color:var(--text-dark);">' + e.name + '</span><span style="font-size:0.7rem;color:var(--text-light);">' + e.date + '</span></div>';
-      html += '<div style="color:var(--earth);font-size:0.8rem;margin:2px 0;">' + stars(e.rating) + '</div>';
-      html += '<div style="font-size:0.78rem;color:var(--text-mid);line-height:1.4;">' + e.text + '</div></div>';
-    });
+  function entryHTML(e) {
+    return '<div style="padding:0.75rem;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--card-border);margin-bottom:0.5rem;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.8rem;font-weight:600;color:var(--text-dark);">' + e.name + '</span><span style="font-size:0.7rem;color:var(--text-light);">' + e.date + '</span></div>'
+      + '<div style="color:var(--earth);font-size:0.8rem;margin:2px 0;">' + stars(e.rating) + '</div>'
+      + '<div style="font-size:0.78rem;color:var(--text-mid);line-height:1.4;">' + e.text + '</div></div>';
   }
   var preview = document.getElementById('guestbook-preview');
-  if (preview) preview.innerHTML = html;
-  var full = entries.map(function(e) {
-    return '<div style="padding:0.75rem;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--card-border);margin-bottom:0.5rem;"><div style="display:flex;justify-content:space-between;"><span style="font-size:0.8rem;font-weight:600;color:var(--text-dark);">' + e.name + '</span><span style="font-size:0.7rem;color:var(--text-light);">' + e.date + '</span></div><div style="color:var(--earth);font-size:0.8rem;margin:2px 0;">' + stars(e.rating) + '</div><div style="font-size:0.78rem;color:var(--text-mid);line-height:1.4;">' + e.text + '</div></div>';
-  }).join('') || '<div style="font-size:0.82rem;color:var(--text-light);text-align:center;padding:1rem;">Ainda não há registos.</div>';
+  if (preview) preview.innerHTML = allEntries.slice(0,2).map(entryHTML).join('');
   var list = document.getElementById('guestbook-list');
-  if (list) list.innerHTML = full;
+  if (list) list.innerHTML = allEntries.map(entryHTML).join('') || '<div style="font-size:0.82rem;color:var(--text-light);text-align:center;padding:1rem;">Ainda não há registos.</div>';
 }
 
 /* ═══ MODAL DRAG TO CLOSE (touch only) ══════════ */
@@ -1062,6 +1110,37 @@ function stopLoginQR() {
   if (wrap) wrap.style.display = 'none';
 }
 
+/* ═══ ACORDEÃO ══════════════════════════════════ */
+function toggleAcc(id) {
+  var item = document.getElementById(id);
+  var wasOpen = item.classList.contains('open');
+  // Optionally close others (uncomment for single-open behavior)
+  // document.querySelectorAll('.acc-item.open').forEach(function(el) { el.classList.remove('open'); });
+  item.classList.toggle('open', !wasOpen);
+}
+
+/* ═══ CHECKLIST INLINE (accordeão) ═════════════ */
+var checkDoneAcc = [];
+function renderChecklistAcc() {
+  var container = document.getElementById('checklist-items-acc');
+  if (!container) return;
+  container.innerHTML = '';
+  CHECKLIST.forEach(function(item, i) {
+    var done = checkDoneAcc.indexOf(i) !== -1;
+    var el = document.createElement('div');
+    el.className = 'check-item' + (done ? ' done' : '');
+    el.innerHTML = '<div class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="check-text">' + item + '</div>';
+    el.addEventListener('click', function() {
+      var idx = checkDoneAcc.indexOf(i);
+      if (idx === -1) checkDoneAcc.push(i); else checkDoneAcc.splice(idx, 1);
+      renderChecklistAcc();
+      if (checkDoneAcc.length === CHECKLIST.length) showToast('Checklist completa! Boa viagem!');
+    });
+    container.appendChild(el);
+  });
+}
+function resetChecklistAcc() { checkDoneAcc = []; renderChecklistAcc(); }
+
 /* ═══ CHECKLIST DE SAÍDA ════════════════════════ */
 var CHECKLIST = [
   'Fechar todas as janelas e portas',
@@ -1094,6 +1173,7 @@ function toggleCheck(i) {
   var idx = checkDone.indexOf(i);
   if (idx === -1) checkDone.push(i); else checkDone.splice(idx, 1);
   renderChecklist();
+  renderChecklistAcc();
   renderGuestbook();
 }
 function resetChecklist() { checkDone = []; renderChecklist(); }
