@@ -45,7 +45,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 .expired-sub{font-size:0.88rem;color:rgba(255,255,255,0.5);line-height:1.6;max-width:280px;}
 
 /* SPLASH */
-#splash{position:relative;height:100svh;min-height:580px;overflow:hidden;display:flex;flex-direction:column;}
+#splash{position:relative;height:100svh;min-height:580px;overflow:hidden;}
 .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,25,8,0.1) 0%,rgba(15,25,8,0.05) 35%,rgba(15,25,8,0.55) 65%,rgba(15,25,8,0.95) 100%);}
 .hero-top{position:absolute;top:0;left:0;right:0;z-index:3;padding:1.4rem 1.5rem;display:flex;justify-content:space-between;align-items:center;}
@@ -53,8 +53,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 .hero-pills{display:flex;gap:0.5rem;align-items:center;}
 .nav-pill{background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.28);border-radius:20px;padding:7px 14px;font-size:0.75rem;font-weight:500;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;letter-spacing:0.03em;text-decoration:none;white-space:nowrap;}
 .nav-pill svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;flex-shrink:0;}
-.hero-spacer{flex:1;position:relative;z-index:2;}
-.hero-content{position:relative;z-index:2;padding:2rem 1.5rem 2.8rem;color:#fff;}
+.hero-content{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:2rem 1.5rem 2.8rem;color:#fff;}
 .hero-label{font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--sage-light);margin-bottom:0.8rem;animation:fade-up 0.7s 0.3s ease both;}
 .hero-title{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:600;line-height:1.05;margin-bottom:0.6rem;animation:fade-up 0.7s 0.45s ease both;}
 .hero-sub{font-size:0.9rem;font-weight:300;opacity:0.8;line-height:1.55;margin-bottom:2rem;animation:fade-up 0.7s 0.55s ease both;}
@@ -262,7 +261,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
       </a>
     </div>
   </div>
-  <div class="hero-spacer"></div>
   <div class="hero-content">
     <div class="hero-label">Bem-vindo ao Gerês</div>
     <h1 class="hero-title">A tua casa<br/>na natureza.</h1>
@@ -458,7 +456,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 
       <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.6956,-8.1782" target="_blank"><img src="https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=700&auto=format&fit=crop&q=80" alt="Fecha de Barjas"/><div class="img-card-body"><div class="img-card-tag">Cascata · Natureza</div><div class="img-card-title">Cascata da Fecha de Barjas</div><div class="img-card-sub">Uma das mais imponentes do Gerês. Trilho de 40 min pela floresta.</div><div class="img-card-meta"><span class="dist-badge">9,1 km</span><span class="rating">★★★★★ 4.8</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
 
-      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7498,-8.1321" target="_blank"><img src="https://images.unsplash.com/photo-1543039625-14dc3f55fad5?w=700&auto=format&fit=crop&q=80" alt="Ermida"/><div class="img-card-body"><div class="img-card-tag">Praia fluvial</div><div class="img-card-title">Praia Fluvial de Ermida</div><div class="img-card-sub">Águas cristalinas no rio Homem. Ideal para famílias, com estacionamento gratuito.</div><div class="img-card-meta"><span class="dist-badge">6,8 km</span><span class="rating">★★★★☆ 4.5</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
+      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7498,-8.1321" target="_blank"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=700&auto=format&fit=crop&q=80" alt="Ermida"/><div class="img-card-body"><div class="img-card-tag">Praia fluvial</div><div class="img-card-title">Praia Fluvial de Ermida</div><div class="img-card-sub">Águas cristalinas no rio Homem. Ideal para famílias, com estacionamento gratuito.</div><div class="img-card-meta"><span class="dist-badge">6,8 km</span><span class="rating">★★★★☆ 4.5</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
 
       <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7281,-8.1574" target="_blank"><img src="https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=700&auto=format&fit=crop&q=80" alt="Vilarinho"/><div class="img-card-body"><div class="img-card-tag">Praia fluvial · Barragem</div><div class="img-card-title">Praia de Vilarinho das Furnas</div><div class="img-card-sub">Vista para as ruínas da aldeia submersa. Espetacular.</div><div class="img-card-meta"><span class="dist-badge">3,9 km</span><span class="rating">★★★★★ 4.7</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
 
@@ -670,8 +668,19 @@ function sp(name) {
 }
 
 /* ═══ MODAIS ════════════════════════════════════ */
-function showModal(id) { document.getElementById(id).classList.add('open'); if (id === 'm-qr') startQR(); }
-function cm(id)        { document.getElementById(id).classList.remove('open'); }
+function showModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.body.style.position = 'fixed';
+  document.body.style.width = '100%';
+  if (id === 'm-qr') startQR();
+}
+function cm(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+  document.body.style.position = '';
+  document.body.style.width = '';
+}
 
 /* ═══ TOAST ═════════════════════════════════════ */
 function showToast(msg) {
@@ -704,7 +713,6 @@ function initDragToClose() {
     var startY = 0, curY = 0, dragging = false;
 
     sheet.addEventListener('touchstart', function(e) {
-      // only start drag from top 60px of sheet (handle area)
       var rect = sheet.getBoundingClientRect();
       var touchY = e.touches[0].clientY;
       if (touchY - rect.top > 60) return;
@@ -716,10 +724,11 @@ function initDragToClose() {
 
     sheet.addEventListener('touchmove', function(e) {
       if (!dragging) return;
+      e.preventDefault();
       curY = e.touches[0].clientY - startY;
       if (curY < 0) curY = 0;
       sheet.style.transform = 'translateY(' + curY + 'px)';
-    }, { passive: true });
+    }, { passive: false });
 
     sheet.addEventListener('touchend', function() {
       if (!dragging) return;
@@ -727,10 +736,14 @@ function initDragToClose() {
       sheet.style.transition = '';
       if (curY > 90) {
         overlay.classList.remove('open');
-        // stop QR if closing that modal
+        sheet.style.transform = '';
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
         if (overlay.id === 'm-qr') stopQR();
+      } else {
+        sheet.style.transform = '';
       }
-      sheet.style.transform = '';
       curY = 0;
     });
   });
