@@ -45,15 +45,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 .expired-sub{font-size:0.88rem;color:rgba(255,255,255,0.5);line-height:1.6;max-width:280px;}
 
 /* SPLASH */
-#splash{position:relative;height:100dvh;min-height:580px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;}
+#splash{position:relative;height:100svh;min-height:580px;overflow:hidden;display:flex;flex-direction:column;}
 .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,25,8,0.1) 0%,rgba(15,25,8,0.05) 35%,rgba(15,25,8,0.6) 70%,rgba(15,25,8,0.92) 100%);}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,25,8,0.1) 0%,rgba(15,25,8,0.05) 35%,rgba(15,25,8,0.55) 65%,rgba(15,25,8,0.95) 100%);}
 .hero-top{position:absolute;top:0;left:0;right:0;z-index:3;padding:1.4rem 1.5rem;display:flex;justify-content:space-between;align-items:center;}
 .logo-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:#fff;letter-spacing:0.03em;}
 .hero-pills{display:flex;gap:0.5rem;align-items:center;}
 .nav-pill{background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.28);border-radius:20px;padding:7px 14px;font-size:0.75rem;font-weight:500;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;letter-spacing:0.03em;text-decoration:none;white-space:nowrap;}
 .nav-pill svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;flex-shrink:0;}
-.hero-content{position:relative;z-index:2;padding:2rem 1.5rem 2.8rem;color:#fff;margin-top:auto;}
+.hero-spacer{flex:1;position:relative;z-index:2;}
+.hero-content{position:relative;z-index:2;padding:2rem 1.5rem 2.8rem;color:#fff;}
 .hero-label{font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--sage-light);margin-bottom:0.8rem;animation:fade-up 0.7s 0.3s ease both;}
 .hero-title{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:600;line-height:1.05;margin-bottom:0.6rem;animation:fade-up 0.7s 0.45s ease both;}
 .hero-sub{font-size:0.9rem;font-weight:300;opacity:0.8;line-height:1.55;margin-bottom:2rem;animation:fade-up 0.7s 0.55s ease both;}
@@ -63,8 +64,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 .weather-pill svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;flex-shrink:0;}
 @keyframes fade-up{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
 
-/* MODAL drag-to-close handle */
-.modal-handle{width:38px;height:4px;border-radius:2px;background:var(--earth-light);margin:0 auto 1.2rem;cursor:grab;touch-action:none;}
+/* MODAL handle */
+.modal-handle{width:42px;height:5px;border-radius:3px;background:var(--earth-light);margin:0 auto 1.2rem;cursor:grab;}
 
 /* APP */
 #app{display:none;padding-bottom:70px;}
@@ -149,7 +150,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 
 /* DISCOVER */
 .img-card{background:#fff;border:1px solid var(--card-border);border-radius:var(--radius);overflow:hidden;margin-bottom:0.75rem;text-decoration:none;display:block;}
-.img-card img{width:100%;height:150px;object-fit:cover;display:block;}
+.img-card img{width:100%;height:160px;object-fit:cover;display:block;}
 .img-card-body{padding:0.9rem 1rem;}
 .img-card-tag{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--sage);margin-bottom:3px;}
 .img-card-title{font-size:0.95rem;font-weight:500;color:var(--text-dark);}
@@ -261,6 +262,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
       </a>
     </div>
   </div>
+  <div class="hero-spacer"></div>
   <div class="hero-content">
     <div class="hero-label">Bem-vindo ao Gerês</div>
     <h1 class="hero-title">A tua casa<br/>na natureza.</h1>
@@ -308,6 +310,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         <div class="svc-card" onclick="showModal('m-cozinha')">
           <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=400&auto=format&fit=crop&q=75" alt="Cozinha"/>
           <div class="svc-card-body"><div class="svc-card-label">Cozinha</div><div class="svc-card-sub">Utensílios & eletros</div></div>
+        </div>
+        <div class="svc-card" onclick="showModal('m-churrasco')">
+          <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400&auto=format&fit=crop&q=75" alt="Churrasqueira"/>
+          <div class="svc-card-body"><div class="svc-card-label">Churrasqueira</div><div class="svc-card-sub">Como utilizar</div></div>
         </div>
         <div class="svc-card" onclick="showModal('m-wc')">
           <img src="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=400&auto=format&fit=crop&q=75" alt="WC"/>
@@ -397,14 +403,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
           <img src="https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=400&auto=format&fit=crop&q=75" alt="Bicicletas"/>
           <div class="svc-card-body"><div class="svc-card-label">Aluguer de bicicletas</div><div class="svc-card-sub">A partir de €10/dia</div></div>
         </div>
-        <div class="svc-card" onclick="showModal('m-churrasco')">
-          <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400&auto=format&fit=crop&q=75" alt="Churrasqueira"/>
-          <div class="svc-card-body"><div class="svc-card-label">Churrasqueira</div><div class="svc-card-sub">Como utilizar</div></div>
-        </div>
-        <div class="svc-card" onclick="showModal('m-cozinha')">
-          <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=400&auto=format&fit=crop&q=75" alt="Cozinha"/>
-          <div class="svc-card-body"><div class="svc-card-label">Cozinha</div><div class="svc-card-sub">Utensílios &amp; eletros</div></div>
-        </div>
       </div>
     </div>
   </div>
@@ -475,11 +473,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         <div style="flex:1;height:1px;background:var(--cream-dark);"></div>
       </div>
 
-      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7214,-8.1583" target="_blank"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=700&auto=format&fit=crop&q=80" alt="Taberna" style="height:130px;"/><div class="img-card-body"><div class="img-card-tag">Cozinha regional</div><div class="img-card-title">Taberna do Gerês</div><div class="img-card-sub">Cabrito assado no forno a lenha. Reserva recomendada ao fim de semana.</div><div class="img-card-meta"><span class="dist-badge">1,3 km</span><span class="rating">★★★★★ 4.9</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
+      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7214,-8.1583" target="_blank"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=700&auto=format&fit=crop&q=80" alt="Taberna"/><div class="img-card-body"><div class="img-card-tag">Cozinha regional</div><div class="img-card-title">Taberna do Gerês</div><div class="img-card-sub">Cabrito assado no forno a lenha. Reserva recomendada ao fim de semana.</div><div class="img-card-meta"><span class="dist-badge">1,3 km</span><span class="rating">★★★★★ 4.9</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
 
-      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7198,-8.1901" target="_blank"><img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=700&auto=format&fit=crop&q=80" alt="Tasca" style="height:130px;"/><div class="img-card-body"><div class="img-card-tag">Peixe &amp; petiscos</div><div class="img-card-title">Tasca da Ribeira</div><div class="img-card-sub">Trutas do rio e petiscos regionais com vista para a ribeira.</div><div class="img-card-meta"><span class="dist-badge">3,7 km</span><span class="rating">★★★★☆ 4.4</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
+      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7198,-8.1901" target="_blank"><img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=700&auto=format&fit=crop&q=80" alt="Tasca"/><div class="img-card-body"><div class="img-card-tag">Peixe &amp; petiscos</div><div class="img-card-title">Tasca da Ribeira</div><div class="img-card-sub">Trutas do rio e petiscos regionais com vista para a ribeira.</div><div class="img-card-meta"><span class="dist-badge">3,7 km</span><span class="rating">★★★★☆ 4.4</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
 
-      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7301,-8.1423" target="_blank"><img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=700&auto=format&fit=crop&q=80" alt="Caldas" style="height:130px;"/><div class="img-card-body"><div class="img-card-tag">Restaurante</div><div class="img-card-title">Restaurante Caldas</div><div class="img-card-sub">Vista para o lago termal. Vitela barrosã e caldo verde.</div><div class="img-card-meta"><span class="dist-badge">2,1 km</span><span class="rating">★★★★☆ 4.3</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
+      <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7301,-8.1423" target="_blank"><img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=700&auto=format&fit=crop&q=80" alt="Caldas"/><div class="img-card-body"><div class="img-card-tag">Restaurante</div><div class="img-card-title">Restaurante Caldas</div><div class="img-card-sub">Vista para o lago termal. Vitela barrosã e caldo verde.</div><div class="img-card-meta"><span class="dist-badge">2,1 km</span><span class="rating">★★★★☆ 4.3</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
 
     </div>
   </div>
@@ -698,43 +696,43 @@ function rateStar(n, ctx) {
   setTimeout(function() { showToast(n >= 4 ? 'Obrigado pela avaliação!' : 'Obrigado pelo feedback'); }, 100);
 }
 
-/* ═══ MODAL DRAG TO CLOSE ═══════════════════════ */
+/* ═══ MODAL DRAG TO CLOSE (touch only) ══════════ */
 function initDragToClose() {
-  document.querySelectorAll('.modal-handle').forEach(function(handle) {
-    var sheet = handle.closest('.modal-sheet');
-    var overlay = handle.closest('.modal-overlay');
-    if (!sheet || !overlay) return;
-    var startY = 0, currentY = 0, isDragging = false;
+  document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+    var sheet = overlay.querySelector('.modal-sheet');
+    if (!sheet) return;
+    var startY = 0, curY = 0, dragging = false;
 
-    function onStart(e) {
-      isDragging = true;
-      startY = e.touches ? e.touches[0].clientY : e.clientY;
+    sheet.addEventListener('touchstart', function(e) {
+      // only start drag from top 60px of sheet (handle area)
+      var rect = sheet.getBoundingClientRect();
+      var touchY = e.touches[0].clientY;
+      if (touchY - rect.top > 60) return;
+      dragging = true;
+      startY = touchY;
+      curY = 0;
       sheet.style.transition = 'none';
-    }
-    function onMove(e) {
-      if (!isDragging) return;
-      currentY = (e.touches ? e.touches[0].clientY : e.clientY) - startY;
-      if (currentY < 0) currentY = 0;
-      sheet.style.transform = 'translateY(' + currentY + 'px)';
-    }
-    function onEnd() {
-      if (!isDragging) return;
-      isDragging = false;
+    }, { passive: true });
+
+    sheet.addEventListener('touchmove', function(e) {
+      if (!dragging) return;
+      curY = e.touches[0].clientY - startY;
+      if (curY < 0) curY = 0;
+      sheet.style.transform = 'translateY(' + curY + 'px)';
+    }, { passive: true });
+
+    sheet.addEventListener('touchend', function() {
+      if (!dragging) return;
+      dragging = false;
       sheet.style.transition = '';
-      if (currentY > 100) {
+      if (curY > 90) {
         overlay.classList.remove('open');
-        sheet.style.transform = '';
-      } else {
-        sheet.style.transform = '';
+        // stop QR if closing that modal
+        if (overlay.id === 'm-qr') stopQR();
       }
-      currentY = 0;
-    }
-    handle.addEventListener('touchstart', onStart, { passive: true });
-    handle.addEventListener('touchmove', onMove, { passive: true });
-    handle.addEventListener('touchend', onEnd);
-    handle.addEventListener('mousedown', onStart);
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onEnd);
+      sheet.style.transform = '';
+      curY = 0;
+    });
   });
 }
 
