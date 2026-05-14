@@ -66,15 +66,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 /* APP */
 #app{display:none;padding-bottom:70px;}
 
-/* LANG BAR */
-.lang-bar{display:flex;gap:0.4rem;justify-content:flex-end;padding:0.6rem 1.2rem 0;}
-.lang-btn{background:none;border:1px solid var(--card-border);border-radius:20px;padding:4px 10px;font-size:0.72rem;font-weight:500;color:var(--text-light);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
-.lang-btn.active{background:var(--forest);color:#fff;border-color:var(--forest);}
-
 /* PAGES */
 .page{display:none;}
-.page.active{display:block;animation:pg-in 0.28s ease both;}
-@keyframes pg-in{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.page.active{display:block;animation:pg-in 0.45s cubic-bezier(0.22,1,0.36,1) both;}
+@keyframes pg-in{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
 .section{padding:1.6rem 1.2rem 1.2rem;}
 .section-tag{font-size:10px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;color:var(--sage);margin-bottom:5px;}
 .section-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--forest);line-height:1.15;}
@@ -196,17 +191,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 .qr-frame{position:absolute;inset:20%;border:2px solid var(--sage-light);border-radius:12px;pointer-events:none;}
 #qr-result{font-size:0.82rem;color:var(--text-mid);text-align:center;min-height:1.2rem;margin-top:0.5rem;}
 
-/* PWA INSTALL BANNER */
-#install-banner{position:fixed;bottom:80px;left:1rem;right:1rem;z-index:800;background:var(--forest);color:#fff;border-radius:var(--radius);padding:1rem 1.2rem;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.25);transform:translateY(200%);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);}
-#install-banner.show{transform:translateY(0);}
-.install-icon{width:40px;height:40px;background:rgba(255,255,255,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.install-icon svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;}
-.install-text{flex:1;}
-.install-title{font-size:0.85rem;font-weight:500;}
-.install-sub{font-size:0.72rem;opacity:0.7;margin-top:2px;}
-.install-btn{background:#fff;color:var(--forest);border:none;border-radius:8px;padding:7px 14px;font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;}
-.install-close{background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.1rem;cursor:pointer;padding:4px;line-height:1;}
-
 /* BOTTOM NAV */
 #bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--cream);border-top:1px solid var(--cream-dark);display:none;z-index:200;}
 .bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 8px;font-size:10px;font-weight:500;color:var(--text-light);cursor:pointer;background:none;border:none;transition:color 0.2s;letter-spacing:0.02em;font-family:'DM Sans',sans-serif;}
@@ -290,13 +274,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 
 <!-- APP -->
 <div id="app">
-  <div class="lang-bar">
-    <button class="lang-btn active" data-lang="pt" onclick="setLang('pt')">PT</button>
-    <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
-    <button class="lang-btn" data-lang="es" onclick="setLang('es')">ES</button>
-    <button class="lang-btn" data-lang="fr" onclick="setLang('fr')">FR</button>
-    <button class="lang-btn" data-lang="de" onclick="setLang('de')">DE</button>
-  </div>
 
   <!-- CASA -->
   <div id="page-casa" class="page active">
@@ -376,10 +353,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
           <a href="#" style="display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--card-border);border-radius:30px;padding:8px 16px;font-size:0.78rem;font-weight:500;color:var(--text-dark);text-decoration:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Google Reviews</a>
         </div>
       </div>
+      <div class="card" style="margin-top:0.75rem;background:linear-gradient(135deg,rgba(45,74,30,0.06),rgba(90,138,60,0.06));border-style:dashed;">
+        <div class="block-label" style="margin-top:0;">Guardar app no telemóvel</div>
+        <div style="display:flex;gap:1rem;">
+          <div style="flex:1;">
+            <div style="font-size:0.78rem;font-weight:600;color:var(--forest);margin-bottom:6px;">iPhone (Safari)</div>
+            <div style="font-size:0.75rem;color:var(--text-mid);line-height:1.6;">1. Abre no Safari<br/>2. Toca em <strong>Partilhar</strong> ⬆<br/>3. "Adicionar ao ecrã inicial"</div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:0.78rem;font-weight:600;color:var(--forest);margin-bottom:6px;">Android (Chrome)</div>
+            <div style="font-size:0.75rem;color:var(--text-mid);line-height:1.6;">1. Abre no Chrome<br/>2. Toca em <strong>⋮ Menu</strong><br/>3. "Adicionar ao ecrã inicial"</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
-  <!-- SERVIÇOS -->
   <div id="page-servicos" class="page">
     <div class="section">
       <div class="section-header">
@@ -550,14 +538,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 <div class="modal-overlay" id="m-feedback" onclick="cm('m-feedback')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">O teu feedback</div><p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:0.5rem;">A tua opinião ajuda-nos a melhorar.</p><div class="star-row" id="modal-stars"><button class="star-btn" onclick="rateStar(1,'modal')">★</button><button class="star-btn" onclick="rateStar(2,'modal')">★</button><button class="star-btn" onclick="rateStar(3,'modal')">★</button><button class="star-btn" onclick="rateStar(4,'modal')">★</button><button class="star-btn" onclick="rateStar(5,'modal')">★</button></div><div class="form-stack"><textarea class="form-input" rows="4" placeholder="Conta-nos a tua experiência..."></textarea><input class="form-input" type="email" placeholder="Email (opcional)"/><button class="form-btn" onclick="pedidoOk('m-feedback')">Enviar</button></div></div></div>
 <div class="modal-overlay" id="m-qr" onclick="closeQR()"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Ler QR Code</div><p style="font-size:0.82rem;color:var(--text-light);margin-bottom:1rem;line-height:1.5;">Aponta a câmara para o QR code na entrada da Casa do Gerês.</p><div id="qr-video-wrap"><video id="qr-video" playsinline autoplay muted></video><div class="qr-frame"></div></div><div id="qr-result">A iniciar câmara...</div><button class="form-btn" style="margin-top:0.75rem;" onclick="closeQR()">Fechar câmara</button></div></div>
 
-<!-- PWA INSTALL BANNER -->
-<div id="install-banner">
-  <div class="install-icon"><svg viewBox="0 0 24 24"><path d="M12 2v13M8 11l4 4 4-4"/><path d="M20 17v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2"/></svg></div>
-  <div class="install-text"><div class="install-title">Instalar app</div><div class="install-sub">Acesso direto no teu telemóvel</div></div>
-  <button class="install-btn" id="install-btn">Instalar</button>
-  <button class="install-close" onclick="document.getElementById('install-banner').classList.remove('show')">✕</button>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
@@ -574,37 +554,6 @@ var GUESTS = {
 };
 
 var SESSION_KEY = 'yapp_cdg_v2';
-var LANG_KEY    = 'yapp_cdg_lang';
-
-/* ═══ TRADUÇÕES ════════════════════════════════ */
-var LABELS = {
-  pt: { casa:'Casa', servicos:'Serviços', meteo:'Meteo', descobrir:'Descobrir', contacto:'Contacto', err:'Utilizador ou código incorretos.', copy:'Palavra-passe copiada', ok:'Pedido enviado', nl_ok:'Subscrito. Obrigado!', nl_err:'Introduz o teu email', rate_hi:'Obrigado pela avaliação!', rate_lo:'Obrigado pelo feedback' },
-  en: { casa:'Home', servicos:'Services', meteo:'Weather', descobrir:'Discover', contacto:'Contact', err:'Incorrect username or code.', copy:'Password copied', ok:'Request sent', nl_ok:'Subscribed. Thank you!', nl_err:'Enter your email', rate_hi:'Thank you for the rating!', rate_lo:'Thank you for your feedback' },
-  es: { casa:'Inicio', servicos:'Servicios', meteo:'Tiempo', descobrir:'Descubrir', contacto:'Contacto', err:'Usuario o código incorrecto.', copy:'Contraseña copiada', ok:'Solicitud enviada', nl_ok:'Suscrito. ¡Gracias!', nl_err:'Introduce tu email', rate_hi:'¡Gracias!', rate_lo:'Gracias por tus comentarios' },
-  fr: { casa:'Accueil', servicos:'Services', meteo:'Météo', descobrir:'Découvrir', contacto:'Contact', err:'Identifiant ou code incorrect.', copy:'Mot de passe copié', ok:'Demande envoyée', nl_ok:'Abonné. Merci!', nl_err:'Entrez votre email', rate_hi:'Merci pour votre avis!', rate_lo:'Merci pour votre retour' },
-  de: { casa:'Start', servicos:'Dienste', meteo:'Wetter', descobrir:'Entdecken', contacto:'Kontakt', err:'Falscher Benutzername oder Code.', copy:'Passwort kopiert', ok:'Anfrage gesendet', nl_ok:'Abonniert. Danke!', nl_err:'Email eingeben', rate_hi:'Danke für die Bewertung!', rate_lo:'Danke für Ihr Feedback' }
-};
-var currentLang = 'pt';
-function L(k) { return (LABELS[currentLang] && LABELS[currentLang][k]) || LABELS.pt[k] || k; }
-
-function setLang(l) {
-  currentLang = l;
-  localStorage.setItem(LANG_KEY, l);
-  document.querySelectorAll('.lang-btn').forEach(function(b) {
-    b.classList.toggle('active', b.getAttribute('data-lang') === l);
-  });
-  var navKeys = ['casa','servicos','meteo','descobrir','contacto'];
-  var btns = document.querySelectorAll('#bottom-nav .bnav-item');
-  for (var i = 0; i < btns.length; i++) {
-    var btn = btns[i];
-    var nodes = btn.childNodes;
-    for (var j = 0; j < nodes.length; j++) {
-      if (nodes[j].nodeType === 3 && nodes[j].textContent.trim()) {
-        nodes[j].textContent = L(navKeys[i]);
-      }
-    }
-  }
-}
 
 /* ═══ SESSÃO ════════════════════════════════════ */
 function getSession()  { try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch(e) { return null; } }
@@ -614,14 +563,6 @@ function isExpired(co) { return new Date() > new Date(co + 'T23:59:59'); }
 
 /* ═══ ARRANQUE ══════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', function() {
-  var saved = localStorage.getItem(LANG_KEY);
-  if (saved && LABELS[saved]) { currentLang = saved; }
-  else {
-    var nav = (navigator.language || 'pt').substring(0,2).toLowerCase();
-    if (LABELS[nav]) currentLang = nav;
-  }
-  setLang(currentLang);
-
   var s = getSession();
   if (s) {
     if (isExpired(s.checkout)) {
@@ -633,10 +574,8 @@ window.addEventListener('DOMContentLoaded', function() {
       loadWeather();
     }
   }
-
   document.getElementById('login-user').addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('login-pass').focus(); });
   document.getElementById('login-pass').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
-  initPWA();
 });
 
 /* ═══ LOGIN ═════════════════════════════════════ */
@@ -646,7 +585,7 @@ function doLogin() {
   var errEl = document.getElementById('login-error');
   var g = GUESTS[user];
   if (!g || g.pass !== pass) {
-    errEl.textContent = L('err');
+    errEl.textContent = 'Utilizador ou código incorretos.';
     document.getElementById('login-pass').value = '';
     return;
   }
@@ -698,44 +637,18 @@ function showToast(msg) {
 }
 function copyText(e, txt) {
   e.stopPropagation();
-  navigator.clipboard.writeText(txt).then(function() { showToast(L('copy')); }).catch(function() { showToast(txt); });
+  navigator.clipboard.writeText(txt).then(function() { showToast('Palavra-passe copiada'); }).catch(function() { showToast(txt); });
 }
-function pedidoOk(m) { cm(m); showToast(L('ok')); }
+function pedidoOk(m) { cm(m); showToast('Pedido enviado com sucesso'); }
 function subscribeNewsletter() {
   var email = document.getElementById('nl-email').value;
-  if (!email) { showToast(L('nl_err')); return; }
-  showToast(L('nl_ok'));
+  if (!email) { showToast('Introduz o teu email'); return; }
+  showToast('Subscrito. Obrigado!');
 }
 function rateStar(n, ctx) {
   var id = ctx === 'modal' ? 'modal-stars' : 'quick-stars';
   document.getElementById(id).querySelectorAll('.star-btn').forEach(function(b, i) { b.classList.toggle('active', i < n); });
-  setTimeout(function() { showToast(n >= 4 ? L('rate_hi') : L('rate_lo')); }, 100);
-}
-
-/* ═══ PWA ════════════════════════════════════════ */
-var deferredPrompt = null;
-function initPWA() {
-  window.addEventListener('beforeinstallprompt', function(e) {
-    e.preventDefault();
-    deferredPrompt = e;
-    setTimeout(function() { document.getElementById('install-banner').classList.add('show'); }, 4000);
-  });
-  document.getElementById('install-btn').addEventListener('click', function() {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(function() {
-      deferredPrompt = null;
-      document.getElementById('install-banner').classList.remove('show');
-    });
-  });
-  window.addEventListener('appinstalled', function() {
-    document.getElementById('install-banner').classList.remove('show');
-  });
-  if ('serviceWorker' in navigator) {
-    var sw = "const C='yapp-v2';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.add('/'))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));";
-    var blob = new Blob([sw], { type: 'application/javascript' });
-    navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(function(e) {});
-  }
+  setTimeout(function() { showToast(n >= 4 ? 'Obrigado pela avaliação!' : 'Obrigado pelo feedback'); }, 100);
 }
 
 /* ═══ QR SCANNER ════════════════════════════════ */
@@ -785,10 +698,11 @@ function loadWeather() {
       var c = d.current;
       var temp = Math.round(c.temperature_2m);
       var cond = wDesc(c.weather_code);
+      var emoji = wEmoji(c.weather_code);
       var hw = document.getElementById('hero-weather');
-      if (hw) hw.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 116.71-9h1.79a4.5 4.5 0 010 9z"/></svg> ' + temp + '° · ' + cond;
+      if (hw) hw.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 116.71-9h1.79a4.5 4.5 0 010 9z"/></svg> ' + temp + '° · ' + emoji + ' ' + cond;
       function set(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
-      set('wtemp', temp + '°'); set('wcond', cond);
+      set('wtemp', temp + '°'); set('wcond', emoji + '  ' + cond);
       set('whumid', Math.round(c.relative_humidity_2m) + '%');
       set('wwind', Math.round(c.wind_speed_10m));
       set('wuv', Math.round(c.uv_index || 0));
@@ -804,7 +718,7 @@ function loadWeather() {
         fc.innerHTML = '';
         for (var i = 0; i < 7; i++) {
           var tp = Math.round(d.daily.temperature_2m_max[i]);
-          fc.innerHTML += '<div class="fc-pill"><div class="fc-dow">' + days[(today+i)%7] + '</div><div class="fc-icon-txt">' + wLabel(d.daily.weather_code[i]) + '</div><div class="fc-t">' + tp + '°</div></div>';
+          fc.innerHTML += '<div class="fc-pill"><div class="fc-dow">' + days[(today+i)%7] + '</div><div class="fc-icon-txt">' + wEmoji(d.daily.weather_code[i]) + '</div><div class="fc-t">' + tp + '°</div></div>';
         }
       }
     })
@@ -813,7 +727,17 @@ function loadWeather() {
       if (hw) hw.textContent = 'Gerês · Portugal';
     });
 }
-function wLabel(c) { if(c===0)return'Sol';if(c<=2)return'Nbd';if(c===3)return'Cob';if(c<=49)return'Nev';if(c<=69)return'Chu';if(c<=99)return'Tro';return'Var'; }
+function wEmoji(c) {
+  if (c === 0) return '☀️';
+  if (c <= 2)  return '⛅';
+  if (c === 3) return '☁️';
+  if (c <= 49) return '🌫️';
+  if (c <= 59) return '🌦️';
+  if (c <= 69) return '🌧️';
+  if (c <= 79) return '❄️';
+  if (c <= 84) return '🌧️';
+  return '⛈️';
+}
 function wDesc(c)  { if(c===0)return'Céu limpo';if(c<=2)return'Parcialmente nublado';if(c===3)return'Nublado';if(c<=49)return'Nevoeiro';if(c<=59)return'Chuviscos';if(c<=69)return'Chuva';if(c<=79)return'Neve';if(c<=99)return'Trovoada';return'Variável'; }
 </script>
 </body>
