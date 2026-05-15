@@ -808,20 +808,28 @@ function fillConfig() {
 
 // ── SAVE CONFIG TO SHEET (via POST) ──────────────
 function saveConfig() {
-  var payload = {
-    propriedade_nome: v('c-nome'), propriedade_subtitulo: v('c-sub'), propriedade_descricao: v('c-desc'),
-    checkin_hora: v('c-ci'), checkout_hora: v('c-co'), capacidade: v('c-cap'), quartos: v('c-qts'),
+  var params = {
+    action: 'saveConfig',
+    propriedade_nome: v('c-nome'), propriedade_subtitulo: v('c-sub'),
+    propriedade_descricao: v('c-desc'), checkin_hora: v('c-ci'),
+    checkout_hora: v('c-co'), capacidade: v('c-cap'), quartos: v('c-qts'),
     horario_piscina: v('c-pisc'), streaming_plataformas: v('c-stream'),
-    lat: v('c-lat'), lng: v('c-lng'), mensagem_boas_vindas: v('c-bv'),
+    lat: v('c-lat'), lng: v('c-lng'),
+    mensagem_boas_vindas: v('c-bv'),
     aviso_ativo: v('c-aviso-ativo'), aviso_texto: v('c-aviso-txt'),
-    codigo_desconto: v('c-codesc'), instagram_url: v('c-ig'), facebook_url: v('c-fb'), google_reviews_url: v('c-grev'),
-    wifi_ssid: v('w-ssid1'), wifi_pass: v('w-pass1'), wifi_ssid2: v('w-ssid2'), wifi_pass2: v('w-pass2'),
-    proprietario_nome: v('ct-nome'), proprietario_whatsapp: v('ct-wa'), proprietario_telefone: v('ct-tel'), proprietario_email: v('ct-email'),
-    ultima_atualizacao: new Date().toISOString()
+    codigo_desconto: v('c-codesc'), instagram_url: v('c-ig'),
+    facebook_url: v('c-fb'), google_reviews_url: v('c-grev'),
+    wifi_ssid: v('w-ssid1'), wifi_pass: v('w-pass1'),
+    wifi_ssid2: v('w-ssid2'), wifi_pass2: v('w-pass2'),
+    proprietario_nome: v('ct-nome'), proprietario_whatsapp: v('ct-wa'),
+    proprietario_telefone: v('ct-tel'), proprietario_email: v('ct-email')
   };
   saveLocal();
-  postAPI({ action: 'updateConfig', data: payload }, function() {
-    showOk('ok-config'); showOk('ok-wifi'); toast('Config guardada no Google Sheets!');
+  showLoading('A guardar na Google Sheet...');
+  apiWrite(params, function() {
+    hideLoading();
+    showOk('ok-config'); showOk('ok-wifi');
+    toast('✓ Guardado na Google Sheet!');
   });
 }
 function saveWifi() { saveConfig(); }
@@ -853,14 +861,13 @@ function addGuest() {
   var pass = v('h-pass').trim();
   var co   = v('h-co');
   if (!user || !pass || !co) { toast('Preenche username, password e check-out.'); return; }
-  var payload = { action: 'addGuest', user: user, pass: pass, checkout: co, name: v('h-nome'), notes: v('h-notas') };
   showLoading('A adicionar hóspede...');
-  postAPI(payload, function() {
+  apiWrite({ action: 'addGuest', user: user, pass: pass, checkout: co, name: v('h-nome'), notes: v('h-notas') }, function() {
     hideLoading();
     DB.guests.push({ user: user, pass: pass, checkout: co, name: v('h-nome'), active: true });
     renderGuests(); showOk('ok-hosp');
     ['h-user','h-pass','h-nome','h-co','h-notas'].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
-    toast('Hóspede adicionado no Google Sheets!');
+    toast('✓ Hóspede adicionado na Google Sheet!');
   });
 }
 
@@ -891,8 +898,8 @@ function editPass(i) {
   var np = prompt('Nova password para "' + g.user + '" (atual: ' + g.pass + '):', g.pass);
   if (np !== null && np.trim()) {
     showLoading('A atualizar...');
-    postAPI({ action: 'updateGuestPass', user: g.user, pass: np.trim() }, function() {
-      hideLoading(); DB.guests[i].pass = np.trim(); renderGuests(); toast('Password atualizada!');
+    apiWrite({ action: 'updatePass', user: g.user, pass: np.trim() }, function() {
+      hideLoading(); DB.guests[i].pass = np.trim(); renderGuests(); toast('✓ Password atualizada na Google Sheet!');
     });
   }
 }
@@ -962,8 +969,8 @@ function renderFeedbacks() {
 
 function approveFb(i) {
   DB.feedbacks[i].approved = true;
-  postAPI({ action: 'approveFeedback', index: i }, function() {});
-  renderFeedbacks(); toast('Feedback aprovado — visível na app.');
+  apiWrite({ action: 'approveFeedback', index: i }, function() {});
+  renderFeedbacks(); toast('✓ Feedback aprovado na Google Sheet.');
 }
 function deleteFb(i) {
   if (confirm('Remover este feedback?')) {
