@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>YAPP Backoffice · Casa do Gerês</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --g:#2d4a1e;--gm:#3d6428;--gl:#5a8a3c;--sl:#b8d4a0;--sage:#8aab6e;
+  --cream:#f5f0e8;--cd:#ede5d4;--earth:#8b6f47;
+  --tx:#1e2d14;--txm:#4a5e38;--txl:#7a8f6a;
+  --bd:rgba(90,138,60,0.18);--r:12px;--rs:8px;
+  --red:#c0392b;--ora:#e67e22;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-height:100vh;}
+#login{position:fixed;inset:0;background:#0f1908;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;}
+#login.off{display:none;}
+.lb{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:2.2rem 2rem;width:340px;}
+.ll{font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:#fff;text-align:center;margin-bottom:2px;}
+.lsub{font-size:.7rem;color:rgba(255,255,255,0.35);text-align:center;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2rem;}
+.li{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:.9rem 1rem;font-family:'DM Sans',sans-serif;font-size:.95rem;color:#fff;outline:none;margin-bottom:.9rem;}
+.li:focus{border-color:var(--sage);}
+.li::placeholder{color:rgba(255,255,255,0.2);}
+.lbtn{width:100%;background:var(--gl);color:#fff;border:none;border-radius:10px;padding:.95rem;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;}
+.lerr{font-size:.78rem;color:#ff8a7a;text-align:center;margin-top:.6rem;min-height:1rem;}
+.llbl{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:5px;display:block;}
+#app{display:none;}
+.sidebar{position:fixed;top:0;left:0;width:240px;height:100vh;background:var(--g);display:flex;flex-direction:column;overflow-y:auto;z-index:100;}
+.sb-logo{padding:1.4rem 1.3rem 1rem;border-bottom:1px solid rgba(255,255,255,0.1);}
+.sb-name{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:#fff;}
+.sb-sub{font-size:9px;color:rgba(255,255,255,0.35);margin-top:2px;text-transform:uppercase;letter-spacing:.08em;}
+.sbnav{padding:.5rem 0;flex:1;}
+.sbsec{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.3);padding:.8rem 1.3rem .3rem;}
+.sbi{display:flex;align-items:center;gap:9px;padding:.6rem 1.3rem;font-size:.82rem;color:rgba(255,255,255,0.6);cursor:pointer;border-left:3px solid transparent;transition:all .15s;user-select:none;}
+.sbi:hover{background:rgba(255,255,255,0.07);color:#fff;}
+.sbi.on{background:rgba(255,255,255,0.12);color:#fff;border-left-color:var(--sl);}
+.sbi svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;flex-shrink:0;}
+.sbfoot{padding:1rem 1.3rem;border-top:1px solid rgba(255,255,255,0.08);}
+.sbout{background:none;border:none;color:rgba(255,255,255,0.35);font-family:'DM Sans',sans-serif;font-size:.78rem;cursor:pointer;display:flex;align-items:center;gap:7px;}
+.main{margin-left:240px;padding:2rem 2.5rem;min-height:100vh;}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.8rem;flex-wrap:wrap;gap:1rem;}
+.ptitle{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--g);}
+.psub{font-size:.82rem;color:var(--txl);margin-top:3px;}
+.synced{display:inline-flex;align-items:center;gap:6px;background:rgba(90,138,60,0.1);border-radius:20px;padding:5px 12px;font-size:.75rem;color:var(--gm);font-weight:500;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--gl);}
+.sec{display:none;}
+.sec.on{display:block;}
+.card{background:#fff;border-radius:var(--r);border:1px solid var(--bd);padding:1.4rem 1.5rem;margin-bottom:1rem;}
+.ctitle{font-size:.78rem;font-weight:700;color:var(--txl);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1.1rem;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem;}
+.fld{display:flex;flex-direction:column;gap:5px;margin-bottom:.75rem;}
+.fld:last-child{margin-bottom:0;}
+.fld label{font-size:10px;font-weight:600;color:var(--txl);text-transform:uppercase;letter-spacing:.07em;}
+.inp{border:1px solid var(--bd);border-radius:var(--rs);padding:.75rem .9rem;font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--tx);outline:none;width:100%;transition:border-color .15s;background:#fff;}
+.inp:focus{border-color:var(--gl);}
+.ta{min-height:80px;resize:vertical;}
+.ta-lg{min-height:130px;}
+.photo-row{display:flex;gap:.75rem;align-items:flex-start;margin-top:.4rem;}
+.photo-prev{width:80px;height:80px;border-radius:var(--rs);object-fit:cover;border:1px solid var(--bd);flex-shrink:0;background:#f5f0e8;}
+.photo-prev.wide{width:130px;}
+.photo-url{flex:1;border:1px solid var(--bd);border-radius:var(--rs);padding:.6rem .8rem;font-family:monospace;font-size:.75rem;color:var(--txm);outline:none;width:100%;}
+.photo-url:focus{border-color:var(--gl);}
+.photo-hint{font-size:.7rem;color:var(--txl);margin-top:4px;line-height:1.4;}
+.savebtn{background:var(--g);color:#fff;border:none;border-radius:var(--rs);padding:.75rem 1.4rem;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:7px;margin-top:.5rem;transition:background .15s;}
+.savebtn:hover{background:var(--gm);}
+.savebtn svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;}
+.addbtn{background:var(--g);color:#fff;border:none;border-radius:var(--rs);padding:.55rem 1rem;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.addbtn svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2.5;}
+.actbtn{background:none;border:1px solid var(--bd);border-radius:6px;padding:4px 9px;font-size:.72rem;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--txm);}
+.actbtn:hover{border-color:var(--gl);color:var(--g);}
+.actbtn.del:hover{border-color:var(--red);color:var(--red);}
+.oktxt{font-size:.78rem;color:var(--gl);margin-left:.5rem;opacity:0;transition:opacity .3s;}
+.oktxt.show{opacity:1;}
+.tbl{width:100%;border-collapse:collapse;font-size:.82rem;}
+.tbl th{text-align:left;padding:.55rem .75rem;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--txl);border-bottom:1px solid var(--bd);}
+.tbl td{padding:.65rem .75rem;border-bottom:1px solid rgba(90,138,60,0.07);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(90,138,60,0.03);}
+.pill{display:inline-flex;border-radius:20px;padding:2px 9px;font-size:10px;font-weight:600;}
+.p-ok{background:rgba(45,74,30,0.1);color:var(--g);}
+.p-off{background:rgba(192,57,43,0.1);color:var(--red);}
+.p-pend{background:rgba(230,126,34,0.1);color:var(--ora);}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+.stat{background:#fff;border-radius:var(--r);border:1px solid var(--bd);padding:1.2rem;}
+.statv{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--g);line-height:1;}
+.statl{font-size:.72rem;color:var(--txl);margin-top:4px;}
+.fc{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:1rem 1.1rem;margin-bottom:.7rem;}
+.fc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.fc-name{font-weight:500;font-size:.88rem;}
+.fc-date{font-size:.72rem;color:var(--txl);}
+.fc-stars{color:var(--earth);font-size:.85rem;margin-bottom:5px;}
+.fc-text{font-size:.82rem;color:var(--txm);line-height:1.5;}
+.fc-acts{display:flex;gap:.4rem;margin-top:8px;}
+.info-box{background:rgba(45,74,30,0.07);border:1px solid rgba(45,74,30,0.15);border-radius:var(--rs);padding:.9rem 1.1rem;font-size:.82rem;color:var(--gm);line-height:1.6;margin-bottom:1rem;}
+.info-box strong{color:var(--g);}
+.place-row{border:1px solid var(--bd);border-radius:var(--r);padding:.9rem;margin-bottom:.6rem;background:#fff;}
+.place-grid{display:grid;grid-template-columns:80px 1fr;gap:.75rem;align-items:start;}
+.place-img-prev{width:80px;height:80px;border-radius:var(--rs);object-fit:cover;border:1px solid var(--bd);}
+.place-fields{display:grid;grid-template-columns:2fr 1fr 1fr;gap:.4rem;}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:#1e2d14;color:#fff;padding:10px 22px;border-radius:30px;font-size:.82rem;font-weight:500;z-index:9999;opacity:0;transition:all .28s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.loading-overlay{position:fixed;inset:0;background:rgba(15,25,8,0.6);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:1rem;}
+.loading-overlay.show{display:flex;}
+.loading-spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,0.2);border-top-color:var(--sl);border-radius:50%;animation:spin .8s linear infinite;}
+.loading-txt{font-size:.88rem;color:rgba(255,255,255,0.7);}
+.api-status-bar{background:rgba(45,74,30,0.08);border:1px solid rgba(45,74,30,0.15);border-radius:var(--rs);padding:.75rem 1rem;margin-bottom:1.2rem;font-size:.82rem;color:var(--gm);display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.api-status-bar .dot{flex-shrink:0;}
+.sync-btn{background:var(--g);color:#fff;border:none;border-radius:20px;padding:5px 14px;font-size:.75rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loading">
+  <div class="loading-spinner"></div>
+  <div class="loading-txt" id="loading-txt">A carregar dados...</div>
+</div>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="lb">
+    <div class="ll">YAPP Backoffice</div>
+    <div class="lsub">Casa do Gerês</div>
+    <label class="llbl">Password de acesso</label>
+    <input class="li" id="lpass" type="password" placeholder="••••••••"/>
+    <button class="lbtn" onclick="doLogin()">Entrar no backoffice</button>
+    <div class="lerr" id="lerr"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-name">YAPP Backoffice</div>
+      <div class="sb-sub">Casa do Gerês</div>
+    </div>
+    <nav class="sbnav">
+      <div class="sbsec">Geral</div>
+      <div class="sbi on" onclick="go('dashboard',this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
+
+      <div class="sbsec">Configuração</div>
+      <div class="sbi" onclick="go('config',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Propriedade & Splash</div>
+      <div class="sbi" onclick="go('wifi',this)"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>Wi-Fi</div>
+      <div class="sbi" onclick="go('hospedes',this)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Hóspedes</div>
+
+      <div class="sbsec">Página Casa</div>
+      <div class="sbi" onclick="go('casa-geral',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Info geral</div>
+      <div class="sbi" onclick="go('casa-quartos',this)"><svg viewBox="0 0 24 24"><path d="M2 4v16M22 4v16M2 12h20M12 4v8"/></svg>Quartos</div>
+      <div class="sbi" onclick="go('casa-piscina',this)"><svg viewBox="0 0 24 24"><path d="M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg>Piscina & Exterior</div>
+      <div class="sbi" onclick="go('casa-cozinha',this)"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2l-3 8h3"/></svg>Cozinha & Churrasqueira</div>
+      <div class="sbi" onclick="go('casa-sala',this)"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>Sala & TV</div>
+      <div class="sbi" onclick="go('casa-regras',this)"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Regras & Check-out</div>
+      <div class="sbi" onclick="go('servicos',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Serviços</div>
+
+      <div class="sbsec">Descobrir</div>
+      <div class="sbi" onclick="go('atracoes',this)"><svg viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Atrações</div>
+      <div class="sbi" onclick="go('restaurantes',this)"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Restaurantes</div>
+
+      <div class="sbsec">Contacto</div>
+      <div class="sbi" onclick="go('contacto',this)"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.07 1.17 2 2 0 012 .92h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>Contactos</div>
+      <div class="sbi" onclick="go('patrocinadores',this)"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Patrocinadores</div>
+
+      <div class="sbsec">Dados</div>
+      <div class="sbi" onclick="go('feedbacks',this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Feedbacks</div>
+      <div class="sbi" onclick="go('newsletter',this)"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Newsletter</div>
+    </nav>
+    <div class="sbfoot">
+      <button class="sbout" onclick="doLogout()"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>Terminar sessão</button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div id="sec-dashboard" class="sec on">
+      <div class="ph">
+        <div><div class="ptitle">Dashboard</div><div class="psub">Dados em tempo real do Google Sheets</div></div>
+        <div class="synced"><div class="dot"></div><span id="sync-lbl">A sincronizar...</span></div>
+      </div>
+      <div class="api-status-bar">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="dot" id="api-dot" style="background:var(--ora);"></div>
+          <span id="api-lbl">A ligar ao Google Sheets...</span>
+        </div>
+        <button class="sync-btn" onclick="loadAll()">↻ Sincronizar</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="statv" id="s-hosp">—</div><div class="statl">Hóspedes ativos</div></div>
+        <div class="stat"><div class="statv" id="s-feed">—</div><div class="statl">Feedbacks</div></div>
+        <div class="stat"><div class="statv" id="s-rat">—</div><div class="statl">Rating médio</div></div>
+        <div class="stat"><div class="statv" id="s-nl">—</div><div class="statl">Newsletter</div></div>
+      </div>
+      <div class="card"><div class="ctitle">Feedbacks recentes</div><div id="dash-fb"><div style="font-size:.82rem;color:var(--txl);">A carregar...</div></div></div>
+      <div class="card"><div class="ctitle">Hóspedes com acesso ativo</div><div id="dash-hospedes"><div style="font-size:.82rem;color:var(--txl);">A carregar...</div></div></div>
+    </div>
+
+    <!-- CONFIG -->
+    <div id="sec-config" class="sec">
+      <div class="ph"><div><div class="ptitle">Propriedade & Splash</div><div class="psub">Dados gerais e ecrã de boas-vindas</div></div></div>
+      <div class="info-box">As alterações aqui são guardadas <strong>diretamente na Google Sheet "Config"</strong> e ficam disponíveis na app dos hóspedes imediatamente.</div>
+      <div class="card">
+        <div class="ctitle">Identificação</div>
+        <div class="g2">
+          <div class="fld"><label>Nome da propriedade</label><input class="inp" id="c-nome" placeholder="Casa do Gerês"/></div>
+          <div class="fld"><label>Subtítulo da splash</label><input class="inp" id="c-sub" placeholder="A tua casa na natureza."/></div>
+        </div>
+        <div class="fld"><label>Descrição (texto abaixo do título)</label><textarea class="inp ta" id="c-desc" placeholder="O guia completo..."></textarea></div>
+        <div class="fld"><label>Texto do botão Explorar</label><input class="inp" id="c-btn" placeholder="Explorar"/></div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Informações da estadia</div>
+        <div class="g4">
+          <div class="fld"><label>Check-in</label><input class="inp" id="c-ci" placeholder="16h00"/></div>
+          <div class="fld"><label>Check-out</label><input class="inp" id="c-co" placeholder="11h00"/></div>
+          <div class="fld"><label>Capacidade</label><input class="inp" id="c-cap" placeholder="6 pessoas"/></div>
+          <div class="fld"><label>Quartos</label><input class="inp" id="c-qts" placeholder="3 quartos"/></div>
+        </div>
+        <div class="fld"><label>Horário piscina</label><input class="inp" id="c-pisc" placeholder="09h00 às 21h00"/></div>
+        <div class="fld"><label>Plataformas streaming (separadas por vírgula)</label><input class="inp" id="c-stream" placeholder="NOS TV, Netflix, Amazon Prime, Disney+"/></div>
+      </div>
+      <div class="card">
+        <div class="ctitle">GPS — localização</div>
+        <div class="g2">
+          <div class="fld"><label>Latitude</label><input class="inp" id="c-lat" placeholder="41.7214"/></div>
+          <div class="fld"><label>Longitude</label><input class="inp" id="c-lng" placeholder="-8.1583"/></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Mensagem de boas-vindas</div>
+        <textarea class="inp ta-lg" id="c-bv" placeholder="Bem-vindo à Casa do Gerês..."></textarea>
+      </div>
+      <div class="card">
+        <div class="ctitle">Aviso especial (aparece no topo da app quando ativo)</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:.75rem;">
+          <label style="font-size:.85rem;color:var(--txm);">Mostrar aviso:</label>
+          <select class="inp" id="c-aviso-ativo" style="width:auto;">
+            <option value="false">Não</option>
+            <option value="true">Sim</option>
+          </select>
+        </div>
+        <input class="inp" id="c-aviso-txt" placeholder="ex: Estrada em obras — acesso pela entrada lateral"/>
+      </div>
+      <div class="card">
+        <div class="ctitle">Código de desconto (aparece no último dia da estadia)</div>
+        <div class="g2">
+          <div class="fld"><label>Código</label><input class="inp" id="c-codesc" placeholder="VOLTAR2025"/></div>
+          <div class="fld"><label>Redes sociais — Instagram</label><input class="inp" id="c-ig" placeholder="https://instagram.com/..."/></div>
+          <div class="fld"><label>Facebook</label><input class="inp" id="c-fb" placeholder="https://facebook.com/..."/></div>
+          <div class="fld"><label>Google Reviews URL</label><input class="inp" id="c-grev" placeholder="https://g.page/r/..."/></div>
+        </div>
+      </div>
+      <button class="savebtn" onclick="saveConfig()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar na Google Sheet<span class="oktxt" id="ok-config">Guardado!</span></button>
+    </div>
+
+    <!-- WIFI -->
+    <div id="sec-wifi" class="sec">
+      <div class="ph"><div><div class="ptitle">Wi-Fi</div><div class="psub">Credenciais de acesso à internet</div></div></div>
+      <div class="card">
+        <div class="ctitle">Rede principal (5 GHz)</div>
+        <div class="g2">
+          <div class="fld"><label>SSID (nome da rede)</label><input class="inp" id="w-ssid1" placeholder="CasaGeres_5G"/></div>
+          <div class="fld"><label>Password</label><input class="inp" id="w-pass1" placeholder="natureza2026"/></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Rede secundária (2.4 GHz)</div>
+        <div class="g2">
+          <div class="fld"><label>SSID (nome da rede)</label><input class="inp" id="w-ssid2" placeholder="CasaGeres_2G"/></div>
+          <div class="fld"><label>Password</label><input class="inp" id="w-pass2" placeholder="natureza2026"/></div>
+        </div>
+      </div>
+      <button class="savebtn" onclick="saveWifi()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar Wi-Fi<span class="oktxt" id="ok-wifi">Guardado!</span></button>
+    </div>
+
+    <!-- HÓSPEDES -->
+    <div id="sec-hospedes" class="sec">
+      <div class="ph"><div><div class="ptitle">Hóspedes</div><div class="psub">Gerir acessos à app · dados do Google Sheets</div></div></div>
+      <div class="card">
+        <div class="ctitle">Adicionar novo hóspede</div>
+        <div class="g3">
+          <div class="fld"><label>Username (sem espaços)</label><input class="inp" id="h-user" placeholder="familia2025"/></div>
+          <div class="fld"><label>Password</label><input class="inp" id="h-pass" placeholder="geres2025"/></div>
+          <div class="fld"><label>Nome</label><input class="inp" id="h-nome" placeholder="Família Silva"/></div>
+          <div class="fld"><label>Check-out</label><input class="inp" id="h-co" type="date"/></div>
+          <div class="fld"><label>Notas</label><input class="inp" id="h-notas" placeholder="Reserva Airbnb #123"/></div>
+        </div>
+        <button class="savebtn" onclick="addGuest()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar<span class="oktxt" id="ok-hosp">Adicionado!</span></button>
+      </div>
+      <div class="card"><div class="ctitle">Hóspedes na Google Sheet</div><div id="guests-tbl"><div style="font-size:.82rem;color:var(--txl);">A carregar...</div></div></div>
+    </div>
+
+    <!-- CASA GERAL -->
+    <div id="sec-casa-geral" class="sec">
+      <div class="ph"><div><div class="ptitle">Info geral da casa</div></div></div>
+      <div class="card">
+        <div class="ctitle">Imagem do card "Informações úteis"</div>
+        <div class="photo-row">
+          <img id="prev-info" class="photo-prev wide" src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400&auto=format&fit=crop&q=75"/>
+          <div style="flex:1;">
+            <input class="photo-url" id="img-info" value="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-info','img-info')"/>
+            <div class="photo-hint">URL Unsplash ou outro. Exemplo: https://images.unsplash.com/photo-...?w=800&auto=format&fit=crop&q=75</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Comodidades (uma por linha)</div>
+        <textarea class="inp ta-lg" id="c-comod">Cozinha completa
+Churrasqueira
+Piscina exterior
+Smart TV 55"
+Estacionamento
+Pet friendly
+Jardim privado
+Lareira interior
+Máquina de café
+Máq. de lavar roupa</textarea>
+      </div>
+      <button class="savebtn" onclick="saveSection('casa-geral')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-geral">Guardado!</span></button>
+    </div>
+
+    <!-- QUARTOS -->
+    <div id="sec-casa-quartos" class="sec">
+      <div class="ph"><div><div class="ptitle">Quartos</div></div></div>
+      <div class="card">
+        <div class="ctitle">Imagem do card</div>
+        <div class="photo-row">
+          <img id="prev-qts" class="photo-prev" src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&auto=format&fit=crop&q=75"/>
+          <div style="flex:1;"><input class="photo-url" id="img-qts" value="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-qts','img-qts')"/></div>
+        </div>
+      </div>
+      <div class="card"><div class="ctitle">Quarto 1 · Suite</div>
+        <div class="fld"><label>Título</label><input class="inp" id="q1t" value="Quarto 1 · Suite"/></div>
+        <div class="fld"><label>Descrição</label><textarea class="inp ta" id="q1d">Cama king size, casa de banho privativa, varanda com vista para a serra.</textarea></div>
+      </div>
+      <div class="card"><div class="ctitle">Quarto 2</div>
+        <div class="fld"><label>Título</label><input class="inp" id="q2t" value="Quarto 2"/></div>
+        <div class="fld"><label>Descrição</label><textarea class="inp ta" id="q2d">Cama de casal, roupeiro embutido, janela com vista para o jardim.</textarea></div>
+      </div>
+      <div class="card"><div class="ctitle">Quarto 3</div>
+        <div class="fld"><label>Título</label><input class="inp" id="q3t" value="Quarto 3"/></div>
+        <div class="fld"><label>Descrição</label><textarea class="inp ta" id="q3d">Duas camas individuais, ideal para crianças ou jovens.</textarea></div>
+      </div>
+      <button class="savebtn" onclick="saveSection('casa-quartos')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-quartos">Guardado!</span></button>
+    </div>
+
+    <!-- PISCINA -->
+    <div id="sec-casa-piscina" class="sec">
+      <div class="ph"><div><div class="ptitle">Piscina & Espaço exterior</div></div></div>
+      <div class="card"><div class="ctitle">Fotos</div>
+        <div class="g2">
+          <div class="fld"><label>Foto piscina</label>
+            <div class="photo-row" style="flex-direction:column;gap:.4rem;">
+              <img id="prev-pisc" class="photo-prev wide" src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=400&auto=format&fit=crop&q=75"/>
+              <input class="photo-url" id="img-pisc" value="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-pisc','img-pisc')"/>
+            </div>
+          </div>
+          <div class="fld"><label>Foto exterior</label>
+            <div class="photo-row" style="flex-direction:column;gap:.4rem;">
+              <img id="prev-ext" class="photo-prev wide" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&auto=format&fit=crop&q=75"/>
+              <input class="photo-url" id="img-ext" value="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-ext','img-ext')"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="ctitle">Textos da piscina</div>
+        <div class="g2">
+          <div class="fld"><label>Horário</label><textarea class="inp ta" id="pisc-h">Disponível das 09h às 21h. Fora deste horário, respeitar o silêncio dos vizinhos.</textarea></div>
+          <div class="fld"><label>Regras</label><textarea class="inp ta" id="pisc-r">Duche obrigatório antes de entrar. Crianças sempre acompanhadas.</textarea></div>
+          <div class="fld"><label>Equipamento</label><textarea class="inp ta" id="pisc-e">Espreguiçadeiras e guarda-sol disponíveis. Toalhas no armário do corredor.</textarea></div>
+        </div>
+      </div>
+      <div class="card"><div class="ctitle">Textos do espaço exterior</div>
+        <div class="g2">
+          <div class="fld"><label>Jardim & terraço</label><textarea class="inp ta" id="ext-j">Jardim com relva natural e terraço coberto com vista para a serra.</textarea></div>
+          <div class="fld"><label>Equipamento</label><textarea class="inp ta" id="ext-e">Mesa de jardim para 6 pessoas, churrasqueira e zona de lazer.</textarea></div>
+          <div class="fld"><label>Notas</label><textarea class="inp ta" id="ext-n">Portão do jardim trancar sempre que sair.</textarea></div>
+        </div>
+      </div>
+      <button class="savebtn" onclick="saveSection('casa-piscina')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-piscina">Guardado!</span></button>
+    </div>
+
+    <!-- COZINHA -->
+    <div id="sec-casa-cozinha" class="sec">
+      <div class="ph"><div><div class="ptitle">Cozinha & Churrasqueira</div></div></div>
+      <div class="card"><div class="ctitle">Fotos</div>
+        <div class="g2">
+          <div class="fld"><label>Foto cozinha</label>
+            <div class="photo-row" style="flex-direction:column;gap:.4rem;">
+              <img id="prev-coz" class="photo-prev wide" src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=400&auto=format&fit=crop&q=75"/>
+              <input class="photo-url" id="img-coz" value="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-coz','img-coz')"/>
+            </div>
+          </div>
+          <div class="fld"><label>Foto churrasqueira</label>
+            <div class="photo-row" style="flex-direction:column;gap:.4rem;">
+              <img id="prev-chur" class="photo-prev wide" src="churrasco-real.jpg"/>
+              <input class="photo-url" id="img-chur" value="churrasco-real.jpg" oninput="pi('prev-chur','img-chur')"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="ctitle">Eletrodomésticos (separados por vírgula)</div>
+        <input class="inp" id="coz-el" value="Fogão a gás, Forno elétrico, Micro-ondas, Frigorífico, Nespresso, Torradeira, Máq. loiça"/>
+      </div>
+      <div class="card"><div class="ctitle">Textos</div>
+        <div class="g2">
+          <div class="fld"><label>Café</label><textarea class="inp ta" id="coz-cafe">Cápsulas Nespresso no armário superior esquerdo.</textarea></div>
+          <div class="fld"><label>Detergentes</label><textarea class="inp ta" id="coz-det">Armário debaixo do lava-loiça. Pastilhas incluídas.</textarea></div>
+          <div class="fld"><label>Churrasqueira — Preparação</label><textarea class="inp ta" id="chur-p">Carvão e acendalha no armário exterior.</textarea></div>
+          <div class="fld"><label>Churrasqueira — Utilização</label><textarea class="inp ta" id="chur-u">Grelha na prateleira inferior. Pinça e espátula no gancho à direita.</textarea></div>
+          <div class="fld"><label>Churrasqueira — Limpeza</label><textarea class="inp ta" id="chur-l">Aguardar arrefecimento. Cinzas no balde metálico.</textarea></div>
+        </div>
+      </div>
+      <button class="savebtn" onclick="saveSection('casa-cozinha')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-cozinha">Guardado!</span></button>
+    </div>
+
+    <!-- SALA -->
+    <div id="sec-casa-sala" class="sec">
+      <div class="ph"><div><div class="ptitle">Sala de estar & TV</div></div></div>
+      <div class="card"><div class="ctitle">Foto</div>
+        <div class="photo-row">
+          <img id="prev-sala" class="photo-prev wide" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&auto=format&fit=crop&q=75"/>
+          <div style="flex:1;"><input class="photo-url" id="img-sala" value="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-sala','img-sala')"/></div>
+        </div>
+      </div>
+      <div class="card"><div class="ctitle">Textos</div>
+        <div class="g2">
+          <div class="fld"><label>Smart TV</label><textarea class="inp ta" id="sala-tv">NOS TV, Netflix, Amazon Prime, Disney+ e Canal+. Credenciais no dossier.</textarea></div>
+          <div class="fld"><label>Lareira</label><textarea class="inp ta" id="sala-lar">Lenha no cesto junto à lareira. Não deixar sem vigilância.</textarea></div>
+        </div>
+      </div>
+      <button class="savebtn" onclick="saveSection('casa-sala')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-sala">Guardado!</span></button>
+    </div>
+
+    <!-- REGRAS -->
+    <div id="sec-casa-regras" class="sec">
+      <div class="ph"><div><div class="ptitle">Regras & Check-out</div></div></div>
+      <div class="card"><div class="ctitle">Regras da casa</div>
+        <div class="g2">
+          <div class="fld"><label>Silêncio</label><textarea class="inp ta" id="reg-s">Respeitar silêncio entre as 22h00 e as 08h00.</textarea></div>
+          <div class="fld"><label>Animais</label><textarea class="inp ta" id="reg-a">Permitidos. Não devem entrar na piscina.</textarea></div>
+          <div class="fld"><label>Estacionamento</label><textarea class="inp ta" id="reg-e">Dois lugares cobertos no lado esquerdo do portão.</textarea></div>
+          <div class="fld"><label>Tabaco</label><textarea class="inp ta" id="reg-t">Proibido fumar dentro da casa. Área exterior permitida.</textarea></div>
+        </div>
+      </div>
+      <div class="card"><div class="ctitle">Checklist de saída (um item por linha)</div>
+        <textarea class="inp ta-lg" id="checklist">Fechar todas as janelas e portas
+Desligar ar condicionado e aquecimento
+Desligar luzes em todos os compartimentos
+Retirar todos os pertences pessoais
+Colocar toalhas usadas no chão da casa de banho
+Verificar frigorífico e tirar alimentos
+Fechar torneiras
+Separar lixo e colocar nos contentores
+Trancar o portão do jardim
+Entregar as chaves ao proprietário</textarea>
+      </div>
+      <div class="card"><div class="ctitle">Caixa de fusíveis</div>
+        <div class="g2">
+          <div class="fld"><label>Localização</label><textarea class="inp ta" id="fus-l">Corredor da entrada, armário branco à direita.</textarea></div>
+          <div class="fld"><label>O que fazer</label><textarea class="inp ta" id="fus-c">1. Desligue os aparelhos. 2. Levante o disjuntor falhado. 3. Se repetir, contacte o Carlos.</textarea></div>
+        </div>
+      </div>
+      <div class="card"><div class="ctitle">Reciclagem</div>
+        <div class="g2">
+          <div class="fld"><label>Verde (vidro)</label><input class="inp" id="rec-v" value="Garrafas, frascos, potes de vidro"/></div>
+          <div class="fld"><label>Azul (papel)</label><input class="inp" id="rec-a" value="Jornais, revistas, caixas de cartão"/></div>
+          <div class="fld"><label>Amarelo (plástico)</label><input class="inp" id="rec-am" value="Garrafas PET, embalagens, latas"/></div>
+          <div class="fld"><label>Preto (indiferenciado)</label><input class="inp" id="rec-p" value="Resíduos não recicláveis. Recolha terças e sextas."/></div>
+        </div>
+      </div>
+      <button class="savebtn" onclick="saveSection('casa-regras')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-regras">Guardado!</span></button>
+    </div>
+
+    <!-- SERVIÇOS -->
+    <div id="sec-servicos" class="sec">
+      <div class="ph"><div><div class="ptitle">Serviços</div></div></div>
+      <div class="card"><div class="ctitle">Fotos dos serviços</div>
+        <div class="g2">
+          <div class="fld"><label>Limpeza extra</label>
+            <div class="photo-row" style="flex-direction:column;gap:.4rem;">
+              <img id="prev-limp" class="photo-prev wide" src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&auto=format&fit=crop&q=75"/>
+              <input class="photo-url" id="img-limp" value="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-limp','img-limp')"/>
+            </div>
+          </div>
+          <div class="fld"><label>Aluguer bicicletas</label>
+            <div class="photo-row" style="flex-direction:column;gap:.4rem;">
+              <img id="prev-bici" class="photo-prev wide" src="https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=400&auto=format&fit=crop&q=75"/>
+              <input class="photo-url" id="img-bici" value="https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-bici','img-bici')"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="ctitle">Limpeza extra</div>
+        <div class="fld"><label>Texto descritivo</label><textarea class="inp ta" id="sv-limp">Serviço disponível das 10h às 16h. Pedido confirmado por WhatsApp.</textarea></div>
+      </div>
+      <div class="card"><div class="ctitle">Bicicletas — preços</div>
+        <div class="g3">
+          <div class="fld"><label>Montanha</label><input class="inp" id="b-p1" value="€12/dia"/></div>
+          <div class="fld"><label>Estrada</label><input class="inp" id="b-p2" value="€10/dia"/></div>
+          <div class="fld"><label>E-Bike</label><input class="inp" id="b-p3" value="€20/dia"/></div>
+          <div class="fld"><label>Desc. montanha</label><input class="inp" id="b-d1" value="21 velocidades · Capacete incluído"/></div>
+          <div class="fld"><label>Desc. estrada</label><input class="inp" id="b-d2" value="Ciclovia do rio Cávado"/></div>
+          <div class="fld"><label>Desc. e-bike</label><input class="inp" id="b-d3" value="Bateria 80 km · Carregamento incluído"/></div>
+        </div>
+      </div>
+      <button class="savebtn" onclick="saveSection('servicos')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-servicos">Guardado!</span></button>
+    </div>
+
+    <!-- ATRAÇÕES -->
+    <div id="sec-atracoes" class="sec">
+      <div class="ph"><div><div class="ptitle">Atrações</div><div class="psub">Edição em tempo real · Google Sheet "Atracoes"</div></div>
+        <button class="addbtn" onclick="addPlace('atracoes')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar</button>
+      </div>
+      <div id="atracoes-list"><div style="font-size:.82rem;color:var(--txl);">A carregar...</div></div>
+      <button class="savebtn" id="save-atracoes-btn" style="display:none;" onclick="savePlaces('atracoes')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar atrações<span class="oktxt" id="ok-atracoes">Guardado!</span></button>
+    </div>
+
+    <!-- RESTAURANTES -->
+    <div id="sec-restaurantes" class="sec">
+      <div class="ph"><div><div class="ptitle">Restaurantes</div><div class="psub">Edição em tempo real · Google Sheet "Restaurantes"</div></div>
+        <button class="addbtn" onclick="addPlace('restaurantes')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar</button>
+      </div>
+      <div id="restaurantes-list"><div style="font-size:.82rem;color:var(--txl);">A carregar...</div></div>
+      <button class="savebtn" id="save-restaurantes-btn" style="display:none;" onclick="savePlaces('restaurantes')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar restaurantes<span class="oktxt" id="ok-restaurantes">Guardado!</span></button>
+    </div>
+
+    <!-- CONTACTO -->
+    <div id="sec-contacto" class="sec">
+      <div class="ph"><div><div class="ptitle">Contactos & Emergências</div></div></div>
+      <div class="card"><div class="ctitle">Proprietário</div>
+        <div class="g2">
+          <div class="fld"><label>Nome</label><input class="inp" id="ct-nome" value="Carlos"/></div>
+          <div class="fld"><label>WhatsApp</label><input class="inp" id="ct-wa" value="+351912345678"/></div>
+          <div class="fld"><label>Telefone</label><input class="inp" id="ct-tel" value="+351912345678"/></div>
+          <div class="fld"><label>Email</label><input class="inp" id="ct-email" value="carlos@casadogeres.pt"/></div>
+        </div>
+      </div>
+      <div class="card"><div class="ctitle">Emergências</div>
+        <div class="g2">
+          <div class="fld"><label>Táxi</label><input class="inp" id="em-taxi" value="+351912345678"/></div>
+          <div class="fld"><label>Hospital — telefone</label><input class="inp" id="em-hosp" value="+351253300100"/></div>
+          <div class="fld"><label>Hospital — nome</label><input class="inp" id="em-hosp-n" value="Hospital Braga"/></div>
+          <div class="fld"><label>Veterinário</label><input class="inp" id="em-vet" value="+351253617070"/></div>
+          <div class="fld"><label>Morada completa (para 112)</label><input class="inp" id="em-morada" value="Rua da Serra, Casa do Gerês, Gerês, Braga"/></div>
+        </div>
+      </div>
+      <div class="card"><div class="ctitle">Farmácias</div>
+        <div class="g2">
+          <div class="fld"><label>Farmácia 1 — nome</label><input class="inp" id="f1-nome" value="Farmácia Gerês"/></div>
+          <div class="fld"><label>Farmácia 1 — morada</label><input class="inp" id="f1-end" value="Rua Central, 12 · Gerês"/></div>
+          <div class="fld"><label>Farmácia 1 — URL mapa</label><input class="inp" id="f1-url" value="https://www.google.com/maps/search/Farmácia+Gerês"/></div>
+          <div class="fld"><label>Farmácia 2 — nome</label><input class="inp" id="f2-nome" value="Farmácia Caldas do Gerês"/></div>
+          <div class="fld"><label>Farmácia 2 — morada</label><input class="inp" id="f2-end" value="Av. Manuel Francisco Costa · Caldas"/></div>
+          <div class="fld"><label>Farmácia 2 — URL mapa</label><input class="inp" id="f2-url" value="https://www.google.com/maps/search/Farmácia+Caldas"/></div>
+        </div>
+      </div>
+      <button class="savebtn" onclick="saveSection('contacto')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-contacto">Guardado!</span></button>
+    </div>
+
+    <!-- PATROCINADORES -->
+    <div id="sec-patrocinadores" class="sec">
+      <div class="ph"><div><div class="ptitle">Patrocinadores</div></div></div>
+      <div class="card"><div class="ctitle">Patrocinador 1 (menu Casa)</div>
+        <div class="fld"><label>Foto</label>
+          <div class="photo-row">
+            <img id="prev-p1" class="photo-prev wide" src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&auto=format&fit=crop&q=75"/>
+            <div style="flex:1;"><input class="photo-url" id="img-p1" value="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-p1','img-p1')"/></div>
+          </div>
+        </div>
+        <div class="g2">
+          <div class="fld"><label>Badge</label><input class="inp" id="p1-badge" value="Parceiro local"/></div>
+          <div class="fld"><label>Nome</label><input class="inp" id="p1-nome" value="Adega do Gerês"/></div>
+          <div class="fld"><label>CTA</label><input class="inp" id="p1-cta" value="10% desconto a apresentar esta app"/></div>
+          <div class="fld"><label>URL</label><input class="inp" id="p1-url" value="https://www.google.com/maps/search/Adega+Geres"/></div>
+        </div>
+      </div>
+      <div class="card"><div class="ctitle">Patrocinador 2 (menu Descobrir)</div>
+        <div class="fld"><label>Foto</label>
+          <div class="photo-row">
+            <img id="prev-p2" class="photo-prev wide" src="https://images.unsplash.com/photo-1530866495561-507c9faab2ed?w=400&auto=format&fit=crop&q=75"/>
+            <div style="flex:1;"><input class="photo-url" id="img-p2" value="https://images.unsplash.com/photo-1530866495561-507c9faab2ed?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-p2','img-p2')"/></div>
+          </div>
+        </div>
+        <div class="g2">
+          <div class="fld"><label>Badge</label><input class="inp" id="p2-badge" value="Atividades locais"/></div>
+          <div class="fld"><label>Nome</label><input class="inp" id="p2-nome" value="Gerês Aventura"/></div>
+          <div class="fld"><label>CTA</label><input class="inp" id="p2-cta" value="Rafting · Canyoning · Trilhos guiados"/></div>
+          <div class="fld"><label>URL</label><input class="inp" id="p2-url" value="https://www.google.com/maps/search/Gerês+Aventura"/></div>
+        </div>
+      </div>
+      <button class="savebtn" onclick="saveSection('patrocinadores')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-patrocinadores">Guardado!</span></button>
+    </div>
+
+    <!-- FEEDBACKS -->
+    <div id="sec-feedbacks" class="sec">
+      <div class="ph"><div><div class="ptitle">Feedbacks</div><div class="psub">Direto do Google Sheets "Feedbacks"</div></div>
+        <button class="addbtn" onclick="loadAll()">↻ Atualizar</button>
+      </div>
+      <div id="feedbacks-list"><div style="font-size:.82rem;color:var(--txl);">A carregar...</div></div>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div id="sec-newsletter" class="sec">
+      <div class="ph"><div><div class="ptitle">Newsletter</div><div class="psub">Emails recolhidos · Google Sheet "Newsletter"</div></div>
+        <button class="addbtn" onclick="loadAll()">↻ Atualizar</button>
+      </div>
+      <div class="card"><div class="ctitle">Subscritores</div><div id="nl-list"><div style="font-size:.82rem;color:var(--txl);">A carregar...</div></div></div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<div id="toast"></div>
+
+<script>
+var BO_PASS = 'yapp2025';
+var BO_KEY  = 'yapp_bo_auth';
+var LS_KEY  = 'yapp_bo_local';
+var API     = 'https://script.google.com/macros/s/AKfycbxaSUF2BprbcIbDVOSJc7dUsKJF9XuCi7L0yCOx7IbejndpusVck1hTQEmEf8jT6iY0Jg/exec';
+
+var DB = { config:{}, guests:[], feedbacks:[], newsletter:[], atracoes:[], restaurantes:[] };
+
+// ── AUTH ────────────────────────────────────────
+function doLogin() {
+  if (document.getElementById('lpass').value === BO_PASS) {
+    localStorage.setItem(BO_KEY, '1');
+    document.getElementById('login').classList.add('off');
+    document.getElementById('app').style.display = 'block';
+    loadAll();
+  } else {
+    document.getElementById('lerr').textContent = 'Password incorreta.';
+  }
+}
+function doLogout() { localStorage.removeItem(BO_KEY); location.reload(); }
+document.getElementById('lpass').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
+window.addEventListener('DOMContentLoaded', function() {
+  if (localStorage.getItem(BO_KEY)) {
+    document.getElementById('login').classList.add('off');
+    document.getElementById('app').style.display = 'block';
+    loadAll();
+  }
+  // Restore local fields
+  var local = localStorage.getItem(LS_KEY);
+  if (local) { try { restoreLocal(JSON.parse(local)); } catch(e) {} }
+});
+
+// ── NAVIGATION ──────────────────────────────────
+function go(sec, el) {
+  document.querySelectorAll('.sec').forEach(function(s) { s.classList.remove('on'); });
+  document.querySelectorAll('.sbi').forEach(function(n) { n.classList.remove('on'); });
+  document.getElementById('sec-' + sec).classList.add('on');
+  if (el) el.classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+// ── LOAD ALL FROM API ────────────────────────────
+function loadAll() {
+  showLoading('A carregar dados do Google Sheets...');
+  var done = 0; var total = 5;
+  function check() { done++; if (done >= total) { hideLoading(); updateDashboard(); } }
+
+  fetchAPI('config',    function(d) { DB.config = d.data || {}; fillConfig(); check(); }, check);
+  fetchAPI('guests',    function(d) { DB.guests = parseGuests(d.data); renderGuests(); check(); }, check);
+  fetchAPI('feedbacks', function(d) { DB.feedbacks = d.data || []; renderFeedbacks(); check(); }, check);
+  fetchAPI('attractions',  function(d) { DB.atracoes = d.data || []; renderPlaces('atracoes'); document.getElementById('save-atracoes-btn').style.display = 'inline-flex'; check(); }, check);
+  fetchAPI('restaurants',  function(d) { DB.restaurantes = d.data || []; renderPlaces('restaurantes'); document.getElementById('save-restaurantes-btn').style.display = 'inline-flex'; check(); }, check);
+}
+
+function fetchAPI(action, onSuccess, onError) {
+  fetch(API + '?action=' + action)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.status === 'ok') {
+        document.getElementById('api-dot').style.background = 'var(--gl)';
+        document.getElementById('api-lbl').textContent = 'Ligado ao Google Sheets ✓';
+        document.getElementById('sync-lbl').textContent = 'Sincronizado';
+        onSuccess(d);
+      } else { onError && onError(); }
+    })
+    .catch(function(e) {
+      document.getElementById('api-dot').style.background = 'var(--red)';
+      document.getElementById('api-lbl').textContent = 'Erro de ligação — verificar Apps Script';
+      document.getElementById('sync-lbl').textContent = 'Sem ligação';
+      onError && onError();
+    });
+}
+
+function parseGuests(data) {
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  return Object.keys(data).map(function(k) {
+    return { user: k, pass: data[k].pass, checkout: data[k].checkout, name: data[k].name || '', active: true };
+  });
+}
+
+// ── FILL CONFIG FIELDS ───────────────────────────
+function fillConfig() {
+  var c = DB.config;
+  function s(id, key) { var el = document.getElementById(id); if (el && c[key] !== undefined) el.value = c[key]; }
+  s('c-nome','propriedade_nome'); s('c-sub','propriedade_subtitulo'); s('c-desc','propriedade_descricao');
+  s('c-ci','checkin_hora'); s('c-co','checkout_hora'); s('c-cap','capacidade'); s('c-qts','quartos');
+  s('c-pisc','horario_piscina'); s('c-stream','streaming_plataformas');
+  s('c-lat','lat'); s('c-lng','lng'); s('c-bv','mensagem_boas_vindas');
+  s('c-aviso-txt','aviso_texto'); s('c-codesc','codigo_desconto');
+  s('c-ig','instagram_url'); s('c-fb','facebook_url'); s('c-grev','google_reviews_url');
+  s('w-ssid1','wifi_ssid'); s('w-pass1','wifi_pass'); s('w-ssid2','wifi_ssid2'); s('w-pass2','wifi_pass2');
+  s('ct-nome','proprietario_nome'); s('ct-wa','proprietario_whatsapp'); s('ct-tel','proprietario_telefone'); s('ct-email','proprietario_email');
+  var av = document.getElementById('c-aviso-ativo');
+  if (av && c['aviso_ativo'] !== undefined) av.value = String(c['aviso_ativo']);
+  // prop name in sidebar
+  if (c['propriedade_nome']) document.querySelector('.sb-sub').textContent = c['propriedade_nome'];
+}
+
+// ── SAVE CONFIG TO SHEET (via POST) ──────────────
+function saveConfig() {
+  var payload = {
+    propriedade_nome: v('c-nome'), propriedade_subtitulo: v('c-sub'), propriedade_descricao: v('c-desc'),
+    checkin_hora: v('c-ci'), checkout_hora: v('c-co'), capacidade: v('c-cap'), quartos: v('c-qts'),
+    horario_piscina: v('c-pisc'), streaming_plataformas: v('c-stream'),
+    lat: v('c-lat'), lng: v('c-lng'), mensagem_boas_vindas: v('c-bv'),
+    aviso_ativo: v('c-aviso-ativo'), aviso_texto: v('c-aviso-txt'),
+    codigo_desconto: v('c-codesc'), instagram_url: v('c-ig'), facebook_url: v('c-fb'), google_reviews_url: v('c-grev'),
+    wifi_ssid: v('w-ssid1'), wifi_pass: v('w-pass1'), wifi_ssid2: v('w-ssid2'), wifi_pass2: v('w-pass2'),
+    proprietario_nome: v('ct-nome'), proprietario_whatsapp: v('ct-wa'), proprietario_telefone: v('ct-tel'), proprietario_email: v('ct-email'),
+    ultima_atualizacao: new Date().toISOString()
+  };
+  saveLocal();
+  postAPI({ action: 'updateConfig', data: payload }, function() {
+    showOk('ok-config'); showOk('ok-wifi'); toast('Config guardada no Google Sheets!');
+  });
+}
+function saveWifi() { saveConfig(); }
+
+// ── SAVE SECTION (local only + toast guidance) ───
+function saveSection(sec) {
+  saveLocal();
+  showOk('ok-' + sec);
+  toast('Guardado localmente. Os textos da app atualizam ao publicar o ficheiro HTML.');
+}
+
+// ── LOCAL STORAGE ────────────────────────────────
+function saveLocal() {
+  var allIds = document.querySelectorAll('.inp');
+  var data = {};
+  allIds.forEach(function(el) { if (el.id) data[el.id] = el.value; });
+  localStorage.setItem(LS_KEY, JSON.stringify(data));
+}
+function restoreLocal(data) {
+  Object.keys(data).forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && !['lpass'].includes(id)) el.value = data[id];
+  });
+}
+
+// ── GUESTS ───────────────────────────────────────
+function addGuest() {
+  var user = v('h-user').trim().toLowerCase();
+  var pass = v('h-pass').trim();
+  var co   = v('h-co');
+  if (!user || !pass || !co) { toast('Preenche username, password e check-out.'); return; }
+  var payload = { action: 'addGuest', user: user, pass: pass, checkout: co, name: v('h-nome'), notes: v('h-notas') };
+  showLoading('A adicionar hóspede...');
+  postAPI(payload, function() {
+    hideLoading();
+    DB.guests.push({ user: user, pass: pass, checkout: co, name: v('h-nome'), active: true });
+    renderGuests(); showOk('ok-hosp');
+    ['h-user','h-pass','h-nome','h-co','h-notas'].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
+    toast('Hóspede adicionado no Google Sheets!');
+  });
+}
+
+function renderGuests() {
+  var h = '<table class="tbl"><thead><tr><th>Username</th><th>Password</th><th>Nome</th><th>Check-out</th><th>Estado</th><th>Ações</th></tr></thead><tbody>';
+  var today = new Date();
+  DB.guests.forEach(function(g, i) {
+    var exp = new Date(g.checkout + 'T23:59:59') < today;
+    var pill = !g.active ? '<span class="pill p-off">Inativo</span>' :
+               exp ? '<span class="pill p-pend">Expirado</span>' :
+               '<span class="pill p-ok">Ativo</span>';
+    h += '<tr><td><strong>' + esc(g.user) + '</strong></td>'
+      + '<td style="font-family:monospace;font-size:.8rem;">' + esc(g.pass) + '</td>'
+      + '<td>' + esc(g.name || '—') + '</td>'
+      + '<td>' + (g.checkout === '2099-12-31' ? 'Permanente' : g.checkout) + '</td>'
+      + '<td>' + pill + '</td>'
+      + '<td><button class="actbtn" onclick="editPass(' + i + ')">Editar pass</button></td></tr>';
+  });
+  h += '</tbody></table>';
+  var el = document.getElementById('guests-tbl');
+  if (el) el.innerHTML = h;
+  var s = document.getElementById('s-hosp');
+  if (s) s.textContent = DB.guests.filter(function(g) { return g.active && g.user !== 'admin'; }).length;
+}
+
+function editPass(i) {
+  var g = DB.guests[i];
+  var np = prompt('Nova password para "' + g.user + '" (atual: ' + g.pass + '):', g.pass);
+  if (np !== null && np.trim()) {
+    showLoading('A atualizar...');
+    postAPI({ action: 'updateGuestPass', user: g.user, pass: np.trim() }, function() {
+      hideLoading(); DB.guests[i].pass = np.trim(); renderGuests(); toast('Password atualizada!');
+    });
+  }
+}
+
+// ── PLACES ───────────────────────────────────────
+function renderPlaces(type) {
+  var list = DB[type] || [];
+  var h = '';
+  list.forEach(function(p, i) {
+    h += '<div class="place-row">'
+      + '<div class="place-grid">'
+      + '<img class="place-img-prev" id="pi-' + type + '-' + i + '" src="' + esc(p.img || p.image || '') + '" onerror="this.style.background=\'#eee\'" />'
+      + '<div class="place-fields">'
+      + '<input class="inp" style="font-size:.8rem;" value="' + esc(p.name) + '" onchange="DB.' + type + '[' + i + '].name=this.value" placeholder="Nome"/>'
+      + '<input class="inp" style="font-size:.8rem;" value="' + esc(p.type) + '" onchange="DB.' + type + '[' + i + '].type=this.value" placeholder="Tipo"/>'
+      + '<input class="inp" style="font-size:.8rem;" value="' + esc(p.dist) + '" onchange="DB.' + type + '[' + i + '].dist=this.value" placeholder="Distância"/>'
+      + '<input class="inp" style="font-size:.8rem;grid-column:1/-1;" value="' + esc(p.desc) + '" onchange="DB.' + type + '[' + i + '].desc=this.value" placeholder="Descrição"/>'
+      + '<input class="photo-url" style="grid-column:1/-1;" value="' + esc(p.img || p.image || '') + '" placeholder="URL da imagem" oninput="DB.' + type + '[' + i + '].img=this.value;document.getElementById(\'pi-' + type + '-' + i + '\').src=this.value"/>'
+      + '<input class="inp" style="font-size:.8rem;" value="' + (p.lat || '') + '" onchange="DB.' + type + '[' + i + '].lat=parseFloat(this.value)||this.value" placeholder="Lat"/>'
+      + '<input class="inp" style="font-size:.8rem;" value="' + (p.lng) + '" onchange="DB.' + type + '[' + i + '].lng=parseFloat(this.value)||this.value" placeholder="Lng"/>'
+      + '<input class="inp" style="font-size:.8rem;" value="' + esc(p.rating) + '" onchange="DB.' + type + '[' + i + '].rating=this.value" placeholder="Rating"/>'
+      + '</div></div>'
+      + '<div style="text-align:right;margin-top:.5rem;"><button class="actbtn del" onclick="removePlace(\'' + type + '\',' + i + ')">Remover</button></div>'
+      + '</div>';
+  });
+  if (!h) h = '<div style="font-size:.82rem;color:var(--txl);padding:1rem 0;">Sem itens. Clica em Adicionar.</div>';
+  var el = document.getElementById(type + '-list');
+  if (el) el.innerHTML = h;
+}
+
+function addPlace(type) {
+  DB[type].push({ name: 'Novo item', type: '', desc: '', dist: '', rating: '★★★★★ 4.8', img: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&auto=format&fit=crop&q=80', lat: 41.72, lng: -8.20 });
+  renderPlaces(type);
+}
+
+function removePlace(type, i) {
+  if (confirm('Remover este item?')) { DB[type].splice(i, 1); renderPlaces(type); }
+}
+
+function savePlaces(type) {
+  toast('Para guardar atrações/restaurantes permanentemente, edita diretamente a Google Sheet "' + (type === 'atracoes' ? 'Atracoes' : 'Restaurantes') + '".');
+  showOk('ok-' + type);
+}
+
+// ── FEEDBACKS ─────────────────────────────────────
+function renderFeedbacks() {
+  var h = '';
+  DB.feedbacks.forEach(function(f, i) {
+    var stars = ''; for (var j = 0; j < 5; j++) stars += j < f.rating ? '★' : '☆';
+    h += '<div class="fc">'
+      + '<div class="fc-top"><span class="fc-name">' + esc(f.name) + '</span><div style="display:flex;align-items:center;gap:8px;"><span class="fc-date">' + f.date + '</span>'
+      + (f.approved ? '<span class="pill p-ok">Aprovado</span>' : '<span class="pill p-pend">Pendente</span>') + '</div></div>'
+      + '<div class="fc-stars">' + stars + '</div>'
+      + '<div class="fc-text">' + esc(f.text) + '</div>'
+      + '<div class="fc-acts">'
+      + (!f.approved ? '<button class="actbtn" onclick="approveFb(' + i + ')">Aprovar</button>' : '')
+      + '<button class="actbtn del" onclick="deleteFb(' + i + ')">Remover</button>'
+      + '</div></div>';
+  });
+  if (!h) h = '<div style="font-size:.82rem;color:var(--txl);padding:1rem;">Sem feedbacks registados.</div>';
+  var el = document.getElementById('feedbacks-list');
+  if (el) el.innerHTML = h;
+  var sf = document.getElementById('s-feed'); if (sf) sf.textContent = DB.feedbacks.length;
+  var avg = DB.feedbacks.length ? (DB.feedbacks.reduce(function(s, f) { return s + Number(f.rating); }, 0) / DB.feedbacks.length).toFixed(1) : '—';
+  var sr = document.getElementById('s-rat'); if (sr) sr.textContent = avg;
+}
+
+function approveFb(i) {
+  DB.feedbacks[i].approved = true;
+  postAPI({ action: 'approveFeedback', index: i }, function() {});
+  renderFeedbacks(); toast('Feedback aprovado — visível na app.');
+}
+function deleteFb(i) {
+  if (confirm('Remover este feedback?')) {
+    DB.feedbacks.splice(i, 1); renderFeedbacks();
+    toast('Feedback removido. Apaga também na Google Sheet "Feedbacks" para sincronizar.');
+  }
+}
+
+// ── NEWSLETTER ────────────────────────────────────
+function renderNewsletter() {
+  var h = '';
+  if (DB.newsletter && DB.newsletter.length) {
+    h = '<table class="tbl"><thead><tr><th>Data</th><th>Nome</th><th>Email</th></tr></thead><tbody>';
+    DB.newsletter.forEach(function(n) { h += '<tr><td>' + (n.date || '') + '</td><td>' + esc(n.name || '') + '</td><td>' + esc(n.email) + '</td></tr>'; });
+    h += '</tbody></table>';
+  } else { h = '<div style="font-size:.82rem;color:var(--txl);">Sem subscritores ainda.</div>'; }
+  var el = document.getElementById('nl-list'); if (el) el.innerHTML = h;
+  var sn = document.getElementById('s-nl'); if (sn) sn.textContent = (DB.newsletter || []).length;
+}
+
+// ── DASHBOARD ─────────────────────────────────────
+function updateDashboard() {
+  renderGuests(); renderFeedbacks(); renderNewsletter();
+  var h = ''; DB.feedbacks.slice(0, 3).forEach(function(f) {
+    var s = ''; for (var j = 0; j < 5; j++) s += j < f.rating ? '★' : '☆';
+    h += '<div class="fc"><div class="fc-top"><span class="fc-name">' + esc(f.name) + '</span><span class="fc-date">' + f.date + '</span></div><div class="fc-stars">' + s + '</div><div class="fc-text">' + esc(f.text) + '</div></div>';
+  });
+  var df = document.getElementById('dash-fb'); if (df) df.innerHTML = h || '<div style="font-size:.82rem;color:var(--txl);">Sem feedbacks.</div>';
+  var dh = ''; var today = new Date();
+  DB.guests.filter(function(g) { return g.active && new Date(g.checkout + 'T23:59:59') >= today; }).forEach(function(g) {
+    dh += '<div style="display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid rgba(90,138,60,0.08);">'
+      + '<div><strong style="font-size:.85rem;">' + esc(g.user) + '</strong> <span style="font-size:.75rem;color:var(--txl);">' + esc(g.name || '') + '</span></div>'
+      + '<span style="font-size:.75rem;color:var(--txl);">Check-out: ' + g.checkout + '</span></div>';
+  });
+  var dho = document.getElementById('dash-hospedes'); if (dho) dho.innerHTML = dh || '<div style="font-size:.82rem;color:var(--txl);">Nenhum hóspede ativo.</div>';
+}
+
+// ── POST API ──────────────────────────────────────
+function postAPI(payload, onSuccess) {
+  fetch(API, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).then(function() {
+    onSuccess && onSuccess();
+  }).catch(function(e) {
+    hideLoading();
+    toast('Nota: Apps Script pode ter bloqueado CORS. Edita diretamente na Google Sheet.');
+    onSuccess && onSuccess();
+  });
+}
+
+// ── HELPERS ───────────────────────────────────────
+function v(id) { var el = document.getElementById(id); return el ? el.value : ''; }
+function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function pi(prevId, inputId) { var u = document.getElementById(inputId).value; if (u) document.getElementById(prevId).src = u; }
+function showOk(id) { var el = document.getElementById(id); if (!el) return; el.classList.add('show'); setTimeout(function() { el.classList.remove('show'); }, 2200); }
+var tt;
+function toast(msg) { var el = document.getElementById('toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(tt); tt = setTimeout(function() { el.classList.remove('show'); }, 3500); }
+function showLoading(msg) { var lo = document.getElementById('loading'); lo.classList.add('show'); if (msg) document.getElementById('loading-txt').textContent = msg; }
+function hideLoading() { document.getElementById('loading').classList.remove('show'); }
+</script>
+</body>
+</html>
