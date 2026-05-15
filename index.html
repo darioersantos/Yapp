@@ -635,6 +635,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         <div style="flex:1;height:1px;background:var(--cream-dark);"></div>
       </div>
 
+      <div id="atracoes-dynamic">
       <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7351,-8.1689" target="_blank"><img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=700&auto=format&fit=crop&q=80" alt="Cascata do Arado"/><div class="img-card-body"><div class="img-card-tag">Cascata · Trilho</div><div class="img-card-title">Cascata do Arado</div><div class="img-card-sub">Trilho circular de 2h em floresta densa. Um dos percursos mais icónicos do parque.</div><div class="img-card-meta"><span class="dist-badge">4,2 km</span><span class="rating">★★★★★ 4.9</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
 
       <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.6956,-8.1782" target="_blank"><img src="https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=700&auto=format&fit=crop&q=80" alt="Fecha de Barjas"/><div class="img-card-body"><div class="img-card-tag">Cascata · Natureza</div><div class="img-card-title">Cascata da Fecha de Barjas</div><div class="img-card-sub">Uma das mais imponentes do Gerês. Trilho de 40 min pela floresta.</div><div class="img-card-meta"><span class="dist-badge">9,1 km</span><span class="rating">★★★★★ 4.8</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
@@ -647,6 +648,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 
       <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7890,-8.1245" target="_blank"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=700&auto=format&fit=crop&q=80" alt="Pedra Bela"/><div class="img-card-body"><div class="img-card-tag">Trilho panorâmico</div><div class="img-card-title">Pedra Bela</div><div class="img-card-sub">Vista de 360° sobre o parque. Média dificuldade, 3h ida e volta.</div><div class="img-card-meta"><span class="dist-badge">8,5 km</span><span class="rating">★★★★★ 4.8</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
 
+      </div><!-- /atracoes-dynamic -->
+
       <!-- SECÇÃO 2: RESTAURANTES -->
       <div style="display:flex;align-items:center;gap:10px;margin:1.4rem 0 0.75rem;">
         <div style="flex:1;height:1px;background:var(--cream-dark);"></div>
@@ -654,12 +657,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         <div style="flex:1;height:1px;background:var(--cream-dark);"></div>
       </div>
 
+      <div id="restaurantes-dynamic">
       <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7214,-8.1583" target="_blank"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=700&auto=format&fit=crop&q=80" alt="Taberna"/><div class="img-card-body"><div class="img-card-tag">Cozinha regional</div><div class="img-card-title">Taberna do Gerês</div><div class="img-card-sub">Cabrito assado no forno a lenha. Reserva recomendada ao fim de semana.</div><div class="img-card-meta"><span class="dist-badge">1,3 km</span><span class="rating">★★★★★ 4.9</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
 
       <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7198,-8.1901" target="_blank"><img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=700&auto=format&fit=crop&q=80" alt="Tasca"/><div class="img-card-body"><div class="img-card-tag">Peixe &amp; petiscos</div><div class="img-card-title">Tasca da Ribeira</div><div class="img-card-sub">Trutas do rio e petiscos regionais com vista para a ribeira.</div><div class="img-card-meta"><span class="dist-badge">3,7 km</span><span class="rating">★★★★☆ 4.4</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
 
       <a class="img-card" href="https://www.google.com/maps/dir/?api=1&destination=41.7301,-8.1423" target="_blank"><img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=700&auto=format&fit=crop&q=80" alt="Caldas"/><div class="img-card-body"><div class="img-card-tag">Restaurante</div><div class="img-card-title">Restaurante Caldas</div><div class="img-card-sub">Vista para o lago termal. Vitela barrosã e caldo verde.</div><div class="img-card-meta"><span class="dist-badge">2,1 km</span><span class="rating">★★★★☆ 4.3</span><span class="map-cta">Abrir no mapa →</span></div></div></a>
 
+      </div><!-- /restaurantes-dynamic -->
     </div>
   </div>
 
@@ -826,6 +831,13 @@ var GUESTS = {
   'casa':        { pass: 'yapp',      checkout: '2026-12-31' }
 };
 
+/* ═══════════════════════════════════════════════════════════
+   API_URL — colar o URL do Apps Script aqui quando disponível
+   Exemplo: var API_URL = 'https://script.google.com/macros/s/AKf.../exec';
+   Deixar '' para usar dados locais do HTML
+══════════════════════════════════════════════════════════ */
+var API_URL = 'https://script.google.com/macros/s/AKfycbxaSUF2BprbcIbDVOSJc7dUsKJF9XuCi7L0yCOx7IbejndpusVck1hTQEmEf8jT6iY0Jg/exec';
+
 var SESSION_KEY = 'yapp_cdg_v2';
 
 /* ═══ SESSÃO ════════════════════════════════════ */
@@ -836,6 +848,9 @@ function isExpired(co) { return new Date() > new Date(co + 'T23:59:59'); }
 
 /* ═══ ARRANQUE ══════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', function() {
+  // Load live data from Google Sheets if API configured
+  if (API_URL) { loadAPIData(); }
+
   var s = getSession();
   if (s) {
     if (isExpired(s.checkout)) {
@@ -1056,6 +1071,257 @@ function submitFeedback() {
   showToast('Obrigado! Feedback guardado no livro de hóspedes.');
   if (textEl) textEl.value = '';
   if (nameEl) nameEl.value = '';
+}
+
+/* ═══ DADOS DA API (Google Sheets) ═════════════ */
+function loadAPIData() {
+  if (!API_URL) return;
+  // Uma única chamada busca tudo
+  fetch(API_URL + '?action=all')
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.status !== 'ok') return;
+      applyConfig(d.config || {});
+      applyCasa(d.casa || {});
+      applyServicos(d.servicos || {});
+      applyContacto(d.contacto || {});
+      applyPatrocinadores(d.patrocinadores || []);
+      if (d.guests) Object.keys(d.guests).forEach(function(k){ GUESTS[k]=d.guests[k]; });
+      if (d.feedbacks && d.feedbacks.length) { STATIC_ENTRIES = d.feedbacks; renderGuestbook(); }
+      if (d.attractions && d.attractions.length) renderAtracoes(d.attractions);
+      if (d.restaurants && d.restaurants.length) renderRestaurantes(d.restaurants);
+    })
+    .catch(function(e) { console.log('API error:', e); });
+}
+
+function applyConfig(c) {
+  function s(sel, val) { var el = document.querySelector(sel); if (el && val) el.textContent = val; }
+  function si(sel, val) { var el = document.querySelector(sel); if (el && val) el.src = val; }
+  function sh(sel, val) { var el = document.querySelector(sel); if (el && val) el.innerHTML = val.replace(/\n/g,'<br/>'); }
+  // Splash
+  s('.hero-label', c.hero_label);
+  sh('.hero-title', c.hero_titulo || c.propriedade_subtitulo);
+  s('.hero-sub', c.hero_subtitulo || c.propriedade_descricao);
+  s('.hero-btn-txt', c.hero_btn);
+  s('.logo-name', c.propriedade_nome);
+  // Check-in/out
+  var cells = document.querySelectorAll('.info-cell-val');
+  if (cells[0] && c.checkin_hora) cells[0].textContent = c.checkin_hora;
+  if (cells[1] && c.checkout_hora) cells[1].textContent = c.checkout_hora;
+  if (cells[2] && c.capacidade) cells[2].textContent = c.capacidade;
+  if (cells[3] && c.quartos) cells[3].textContent = c.quartos;
+  // Wi-Fi
+  var ssids = document.querySelectorAll('.wifi-ssid');
+  if (ssids[0] && c.wifi_ssid) ssids[0].textContent = c.wifi_ssid;
+  if (ssids[1] && c.wifi_ssid2) ssids[1].textContent = c.wifi_ssid2;
+  if (c.wifi_pass) {
+    var passes = document.querySelectorAll('.wifi-pass');
+    if (passes[0]) passes[0].textContent = c.wifi_pass;
+    if (passes[1]) passes[1].textContent = c.wifi_pass2 || c.wifi_pass;
+    document.querySelectorAll('.copy-btn').forEach(function(btn, i) {
+      btn.setAttribute('onclick', "copyText(event,'" + (i===0||i===2 ? c.wifi_pass : (c.wifi_pass2||c.wifi_pass)) + "')");
+    });
+  }
+  // Streaming
+  if (c.streaming_plataformas) {
+    var chips = document.querySelector('.streaming-chips');
+    if (chips) {
+      chips.innerHTML = c.streaming_plataformas.split(',').map(function(t){
+        return '<span class="chip">'+t.trim()+'</span>';
+      }).join('');
+    }
+  }
+  // Aviso
+  if (c.aviso_ativo === 'true' && c.aviso_texto) {
+    var existing = document.getElementById('aviso-banner');
+    if (!existing) {
+      var banner = document.createElement('div');
+      banner.id = 'aviso-banner';
+      banner.style.cssText = 'background:#e67e22;color:#fff;text-align:center;font-size:0.82rem;padding:8px 1rem;position:sticky;top:0;z-index:150;font-family:DM Sans,sans-serif;';
+      banner.textContent = c.aviso_texto;
+      var app = document.getElementById('app');
+      if (app) app.prepend(banner);
+    }
+  }
+}
+
+function applyCasa(c) {
+  function s(sel, val) { var el = document.querySelector(sel); if (el && val) el.textContent = String(val); }
+  function si(sel, val) { var el = document.querySelector(sel); if (el && val) el.src = String(val); }
+  function sh(sel, val) { var el = document.querySelector(sel); if (el && val) el.innerHTML = String(val).replace(/\n/g,'<br/>'); }
+  // Splash image
+  if (c.splash_img) { var v = document.querySelector('.hero-video'); if (v) v.setAttribute('poster', c.splash_img); }
+  // Info úteis card image
+  if (c.info_img) { var ii = document.querySelector('[onclick*="m-info"] img'); if (ii) ii.src = c.info_img; }
+  // Boas-vindas
+  if (c.boas_vindas) { var bv = document.querySelector('#m-info .modal-sheet > p'); if (bv) bv.innerHTML = String(c.boas_vindas).replace(/\n/g,'<br/>'); }
+  // Quartos
+  if (c.quartos_img) { var qi = document.querySelector('[onclick*="m-quartos"] img'); if (qi) qi.src = c.quartos_img; }
+  // Sala
+  if (c.sala_img) { var si2 = document.querySelector('[onclick*="m-sala"] img'); if (si2) si2.src = c.sala_img; }
+  // Cozinha
+  if (c.cozinha_img) { var ci = document.querySelector('[onclick*="m-cozinha"] img'); if (ci) ci.src = c.cozinha_img; }
+  if (c.cozinha_eletros) {
+    var wr = document.querySelector('.cozinha-eletros');
+    if (wr) wr.innerHTML = c.cozinha_eletros.split(',').map(function(t){ return '<span class="chip">'+t.trim()+'</span>'; }).join('');
+  }
+  // Churrasqueira
+  if (c.churrasco_img) { var chi = document.querySelector('[onclick*="m-churrasco"] img'); if (chi) chi.src = c.churrasco_img; }
+  // Piscina
+  if (c.piscina_img) {
+    var pi = document.querySelector('[onclick*="m-piscina"] img');
+    if (!pi) pi = document.querySelector('#m-piscina .modal-img');
+    if (pi) pi.src = c.piscina_img;
+  }
+  // Exterior
+  if (c.exterior_img) { var ei = document.querySelector('[onclick*="m-exterior"] img'); if (ei) ei.src = c.exterior_img; }
+  // WC
+  if (c.wc_img) { var wi = document.querySelector('[onclick*="m-wc"] img'); if (wi) wi.src = c.wc_img; }
+}
+
+function applyServicos(c) {
+  // Fotos
+  if (c.limp_img) { var li = document.querySelector('[onclick*="acc-limpeza"] .acc-header-img'); if (li) li.src = c.limp_img; }
+  if (c.bici_img) { var bi = document.querySelector('[onclick*="acc-bicicletas"] .acc-header-img'); if (bi) bi.src = c.bici_img; }
+  // Limpeza texto
+  if (c.limp_texto) { var lt = document.querySelector('#acc-limpeza .acc-body p'); if (lt) lt.textContent = c.limp_texto; }
+  // Bicicletas preços
+  function setByIdx(sel, idx, val) {
+    var els = document.querySelectorAll(sel);
+    if (els[idx] && val) els[idx].textContent = val;
+  }
+  if (c.bici_p1) setByIdx('.bici-preco', 0, c.bici_p1);
+  if (c.bici_p2) setByIdx('.bici-preco', 1, c.bici_p2);
+  if (c.bici_p3) setByIdx('.bici-preco', 2, c.bici_p3);
+  // Taxi
+  if (c.taxi_nome) { var tn = document.querySelector('.taxi-nome'); if (tn) tn.textContent = c.taxi_nome; }
+  if (c.taxi_tel) { var tl = document.querySelector('a.taxi-link'); if (tl) tl.href = 'tel:' + c.taxi_tel; }
+  // Farmácias
+  if (c.farm1_nome) { var f1n = document.querySelector('.farm1-nome'); if (f1n) f1n.textContent = c.farm1_nome; }
+  if (c.farm1_url)  { var f1u = document.querySelector('.farm1-url'); if (f1u) f1u.href = c.farm1_url; }
+  if (c.farm2_nome) { var f2n = document.querySelector('.farm2-nome'); if (f2n) f2n.textContent = c.farm2_nome; }
+  if (c.farm2_url)  { var f2u = document.querySelector('.farm2-url'); if (f2u) f2u.href = c.farm2_url; }
+}
+
+function applyContacto(c) {
+  // WhatsApp
+  if (c.prop_whatsapp) {
+    var wa = document.querySelector('a[href*="wa.me"]');
+    if (wa) wa.href = 'https://wa.me/' + c.prop_whatsapp.replace(/[^0-9]/g,'');
+  }
+  if (c.prop_nome) {
+    document.querySelectorAll('.contact-sub').forEach(function(el) {
+      if (el.textContent.indexOf('Carlos') !== -1 || el.textContent.indexOf('minutos') !== -1)
+        el.textContent = 'Resposta em minutos · ' + c.prop_nome;
+    });
+  }
+  if (c.prop_telefone) {
+    var tel = document.querySelector('a[href*="tel:+351912345678"]');
+    if (tel) { tel.href = 'tel:' + c.prop_telefone; var ts = tel.querySelector('.contact-sub'); if (ts) ts.textContent = c.prop_telefone; }
+  }
+  if (c.prop_email) {
+    var em = document.querySelector('a[href*="mailto:"]');
+    if (em) { em.href = 'mailto:' + c.prop_email; var es = em.querySelector('.contact-sub'); if (es) es.textContent = c.prop_email; }
+  }
+  if (c.em_hosp_tel) {
+    var ht = document.querySelector('a[href*="253300100"]');
+    if (ht) ht.href = 'tel:' + c.em_hosp_tel;
+  }
+  if (c.em_vet) {
+    var vt = document.querySelector('a[href*="253617070"]');
+    if (vt) vt.href = 'tel:' + c.em_vet;
+  }
+}
+
+function applyPatrocinadores(pats) {
+  if (!pats || !pats.length) return;
+  var sponsors = document.querySelectorAll('.sponsor');
+  pats.forEach(function(p, i) {
+    if (!sponsors[i]) return;
+    var img = sponsors[i].querySelector('img');
+    if (img && p.img) img.src = p.img;
+    var badge = sponsors[i].querySelector('.sponsor-badge');
+    var nome = sponsors[i].querySelector('.sponsor-name');
+    var cta = sponsors[i].querySelector('.sponsor-cta');
+    if (badge && p.badge) badge.textContent = p.badge;
+    if (nome && p.nome) nome.textContent = p.nome;
+    if (cta && p.cta) cta.textContent = p.cta;
+    if (p.url) sponsors[i].setAttribute('onclick', "window.open('" + p.url + "','_blank')");
+  });
+}
+
+function makePlaceCard(p, fallbackImg) {
+  var mapsUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + p.lat + ',' + p.lng;
+  var div = document.createElement('a');
+  div.className = 'img-card';
+  div.href = mapsUrl;
+  div.target = '_blank';
+  var img = document.createElement('img');
+  img.src = p.img;
+  img.alt = p.name;
+  img.onerror = function(){ this.src = fallbackImg; };
+  div.appendChild(img);
+  var body = document.createElement('div');
+  body.className = 'img-card-body';
+  body.innerHTML = '<div class="img-card-tag">' + p.type + '</div>'
+    + '<div class="img-card-title">' + p.name + '</div>'
+    + '<div class="img-card-sub">' + p.desc + '</div>'
+    + '<div class="img-card-meta"><span class="dist-badge">' + p.dist + '</span><span class="rating">' + p.rating + '</span><span class="map-cta">Abrir no mapa &#x2192;</span></div>';
+  div.appendChild(body);
+  return div;
+}
+
+function renderAtracoes(list) {
+  var container = document.getElementById('atracoes-dynamic');
+  if (!container) return;
+  container.innerHTML = '';
+  var fallback = 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600';
+  list.forEach(function(p) { container.appendChild(makePlaceCard(p, fallback)); });
+}
+
+function renderRestaurantes(list) {
+  var container = document.getElementById('restaurantes-dynamic');
+  if (!container) return;
+  container.innerHTML = '';
+  var fallback = 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600';
+  list.forEach(function(p) { container.appendChild(makePlaceCard(p, fallback)); });
+}
+
+// Override submitFeedback to also POST to API
+var _origSubmitFeedback = submitFeedback;
+function submitFeedback() {
+  var textEl = document.querySelector('#m-feedback textarea');
+  var nameEl = document.querySelector('#m-feedback input[type=text]');
+  var text = textEl ? textEl.value.trim() : '';
+  var name = nameEl ? nameEl.value.trim() : '';
+  if (!text) { showToast('Escreve o teu feedback antes de enviar'); return; }
+  var s = getSession();
+  saveGuestEntry(name || 'Hóspede', text, currentRating);
+  // POST to API if configured
+  if (API_URL) {
+    fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action:'feedback', name:name, text:text, rating:currentRating, user: s ? s.user : '' })
+    }).catch(function() {});
+  }
+  cm('m-feedback');
+  showToast('Obrigado! Feedback guardado no livro de hóspedes.');
+  if (textEl) textEl.value = '';
+  if (nameEl) nameEl.value = '';
+}
+
+// Override subscribeNewsletter to POST to API
+function subscribeNewsletter() {
+  var email = document.getElementById('nl-email').value;
+  var nome = document.getElementById('nl-nome').value || '';
+  if (!email) { showToast('Introduz o teu email'); return; }
+  if (API_URL) {
+    fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action:'newsletter', name:nome, email:email })
+    }).catch(function() {});
+  }
+  showToast('Subscrito. Obrigado!');
 }
 
 /* ═══ LOGIN QR SCANNER ═════════════════════════ */
