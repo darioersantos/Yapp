@@ -808,31 +808,53 @@ function fillConfig() {
 
 // ── SAVE CONFIG TO SHEET (via POST) ──────────────
 function saveConfig() {
-  var params = {
-    action: 'saveConfig',
-    propriedade_nome: v('c-nome'), propriedade_subtitulo: v('c-sub'),
-    propriedade_descricao: v('c-desc'), checkin_hora: v('c-ci'),
-    checkout_hora: v('c-co'), capacidade: v('c-cap'), quartos: v('c-qts'),
-    horario_piscina: v('c-pisc'), streaming_plataformas: v('c-stream'),
-    lat: v('c-lat'), lng: v('c-lng'),
-    mensagem_boas_vindas: v('c-bv'),
-    aviso_ativo: v('c-aviso-ativo'), aviso_texto: v('c-aviso-txt'),
-    codigo_desconto: v('c-codesc'), instagram_url: v('c-ig'),
-    facebook_url: v('c-fb'), google_reviews_url: v('c-grev'),
-    wifi_ssid: v('w-ssid1'), wifi_pass: v('w-pass1'),
-    wifi_ssid2: v('w-ssid2'), wifi_pass2: v('w-pass2'),
-    proprietario_nome: v('ct-nome'), proprietario_whatsapp: v('ct-wa'),
-    proprietario_telefone: v('ct-tel'), proprietario_email: v('ct-email')
-  };
   saveLocal();
-  showLoading('A guardar na Google Sheet...');
-  apiWrite(params, function() {
-    hideLoading();
-    showOk('ok-config'); showOk('ok-wifi');
-    toast('✓ Guardado na Google Sheet!');
-  });
+  showLoading('A guardar Config...');
+  apiWrite({ action:'saveConfig',
+    propriedade_nome:v('c-nome'), checkin_hora:v('c-ci'), checkout_hora:v('c-co'),
+    capacidade:v('c-cap'), quartos:v('c-qts'), streaming_plataformas:v('c-stream'),
+    wifi_ssid:v('w-ssid1'), wifi_pass:v('w-pass1'), wifi_ssid2:v('w-ssid2'), wifi_pass2:v('w-pass2'),
+    aviso_ativo:v('c-aviso-ativo'), aviso_texto:v('c-aviso-txt'),
+    codigo_desconto:v('c-codesc'), instagram_url:v('c-ig'), facebook_url:v('c-fb'),
+    google_reviews_url:v('c-grev'), lat:v('c-lat'), lng:v('c-lng')
+  }, function() { hideLoading(); showOk('ok-config'); showOk('ok-wifi'); toast('✓ Config guardada!'); });
 }
-function saveWifi() { saveConfig(); }
+function saveWifi() {
+  saveLocal();
+  showLoading('A guardar Wi-Fi...');
+  apiWrite({ action:'saveConfig', wifi_ssid:v('w-ssid1'), wifi_pass:v('w-pass1'), wifi_ssid2:v('w-ssid2'), wifi_pass2:v('w-pass2') },
+    function() { hideLoading(); showOk('ok-wifi'); toast('✓ Wi-Fi guardado!'); });
+}
+function saveSection(sec) {
+  saveLocal();
+  var params = { action: 'saveCasa' };
+  // Mapa de campos por secção → sheet Casa
+  var fieldMap = {
+    'casa-geral':   { info_img:v('img-info'), boas_vindas:v('ci-bv') },
+    'casa-quartos': { quartos_img:v('img-qts'), q1_titulo:v('q1t'), q1_desc:v('q1d'), q2_titulo:v('q2t'), q2_desc:v('q2d'), q3_titulo:v('q3t'), q3_desc:v('q3d') },
+    'casa-piscina': { piscina_img:v('img-pisc'), exterior_img:v('img-ext'), piscina_horario:v('pisc-h'), piscina_regras:v('pisc-r'), piscina_equip:v('pisc-e'), exterior_jardim:v('ext-j'), exterior_equip:v('ext-e') },
+    'casa-cozinha': { cozinha_img:v('img-coz'), churrasco_img:v('img-chur'), cozinha_eletros:v('coz-el'), cozinha_cafe:v('coz-cafe'), cozinha_det:v('coz-det'), churrasco_prep:v('chur-p'), churrasco_uso:v('chur-u'), churrasco_limp:v('chur-l') },
+    'casa-sala':    { sala_img:v('img-sala'), sala_tv:v('sala-tv'), sala_lareira:v('sala-lar') },
+    'casa-regras':  { reg_silencio:v('reg-s'), reg_animais:v('reg-a'), reg_estac:v('reg-e'), reg_tabaco:v('reg-t'), fus_loc:v('fus-l'), fus_como:v('fus-c'), rec_verde:v('rec-v'), rec_azul:v('rec-a'), rec_amarelo:v('rec-am'), rec_preto:v('rec-p') },
+    'servicos':     { action:'saveServicos', limp_img:v('img-limp'), limp_texto:v('sv-limp'), bici_img:v('img-bici'), bici_p1:v('b-p1'), bici_p2:v('b-p2'), bici_p3:v('b-p3'), bici_d1:v('b-d1'), bici_d2:v('b-d2'), bici_d3:v('b-d3') },
+    'contacto':     { action:'saveContacto', prop_nome:v('ct-nome'), prop_whatsapp:v('ct-wa'), prop_telefone:v('ct-tel'), prop_email:v('ct-email'), em_taxi:v('em-taxi'), em_hosp_tel:v('em-hosp'), em_hosp_nome:v('em-hosp-n'), em_vet:v('em-vet'), em_morada:v('em-morada'), farm1_nome:v('f1-nome'), farm1_url:v('f1-url'), farm2_nome:v('f2-nome'), farm2_url:v('f2-url') },
+    'patrocinadores': null
+  };
+  var fields = fieldMap[sec];
+  if (fields === null) { savePat(); return; }
+  if (!fields) { showOk('ok-'+sec); toast('Guardado localmente.'); return; }
+  Object.assign(params, fields);
+  showLoading('A guardar na Google Sheet...');
+  apiWrite(params, function() { hideLoading(); showOk('ok-'+sec); toast('✓ Guardado na Google Sheet!'); });
+}
+function savePat() {
+  showLoading('A guardar patrocinadores...');
+  var pending = 0;
+  function done() { pending--; if (pending <= 0) { hideLoading(); showOk('ok-patrocinadores'); toast('✓ Patrocinadores guardados!'); } }
+  pending = 2;
+  apiWrite({ action:'savePatrocinadores', idx:0, nome:v('p1-nome'), badge:v('p1-badge'), cta:v('p1-cta'), url:v('p1-url'), img:v('img-p1') }, done);
+  apiWrite({ action:'savePatrocinadores', idx:1, nome:v('p2-nome'), badge:v('p2-badge'), cta:v('p2-cta'), url:v('p2-url'), img:v('img-p2') }, done);
+}
 
 // ── SAVE SECTION (local only + toast guidance) ───
 function saveSection(sec) {
@@ -940,8 +962,18 @@ function removePlace(type, i) {
 }
 
 function savePlaces(type) {
-  toast('Para guardar atrações/restaurantes permanentemente, edita diretamente a Google Sheet "' + (type === 'atracoes' ? 'Atracoes' : 'Restaurantes') + '".');
-  showOk('ok-' + type);
+  var sheetAction = type === 'atracoes' ? 'saveAtracoes' : 'saveRestaurantes';
+  var pending = DB[type].length;
+  if (pending === 0) { toast('Sem itens para guardar.'); return; }
+  showLoading('A guardar ' + pending + ' itens...');
+  var done = 0;
+  DB[type].forEach(function(p, i) {
+    apiWrite({ action:sheetAction, idx:i, name:p.name, type:p.type, desc:p.desc,
+      dist:p.dist, rating:p.rating, img:p.img, lat:p.lat, lng:p.lng }, function() {
+      done++;
+      if (done >= pending) { hideLoading(); showOk('ok-'+type); toast('✓ ' + pending + ' itens guardados na Google Sheet!'); }
+    });
+  });
 }
 
 // ── FEEDBACKS ─────────────────────────────────────
