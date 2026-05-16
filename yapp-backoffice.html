@@ -221,6 +221,7 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
       <div class="sbsec">Página Casa</div>
       <div class="sbi" onclick="go('casa-geral',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Info geral</div>
       <div class="sbi" onclick="go('casa-quartos',this)"><svg viewBox="0 0 24 24"><path d="M2 4v16M22 4v16M2 12h20M12 4v8"/></svg>Quartos</div>
+      <div class="sbi" onclick="go('casa-wc',this)"><svg viewBox="0 0 24 24"><path d="M4 4h16v4H4zM4 12h16M4 20h16"/></svg>Casa de banho</div>
       <div class="sbi" onclick="go('casa-piscina',this)"><svg viewBox="0 0 24 24"><path d="M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg>Piscina & Exterior</div>
       <div class="sbi" onclick="go('casa-cozinha',this)"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2l-3 8h3"/></svg>Cozinha & Churrasqueira</div>
       <div class="sbi" onclick="go('casa-sala',this)"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>Sala & TV</div>
@@ -403,19 +404,34 @@ Máq. de lavar roupa</textarea>
           <div style="flex:1;"><input class="photo-url" id="img-qts" value="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-qts','img-qts')"/></div>
         </div>
       </div>
-      <div class="card"><div class="ctitle">Quarto 1 · Suite</div>
-        <div class="fld"><label>Título</label><input class="inp" id="q1t" value="Quarto 1 · Suite"/></div>
-        <div class="fld"><label>Descrição</label><textarea class="inp ta" id="q1d">Cama king size, casa de banho privativa, varanda com vista para a serra.</textarea></div>
+      <div id="quartos-editor">
+        <div class="card" id="quarto-card-1">
+          <div class="ctitle" style="display:flex;justify-content:space-between;align-items:center;">
+            Quarto 1
+            <button class="actbtn del" onclick="removeQuarto(1)" style="font-size:.75rem;">Remover</button>
+          </div>
+          <div class="fld"><label>Título</label><input class="inp" id="qt-1" placeholder="ex: Quarto 1 · Suite"/></div>
+          <div class="fld"><label>Descrição</label><textarea class="inp ta" id="qd-1" placeholder="Cama king size, varanda..."></textarea></div>
+        </div>
+        <div class="card" id="quarto-card-2">
+          <div class="ctitle" style="display:flex;justify-content:space-between;align-items:center;">
+            Quarto 2
+            <button class="actbtn del" onclick="removeQuarto(2)" style="font-size:.75rem;">Remover</button>
+          </div>
+          <div class="fld"><label>Título</label><input class="inp" id="qt-2" placeholder="ex: Quarto 2"/></div>
+          <div class="fld"><label>Descrição</label><textarea class="inp ta" id="qd-2" placeholder="Cama de casal..."></textarea></div>
+        </div>
+        <div class="card" id="quarto-card-3">
+          <div class="ctitle" style="display:flex;justify-content:space-between;align-items:center;">
+            Quarto 3
+            <button class="actbtn del" onclick="removeQuarto(3)" style="font-size:.75rem;">Remover</button>
+          </div>
+          <div class="fld"><label>Título</label><input class="inp" id="qt-3" placeholder="ex: Quarto 3"/></div>
+          <div class="fld"><label>Descrição</label><textarea class="inp ta" id="qd-3" placeholder="Duas camas individuais..."></textarea></div>
+        </div>
       </div>
-      <div class="card"><div class="ctitle">Quarto 2</div>
-        <div class="fld"><label>Título</label><input class="inp" id="q2t" value="Quarto 2"/></div>
-        <div class="fld"><label>Descrição</label><textarea class="inp ta" id="q2d">Cama de casal, roupeiro embutido, janela com vista para o jardim.</textarea></div>
-      </div>
-      <div class="card"><div class="ctitle">Quarto 3</div>
-        <div class="fld"><label>Título</label><input class="inp" id="q3t" value="Quarto 3"/></div>
-        <div class="fld"><label>Descrição</label><textarea class="inp ta" id="q3d">Duas camas individuais, ideal para crianças ou jovens.</textarea></div>
-      </div>
-      <button class="savebtn" onclick="saveSection('casa-quartos')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-quartos">Guardado!</span></button>
+      <button class="addbtn" onclick="addQuarto()" style="margin-bottom:.75rem;"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar quarto</button>
+      <button class="savebtn" onclick="saveQuartos()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar quartos<span class="oktxt" id="ok-casa-quartos">Guardado!</span></button>
     </div>
 
     <!-- PISCINA -->
@@ -666,6 +682,24 @@ Entregar as chaves ao proprietário</textarea>
       <button class="savebtn" onclick="saveSection('patrocinadores')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-patrocinadores">Guardado!</span></button>
     </div>
 
+    <!-- CASA DE BANHO -->
+    <div id="sec-casa-wc" class="sec">
+      <div class="ph"><div><div class="ptitle">Casa de banho</div></div></div>
+      <div class="card">
+        <div class="ctitle">Foto</div>
+        <div class="photo-row">
+          <img id="prev-wc" class="photo-prev wide" src="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=400&auto=format&fit=crop&q=75"/>
+          <div style="flex:1;"><input class="photo-url" id="img-wc" value="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-wc','img-wc')"/></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Textos</div>
+        <div class="fld"><label>Produtos de higiene</label><textarea class="inp ta" id="wc-produtos">Shampoo, gel de banho e sabão disponíveis. Toalhas limpas no armário branco.</textarea></div>
+        <div class="fld"><label>Máquina de lavar roupa</label><textarea class="inp ta" id="wc-lavar">Disponível na casa de banho de serviço. Detergente no armário de baixo.</textarea></div>
+      </div>
+      <button class="savebtn" onclick="saveSection('casa-wc')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-wc">Guardado!</span></button>
+    </div>
+
     <!-- FEEDBACKS -->
     <div id="sec-feedbacks" class="sec">
       <div class="ph"><div><div class="ptitle">Feedbacks</div><div class="psub">Direto do Google Sheets "Feedbacks"</div></div>
@@ -803,6 +837,7 @@ function loadAll() {
     }
     setStatus('Ligado ao Google Sheets ✓', '#5a8a3c');
     if (d.config) { DB.config = d.config; fillConfig(d.config); }
+    if (d.casa)   fillCasa(d.casa);
     if (d.guests) {
       DB.guests = Object.keys(d.guests).map(function(k) {
         return { user:k, pass:d.guests[k].pass, checkout:d.guests[k].checkout, name:d.guests[k].name||'', active:true };
@@ -845,8 +880,52 @@ function fillConfig(c) {
   s('ct-nome','proprietario_nome'); s('ct-wa','proprietario_whatsapp'); s('ct-tel','proprietario_telefone'); s('ct-email','proprietario_email');
   var av = document.getElementById('c-aviso-ativo');
   if (av && c['aviso_ativo'] !== undefined) av.value = String(c['aviso_ativo']);
-  // prop name in sidebar
   if (c['propriedade_nome']) document.querySelector('.sb-sub').textContent = c['propriedade_nome'];
+}
+
+// ── FILL CASA FIELDS FROM API ──────────────────────────────────────
+function fillCasa(c) {
+  if (!c) return;
+  function s(id, val) { var el=document.getElementById(id); if(el && val!==undefined) el.value=val; }
+  // Quartos
+  var maxQ = 0;
+  for (var i = 1; i <= 10; i++) {
+    if (c['q'+i+'_titulo'] || c['q'+i+'_desc']) {
+      maxQ = i;
+      // Create card if doesn't exist
+      if (!document.getElementById('quarto-card-' + i)) {
+        _quartoCount = i;
+        addQuarto();
+      }
+      var card = document.getElementById('quarto-card-' + i);
+      if (card) card.style.display = '';
+      s('qt-' + i, c['q'+i+'_titulo']);
+      s('qd-' + i, c['q'+i+'_desc']);
+    }
+  }
+  if (maxQ > 0) _quartoCount = maxQ;
+  // Images
+  s('img-qts', c.quartos_img); s('img-sala', c.sala_img); s('img-coz', c.cozinha_img);
+  s('img-chur', c.churrasco_img); s('img-pisc', c.piscina_img); s('img-ext', c.exterior_img);
+  s('img-wc', c.wc_img); s('img-info', c.info_img);
+  // Texts
+  s('c-bv', c.boas_vindas);
+  s('sala-tv', c.sala_tv); s('sala-lar', c.sala_lareira);
+  s('coz-el', c.cozinha_eletros); s('coz-cafe', c.cozinha_cafe); s('coz-det', c.cozinha_det);
+  s('chur-p', c.churrasco_prep); s('chur-u', c.churrasco_uso); s('chur-l', c.churrasco_limp);
+  s('pisc-h', c.piscina_horario); s('pisc-r', c.piscina_regras); s('pisc-e', c.piscina_equip);
+  s('ext-j', c.exterior_jardim); s('ext-e', c.exterior_equip); s('ext-n', c.exterior_notas);
+  s('wc-produtos', c.wc_produtos); s('wc-lavar', c.wc_lavar||'');
+  s('reg-s', c.reg_silencio); s('reg-a', c.reg_animais); s('reg-e', c.reg_estac); s('reg-t', c.reg_tabaco);
+  s('fus-l', c.fus_loc); s('fus-c', c.fus_como);
+  s('rec-v', c.rec_verde); s('rec-a', c.rec_azul); s('rec-am', c.rec_amarelo); s('rec-p', c.rec_preto);
+  s('checklist', c.checklist_saida);
+  // preview images
+  ['wc','qts','sala','coz','chur','pisc','ext'].forEach(function(k) {
+    var inp = document.getElementById('img-' + k);
+    var prev = document.getElementById('prev-' + k);
+    if (inp && prev && inp.value) prev.src = inp.value;
+  });
 }
 
 // ── SAVE CONFIG TO SHEET (via POST) ──────────────
@@ -971,6 +1050,11 @@ function saveSection(sec) {
       farm2_url:v('f2-url')
     },
     'patrocinadores': null,
+    'casa-wc': { action:'saveCasa',
+      wc_img:v('img-wc'),
+      wc_produtos:v('wc-produtos'),
+      wc_lavar:v('wc-lavar')
+    },
     'transportes': { action:'saveServicos',
       taxi_nome:v('taxi-nome')||'',
       taxi_tel:v('taxi-tel')||'',
@@ -1186,6 +1270,49 @@ function updateDashboard() {
 }
 
 // ── apiWrite — envia via GET params (funciona sem CORS) ──────────
+// ── QUARTOS ADD/REMOVE ───────────────────────────────────────────
+var _quartoCount = 3;
+function addQuarto() {
+  _quartoCount++;
+  var n = _quartoCount;
+  var div = document.createElement('div');
+  div.className = 'card';
+  div.id = 'quarto-card-' + n;
+  div.innerHTML = '<div class="ctitle" style="display:flex;justify-content:space-between;align-items:center;">Quarto ' + n
+    + '<button class="actbtn del" onclick="removeQuarto(' + n + ')" style="font-size:.75rem;">Remover</button></div>'
+    + '<div class="fld"><label>Título</label><input class="inp" id="qt-' + n + '" placeholder="ex: Quarto ' + n + '"/></div>'
+    + '<div class="fld"><label>Descrição</label><textarea class="inp ta" id="qd-' + n + '" placeholder="Descrição..."></textarea></div>';
+  document.getElementById('quartos-editor').appendChild(div);
+}
+function removeQuarto(n) {
+  var card = document.getElementById('quarto-card-' + n);
+  if (card) {
+    card.querySelector('[id^="qt-"]').value = '';
+    card.querySelector('[id^="qd-"]').value = '';
+    card.style.display = 'none';
+    toast('Quarto ' + n + ' removido. Guarda para aplicar.');
+  }
+}
+function saveQuartos() {
+  saveLocal();
+  showLoading('A guardar quartos...');
+  var params = { action: 'saveCasa', quartos_img: v('img-qts') };
+  // Save each quarto individually
+  for (var i = 1; i <= _quartoCount; i++) {
+    var t = v('qt-' + i), d = v('qd-' + i);
+    params['q' + i + '_titulo'] = t;
+    params['q' + i + '_desc']   = d;
+  }
+  // Clear removed ones
+  for (var j = _quartoCount + 1; j <= 10; j++) {
+    params['q' + j + '_titulo'] = '';
+    params['q' + j + '_desc']   = '';
+  }
+  apiWrite(params, function() {
+    hideLoading(); showOk('ok-casa-quartos'); toast('✓ Quartos guardados!');
+  });
+}
+
 function apiWrite(params, onSuccess) {
   // Apps Script redireciona e perde CORS com fetch normal — usar JSONP
   jsonpCall(params, function(err, d) {
