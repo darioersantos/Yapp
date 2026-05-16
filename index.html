@@ -1074,29 +1074,52 @@ function submitFeedback() {
 }
 
 /* ═══ DADOS DA API (Google Sheets) ═════════════ */
+var CACHE_KEY = 'yapp_data_cache';
+
+function applyData(d) {
+  if (!d || d.status !== 'ok') return;
+  applyConfig(d.config || {});
+  applyCasa(d.casa || {});
+  applyServicos(d.servicos || {});
+  applyContacto(d.contacto || {});
+  applyPatrocinadores(d.patrocinadores || []);
+  if (d.guests) Object.keys(d.guests).forEach(function(k){ GUESTS[k] = d.guests[k]; });
+  if (d.feedbacks && d.feedbacks.length) {
+    STATIC_ENTRIES = d.feedbacks.filter(function(f){ return f.approved; });
+    renderGuestbook();
+  }
+  if (d.attractions && d.attractions.length) renderAtracoes(d.attractions);
+  if (d.restaurants && d.restaurants.length) renderRestaurantes(d.restaurants);
+}
+
 function loadAPIData() {
   if (!API_URL) return;
-  // JSONP — único método que funciona com Apps Script (evita problema de CORS)
+
+  // 1. Aplicar cache imediatamente (sem esperar API)
+  try {
+    var cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      var cdata = JSON.parse(cached);
+      applyData(cdata);
+    }
+  } catch(e) {}
+
+  // 2. Buscar dados frescos em background via JSONP
   var cbName = '__yappApp_' + Date.now();
   window[cbName] = function(d) {
     window[cbName] = null;
-    var s = document.getElementById(cbName);
-    if (s) s.parentNode.removeChild(s);
+    var sc = document.getElementById(cbName);
+    if (sc) sc.parentNode.removeChild(sc);
     if (!d || d.status !== 'ok') return;
-    applyConfig(d.config || {});
-    applyCasa(d.casa || {});
-    applyServicos(d.servicos || {});
-    applyContacto(d.contacto || {});
-    applyPatrocinadores(d.patrocinadores || []);
-    if (d.guests) Object.keys(d.guests).forEach(function(k){ GUESTS[k]=d.guests[k]; });
-    if (d.feedbacks && d.feedbacks.length) { STATIC_ENTRIES = d.feedbacks.filter(function(f){return f.approved;}); renderGuestbook(); }
-    if (d.attractions && d.attractions.length) renderAtracoes(d.attractions);
-    if (d.restaurants && d.restaurants.length) renderRestaurantes(d.restaurants);
+    // Guardar em cache para próxima abertura
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify(d)); } catch(e) {}
+    // Aplicar dados frescos
+    applyData(d);
   };
   var script = document.createElement('script');
   script.id = cbName;
   script.src = API_URL + '?action=all&callback=' + cbName;
-  script.onerror = function() { window[cbName] = null; console.log('API indisponível'); };
+  script.onerror = function() { window[cbName] = null; };
   document.head.appendChild(script);
 }
 
