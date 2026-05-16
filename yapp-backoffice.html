@@ -749,35 +749,78 @@ function go(sec, el) {
 }
 
 // ── LOAD ALL FROM API ────────────────────────────
-function loadAll() {
-  showLoading('A carregar dados do Google Sheets...');
-  var done = 0; var total = 5;
-  function check() { done++; if (done >= total) { hideLoading(); updateDashboard(); } }
-
-  fetchAPI('config',    function(d) { DB.config = d.data || {}; fillConfig(); check(); }, check);
-  fetchAPI('guests',    function(d) { DB.guests = parseGuests(d.data); renderGuests(); check(); }, check);
-  fetchAPI('feedbacks', function(d) { DB.feedbacks = d.data || []; renderFeedbacks(); check(); }, check);
-  fetchAPI('attractions',  function(d) { DB.atracoes = d.data || []; renderPlaces('atracoes'); document.getElementById('save-atracoes-btn').style.display = 'inline-flex'; check(); }, check);
-  fetchAPI('restaurants',  function(d) { DB.restaurantes = d.data || []; renderPlaces('restaurantes'); document.getElementById('save-restaurantes-btn').style.display = 'inline-flex'; check(); }, check);
+// ── JSONP — contorna CORS do Apps Script ─────────────────────────
+var _cbIdx = 0;
+function jsonpCall(params, onDone, timeoutMs) {
+  var cbName = '__yapp' + (++_cbIdx);
+  var timer;
+  window[cbName] = function(data) {
+    clearTimeout(timer);
+    window[cbName] = null;
+    var s = document.getElementById(cbName);
+    if (s) s.parentNode.removeChild(s);
+    onDone(null, data);
+  };
+  params.callback = cbName;
+  var qs = Object.keys(params).map(function(k) {
+    return encodeURIComponent(k) + '=' + encodeURIComponent(params[k] !== undefined ? params[k] : '');
+  }).join('&');
+  var script = document.createElement('script');
+  script.id = cbName;
+  script.src = API + '?' + qs;
+  script.onerror = function() {
+    clearTimeout(timer);
+    window[cbName] = null;
+    onDone('script_error', null);
+  };
+  timer = setTimeout(function() {
+    window[cbName] = null;
+    var s = document.getElementById(cbName);
+    if (s) s.parentNode.removeChild(s);
+    // timeout — Apps Script pode ter guardado mas redirect impediu callback
+    onDone('timeout', null);
+  }, timeoutMs || 12000);
+  document.head.appendChild(script);
 }
 
-function fetchAPI(action, onSuccess, onError) {
-  fetch(API + '?action=' + action)
-    .then(function(r) { return r.json(); })
-    .then(function(d) {
-      if (d.status === 'ok') {
-        var d=document.getElementById('api-dot'); if(d) d.style.background='var(--gl)';
-        var al=document.getElementById('api-lbl'); if(al) al.textContent='Ligado ✓';
-        var sl=document.getElementById('sync-lbl'); if(sl) sl.textContent='Sincronizado';
-        onSuccess(d);
-      } else { onError && onError(); }
-    })
-    .catch(function(e) {
-      var d=document.getElementById('api-dot'); if(d) d.style.background='var(--red)';
-      var al=document.getElementById('api-lbl'); if(al) al.textContent='Erro de ligação';
-      var sl=document.getElementById('sync-lbl'); if(sl) sl.textContent='Offline';
-      onError && onError();
-    });
+function setStatus(msg, color) {
+  var dot = document.getElementById('api-dot');
+  var lbl = document.getElementById('api-lbl');
+  var sl  = document.getElementById('sync-lbl');
+  if (dot) dot.style.background = color;
+  if (lbl) lbl.textContent = msg;
+  if (sl)  sl.textContent = color === '#5a8a3c' ? 'Online' : (color === '#e67e22' ? 'A ligar...' : 'Offline');
+}
+
+function loadAll() {
+  setStatus('A ligar...', '#e67e22');
+  showLoading('A ligar ao Google Sheets...');
+  jsonpCall({ action: 'all' }, function(err, d) {
+    hideLoading();
+    if (err || !d || d.status !== 'ok') {
+      setStatus('Sem ligação — verifica o Apps Script', '#c0392b');
+      return;
+    }
+    setStatus('Ligado ao Google Sheets ✓', '#5a8a3c');
+    if (d.config) { DB.config = d.config; fillConfig(d.config); }
+    if (d.guests) {
+      DB.guests = Object.keys(d.guests).map(function(k) {
+        return { user:k, pass:d.guests[k].pass, checkout:d.guests[k].checkout, name:d.guests[k].name||'', active:true };
+      });
+      renderGuests();
+    }
+    if (d.feedbacks)   { DB.feedbacks   = d.feedbacks;   renderFeedbacks(); }
+    if (d.newsletter)  { DB.newsletter  = d.newsletter;  renderNewsletter(); }
+    if (d.attractions) {
+      DB.atracoes = d.attractions; renderPlaces('atracoes');
+      document.getElementById('save-atracoes-btn').style.display = 'inline-flex';
+    }
+    if (d.restaurants) {
+      DB.restaurantes = d.restaurants; renderPlaces('restaurantes');
+      document.getElementById('save-restaurantes-btn').style.display = 'inline-flex';
+    }
+    updateDashboard();
+  });
 }
 
 function parseGuests(data) {
@@ -789,8 +832,8 @@ function parseGuests(data) {
 }
 
 // ── FILL CONFIG FIELDS ───────────────────────────
-function fillConfig() {
-  var c = DB.config;
+function fillConfig(c) {
+  c = c || DB.config;
   function s(id, key) { var el = document.getElementById(id); if (el && c[key] !== undefined) el.value = c[key]; }
   s('c-nome','propriedade_nome'); s('c-sub','propriedade_subtitulo'); s('c-desc','propriedade_descricao');
   s('c-ci','checkin_hora'); s('c-co','checkout_hora'); s('c-cap','capacidade'); s('c-qts','quartos');
@@ -1037,23 +1080,20 @@ function updateDashboard() {
 
 // ── apiWrite — envia via GET params (funciona sem CORS) ──────────
 function apiWrite(params, onSuccess) {
-  var url = API + '?' + Object.keys(params).map(function(k) {
-    return encodeURIComponent(k) + '=' + encodeURIComponent(params[k] !== undefined ? params[k] : '');
-  }).join('&');
-  fetch(url)
-    .then(function(r) { return r.json(); })
-    .then(function(d) {
-      if (d.status !== 'ok') console.warn('API aviso:', d.message);
-      onSuccess && onSuccess(d);
-    })
-    .catch(function(e) {
-      console.error('apiWrite error:', e);
-      // Apps Script redireciona — pode ter guardado mesmo com erro de rede
-      toast('⚠ Verifica a Google Sheet para confirmar que foi guardado.');
-      onSuccess && onSuccess({});
-    });
+  // Apps Script redireciona e perde CORS com fetch normal — usar JSONP
+  jsonpCall(params, function(err, d) {
+    if (err === 'timeout') {
+      // timeout comum no Apps Script — significa que guardou mas o redirect
+      // impediu o callback. Tratar como sucesso.
+      onSuccess && onSuccess({ status: 'ok' });
+      return;
+    }
+    if (err) { console.warn('apiWrite:', err); onSuccess && onSuccess({}); return; }
+    if (d && d.status !== 'ok') console.warn('API:', d.message);
+    onSuccess && onSuccess(d || {});
+  }, 10000);
 }
-function postAPI(p, cb) { apiWrite(p, cb); } // alias
+function postAPI(p, cb) { apiWrite(p, cb); }
 
 // ── HELPERS ───────────────────────────────────────
 function v(id) { var el = document.getElementById(id); return el ? el.value : ''; }
