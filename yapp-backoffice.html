@@ -691,7 +691,7 @@ Entregar as chaves ao proprietário</textarea>
 var BO_PASS = 'yapp2025';
 var BO_KEY  = 'yapp_bo_auth';
 var LS_KEY  = 'yapp_bo_local';
-var API     = 'https://script.google.com/macros/s/AKfycbxqy-PfUD4XS0dCbe8vGUNDbJ5P8GUHlIbEz4I1hnAwjG-EZAZb_YyG_lUNx3AKd1yMJg/exec';
+var API     = 'https://script.google.com/macros/s/AKfycbxaSUF2BprbcIbDVOSJc7dUsKJF9XuCi7L0yCOx7IbejndpusVck1hTQEmEf8jT6iY0Jg/exec';
 
 var DB = { config:{}, guests:[], feedbacks:[], newsletter:[], atracoes:[], restaurantes:[] };
 
@@ -856,12 +856,7 @@ function savePat() {
   apiWrite({ action:'savePatrocinadores', idx:1, nome:v('p2-nome'), badge:v('p2-badge'), cta:v('p2-cta'), url:v('p2-url'), img:v('img-p2') }, done);
 }
 
-// ── SAVE SECTION (local only + toast guidance) ───
-function saveSection(sec) {
-  saveLocal();
-  showOk('ok-' + sec);
-  toast('Guardado localmente. Os textos da app atualizam ao publicar o ficheiro HTML.');
-}
+// saveSection defined above with Google Sheet integration
 
 // ── LOCAL STORAGE ────────────────────────────────
 function saveLocal() {
@@ -1040,21 +1035,25 @@ function updateDashboard() {
   var dho = document.getElementById('dash-hospedes'); if (dho) dho.innerHTML = dh || '<div style="font-size:.82rem;color:var(--txl);">Nenhum hóspede ativo.</div>';
 }
 
-// ── POST API ──────────────────────────────────────
-function postAPI(payload, onSuccess) {
-  fetch(API, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  }).then(function() {
-    onSuccess && onSuccess();
-  }).catch(function(e) {
-    hideLoading();
-    toast('Nota: Apps Script pode ter bloqueado CORS. Edita diretamente na Google Sheet.');
-    onSuccess && onSuccess();
-  });
+// ── apiWrite — envia via GET params (funciona sem CORS) ──────────
+function apiWrite(params, onSuccess) {
+  var url = API + '?' + Object.keys(params).map(function(k) {
+    return encodeURIComponent(k) + '=' + encodeURIComponent(params[k] !== undefined ? params[k] : '');
+  }).join('&');
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.status !== 'ok') console.warn('API aviso:', d.message);
+      onSuccess && onSuccess(d);
+    })
+    .catch(function(e) {
+      console.error('apiWrite error:', e);
+      // Apps Script redireciona — pode ter guardado mesmo com erro de rede
+      toast('⚠ Verifica a Google Sheet para confirmar que foi guardado.');
+      onSuccess && onSuccess({});
+    });
 }
+function postAPI(p, cb) { apiWrite(p, cb); } // alias
 
 // ── HELPERS ───────────────────────────────────────
 function v(id) { var el = document.getElementById(id); return el ? el.value : ''; }
