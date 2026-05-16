@@ -1076,22 +1076,28 @@ function submitFeedback() {
 /* ═══ DADOS DA API (Google Sheets) ═════════════ */
 function loadAPIData() {
   if (!API_URL) return;
-  // Uma única chamada busca tudo
-  fetch(API_URL + '?action=all')
-    .then(function(r) { return r.json(); })
-    .then(function(d) {
-      if (d.status !== 'ok') return;
-      applyConfig(d.config || {});
-      applyCasa(d.casa || {});
-      applyServicos(d.servicos || {});
-      applyContacto(d.contacto || {});
-      applyPatrocinadores(d.patrocinadores || []);
-      if (d.guests) Object.keys(d.guests).forEach(function(k){ GUESTS[k]=d.guests[k]; });
-      if (d.feedbacks && d.feedbacks.length) { STATIC_ENTRIES = d.feedbacks; renderGuestbook(); }
-      if (d.attractions && d.attractions.length) renderAtracoes(d.attractions);
-      if (d.restaurants && d.restaurants.length) renderRestaurantes(d.restaurants);
-    })
-    .catch(function(e) { console.log('API error:', e); });
+  // JSONP — único método que funciona com Apps Script (evita problema de CORS)
+  var cbName = '__yappApp_' + Date.now();
+  window[cbName] = function(d) {
+    window[cbName] = null;
+    var s = document.getElementById(cbName);
+    if (s) s.parentNode.removeChild(s);
+    if (!d || d.status !== 'ok') return;
+    applyConfig(d.config || {});
+    applyCasa(d.casa || {});
+    applyServicos(d.servicos || {});
+    applyContacto(d.contacto || {});
+    applyPatrocinadores(d.patrocinadores || []);
+    if (d.guests) Object.keys(d.guests).forEach(function(k){ GUESTS[k]=d.guests[k]; });
+    if (d.feedbacks && d.feedbacks.length) { STATIC_ENTRIES = d.feedbacks.filter(function(f){return f.approved;}); renderGuestbook(); }
+    if (d.attractions && d.attractions.length) renderAtracoes(d.attractions);
+    if (d.restaurants && d.restaurants.length) renderRestaurantes(d.restaurants);
+  };
+  var script = document.createElement('script');
+  script.id = cbName;
+  script.src = API_URL + '?action=all&callback=' + cbName;
+  script.onerror = function() { window[cbName] = null; console.log('API indisponível'); };
+  document.head.appendChild(script);
 }
 
 function applyConfig(c) {
@@ -1299,10 +1305,11 @@ function submitFeedback() {
   saveGuestEntry(name || 'Hóspede', text, currentRating);
   // POST to API if configured
   if (API_URL) {
-    fetch(API_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action:'feedback', name:name, text:text, rating:currentRating, user: s ? s.user : '' })
-    }).catch(function() {});
+    var _cb = '__yappFb' + Date.now();
+    window[_cb] = function(){ window[_cb]=null; };
+    var _sc = document.createElement('script');
+    _sc.src = API_URL + '?action=saveFeedback&name=' + encodeURIComponent(name) + '&text=' + encodeURIComponent(text) + '&rating=' + currentRating + '&user=' + encodeURIComponent(s ? s.user : '') + '&callback=' + _cb;
+    document.head.appendChild(_sc);
   }
   cm('m-feedback');
   showToast('Obrigado! Feedback guardado no livro de hóspedes.');
@@ -1316,10 +1323,11 @@ function subscribeNewsletter() {
   var nome = document.getElementById('nl-nome').value || '';
   if (!email) { showToast('Introduz o teu email'); return; }
   if (API_URL) {
-    fetch(API_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action:'newsletter', name:nome, email:email })
-    }).catch(function() {});
+    var _cb2 = '__yappNl' + Date.now();
+    window[_cb2] = function(){ window[_cb2]=null; };
+    var _sc2 = document.createElement('script');
+    _sc2.src = API_URL + '?action=saveNewsletter&name=' + encodeURIComponent(nome) + '&email=' + encodeURIComponent(email) + '&callback=' + _cb2;
+    document.head.appendChild(_sc2);
   }
   showToast('Subscrito. Obrigado!');
 }
