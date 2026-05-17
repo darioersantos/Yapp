@@ -11,7 +11,7 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
 <link rel="apple-touch-icon" href="favicon.svg"/>
 <title>Casa do Gerês · Guia do Hóspede</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Playfair+Display:ital,wght@0,600;1,400&family=Nunito:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
 :root{
   --forest:#2d4a1e;--forest-mid:#3d6428;--forest-light:#5a8a3c;
@@ -21,7 +21,43 @@
   --text-dark:#1e2d14;--text-mid:#4a5e38;--text-light:#7a8f6a;
   --white:#ffffff;--card-border:rgba(90,138,60,0.15);
   --radius:16px;--radius-sm:10px;
+  /* Theme fonts (overridden by JS) */
+  --font-serif:'Cormorant Garamond',serif;
+  --font-sans:'DM Sans',sans-serif;
 }
+
+/* ── TEMA: OCEANO AZUL ───────────────────────────────────────── */
+body.tema-oceano{
+  --forest:#0c3a6e;--forest-mid:#1a5296;--forest-light:#2874c8;
+  --sage:#5ba3d9;--sage-light:#a8d4f0;
+  --cream:#e8f4fd;--cream-dark:#d0e8f7;
+  --earth:#c27c2a;--earth-light:#e8b86a;--bark:#2c3e6b;
+  --text-dark:#0a1f3d;--text-mid:#1e4a7a;--text-light:#5a82a8;
+  --card-border:rgba(40,116,200,0.18);
+  background:#e8f4fd;
+}
+body.tema-oceano #login-screen{background:#061a35;}
+body.tema-oceano .hero-video-wrap{background:linear-gradient(160deg,#061a35 0%,#0c3a6e 60%,#1a5296 100%);}
+body.tema-oceano .wifi-hero{background:var(--forest);}
+body.tema-oceano .nav-bar{background:rgba(232,244,253,0.92);}
+body.tema-oceano .chip{background:rgba(40,116,200,0.1);color:var(--forest-mid);}
+body.tema-oceano .dist-badge{background:rgba(40,116,200,0.1);color:var(--forest-mid);}
+body.tema-oceano .amenity-dot{background:var(--sage);}
+body.tema-oceano .section-tag{color:var(--sage);}
+body.tema-oceano .section-title{color:var(--forest);}
+body.tema-oceano .hero-label{color:var(--sage-light);}
+body.tema-oceano .card{border-color:rgba(40,116,200,0.15);}
+
+/* ── TEMA: FONT SERIF PARA OCEANO ────────────────────────────── */
+body.tema-oceano body,
+body.tema-oceano .modal-sheet,
+body.tema-oceano .acc-inner{font-family:'Nunito',sans-serif;}
+body.tema-oceano .hero-title,
+body.tema-oceano .section-title,
+body.tema-oceano .modal-title,
+body.tema-oceano .login-logo,
+body.tema-oceano .sponsor-name{font-family:'Playfair Display',serif;}
+
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;height:-webkit-fill-available;}
 html{scroll-behavior:smooth;}
@@ -1160,6 +1196,9 @@ function applyConfig(c) {
       }).join('');
     }
   }
+  // Tema
+  if (c.tema) applyTheme(c.tema);
+
   // Aviso
   if (c.aviso_ativo === 'true' && c.aviso_texto) {
     var existing = document.getElementById('aviso-banner');
@@ -1173,6 +1212,29 @@ function applyConfig(c) {
     }
   }
 }
+
+function applyTheme(tema) {
+  var body = document.body;
+  // Remove all theme classes
+  body.classList.remove('tema-oceano', 'tema-natureza');
+  if (!tema || tema === 'natureza') return; // default green
+  if (tema === 'oceano') {
+    body.classList.add('tema-oceano');
+    // Update login background
+    var ls = document.getElementById('login-screen');
+    if (ls) ls.style.background = '#061a35';
+  }
+  // Save to cache so theme applies instantly next open
+  try { localStorage.setItem('yapp_tema', tema); } catch(e) {}
+}
+
+// Apply cached theme instantly on load (before API responds)
+(function() {
+  try {
+    var t = localStorage.getItem('yapp_tema');
+    if (t && t !== 'natureza') applyTheme(t);
+  } catch(e) {}
+})();
 
 function applyCasa(c) {
   if (!c) return;
