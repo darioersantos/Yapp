@@ -954,6 +954,12 @@ function loadAll() {
     setStatus('Ligado ao Google Sheets ✓', '#5a8a3c');
     if (d.config) { DB.config = d.config; fillConfig(d.config); }
     if (d.casa)   fillCasa(d.casa);
+    if (d.patrocinadores && d.patrocinadores.length) {
+      _pats = d.patrocinadores.map(function(p) {
+        return { nome:p.nome||'', badge:p.badge||'', cta:p.cta||'', url:p.url||'#', img:p.img||'' };
+      });
+      renderPats();
+    }
     if (d.guests) {
       DB.guests = Object.keys(d.guests).map(function(k) {
         return { user:k, pass:d.guests[k].pass, checkout:d.guests[k].checkout, name:d.guests[k].name||'', active:true };
@@ -1166,7 +1172,7 @@ function saveSection(sec) {
       farm2_end:v('f2-end'),
       farm2_url:v('f2-url')
     },
-    'patrocinadores': null,
+    'patrocinadores': 'dynamic',
     'casa-wc': { action:'saveCasa',
       wc_img:v('img-wc'),
       wc_produtos:v('wc-produtos'),
@@ -1181,23 +1187,85 @@ function saveSection(sec) {
     }
   };
   var fields = maps[sec];
-  if (fields === null) { savePat(); return; }
+  if (fields === null || fields === 'dynamic') { savePatrocinadores(); return; }
   if (!fields) { showOk('ok-'+sec); toast('Guardado localmente.'); return; }
   showLoading('A guardar na Google Sheet...');
   apiWrite(fields, function() { hideLoading(); showOk('ok-'+sec); toast('✓ Guardado na Google Sheet!'); });
 }
-function savePat() {
-  showLoading('A guardar patrocinadores...');
-  var count = 0;
-  function done() { count++; if (count >= 2) { hideLoading(); showOk('ok-patrocinadores'); toast('✓ Patrocinadores guardados!'); } }
-  apiWrite({ action:'savePatrocinadores', idx:0,
-    nome:v('p1-nome'), badge:v('p1-badge'), cta:v('p1-cta'), url:v('p1-url'), img:v('img-p1') }, done);
-  // delay 2nd call to avoid JSONP collision
-  setTimeout(function() {
-    apiWrite({ action:'savePatrocinadores', idx:1,
-      nome:v('p2-nome'), badge:v('p2-badge'), cta:v('p2-cta'), url:v('p2-url'), img:v('img-p2') }, done);
-  }, 500);
+// ── PATROCINADORES DINÂMICOS ─────────────────────────────────────
+var _pats = [
+  { nome:'Adega do Gerês', badge:'Parceiro local', cta:'10% desconto a apresentar esta app', url:'https://www.google.com/maps/search/Adega+Geres', img:'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format&fit=crop&q=75' },
+  { nome:'Gerês Aventura', badge:'Atividades locais', cta:'Rafting · Canyoning · Trilhos guiados', url:'https://www.google.com/maps/search/Gerês+Aventura', img:'https://images.unsplash.com/photo-1530866495561-507c9faab2ed?w=800&auto=format&fit=crop&q=75' }
+];
+
+function renderPats() {
+  var container = document.getElementById('pat-editor');
+  if (!container) return;
+  container.innerHTML = _pats.map(function(p, i) {
+    var pid = 'pat-' + i;
+    return '<div class="card" id="' + pid + '">'
+      + '<div class="ctitle" style="display:flex;justify-content:space-between;align-items:center;">Patrocinador ' + (i+1)
+      + '<button class="actbtn del" onclick="removePat(' + i + ')">Remover</button></div>'
+      + '<div class="fld"><label>Foto (URL)</label>'
+      + '<div class="photo-row">'
+      + '<img id="prev-pat-' + i + '" class="photo-prev wide" src="' + (p.img||'') + '"/>'
+      + '<div style="flex:1;"><input class="photo-url" id="pat-img-' + i + '" value="' + (p.img||'') + '" oninput="pi('prev-pat-' + i + '','pat-img-' + i + '')"/></div>'
+      + '</div></div>'
+      + '<div class="g2">'
+      + '<div class="fld"><label>Badge</label><input class="inp" id="pat-badge-' + i + '" value="' + (p.badge||'') + '"/></div>'
+      + '<div class="fld"><label>Nome</label><input class="inp" id="pat-nome-' + i + '" value="' + (p.nome||'') + '"/></div>'
+      + '<div class="fld"><label>CTA</label><input class="inp" id="pat-cta-' + i + '" value="' + (p.cta||'') + '"/></div>'
+      + '<div class="fld"><label>URL (link ao clicar)</label><input class="inp" id="pat-url-' + i + '" value="' + (p.url||'') + '"/></div>'
+      + '</div></div>';
+  }).join('');
 }
+
+function addPatrocinador() {
+  _pats.push({ nome:'Novo patrocinador', badge:'Parceiro', cta:'', url:'#', img:'' });
+  renderPats();
+  toast('Patrocinador adicionado. Preenche os dados e guarda.');
+}
+
+function removePat(i) {
+  if (!confirm('Remover este patrocinador?')) return;
+  _pats.splice(i, 1);
+  renderPats();
+  toast('Removido. Clica em "Guardar todos" para aplicar.');
+}
+
+function collectPats() {
+  _pats = _pats.map(function(p, i) {
+    return {
+      nome:  v('pat-nome-'  + i),
+      badge: v('pat-badge-' + i),
+      cta:   v('pat-cta-'   + i),
+      url:   v('pat-url-'   + i),
+      img:   v('pat-img-'   + i)
+    };
+  });
+}
+
+function savePatrocinadores() {
+  collectPats();
+  if (_pats.length === 0) { toast('Sem patrocinadores para guardar.'); return; }
+  showLoading('A guardar ' + _pats.length + ' patrocinadores...');
+  var done = 0;
+  function next(i) {
+    if (i >= _pats.length) {
+      hideLoading(); showOk('ok-patrocinadores');
+      toast('✓ ' + _pats.length + ' patrocinadores guardados!');
+      return;
+    }
+    apiWrite({ action:'savePatrocinadores', idx:i,
+      nome:_pats[i].nome, badge:_pats[i].badge, cta:_pats[i].cta,
+      url:_pats[i].url, img:_pats[i].img }, function() {
+      setTimeout(function() { next(i+1); }, 400);
+    });
+  }
+  next(0);
+}
+
+function savePat() { savePatrocinadores(); }
 
 // saveSection defined above with Google Sheet integration
 
