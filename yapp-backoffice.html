@@ -43,10 +43,10 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
 .topbar-sync{font-size:.7rem;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:5px;}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--gl);flex-shrink:0;}
 
-/* ── DRAWER (sidebar como overlay) ───────────── */
+/* ── SIDEBAR — overlay em mobile, fixa em desktop ─ */
 #drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;opacity:0;pointer-events:none;transition:opacity .25s;}
 #drawer-overlay.open{opacity:1;pointer-events:all;}
-.sidebar{position:fixed;top:0;left:-280px;width:280px;height:100vh;background:var(--g);display:flex;flex-direction:column;overflow-y:auto;z-index:400;transition:left .28s cubic-bezier(0.4,0,0.2,1);}
+.sidebar{position:fixed;top:0;left:-260px;width:260px;height:100vh;background:var(--g);display:flex;flex-direction:column;overflow-y:auto;z-index:400;transition:left .28s cubic-bezier(0.4,0,0.2,1);}
 .sidebar.open{left:0;}
 .sb-logo{padding:1.3rem 1.2rem .9rem;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:space-between;}
 .sb-name{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:#fff;}
@@ -54,15 +54,17 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
 .sb-close{background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.3rem;cursor:pointer;padding:4px;}
 .sbnav{padding:.4rem 0;flex:1;overflow-y:auto;}
 .sbsec{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.3);padding:.75rem 1.2rem .25rem;}
-.sbi{display:flex;align-items:center;gap:10px;padding:.75rem 1.2rem;font-size:.85rem;color:rgba(255,255,255,0.65);cursor:pointer;border-left:3px solid transparent;transition:all .15s;user-select:none;}
-.sbi:active{background:rgba(255,255,255,0.15);}
+.sbi{display:flex;align-items:center;gap:10px;padding:.65rem 1.2rem;font-size:.82rem;color:rgba(255,255,255,0.65);cursor:pointer;border-left:3px solid transparent;transition:all .15s;user-select:none;}
+.sbi:hover{background:rgba(255,255,255,0.07);color:#fff;}
 .sbi.on{background:rgba(255,255,255,0.12);color:#fff;border-left-color:var(--sl);}
-.sbi svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8;flex-shrink:0;}
+.sbi svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;flex-shrink:0;}
 .sbfoot{padding:1rem 1.2rem;border-top:1px solid rgba(255,255,255,0.08);}
 .sbout{background:none;border:none;color:rgba(255,255,255,0.4);font-family:'DM Sans',sans-serif;font-size:.82rem;cursor:pointer;display:flex;align-items:center;gap:8px;padding:.5rem 0;}
 
 /* ── MAIN CONTENT ─────────────────────────────── */
 .main{margin-left:0;padding:72px 1rem 2rem;min-height:100vh;}
+/* conteúdo centrado com max-width para não esticar */
+.content-wrap{max-width:780px;margin:0 auto;}
 .ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.4rem;flex-wrap:wrap;gap:.75rem;}
 .ptitle{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--g);}
 .psub{font-size:.8rem;color:var(--txl);margin-top:2px;}
@@ -74,39 +76,59 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
 @keyframes fadein{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
 /* ── CARDS ─────────────────────────────────────── */
-.card{background:#fff;border-radius:var(--r);border:1px solid var(--bd);padding:1.1rem 1.1rem;margin-bottom:.9rem;}
+.card{background:#fff;border-radius:var(--r);border:1px solid var(--bd);padding:1.2rem 1.3rem;margin-bottom:.9rem;}
 .ctitle{font-size:.72rem;font-weight:700;color:var(--txl);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;}
 
-/* ── GRIDS — coluna única em mobile ───────────── */
+/* ── GRIDS — 1 col mobile, 2 col desktop ──────── */
 .g2,.g3,.g4{display:grid;grid-template-columns:1fr;gap:.75rem;}
 
 /* ── FORM FIELDS ─────────────────────────────── */
-.fld{display:flex;flex-direction:column;gap:5px;margin-bottom:.7rem;}
+.fld{display:flex;flex-direction:column;gap:5px;margin-bottom:.75rem;}
 .fld:last-child{margin-bottom:0;}
 .fld label{font-size:10px;font-weight:600;color:var(--txl);text-transform:uppercase;letter-spacing:.07em;}
-.inp{border:1px solid var(--bd);border-radius:var(--rs);padding:.85rem 1rem;font-family:'DM Sans',sans-serif;font-size:1rem;color:var(--tx);outline:none;width:100%;transition:border-color .15s;background:#fff;-webkit-appearance:none;}
+.inp{border:1px solid var(--bd);border-radius:var(--rs);padding:.75rem .9rem;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--tx);outline:none;width:100%;transition:border-color .15s;background:#fff;-webkit-appearance:none;}
 .inp:focus{border-color:var(--gl);}
-.ta{min-height:90px;resize:vertical;line-height:1.5;}
-.ta-lg{min-height:140px;}
+.ta{min-height:85px;resize:vertical;line-height:1.5;}
+.ta-lg{min-height:130px;}
 
 /* ── PHOTOS ────────────────────────────────────── */
 .photo-row{display:flex;flex-direction:column;gap:.5rem;margin-top:.4rem;}
-.photo-prev{width:100%;height:120px;border-radius:var(--rs);object-fit:cover;border:1px solid var(--bd);background:#f5f0e8;}
+.photo-prev{width:100%;height:110px;border-radius:var(--rs);object-fit:cover;border:1px solid var(--bd);background:#f5f0e8;}
 .photo-prev.wide{width:100%;}
-.photo-url{width:100%;border:1px solid var(--bd);border-radius:var(--rs);padding:.7rem .9rem;font-family:monospace;font-size:.8rem;color:var(--txm);outline:none;}
+.photo-url{width:100%;border:1px solid var(--bd);border-radius:var(--rs);padding:.65rem .85rem;font-family:monospace;font-size:.78rem;color:var(--txm);outline:none;}
 .photo-url:focus{border-color:var(--gl);}
 .photo-hint{font-size:.72rem;color:var(--txl);line-height:1.4;}
 
 /* ── BUTTONS ────────────────────────────────────── */
-.savebtn{background:var(--g);color:#fff;border:none;border-radius:var(--rs);padding:1rem 1.4rem;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:.5rem;width:100%;transition:background .15s;}
-.savebtn:active{background:var(--gm);}
-.savebtn svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5;flex-shrink:0;}
-.addbtn{background:var(--g);color:#fff;border:none;border-radius:var(--rs);padding:.7rem 1.1rem;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
-.addbtn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5;}
-.actbtn{background:none;border:1px solid var(--bd);border-radius:6px;padding:6px 12px;font-size:.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--txm);}
-.actbtn.del{border-color:rgba(192,57,43,0.3);color:var(--red);}
+.savebtn{background:var(--g);color:#fff;border:none;border-radius:var(--rs);padding:.85rem 1.4rem;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:7px;margin-top:.5rem;transition:background .15s;}
+.savebtn:hover{background:var(--gm);}
+.savebtn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5;flex-shrink:0;}
+.addbtn{background:var(--g);color:#fff;border:none;border-radius:var(--rs);padding:.6rem 1rem;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.addbtn svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;}
+.actbtn{background:none;border:1px solid var(--bd);border-radius:6px;padding:5px 11px;font-size:.75rem;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--txm);}
+.actbtn:hover{border-color:var(--gl);color:var(--g);}
+.actbtn.del{border-color:rgba(192,57,43,0.2);color:var(--red);}
+.actbtn.del:hover{border-color:var(--red);}
 .oktxt{font-size:.78rem;color:var(--sl);margin-left:.5rem;opacity:0;transition:opacity .3s;}
 .oktxt.show{opacity:1;}
+
+/* ── DESKTOP — sidebar fixa, grids 2 col ──────── */
+@media(min-width:900px){
+  .topbar{left:260px;}
+  .sidebar{left:0;transition:none;}
+  #drawer-overlay{display:none!important;}
+  .sb-close{display:none;}
+  .ham{display:none;}
+  .main{margin-left:260px;padding:80px 2.5rem 3rem;}
+  .g2{grid-template-columns:1fr 1fr;}
+  .g3{grid-template-columns:1fr 1fr 1fr;}
+  .g4{grid-template-columns:1fr 1fr 1fr 1fr;}
+  .photo-row{flex-direction:row;align-items:flex-start;}
+  .photo-prev{width:140px;height:100px;flex-shrink:0;}
+  .photo-prev.wide{width:180px;}
+  .savebtn{width:auto;}
+  .stats{grid-template-columns:repeat(4,1fr);}
+}
 
 /* ── TABLE — scroll horizontal ────────────────── */
 .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
@@ -252,6 +274,7 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
 
     <!-- DASHBOARD -->
     <div id="sec-dashboard" class="sec on">
+    <div class="content-wrap">
       <div class="ph">
         <div><div class="ptitle">Dashboard</div><div class="psub">Dados em tempo real do Google Sheets</div></div>
 
@@ -271,7 +294,11 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
     </div>
 
     <!-- CONFIG -->
-    <div id="sec-config" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-config" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Propriedade & Splash</div><div class="psub">Dados gerais e ecrã de boas-vindas</div></div></div>
       <div class="info-box">As alterações aqui são guardadas <strong>diretamente na Google Sheet "Config"</strong> e ficam disponíveis na app dos hóspedes imediatamente.</div>
       <div class="card">
@@ -352,7 +379,11 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
     </div>
 
     <!-- WIFI -->
-    <div id="sec-wifi" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-wifi" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Wi-Fi</div><div class="psub">Credenciais de acesso à internet</div></div></div>
       <div class="card">
         <div class="ctitle">Rede principal (5 GHz)</div>
@@ -372,7 +403,11 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
     </div>
 
     <!-- HÓSPEDES -->
-    <div id="sec-hospedes" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-hospedes" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Hóspedes</div><div class="psub">Gerir acessos à app · dados do Google Sheets</div></div></div>
       <div class="card">
         <div class="ctitle">Adicionar novo hóspede</div>
@@ -389,7 +424,11 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
     </div>
 
     <!-- CASA GERAL -->
-    <div id="sec-casa-geral" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-casa-geral" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Info geral da casa</div></div></div>
       <div class="card">
         <div class="ctitle">Imagem do card "Informações úteis"</div>
@@ -418,7 +457,11 @@ Máq. de lavar roupa</textarea>
     </div>
 
     <!-- QUARTOS -->
-    <div id="sec-casa-quartos" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-casa-quartos" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Quartos</div></div></div>
       <div class="card">
         <div class="ctitle">Imagem do card</div>
@@ -458,7 +501,11 @@ Máq. de lavar roupa</textarea>
     </div>
 
     <!-- PISCINA -->
-    <div id="sec-casa-piscina" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-casa-piscina" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Piscina & Espaço exterior</div></div></div>
       <div class="card"><div class="ctitle">Fotos</div>
         <div class="g2">
@@ -494,7 +541,11 @@ Máq. de lavar roupa</textarea>
     </div>
 
     <!-- COZINHA -->
-    <div id="sec-casa-cozinha" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-casa-cozinha" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Cozinha & Churrasqueira</div></div></div>
       <div class="card"><div class="ctitle">Fotos</div>
         <div class="g2">
@@ -528,7 +579,11 @@ Máq. de lavar roupa</textarea>
     </div>
 
     <!-- SALA -->
-    <div id="sec-casa-sala" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-casa-sala" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Sala de estar & TV</div></div></div>
       <div class="card"><div class="ctitle">Foto</div>
         <div class="photo-row">
@@ -546,7 +601,11 @@ Máq. de lavar roupa</textarea>
     </div>
 
     <!-- REGRAS -->
-    <div id="sec-casa-regras" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-casa-regras" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Regras & Check-out</div></div></div>
       <div class="card"><div class="ctitle">Regras da casa</div>
         <div class="g2">
@@ -586,7 +645,11 @@ Entregar as chaves ao proprietário</textarea>
     </div>
 
     <!-- SERVIÇOS -->
-    <div id="sec-servicos" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-servicos" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Serviços</div></div></div>
       <div class="card"><div class="ctitle">Fotos dos serviços</div>
         <div class="g2">
@@ -621,7 +684,11 @@ Entregar as chaves ao proprietário</textarea>
     </div>
 
     <!-- ATRAÇÕES -->
-    <div id="sec-atracoes" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-atracoes" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Atrações</div><div class="psub">Edição em tempo real · Google Sheet "Atracoes"</div></div>
         <button class="addbtn" onclick="addPlace('atracoes')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar</button>
       </div>
@@ -630,7 +697,11 @@ Entregar as chaves ao proprietário</textarea>
     </div>
 
     <!-- RESTAURANTES -->
-    <div id="sec-restaurantes" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-restaurantes" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Restaurantes</div><div class="psub">Edição em tempo real · Google Sheet "Restaurantes"</div></div>
         <button class="addbtn" onclick="addPlace('restaurantes')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar</button>
       </div>
@@ -639,7 +710,11 @@ Entregar as chaves ao proprietário</textarea>
     </div>
 
     <!-- CONTACTO -->
-    <div id="sec-contacto" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-contacto" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Contactos & Emergências</div></div></div>
       <div class="card"><div class="ctitle">Proprietário</div>
         <div class="g2">
@@ -672,7 +747,11 @@ Entregar as chaves ao proprietário</textarea>
     </div>
 
     <!-- PATROCINADORES -->
-    <div id="sec-patrocinadores" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-patrocinadores" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Patrocinadores</div></div></div>
       <div class="card"><div class="ctitle">Patrocinador 1 (menu Casa)</div>
         <div class="fld"><label>Foto</label>
@@ -706,7 +785,11 @@ Entregar as chaves ao proprietário</textarea>
     </div>
 
     <!-- CASA DE BANHO -->
-    <div id="sec-casa-wc" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-casa-wc" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Casa de banho</div></div></div>
       <div class="card">
         <div class="ctitle">Foto</div>
@@ -724,7 +807,11 @@ Entregar as chaves ao proprietário</textarea>
     </div>
 
     <!-- FEEDBACKS -->
-    <div id="sec-feedbacks" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-feedbacks" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Feedbacks</div><div class="psub">Direto do Google Sheets "Feedbacks"</div></div>
         <button class="addbtn" onclick="loadAll()">↻ Atualizar</button>
       </div>
@@ -732,12 +819,18 @@ Entregar as chaves ao proprietário</textarea>
     </div>
 
     <!-- NEWSLETTER -->
-    <div id="sec-newsletter" class="sec">
+
+    </div><!-- /cw -->
+
+        <div id="sec-newsletter" class="sec">
+    <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Newsletter</div><div class="psub">Emails recolhidos · Google Sheet "Newsletter"</div></div>
         <button class="addbtn" onclick="loadAll()">↻ Atualizar</button>
       </div>
       <div class="card"><div class="ctitle">Subscritores</div><div id="nl-list"><div style="font-size:.82rem;color:var(--txl);">A carregar...</div></div></div>
     </div>
+
+      </div><!-- /content-wrap -->
 
   </div><!-- /main -->
 </div><!-- /app -->
