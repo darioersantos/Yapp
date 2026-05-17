@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>YAPP Backoffice · Casa do Gerês</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=DM+Sans:wght@300;400;500&family=Playfair+Display:wght@600&display=swap" rel="stylesheet"/>
 <style>
 :root{
   --g:#2d4a1e;--gm:#3d6428;--gl:#5a8a3c;--sl:#b8d4a0;--sage:#8aab6e;
@@ -305,6 +305,29 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
         <div class="ctitle">Mensagem de boas-vindas</div>
         <textarea class="inp ta-lg" id="c-bv" placeholder="Bem-vindo à Casa do Gerês..."></textarea>
       </div>
+      <div class="card">
+        <div class="ctitle">Tema visual da app</div>
+        <p style="font-size:.82rem;color:var(--txl);margin-bottom:1rem;line-height:1.5;">Escolhe o tema de cores e tipografia da app dos hóspedes. Só o administrador pode alterar. O hóspede vê sempre o tema activo.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+          <div id="tema-natureza-card" onclick="selectTema('natureza')" style="border:2px solid var(--gl);border-radius:var(--r);padding:1rem;cursor:pointer;background:#f7faf5;text-align:center;">
+            <div style="width:100%;height:60px;border-radius:8px;background:linear-gradient(135deg,#2d4a1e,#5a8a3c);margin-bottom:.6rem;display:flex;align-items:center;justify-content:center;">
+              <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:#fff;font-weight:600;">Casa do Gerês</span>
+            </div>
+            <div style="font-size:.82rem;font-weight:600;color:var(--g);">🌿 Natureza</div>
+            <div style="font-size:.72rem;color:var(--txl);margin-top:2px;">Verde floresta · Cormorant</div>
+          </div>
+          <div id="tema-oceano-card" onclick="selectTema('oceano')" style="border:2px solid transparent;border-radius:var(--r);padding:1rem;cursor:pointer;background:#f0f7ff;text-align:center;">
+            <div style="width:100%;height:60px;border-radius:8px;background:linear-gradient(135deg,#0c3a6e,#2874c8);margin-bottom:.6rem;display:flex;align-items:center;justify-content:center;">
+              <span style="font-family:'Playfair Display',serif;font-size:1.1rem;color:#fff;font-weight:600;">Casa do Gerês</span>
+            </div>
+            <div style="font-size:.82rem;font-weight:600;color:#0c3a6e;">🌊 Oceano</div>
+            <div style="font-size:.72rem;color:#5a82a8;margin-top:2px;">Azul mar · Playfair</div>
+          </div>
+        </div>
+        <input type="hidden" id="c-tema" value="natureza"/>
+        <button class="savebtn" onclick="saveTema()" style="margin-top:0;"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Aplicar tema<span class="oktxt" id="ok-tema">Aplicado!</span></button>
+      </div>
+
       <div class="card">
         <div class="ctitle">Aviso especial (aparece no topo da app quando ativo)</div>
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:.75rem;">
@@ -881,6 +904,7 @@ function fillConfig(c) {
   var av = document.getElementById('c-aviso-ativo');
   if (av && c['aviso_ativo'] !== undefined) av.value = String(c['aviso_ativo']);
   if (c['propriedade_nome']) document.querySelector('.sb-sub').textContent = c['propriedade_nome'];
+  if (c['tema']) selectTema(c['tema']);
 }
 
 // ── FILL CASA FIELDS FROM API ──────────────────────────────────────
@@ -1310,6 +1334,26 @@ function saveQuartos() {
   }
   apiWrite(params, function() {
     hideLoading(); showOk('ok-casa-quartos'); toast('✓ Quartos guardados!');
+  });
+}
+
+// ── TEMA ─────────────────────────────────────────────────────────
+function selectTema(t) {
+  document.getElementById('c-tema').value = t;
+  var cards = ['natureza','oceano'];
+  cards.forEach(function(c) {
+    var el = document.getElementById('tema-'+c+'-card');
+    if (!el) return;
+    el.style.border = (c === t) ? '2px solid var(--gl)' : '2px solid transparent';
+    el.style.background = (c === t) ? (c === 'oceano' ? '#e8f4fd' : '#f7faf5') : (c === 'oceano' ? '#f0f7ff' : '#fafafa');
+  });
+}
+function saveTema() {
+  var tema = document.getElementById('c-tema').value || 'natureza';
+  showLoading('A aplicar tema...');
+  apiWrite({ action:'saveConfig', tema:tema }, function() {
+    hideLoading(); showOk('ok-tema');
+    toast('✓ Tema "' + tema + '" aplicado! Os hóspedes vão ver o novo tema.');
   });
 }
 
