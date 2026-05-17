@@ -108,10 +108,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 /* APP */
 #app{display:none;padding-bottom:70px;}
 
-/* PAGES — fade + scale parallax effect */
-.page{
-  display:none;
-}
+/* PAGES */
+.page{display:none;}
 .page.active{
   display:block;
   animation:page-appear 0.5s cubic-bezier(0.16,1,0.3,1) both;
@@ -121,13 +119,64 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
   60% {opacity:1;}
   100%{opacity:1;transform:scale(1) translateY(0);}
 }
-/* Section parallax on scroll */
 .section{padding:1.6rem 1.2rem 1.2rem;}
-.parallax-section{
-  transform:translateY(0);
-  transition:transform 0.1s linear;
+.parallax-section{transform:translateY(0);transition:transform 0.1s linear;}
+
+/* ── DESKTOP layout ────────────────────────────────────────────── */
+@media(min-width:768px){
+  body{background:#1e2d14;}
+
+  /* Splash fixa à esquerda */
+  #splash{
+    position:fixed;top:0;left:0;
+    width:40%;height:100vh;z-index:1;
+  }
+  #splash .hero-content{padding:2rem 2.5rem 3rem;}
+  #splash .hero-title{font-size:3.5rem;}
+  #splash .hero-top{padding:2rem 2rem;}
+
+  /* App (páginas) painel direito com scroll */
+  #app{
+    margin-left:40%;
+    padding-bottom:0;
+    min-height:100vh;
+    background:var(--cream);
+    position:relative;z-index:2;
+    box-shadow:-6px 0 40px rgba(0,0,0,0.35);
+  }
+
+  /* Nav bar sticky no painel direito */
+  .nav-bar{position:sticky;top:0;border-radius:0;z-index:100;}
+
+  /* Conteúdo centrado e com padding */
+  .page{min-height:calc(100vh - 60px);}
+  .section{padding:2rem 2.5rem 1.5rem;max-width:580px;margin:0 auto;}
+
+  /* Meteorologia */
+  #page-meteo{padding:0!important;}
+  #meteo-full{height:calc(100vh - 60px);}
+
+  /* Img cards 2 colunas */
+  #atracoes-dynamic,
+  #restaurantes-dynamic{
+    display:grid;grid-template-columns:1fr 1fr;gap:.75rem;
+  }
+  #atracoes-dynamic .img-card,
+  #restaurantes-dynamic .img-card{margin-bottom:0;}
+
+  /* Serviços grid */
+  .services-grid{grid-template-columns:1fr 1fr;}
+
+  /* Info 4 colunas */
+  .info-grid{grid-template-columns:repeat(4,1fr);}
+
+  /* Modais só no painel direito */
+  .modal-overlay{left:40%;width:60%;}
+  .modal-sheet{border-radius:20px 20px 0 0;max-height:88vh;max-width:100%;}
+
+  /* Guestbook 2 colunas */
+  #guestbook-list{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
 }
-.section{padding:1.6rem 1.2rem 1.2rem;}
 .section-tag{font-size:10px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;color:var(--sage);margin-bottom:5px;}
 .section-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--forest);line-height:1.15;}
 .section-sub{font-size:0.85rem;color:var(--text-light);margin-top:5px;line-height:1.55;}
