@@ -350,6 +350,43 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 .yapp-footer{text-align:center;padding:2rem 1.2rem 1rem;border-top:1px solid var(--cream-dark);}
 .yapp-footer-brand{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;color:var(--forest);letter-spacing:0.06em;}
 .yapp-footer-sub{font-size:0.72rem;color:var(--text-light);margin-top:3px;}
+
+/* ── AVISO BANNER ─────────────────────────────────────────────── */
+#aviso-banner{display:none;background:var(--earth);color:#fff;text-align:center;font-size:0.82rem;padding:9px 1rem;position:sticky;top:0;z-index:150;font-weight:500;letter-spacing:0.01em;}
+#aviso-banner a{color:rgba(255,255,255,0.8);text-decoration:underline;}
+
+/* ── POPUP OVERLAY ────────────────────────────────────────────── */
+.popup-overlay{position:fixed;inset:0;background:rgba(10,20,5,0.65);z-index:8000;display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .3s;}
+.popup-overlay.open{opacity:1;pointer-events:all;}
+.popup-box{background:var(--cream);border-radius:24px;padding:2rem 1.8rem;width:100%;max-width:380px;position:relative;transform:translateY(20px) scale(0.96);transition:transform .3s cubic-bezier(0.16,1,0.3,1);}
+.popup-overlay.open .popup-box{transform:translateY(0) scale(1);}
+.popup-icon{font-size:2.8rem;text-align:center;margin-bottom:.75rem;}
+.popup-title{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:600;color:var(--forest);text-align:center;margin-bottom:.5rem;line-height:1.2;}
+.popup-sub{font-size:.85rem;color:var(--text-mid);text-align:center;line-height:1.6;margin-bottom:1.2rem;}
+.popup-btn{width:100%;background:var(--forest);color:#fff;border:none;border-radius:30px;padding:1rem;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:500;cursor:pointer;margin-bottom:.5rem;}
+.popup-btn-sec{width:100%;background:transparent;color:var(--forest-mid);border:1px solid rgba(90,138,60,0.25);border-radius:30px;padding:.85rem;font-family:'DM Sans',sans-serif;font-size:.88rem;cursor:pointer;}
+.popup-close{position:absolute;top:.9rem;right:1rem;background:none;border:none;font-size:1.3rem;color:var(--text-light);cursor:pointer;line-height:1;}
+.popup-checklist{list-style:none;text-align:left;margin-bottom:1rem;}
+.popup-checklist li{display:flex;align-items:center;gap:10px;font-size:.85rem;color:var(--text-mid);padding:5px 0;border-bottom:1px solid rgba(90,138,60,0.08);}
+.popup-checklist li:last-child{border-bottom:none;}
+.popup-checklist li::before{content:'□';font-size:1.1rem;color:var(--sage);}
+
+/* ── SUGESTÃO DO DIA ─────────────────────────────────────────── */
+.suggestion-card{background:linear-gradient(135deg,var(--forest) 0%,var(--forest-mid) 100%);border-radius:var(--radius);overflow:hidden;position:relative;margin-bottom:.75rem;cursor:pointer;}
+.suggestion-card img{width:100%;height:130px;object-fit:cover;opacity:.45;display:block;}
+.suggestion-body{position:absolute;inset:0;padding:1.1rem 1.2rem;display:flex;flex-direction:column;justify-content:flex-end;}
+.suggestion-tag{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--sage-light);margin-bottom:4px;}
+.suggestion-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:#fff;line-height:1.2;margin-bottom:3px;}
+.suggestion-sub{font-size:.75rem;color:rgba(255,255,255,.75);}
+.suggestion-meta{display:flex;align-items:center;justify-content:space-between;margin-top:.5rem;}
+.suggestion-dist{font-size:.72rem;color:rgba(255,255,255,.6);background:rgba(255,255,255,.15);border-radius:20px;padding:2px 9px;}
+.suggestion-cta{font-size:.75rem;color:var(--sage-light);font-weight:500;}
+
+/* ── DIAS RESTANTES BADGE ────────────────────────────────────── */
+#dias-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(45,74,30,.08);border:1px solid rgba(45,74,30,.15);border-radius:20px;padding:4px 12px;font-size:.78rem;color:var(--forest-mid);margin-bottom:1rem;}
+/* ── FORM INPUT INSIDE POPUP ─────────────────────────────────── */
+.popup-box .form-input{width:100%;border:1px solid rgba(45,74,30,.2);border-radius:10px;padding:.75rem 1rem;font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--text-dark);background:#fff;outline:none;box-sizing:border-box;display:block;}
+.popup-box .form-input:focus{border-color:var(--forest-light);}
 </style>
 </head>
 <body>
@@ -430,6 +467,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 <!-- APP -->
 <div id="app">
 
+  <!-- AVISO BANNER -->
+  <div id="aviso-banner"></div>
+
   <!-- CASA -->
   <div id="page-casa" class="page active">
     <div class="section">
@@ -437,6 +477,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         <div class="section-tag">A tua estadia</div>
         <h2 class="section-title">Casa do Gerês</h2>
         <p class="section-sub">Bem-vindo. Tudo o que precisas para uma estadia inesquecível.</p>
+      </div>
+
+      <!-- Dias restantes badge -->
+      <div id="dias-badge" style="display:none;">
+        <span>📅</span><span id="dias-badge-txt"></span>
+      </div>
+
+      <!-- Sugestão do dia -->
+      <div class="suggestion-card" id="suggestion-day" style="display:none;" onclick="openSugestao()">
+        <img id="sug-card-img" src=""/>
+        <div class="suggestion-body">
+          <div class="suggestion-tag">✨ Sugestão para hoje</div>
+          <div class="suggestion-title" id="sug-card-titulo"></div>
+          <div class="suggestion-meta">
+            <span class="suggestion-dist" id="sug-card-dist"></span>
+            <span class="suggestion-cta">Ver detalhes →</span>
+          </div>
+        </div>
       </div>
 
       <!-- Grid de divisões - Info úteis largura total -->
@@ -464,7 +522,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         </div>
         <div class="svc-card" onclick="showModal('m-piscina')">
           <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=400&auto=format&fit=crop&q=75" alt="Piscina"/>
-          <div class="svc-card-body"><div class="svc-card-label">Piscina</div><div class="svc-card-sub">Regras & horários</div></div>
+          <div class="svc-card-body"><div class="svc-card-label">Piscina</div><div class="svc-card-sub">Regras & equipamento</div></div>
         </div>
         <div class="svc-card" onclick="showModal('m-churrasco')">
           <img src="churrasco-real.jpg" alt="Churrasqueira"/>
@@ -515,13 +573,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         <p style="font-size:0.78rem;color:var(--text-light);margin-top:0.7rem;line-height:1.5;">Credenciais no dossier junto à televisão.</p>
       </div>
 
-      <!-- Sponsor -->
-      <div class="sponsor" onclick="window.open('https://www.google.com/maps/search/Adega+Geres','_blank')">
-        <img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format&fit=crop&q=75" alt="Adega"/>
-        <div class="sponsor-body">
-          <div class="sponsor-badge">Parceiro local</div>
-          <div class="sponsor-name">Adega do Gerês</div>
-          <div class="sponsor-cta">10% desconto a apresentar esta app</div>
+      <!-- Sponsors — renderizados dinamicamente -->
+      <div id="sponsors-container">
+        <div class="sponsor" onclick="window.open('https://www.google.com/maps/search/Adega+Geres','_blank')">
+          <img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format&fit=crop&q=75" alt="Adega"/>
+          <div class="sponsor-body">
+            <div class="sponsor-badge">Parceiro local</div>
+            <div class="sponsor-name">Adega do Gerês</div>
+            <div class="sponsor-cta">10% desconto a apresentar esta app</div>
+          </div>
         </div>
       </div>
 
@@ -993,6 +1053,223 @@ function goToApp() {
   renderChecklistAcc();
   renderGuestbook();
   initScrollHideNav();
+  // Novas funcionalidades dinâmicas
+  updateDiasBadge();
+  showBoasVindasPopup();
+  checkCheckoutAlert();
+  checkDespedidaPopup();
+  scheduleSugestao();
+}
+
+// ── DIAS RESTANTES ────────────────────────────────────────────────
+function updateDiasBadge() {
+  var s = getSession();
+  if (!s || s.checkout === '2099-12-31') return;
+  var hoje = new Date(); hoje.setHours(0,0,0,0);
+  var co = new Date(s.checkout + 'T00:00:00');
+  var diff = Math.round((co - hoje) / 86400000);
+  var badge = document.getElementById('dias-badge');
+  var txt = document.getElementById('dias-badge-txt');
+  if (!badge || !txt) return;
+  if (diff > 0 && diff <= 14) {
+    txt.textContent = diff === 1 ? 'Último dia de estadia' : diff + ' dias de estadia restantes';
+    badge.style.display = 'inline-flex';
+  }
+}
+
+// ── POPUP BOAS-VINDAS ─────────────────────────────────────────────
+function showBoasVindasPopup() {
+  var key = 'yapp_bv_shown_' + (getSession() ? getSession().user : 'x');
+  if (sessionStorage.getItem(key)) return; // só uma vez por sessão
+  sessionStorage.setItem(key, '1');
+  var s = getSession();
+  var nome = s && s.name ? s.name.split(' ')[0] : '';
+  var titulo = document.getElementById('popup-bv-titulo');
+  var texto = document.getElementById('popup-bv-texto');
+  if (titulo) titulo.textContent = nome ? 'Bem-vindo, ' + nome + '!' : 'Bem-vindo!';
+  // Use boas_vindas from cache if available
+  try {
+    var cached = localStorage.getItem('yapp_data_cache');
+    if (cached) {
+      var d = JSON.parse(cached);
+      var bv = (d.casa && d.casa.boas_vindas) ? d.casa.boas_vindas : '';
+      if (bv && texto) {
+        texto.innerHTML = bv.replace(/
+/g,'<br/>');
+      }
+    }
+  } catch(e) {}
+  setTimeout(function() { openPopup('popup-boasvindas'); }, 600);
+}
+
+// ── POPUP CHECK-OUT ───────────────────────────────────────────────
+function checkCheckoutAlert() {
+  var s = getSession();
+  if (!s || s.checkout === '2099-12-31') return;
+  var key = 'yapp_co_shown_' + s.checkout;
+  if (localStorage.getItem(key)) return;
+  var hoje = new Date(); hoje.setHours(0,0,0,0);
+  var co = new Date(s.checkout + 'T00:00:00');
+  var diff = Math.round((co - hoje) / 86400000);
+  if (diff !== 0) return; // só no dia do check-out
+  localStorage.setItem(key, '1');
+  // Set checkout hora
+  try {
+    var cached = localStorage.getItem('yapp_data_cache');
+    if (cached) {
+      var d = JSON.parse(cached);
+      var hora = (d.config && d.config.checkout_hora) ? d.config.checkout_hora : '11h00';
+      var el = document.getElementById('co-hora');
+      if (el) el.textContent = hora;
+      // Fill checklist items (top 5)
+      var items = (d.casa && d.casa.checklist_saida) ? d.casa.checklist_saida.split('
+').filter(Boolean).slice(0,5) : ['Fechar janelas e portas','Desligar luzes','Retirar pertences','Verificar frigorífico','Entregar chaves'];
+      var ul = document.getElementById('popup-checklist-items');
+      if (ul) ul.innerHTML = items.map(function(i){ return '<li>'+i+'</li>'; }).join('');
+    }
+  } catch(e) {}
+  setTimeout(function() { openPopup('popup-checkout'); }, 1200);
+}
+
+// ── SUGESTÃO DO DIA ───────────────────────────────────────────────
+var _sugestaoData = null;
+function scheduleSugestao() {
+  try {
+    var cached = localStorage.getItem('yapp_data_cache');
+    if (!cached) return;
+    var d = JSON.parse(cached);
+    var places = (d.attractions || []).concat(d.restaurants || []);
+    if (!places.length) return;
+    // Rotação diária — índice baseado no dia do ano
+    var hoje = new Date();
+    var dayOfYear = Math.floor((hoje - new Date(hoje.getFullYear(),0,0)) / 86400000);
+    var idx = dayOfYear % places.length;
+    _sugestaoData = places[idx];
+    // Update card inline
+    var card = document.getElementById('suggestion-day');
+    var img = document.getElementById('sug-card-img');
+    var titulo = document.getElementById('sug-card-titulo');
+    var dist = document.getElementById('sug-card-dist');
+    if (card && _sugestaoData) {
+      if (img) img.src = _sugestaoData.img;
+      if (titulo) titulo.textContent = _sugestaoData.name;
+      if (dist) dist.textContent = _sugestaoData.dist;
+      card.style.display = 'block';
+    }
+    // Show popup after 4 seconds (after boas-vindas)
+    var sugKey = 'yapp_sug_' + hoje.toDateString() + '_' + (getSession() ? getSession().user : '');
+    if (!sessionStorage.getItem(sugKey)) {
+      sessionStorage.setItem(sugKey, '1');
+      setTimeout(function() { openSugestao(); }, 4000);
+    }
+  } catch(e) {}
+}
+
+function openSugestao() {
+  if (!_sugestaoData) return;
+  var p = _sugestaoData;
+  var img = document.getElementById('sug-img');
+  var titulo = document.getElementById('sug-titulo');
+  var desc = document.getElementById('sug-desc');
+  var dist = document.getElementById('sug-dist');
+  var rating = document.getElementById('sug-rating');
+  var btn = document.getElementById('sug-btn');
+  if (img) img.src = p.img || '';
+  if (titulo) titulo.textContent = p.name || '';
+  if (desc) desc.textContent = p.desc || '';
+  if (dist) dist.textContent = p.dist || '';
+  if (rating) rating.textContent = p.rating || '';
+  if (btn) {
+    var lat = p.lat, lng = p.lng;
+    var url = 'https://www.google.com/maps/dir/?api=1&destination='+lat+','+lng;
+    btn.setAttribute('onclick', "window.open('"+url+"','_blank');closePopup('popup-sugestao')");
+  }
+  openPopup('popup-sugestao');
+}
+
+// ── POPUP DESPEDIDA ───────────────────────────────────────────────
+function checkDespedidaPopup() {
+  var s = getSession();
+  if (!s || s.checkout === '2099-12-31') return;
+  var key = 'yapp_desp_' + s.checkout + '_' + s.user;
+  if (localStorage.getItem(key)) return;
+  var hoje = new Date(); hoje.setHours(0,0,0,0);
+  var co = new Date(s.checkout + 'T00:00:00');
+  var diff = Math.round((co - hoje) / 86400000);
+  if (diff !== 0) return; // só no dia do check-out
+
+  // Set Google Review URL from cache
+  try {
+    var cached = localStorage.getItem('yapp_data_cache');
+    if (cached) {
+      var d = JSON.parse(cached);
+      var grev = (d.config && d.config.google_reviews_url) ? d.config.google_reviews_url : '';
+      var btn = document.getElementById('btn-review');
+      if (btn && grev && grev !== 'https://g.page/r/' && grev !== '#') {
+        btn.setAttribute('onclick', "abrirReview()");
+        btn._reviewUrl = grev;
+      }
+    }
+  } catch(e) {}
+
+  localStorage.setItem(key, '1');
+  // Show after checkout popup closes (8 seconds after app opens)
+  setTimeout(function() { openPopup('popup-despedida'); }, 8000);
+}
+
+function abrirReview() {
+  var btn = document.getElementById('btn-review');
+  var url = (btn && btn._reviewUrl) ? btn._reviewUrl : null;
+  try {
+    var cached = localStorage.getItem('yapp_data_cache');
+    if (cached) {
+      var d = JSON.parse(cached);
+      url = url || (d.config && d.config.google_reviews_url) || '#';
+    }
+  } catch(e) {}
+  if (url && url !== '#' && url !== 'https://g.page/r/') {
+    window.open(url, '_blank');
+  } else {
+    window.open('https://www.google.com/maps/search/Casa+do+Gerês', '_blank');
+  }
+}
+
+function subscreverDespedida() {
+  var email = document.getElementById('desp-nl-email').value.trim();
+  var nome  = document.getElementById('desp-nl-nome').value.trim();
+  if (!email || !email.includes('@')) {
+    showToast('Introduz um email válido');
+    return;
+  }
+  // Save to API
+  if (API_URL) {
+    var cb = '__yappNlDesp' + Date.now();
+    window[cb] = function(){ window[cb] = null; };
+    var sc = document.createElement('script');
+    sc.src = API_URL + '?action=saveNewsletter&name=' + encodeURIComponent(nome) + '&email=' + encodeURIComponent(email) + '&callback=' + cb;
+    document.head.appendChild(sc);
+  }
+  // Save locally too
+  try { localStorage.setItem('yapp_nl_' + email, '1'); } catch(e) {}
+  // Show confirmation inside the popup
+  var form = document.getElementById('desp-nl-email').parentNode;
+  form.innerHTML = '<div style="text-align:center;padding:.5rem 0;">'
+    + '<div style="font-size:1.5rem;margin-bottom:.4rem;">✅</div>'
+    + '<div style="font-size:.88rem;font-weight:500;color:var(--forest);">Subscrito com sucesso!</div>'
+    + '<div style="font-size:.78rem;color:var(--text-mid);margin-top:.3rem;">Vemo-nos em breve 💚</div>'
+    + '</div>';
+}
+
+// ── POPUP HELPERS ─────────────────────────────────────────────────
+function openPopup(id) {
+  var el = document.getElementById(id);
+  if (el) { el.classList.add('open'); document.body.style.overflow = 'hidden'; }
+}
+function closePopup(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.remove('open');
+  var anyOpen = document.querySelector('.popup-overlay.open');
+  if (!anyOpen) document.body.style.overflow = '';
 }
 
 function initScrollHideNav() {
@@ -1248,16 +1525,15 @@ function applyConfig(c) {
   // Tema
   if (c.tema) applyTheme(c.tema);
 
-  // Aviso
-  if (c.aviso_ativo === 'true' && c.aviso_texto) {
-    var existing = document.getElementById('aviso-banner');
-    if (!existing) {
-      var banner = document.createElement('div');
-      banner.id = 'aviso-banner';
-      banner.style.cssText = 'background:#e67e22;color:#fff;text-align:center;font-size:0.82rem;padding:8px 1rem;position:sticky;top:0;z-index:150;font-family:DM Sans,sans-serif;';
+  // Aviso banner — usa o elemento fixo já no HTML
+  var banner = document.getElementById('aviso-banner');
+  if (banner) {
+    var ativo = String(c.aviso_ativo).toLowerCase();
+    if ((ativo === 'true' || ativo === 'TRUE') && c.aviso_texto) {
       banner.textContent = c.aviso_texto;
-      var app = document.getElementById('app');
-      if (app) app.prepend(banner);
+      banner.style.display = 'block';
+    } else {
+      banner.style.display = 'none';
     }
   }
 }
@@ -1430,19 +1706,18 @@ function applyContacto(c) {
 
 function applyPatrocinadores(pats) {
   if (!pats || !pats.length) return;
-  var sponsors = document.querySelectorAll('.sponsor');
-  pats.forEach(function(p, i) {
-    if (!sponsors[i]) return;
-    var img = sponsors[i].querySelector('img');
-    if (img && p.img) img.src = p.img;
-    var badge = sponsors[i].querySelector('.sponsor-badge');
-    var nome = sponsors[i].querySelector('.sponsor-name');
-    var cta = sponsors[i].querySelector('.sponsor-cta');
-    if (badge && p.badge) badge.textContent = p.badge;
-    if (nome && p.nome) nome.textContent = p.nome;
-    if (cta && p.cta) cta.textContent = p.cta;
-    if (p.url) sponsors[i].setAttribute('onclick', "window.open('" + p.url + "','_blank')");
-  });
+  var container = document.getElementById('sponsors-container');
+  if (!container) return;
+  container.innerHTML = pats.map(function(p) {
+    var url = (p.url||'#').replace(/'/g,"\'");
+    return '<div class="sponsor" onclick="window.open(''+url+'','_blank')" style="cursor:pointer;">'
+      + '<img src="'+( p.img||'' )+'" alt="'+( p.nome||'' )+'" onerror="this.style.display='none'"/>'
+      + '<div class="sponsor-body">'
+      + '<div class="sponsor-badge">'+(p.badge||'')+'</div>'
+      + '<div class="sponsor-name">'+(p.nome||'')+'</div>'
+      + '<div class="sponsor-cta">'+(p.cta||'')+'</div>'
+      + '</div></div>';
+  }).join('');
 }
 
 function makePlaceCard(p, fallbackImg) {
@@ -1777,5 +2052,81 @@ function wEmoji(c) {
 }
 function wDesc(c)  { if(c===0)return'Céu limpo';if(c<=2)return'Parcialmente nublado';if(c===3)return'Nublado';if(c<=49)return'Nevoeiro';if(c<=59)return'Chuviscos';if(c<=69)return'Chuva';if(c<=79)return'Neve';if(c<=99)return'Trovoada';return'Variável'; }
 </script>
+<!-- ── POPUP: BOAS-VINDAS ──────────────────────────────────────── -->
+<div class="popup-overlay" id="popup-boasvindas">
+  <div class="popup-box">
+    <button class="popup-close" onclick="closePopup('popup-boasvindas')">✕</button>
+    <div class="popup-icon">🌿</div>
+    <div class="popup-title" id="popup-bv-titulo">Bem-vindo!</div>
+    <div class="popup-sub" id="popup-bv-texto">Esperamos que a tua estadia seja inesquecível.<br/>Explora a app para tudo o que precisas.</div>
+    <button class="popup-btn" onclick="closePopup('popup-boasvindas');goToApp()">Começar a explorar</button>
+  </div>
+</div>
+
+<!-- ── POPUP: ALERTA CHECK-OUT ─────────────────────────────────── -->
+<div class="popup-overlay" id="popup-checkout">
+  <div class="popup-box">
+    <button class="popup-close" onclick="closePopup('popup-checkout')">✕</button>
+    <div class="popup-icon">🧳</div>
+    <div class="popup-title">Último dia de estadia</div>
+    <div class="popup-sub">Check-out até às <strong id="co-hora">11h00</strong>. Antes de sair, não te esqueças:</div>
+    <ul class="popup-checklist" id="popup-checklist-items"></ul>
+    <button class="popup-btn" onclick="closePopup('popup-checkout')">Entendido, obrigado!</button>
+    <button class="popup-btn-sec" onclick="closePopup('popup-checkout');showModal('m-checkout')">Ver checklist completa</button>
+  </div>
+</div>
+
+<!-- ── POPUP: DESPEDIDA ────────────────────────────────────────── -->
+<div class="popup-overlay" id="popup-despedida">
+  <div class="popup-box">
+    <div class="popup-icon">💚</div>
+    <div class="popup-title">Obrigado pela tua visita!</div>
+    <div class="popup-sub">Foi um prazer receber-te. A tua opinião é muito importante para nós e ajuda outros hóspedes a descobrir este espaço.</div>
+
+    <!-- Google Review -->
+    <button class="popup-btn" id="btn-review" onclick="abrirReview()" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Deixar review no Google
+    </button>
+
+    <!-- Divider -->
+    <div style="display:flex;align-items:center;gap:10px;margin:.75rem 0;">
+      <div style="flex:1;height:1px;background:rgba(45,74,30,.12);"></div>
+      <span style="font-size:.72rem;color:var(--text-light);">e também</span>
+      <div style="flex:1;height:1px;background:rgba(45,74,30,.12);"></div>
+    </div>
+
+    <!-- Newsletter -->
+    <div style="background:rgba(45,74,30,.05);border:1px solid rgba(45,74,30,.12);border-radius:14px;padding:1rem;margin-bottom:.75rem;">
+      <div style="font-size:.85rem;font-weight:500;color:var(--forest);margin-bottom:.3rem;">🎁 Promoções exclusivas</div>
+      <div style="font-size:.78rem;color:var(--text-mid);margin-bottom:.75rem;line-height:1.5;">Subscreve e recebe ofertas especiais para futuras estadias.</div>
+      <input id="desp-nl-nome" class="form-input" type="text" placeholder="O teu nome (opcional)" style="margin-bottom:.5rem;"/>
+      <input id="desp-nl-email" class="form-input" type="email" placeholder="O teu email" style="margin-bottom:.75rem;"/>
+      <button class="popup-btn" onclick="subscreverDespedida()" style="margin-bottom:0;">Subscrever newsletter</button>
+    </div>
+
+    <button class="popup-btn-sec" onclick="closePopup('popup-despedida')">Fechar</button>
+  </div>
+</div>
+
+<!-- ── POPUP: SUGESTÃO DO DIA ──────────────────────────────────── -->
+<div class="popup-overlay" id="popup-sugestao">
+  <div class="popup-box" style="padding:0;overflow:hidden;">
+    <button class="popup-close" style="z-index:2;background:rgba(0,0,0,.4);color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;top:.75rem;right:.75rem;" onclick="closePopup('popup-sugestao')">✕</button>
+    <img id="sug-img" src="" style="width:100%;height:160px;object-fit:cover;display:block;"/>
+    <div style="padding:1.4rem 1.6rem 1.6rem;">
+      <div class="suggestion-tag">Sugestão de hoje</div>
+      <div class="popup-title" id="sug-titulo" style="text-align:left;margin-bottom:.4rem;font-size:1.5rem;"></div>
+      <div class="popup-sub" id="sug-desc" style="text-align:left;margin-bottom:1rem;"></div>
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1.2rem;">
+        <span class="suggestion-dist" id="sug-dist" style="background:rgba(45,74,30,.1);color:var(--forest-mid);"></span>
+        <span style="font-size:.72rem;color:var(--earth);" id="sug-rating"></span>
+      </div>
+      <button class="popup-btn" id="sug-btn" onclick="">Abrir no mapa →</button>
+      <button class="popup-btn-sec" onclick="closePopup('popup-sugestao')">Ver depois</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
