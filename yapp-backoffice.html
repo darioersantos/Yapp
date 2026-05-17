@@ -1209,7 +1209,7 @@ function renderPats() {
       + '<div class="fld"><label>Foto (URL)</label>'
       + '<div class="photo-row">'
       + '<img id="prev-pat-' + i + '" class="photo-prev wide" src="' + (p.img||'') + '"/>'
-      + '<div style="flex:1;"><input class="photo-url" id="pat-img-' + i + '" value="' + (p.img||'') + '" oninput="pi('prev-pat-' + i + '','pat-img-' + i + '')"/></div>'
+      + '<div style="flex:1;"><input class="photo-url" id="pat-img-' + i + '" value="' + (p.img||'') + '" oninput="document.getElementById(\'prev-pat-'+i+'\').src=this.value"/></div>'
       + '</div></div>'
       + '<div class="g2">'
       + '<div class="fld"><label>Badge</label><input class="inp" id="pat-badge-' + i + '" value="' + (p.badge||'') + '"/></div>'
