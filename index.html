@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
 <meta name="theme-color" id="theme-meta" content="#0f1908"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-status-bar-style" id="apple-status-bar" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Casa do Gerês"/>
 <link rel="manifest" href="manifest.json"/>
 <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
@@ -351,9 +351,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 .yapp-footer-brand{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;color:var(--forest);letter-spacing:0.06em;}
 .yapp-footer-sub{font-size:0.72rem;color:var(--text-light);margin-top:3px;}
 
-/* ── AVISO BANNER ─────────────────────────────────────────────── */
-#aviso-banner{display:none;background:var(--earth);color:#fff;text-align:center;font-size:0.82rem;padding:9px 1rem;position:sticky;top:0;z-index:150;font-weight:500;letter-spacing:0.01em;}
-#aviso-banner a{color:rgba(255,255,255,0.8);text-decoration:underline;}
+/* ── AVISO BANNER — rodapé ticker horizontal ──────────────────── */
+#aviso-banner{display:none;background:var(--earth);color:#fff;font-size:0.8rem;padding:7px 0;position:fixed;bottom:70px;left:0;right:0;z-index:150;font-weight:500;overflow:hidden;white-space:nowrap;}
+#aviso-banner-inner{display:inline-block;animation:ticker 18s linear infinite;padding-left:100%;}
+@keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-100%);}  }
+#aviso-banner a{color:rgba(255,255,255,0.85);text-decoration:underline;}
 
 /* ── POPUP OVERLAY ────────────────────────────────────────────── */
 .popup-overlay{position:fixed;inset:0;background:rgba(10,20,5,0.65);z-index:8000;display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .3s;}
@@ -468,7 +470,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 <div id="app">
 
   <!-- AVISO BANNER -->
-  <div id="aviso-banner"></div>
+  <div id="aviso-banner"><span id="aviso-banner-inner"></span></div>
 
   <!-- CASA -->
   <div id="page-casa" class="page active">
@@ -529,7 +531,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
           <div class="svc-card-body"><div class="svc-card-label">Churrasqueira</div><div class="svc-card-sub">Como utilizar</div></div>
         </div>
         <div class="svc-card svc-card-full" onclick="showModal('m-exterior')" style="grid-column:1/-1;">
-          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop&q=75" alt="Espaço exterior" style="height:110px;"/>
+          <img id="exterior-card-img" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop&q=75" alt="Espaço exterior" style="height:110px;"/>
           <div class="svc-card-body"><div class="svc-card-label">Espaço exterior</div><div class="svc-card-sub">Jardim, terraço e vistas</div></div>
         </div>
       </div>
@@ -905,7 +907,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
         </div>
       </div>
       <a href="https://yapp.pt" target="_blank" class="yapp-footer" style="display:block;text-decoration:none;">
-        <img src="yapp-logo.png" alt="YAPP" style="width:60px;height:60px;object-fit:contain;margin-bottom:6px;mix-blend-mode:multiply;"/>
+        <img src="yapp-logo.png" alt="YAPP" style="width:60px;height:60px;object-fit:contain;margin-bottom:6px;"/>
         <div class="yapp-footer-brand">YAPP · Guia do Hóspede</div>
         <div class="yapp-footer-sub">yapp.pt</div>
       </a>
@@ -1154,12 +1156,21 @@ function scheduleSugestao() {
       if (dist) dist.textContent = _sugestaoData.dist;
       card.style.display = 'block';
     }
-    // Show popup after 4 seconds (after boas-vindas)
-    var sugKey = 'yapp_sug_' + hoje.toDateString() + '_' + (getSession() ? getSession().user : '');
-    if (!sessionStorage.getItem(sugKey)) {
-      sessionStorage.setItem(sugKey, '1');
-      setTimeout(function() { openSugestao(); }, 4000);
+    // Show popup only from day 2 of stay onwards
+  var s2 = getSession();
+  if (s2 && s2.checkout !== '2099-12-31') {
+    // check if it's at least day 2 (can't determine checkin so use session storage)
+    var firstKey = 'yapp_first_' + s2.user;
+    var isFirstSession = !localStorage.getItem(firstKey);
+    localStorage.setItem(firstKey, '1');
+    if (!isFirstSession) {
+      var sugKey = 'yapp_sug_' + hoje.toDateString() + '_' + s2.user;
+      if (!sessionStorage.getItem(sugKey)) {
+        sessionStorage.setItem(sugKey, '1');
+        setTimeout(function() { openSugestao(); }, 4000);
+      }
     }
+  }
   } catch(e) {}
 }
 
@@ -1525,10 +1536,12 @@ function applyConfig(c) {
 
   // Aviso banner — usa o elemento fixo já no HTML
   var banner = document.getElementById('aviso-banner');
+  var inner  = document.getElementById('aviso-banner-inner');
   if (banner) {
     var ativo = String(c.aviso_ativo).toLowerCase();
     if ((ativo === 'true' || ativo === 'TRUE') && c.aviso_texto) {
-      banner.textContent = c.aviso_texto;
+      var txt = c.aviso_texto + '  ·  ' + c.aviso_texto + '  ·  ' + c.aviso_texto;
+      if (inner) inner.textContent = txt;
       banner.style.display = 'block';
     } else {
       banner.style.display = 'none';
@@ -1538,17 +1551,51 @@ function applyConfig(c) {
 
 function applyTheme(tema) {
   var body = document.body;
-  // Remove all theme classes
   body.classList.remove('tema-oceano', 'tema-natureza');
-  if (!tema || tema === 'natureza') return; // default green
+  // Theme color map
+  var colors = {
+    natureza: { bar: '#0f1908', apple: 'black-translucent', login: '#0f1908' },
+    oceano:   { bar: '#061a35', apple: 'black-translucent', login: '#061a35' }
+  };
+  var t = colors[tema] || colors.natureza;
+  // Update browser bar color
+  var tc = document.getElementById('theme-meta');
+  if (tc) tc.setAttribute('content', t.bar);
+  var as = document.getElementById('apple-status-bar');
+  if (as) as.setAttribute('content', t.apple);
+  if (!tema || tema === 'natureza') {
+    try { localStorage.setItem('yapp_tema', 'natureza'); } catch(e) {}
+    return;
+  }
   if (tema === 'oceano') {
     body.classList.add('tema-oceano');
-    // Update login background
     var ls = document.getElementById('login-screen');
-    if (ls) ls.style.background = '#061a35';
+    if (ls) ls.style.background = t.login;
   }
-  // Save to cache so theme applies instantly next open
   try { localStorage.setItem('yapp_tema', tema); } catch(e) {}
+}
+
+// ── WHATSAPP NOTIFICATION TO OWNER ───────────────────────────────
+function sendWANotification(msg) {
+  try {
+    var cached = localStorage.getItem('yapp_data_cache');
+    if (!cached) return;
+    var d = JSON.parse(cached);
+    var waNum = (d.contacto && d.contacto.prop_whatsapp) ? d.contacto.prop_whatsapp.replace(/[^0-9]/g,'') : '';
+    if (!waNum) waNum = (d.config && d.config.proprietario_whatsapp) ? d.config.proprietario_whatsapp.replace(/[^0-9]/g,'') : '';
+    if (!waNum) return;
+    var s = getSession();
+    var guest = s ? s.user : 'Hóspede';
+    var text = '[YAPP] ' + msg + ' | Hóspede: ' + guest;
+    // Open WA link (owner receives notification)
+    var waUrl = 'https://wa.me/' + waNum + '?text=' + encodeURIComponent(text);
+    // Silent open via hidden iframe (doesn't interrupt UX)
+    var ifr = document.createElement('iframe');
+    ifr.style.display = 'none';
+    ifr.src = waUrl;
+    document.body.appendChild(ifr);
+    setTimeout(function(){ if(ifr.parentNode) ifr.parentNode.removeChild(ifr); }, 3000);
+  } catch(e) {}
 }
 
 // Apply cached theme instantly on load (before API responds)
@@ -1577,7 +1624,7 @@ function applyCasa(c) {
   if (c.cozinha_img)    si('#m-cozinha .modal-img', c.cozinha_img);
   if (c.churrasco_img)  si('#m-churrasco .modal-img', c.churrasco_img);
   if (c.piscina_img)    si('#m-piscina .modal-img', c.piscina_img);
-  if (c.exterior_img)   si('#m-exterior .modal-img', c.exterior_img);
+  if (c.exterior_img) { si('#m-exterior .modal-img', c.exterior_img); si('#exterior-card-img', c.exterior_img); }
   if (c.wc_img)         si('#m-wc .modal-img', c.wc_img);
   if (c.info_img) {
     var infoCard = document.querySelector('[onclick*="m-info"] img');
@@ -1790,6 +1837,8 @@ function subscribeNewsletter() {
     var _sc2 = document.createElement('script');
     _sc2.src = API_URL + '?action=saveNewsletter&name=' + encodeURIComponent(nome) + '&email=' + encodeURIComponent(email) + '&callback=' + _cb2;
     document.head.appendChild(_sc2);
+    // Notify owner via WhatsApp
+    sendWANotification('Newsletter: ' + nome + ' (' + email + ')');
   }
   showToast('Subscrito. Obrigado!');
 }
