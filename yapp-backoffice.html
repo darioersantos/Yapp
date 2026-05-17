@@ -1312,7 +1312,10 @@ function renderGuests() {
       + '<td>' + esc(g.name || '—') + '</td>'
       + '<td>' + (g.checkout === '2099-12-31' ? 'Permanente' : g.checkout) + '</td>'
       + '<td>' + pill + '</td>'
-      + '<td><button class="actbtn" onclick="editPass(' + i + ')">Editar pass</button></td></tr>';
+      + '<td style="display:flex;gap:4px;flex-wrap:wrap;">'
+      + '<button class="actbtn" onclick="editPass(' + i + ')">Editar</button>'
+      + (g.user !== 'admin' ? '<button class="actbtn del" onclick="deleteGuest(' + i + ')">Eliminar</button>' : '')
+      + '</td></tr>';
   });
   h += '</tbody></table></div>';
   var el = document.getElementById('guests-tbl');
@@ -1327,9 +1330,21 @@ function editPass(i) {
   if (np !== null && np.trim()) {
     showLoading('A atualizar...');
     apiWrite({ action: 'updatePass', user: g.user, pass: np.trim() }, function() {
-      hideLoading(); DB.guests[i].pass = np.trim(); renderGuests(); toast('✓ Password atualizada na Google Sheet!');
+      hideLoading(); DB.guests[i].pass = np.trim(); renderGuests(); toast('✓ Password atualizada!');
     });
   }
+}
+
+function deleteGuest(i) {
+  var g = DB.guests[i];
+  if (!confirm('Eliminar "' + g.user + '" da Google Sheet? Esta accao nao pode ser desfeita.')) return;
+  showLoading('A eliminar...');
+  apiWrite({ action: 'deleteGuest', user: g.user }, function() {
+    hideLoading();
+    DB.guests.splice(i, 1);
+    renderGuests();
+    toast('✓ Hóspede eliminado da Google Sheet!');
+  });
 }
 
 // ── PLACES ───────────────────────────────────────
