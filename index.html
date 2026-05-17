@@ -1094,8 +1094,7 @@ function showBoasVindasPopup() {
       var d = JSON.parse(cached);
       var bv = (d.casa && d.casa.boas_vindas) ? d.casa.boas_vindas : '';
       if (bv && texto) {
-        texto.innerHTML = bv.replace(/
-/g,'<br/>');
+        texto.innerHTML = bv.replace(/\n/g,'<br/>');
       }
     }
   } catch(e) {}
@@ -1122,8 +1121,7 @@ function checkCheckoutAlert() {
       var el = document.getElementById('co-hora');
       if (el) el.textContent = hora;
       // Fill checklist items (top 5)
-      var items = (d.casa && d.casa.checklist_saida) ? d.casa.checklist_saida.split('
-').filter(Boolean).slice(0,5) : ['Fechar janelas e portas','Desligar luzes','Retirar pertences','Verificar frigorífico','Entregar chaves'];
+      var items = (d.casa && d.casa.checklist_saida) ? d.casa.checklist_saida.split('\n').filter(Boolean).slice(0,5) : ['Fechar janelas e portas','Desligar luzes','Retirar pertences','Verificar frigorífico','Entregar chaves'];
       var ul = document.getElementById('popup-checklist-items');
       if (ul) ul.innerHTML = items.map(function(i){ return '<li>'+i+'</li>'; }).join('');
     }
@@ -1710,8 +1708,8 @@ function applyPatrocinadores(pats) {
   if (!container) return;
   container.innerHTML = pats.map(function(p) {
     var url = (p.url||'#').replace(/'/g,"\'");
-    return '<div class="sponsor" onclick="window.open(''+url+'','_blank')" style="cursor:pointer;">'
-      + '<img src="'+( p.img||'' )+'" alt="'+( p.nome||'' )+'" onerror="this.style.display='none'"/>'
+    return '<div class="sponsor" onclick="window.open(\''+url+'\',\'_blank\')" style="cursor:pointer;">'
+      + '<img src="'+( p.img||'' )+'" alt="'+( p.nome||'' )+'" onerror="this.style.display=\'none\'"/>'
       + '<div class="sponsor-body">'
       + '<div class="sponsor-badge">'+(p.badge||'')+'</div>'
       + '<div class="sponsor-name">'+(p.nome||'')+'</div>'
