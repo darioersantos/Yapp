@@ -107,6 +107,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 
 /* APP */
 #app{display:none;padding-bottom:70px;}
+/* Hide casa page until goToApp fires */
+body:not(.app-ready) #page-casa{opacity:0;pointer-events:none;}
+body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s ease;}
 
 /* PAGES */
 .page{display:none;}
@@ -399,12 +402,13 @@ body.is-offline #offline-banner{display:block;}
 body.is-offline .section{padding-top:1.8rem;}
 
 /* ── TRANSLATION BAR ─────────────────────────────────────────── */
-#lang-bar{display:none;position:fixed;bottom:70px;right:12px;z-index:500;flex-direction:column;gap:5px;align-items:flex-end;}
+#lang-bar{display:none;position:absolute;top:100%;right:0;z-index:500;flex-direction:column;gap:5px;align-items:flex-end;padding-top:6px;}
 #lang-bar.open{display:flex;}
-#lang-toggle{background:var(--forest);color:#fff;border:none;border-radius:30px;padding:8px 14px;font-size:.78rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;box-shadow:0 2px 12px rgba(0,0,0,.2);}
+#lang-toggle{background:transparent;color:var(--forest-mid);border:1px solid rgba(45,74,30,.2);border-radius:20px;padding:5px 12px;font-size:.75rem;font-weight:500;cursor:pointer;display:none;align-items:center;gap:4px;}
+#lang-toggle:hover{background:rgba(45,74,30,.06);}
 .lang-option{background:#fff;border:1px solid var(--card-border);border-radius:20px;padding:6px 12px;font-size:.78rem;cursor:pointer;font-weight:500;color:var(--forest);box-shadow:0 2px 8px rgba(0,0,0,.1);white-space:nowrap;}
 .lang-option:hover{background:var(--cream);}
-#translating-toast{display:none;position:fixed;bottom:130px;left:50%;transform:translateX(-50%);background:var(--bark);color:#fff;padding:8px 18px;border-radius:20px;font-size:.78rem;z-index:9999;}
+#translating-toast{display:none;position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--bark);color:#fff;padding:8px 18px;border-radius:20px;font-size:.78rem;z-index:9999;}
 
 /* ── NOTIF PERMISSION BANNER ─────────────────────────────────── */
 #notif-banner{display:none;background:var(--forest);color:#fff;padding:.75rem 1rem;text-align:center;font-size:.8rem;}
@@ -454,7 +458,7 @@ body.is-offline .section{padding-top:1.8rem;}
 <div id="expired-screen">
   <div class="expired-icon">🔒</div>
   <div class="expired-title">Acesso expirado</div>
-  <div class="expired-sub">O período de acesso terminou.<br/>Obrigado pela tua estadia na Casa do Gerês.<br/><br/>Esperamos voltar a receber-te em breve.</div>
+  <div class="expired-sub">O período de acesso terminou.<br/>Obrigado pela sua estadia na Casa do Gerês.<br/><br/>Esperamos voltar a receber-te em breve.</div>
 </div>
 
 <!-- SPLASH -->
@@ -474,7 +478,7 @@ body.is-offline .section{padding-top:1.8rem;}
   </div>
   <div class="hero-content">
     <div class="hero-label">Bem-vindo ao Gerês</div>
-    <h1 class="hero-title">A tua casa<br/>na natureza.</h1>
+    <h1 class="hero-title">A sua casa<br/>na natureza.</h1>
     <p class="hero-sub">O guia completo para uma estadia perfeita no coração do Parque Nacional.</p>
     <div class="hero-actions">
       <button class="btn-primary" onclick="goToApp()">Explorar</button>
@@ -503,12 +507,24 @@ body.is-offline .section{padding-top:1.8rem;}
   <div id="aviso-banner"><span id="aviso-banner-inner"></span></div>
 
   <!-- CASA -->
-  <div id="page-casa" class="page active" style="opacity:0;pointer-events:none;">
+  <div id="page-casa" class="page active">
     <div class="section">
-      <div class="section-header">
-        <div class="section-tag">A tua estadia</div>
+      <div class="section-header" style="position:relative;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div class="section-tag">A sua estadia</div>
+          <div style="position:relative;">
+            <button id="lang-toggle" onclick="toggleLangBar()">🌐 Idioma</button>
+            <div id="lang-bar">
+              <div class="lang-option" onclick="translateApp('en')">🇬🇧 English</div>
+              <div class="lang-option" onclick="translateApp('es')">🇪🇸 Español</div>
+              <div class="lang-option" onclick="translateApp('fr')">🇫🇷 Français</div>
+              <div class="lang-option" onclick="translateApp('de')">🇩🇪 Deutsch</div>
+              <div class="lang-option" onclick="translateApp('pt')">🇵🇹 Português</div>
+            </div>
+          </div>
+        </div>
         <h2 class="section-title">Casa do Gerês</h2>
-        <p class="section-sub">Bem-vindo. Tudo o que precisas para uma estadia inesquecível.</p>
+        <p class="section-sub">Bem-vindo. Tudo o que precisa para uma estadia inesquecível.</p>
       </div>
 
       <!-- Dias restantes badge -->
@@ -562,7 +578,7 @@ body.is-offline .section{padding-top:1.8rem;}
 
       <!-- Wi-Fi -->
       <div class="wifi-hero" onclick="showModal('m-wifi')">
-        <div class="wifi-net-label">Rede Wi-Fi · toca para copiar</div>
+        <div class="wifi-net-label">Rede Wi-Fi · toque para copiar</div>
         <div class="wifi-ssid">CasaGeres_5G</div>
         <div class="wifi-row">
           <span class="wifi-pass">natureza2026</span>
@@ -618,7 +634,7 @@ body.is-offline .section{padding-top:1.8rem;}
       <div class="section-header">
         <div class="section-tag">Pedidos &amp; extras</div>
         <h2 class="section-title">Serviços</h2>
-        <p class="section-sub">Tudo para tornar a tua estadia ainda mais confortável.</p>
+        <p class="section-sub">Tudo para tornar a sua estadia ainda mais confortável.</p>
       </div>
 
       <!-- Acordeão de serviços -->
@@ -848,7 +864,7 @@ body.is-offline .section{padding-top:1.8rem;}
   <div id="page-contacto" class="page">
     <div class="section">
       <div class="section-header">
-        <div class="section-tag">Fala connosco</div>
+        <div class="section-tag">Fale connosco</div>
         <h2 class="section-title">Contacto</h2>
         <p class="section-sub">Estamos sempre disponíveis para ajudar.</p>
       </div>
@@ -887,7 +903,7 @@ body.is-offline .section{padding-top:1.8rem;}
       <div class="block-label">Farmácias de turno</div>
       <a href="https://www.farmaciasdeservico.net/localidade/braga/terras_de_bouro" target="_blank" class="contact-link" style="text-decoration:none;margin-bottom:1.2rem;display:flex;">
         <div class="contact-icon" style="background:rgba(90,138,60,0.12);width:46px;height:46px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--forest)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
-        <div><div class="contact-label">Farmácias de serviço</div><div class="contact-sub">Clica para ver a farmácia de turno mais próxima</div></div>
+        <div><div class="contact-label">Farmácias de serviço</div><div class="contact-sub">Clique para ver a farmácia de turno mais próxima</div></div>
       </a>
       <div class="block-label">Redes sociais</div>
       <div class="card" style="margin-bottom:0.75rem;">
@@ -954,7 +970,7 @@ body.is-offline .section{padding-top:1.8rem;}
 <div class="modal-overlay" id="m-bicicletas" onclick="cm('m-bicicletas')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><img class="modal-img" src="https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=600&auto=format&fit=crop&q=75" alt="Bicicletas"/><div class="modal-title">Aluguer de bicicletas</div><div class="card" style="margin-bottom:0.6rem;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.9rem;font-weight:500;">Bicicleta de montanha</span><span class="chip">€12/dia</span></div><div style="font-size:0.78rem;color:var(--text-light);margin-top:4px;">21 velocidades · Capacete incluído</div></div><div class="card" style="margin-bottom:0.6rem;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.9rem;font-weight:500;">Bicicleta de estrada</span><span class="chip">€10/dia</span></div><div style="font-size:0.78rem;color:var(--text-light);margin-top:4px;">Ciclovia do rio Cávado</div></div><div class="card" style="margin-bottom:1rem;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.9rem;font-weight:500;">E-Bike elétrica</span><span class="chip">€20/dia</span></div><div style="font-size:0.78rem;color:var(--text-light);margin-top:4px;">Bateria 80 km · Carregamento incluído</div></div><button class="form-btn" onclick="pedidoOk('m-bicicletas')">Reservar via WhatsApp</button></div></div>
 <div class="modal-overlay" id="m-churrasco" onclick="cm('m-churrasco')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><img class="modal-img" src="churrasco-real.jpg" alt="Churrasqueira"/><div class="modal-title" data-api="churrasco_titulo">Churrasqueira</div><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">1. Preparação</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;" data-api="churrasco_prep">Carvão e acendalha no armário exterior. Utilizar no local designado no jardim.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">2. Utilização</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;" data-api="churrasco_uso">Grelha na prateleira inferior. Pinça e espátula no gancho à direita.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">3. Limpeza</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;" data-api="churrasco_limp">Aguardar arrefecimento. Cinzas no balde metálico. Grelha limpar com escova própria.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Utensílios disponíveis</div><div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-top:4px;"><span class="chip">Pinça</span><span class="chip">Garfo</span><span class="chip">Faca</span><span class="chip">Pratos</span><span class="chip">Extintor</span></div></div></div></div></div>
 <div class="modal-overlay" id="m-cozinha" onclick="cm('m-cozinha')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><img class="modal-img" src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&auto=format&fit=crop&q=75" alt="Cozinha"/><div class="modal-title" data-api="cozinha_titulo">Cozinha</div><div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem;"><span class="chip">Fogão a gás</span><span class="chip">Forno elétrico</span><span class="chip">Micro-ondas</span><span class="chip">Frigorífico</span><span class="chip">Nespresso</span><span class="chip">Torradeira</span><span class="chip">Máq. loiça</span></div><div class="card" style="margin-bottom:0.6rem;"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Máquina de café</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Cápsulas Nespresso no armário superior esquerdo.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Detergentes</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;" data-api="cozinha_det">Armário debaixo do lava-loiça. Pastilhas para máquina de loiça incluídas.</p></div></div></div>
-<div class="modal-overlay" id="m-feedback" onclick="cm('m-feedback')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">O teu feedback</div><p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:0.5rem;">A tua opinião ajuda-nos a melhorar.</p><div class="star-row" id="modal-stars"><button class="star-btn active" onclick="rateStar(1,'modal')">★</button><button class="star-btn active" onclick="rateStar(2,'modal')">★</button><button class="star-btn active" onclick="rateStar(3,'modal')">★</button><button class="star-btn active" onclick="rateStar(4,'modal')">★</button><button class="star-btn active" onclick="rateStar(5,'modal')">★</button></div><div class="form-stack"><textarea class="form-input" rows="4" placeholder="Conta-nos a tua experiência..."></textarea><input class="form-input" type="text" placeholder="Nome (opcional, ex: Família Silva)"/><button class="form-btn" onclick="submitFeedback()">Enviar</button></div></div></div>
+<div class="modal-overlay" id="m-feedback" onclick="cm('m-feedback')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">O teu feedback</div><p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:0.5rem;">A sua opinião ajuda-nos a melhorar.</p><div class="star-row" id="modal-stars"><button class="star-btn active" onclick="rateStar(1,'modal')">★</button><button class="star-btn active" onclick="rateStar(2,'modal')">★</button><button class="star-btn active" onclick="rateStar(3,'modal')">★</button><button class="star-btn active" onclick="rateStar(4,'modal')">★</button><button class="star-btn active" onclick="rateStar(5,'modal')">★</button></div><div class="form-stack"><textarea class="form-input" rows="4" placeholder="Conta-nos a tua experiência..."></textarea><input class="form-input" type="text" placeholder="Nome (opcional, ex: Família Silva)"/><button class="form-btn" onclick="submitFeedback()">Enviar</button></div></div></div>
 <div class="modal-overlay" id="m-qr" onclick="closeQR()"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Ler QR Code</div><p style="font-size:0.82rem;color:var(--text-light);margin-bottom:1rem;line-height:1.5;">Aponta a câmara para o QR code na entrada da Casa do Gerês.</p><div id="qr-video-wrap"><video id="qr-video" playsinline autoplay muted></video><div class="qr-frame"></div></div><div id="qr-result">A iniciar câmara...</div><button class="form-btn" style="margin-top:0.75rem;" onclick="closeQR()">Fechar câmara</button></div></div>
 
 <div class="modal-overlay" id="m-info" data-api-modal="m-info" onclick="cm('m-info')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle" data-modal="m-info"></div><div class="modal-title" data-api="info_titulo">Informações úteis</div><div id="boas-vindas-dynamic" style="font-size:0.88rem;color:var(--text-mid);line-height:1.8;"><p style="font-size:0.95rem;color:var(--text-mid);line-height:1.8;">Bem-vindo à Casa do Gerês.</p><p style="margin-top:0.75rem;">Queremos que a sua visita seja verdadeiramente inesquecível, envolvendo todos os seus sentidos.</p><p style="margin-top:0.75rem;">Em nome da família Pereira, desejamos-lhe uma excelente estadia!</p></div>
@@ -1104,7 +1120,7 @@ function requestNotifPermission() {
       if (navigator.serviceWorker.controller) {
         navigator.serviceWorker.ready.then(function(reg) {
           reg.showNotification('YAPP — Casa do Gerês', {
-            body: 'Notificações activadas. Vais receber avisos importantes durante a tua estadia.',
+            body: 'Notificações activadas. Vais receber avisos importantes durante a sua estadia.',
             icon: './favicon.svg'
           });
         });
@@ -1141,7 +1157,7 @@ function checkCheckoutNotif() {
     }
   }
   if (diff === 0) {
-    sendLocalNotif('Dia de check-out', 'Obrigado pela tua visita! Check-out até às 11h00.', null);
+    sendLocalNotif('Dia de check-out', 'Obrigado pela sua visita! Check-out até às 11h00.', null);
   }
 }
 
@@ -1237,42 +1253,58 @@ function restoreOriginalTexts() {
 function callTranslationAPI(texts, lang, cb) {
   var langNames = { en:'English', es:'Spanish', fr:'French', de:'German', it:'Italian' };
   var langName = langNames[lang] || lang;
-  // Batch in chunks of 50 to avoid token limits
-  var CHUNK = 50;
-  var allTranslated = new Array(texts.length);
+  // Use smaller chunks for reliability
+  var CHUNK = 30;
+  var allTranslated = texts.slice(); // start with originals as fallback
   var chunks = [];
   for (var i = 0; i < texts.length; i += CHUNK) chunks.push(i);
   var done = 0;
-  if (!chunks.length) { cb([]); return; }
-  chunks.forEach(function(startIdx) {
+  if (!chunks.length) { cb(allTranslated); return; }
+
+  function processChunk(startIdx) {
     var chunk = texts.slice(startIdx, startIdx + CHUNK);
     fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: 'You are a translator. Translate each item to ' + langName + '. Return ONLY a JSON array of translated strings, same order as input. No explanation, no markdown, just the JSON array.',
+        max_tokens: 2000,
+        system: 'Translate each string to ' + langName + '. Return ONLY a valid JSON array of strings. Same order and count as input. No markdown, no explanation.',
         messages: [{ role: 'user', content: JSON.stringify(chunk) }]
       })
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      var content = data.content && data.content[0] ? data.content[0].text : '[]';
       try {
-        var clean = content.replace(/```json|```/g,'').trim();
+        var raw = data.content && data.content[0] ? data.content[0].text : '';
+        var clean = raw.replace(/```json|```/g,'').trim();
         var translated = JSON.parse(clean);
-        translated.forEach(function(t, i) { allTranslated[startIdx + i] = t; });
-      } catch(e) { console.log('translation parse error', e); }
+        if (Array.isArray(translated)) {
+          translated.forEach(function(t, i) {
+            if (t) allTranslated[startIdx + i] = t;
+          });
+        }
+      } catch(e) { console.log('parse err:', e); }
       done++;
       if (done >= chunks.length) cb(allTranslated);
     })
     .catch(function(e) {
-      console.log('translation api error', e);
+      console.log('translation err:', e);
       done++;
       if (done >= chunks.length) cb(allTranslated);
     });
-  });
+  }
+
+  // Process chunks sequentially to avoid rate limits
+  function runNext(idx) {
+    if (idx >= chunks.length) return;
+    processChunk(chunks[idx]);
+    if (idx + 1 < chunks.length) setTimeout(function(){ runNext(idx+1); }, 500);
+  }
+  runNext(0);
 }
 
 window.addEventListener('DOMContentLoaded', function() {
@@ -1328,9 +1360,9 @@ function setTheme(c)  { document.getElementById('theme-meta').setAttribute('cont
 function goToApp() {
   document.getElementById('splash').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  setTimeout(function(){ var pc=document.getElementById('page-casa'); if(pc){pc.style.opacity='1';pc.style.pointerEvents='';} },50);
+  setTimeout(function(){ document.body.classList.add('app-ready'); }, 50);
   document.getElementById('bottom-nav').style.display = 'flex';
-  var lt=document.getElementById('lang-toggle'); if(lt) lt.style.display='flex';
+  var lt=document.getElementById('lang-toggle'); if(lt) lt.style.display='inline-flex';
   setTheme('#f5f0e8');
   calcSunset();
   checkFarewell();
@@ -2438,7 +2470,7 @@ function wDesc(c)  { if(c===0)return'Céu limpo';if(c<=2)return'Parcialmente nub
   <div class="lang-option" onclick="translateApp('de')">🇩🇪 Deutsch</div>
   <div class="lang-option" onclick="translateApp('pt')">🇵🇹 Português</div>
 </div>
-<button id="lang-toggle" onclick="toggleLangBar()" style="display:none;position:fixed;bottom:80px;right:12px;z-index:500;">🌐 Idioma</button>
+<button id="lang-toggle" onclick="toggleLangBar()" style="display:none;">🌐 Idioma</button>
 <div id="translating-toast">A traduzir...</div>
 
 <!-- ── POPUP: BOAS-VINDAS ──────────────────────────────────────── -->
@@ -2447,7 +2479,7 @@ function wDesc(c)  { if(c===0)return'Céu limpo';if(c<=2)return'Parcialmente nub
     <button class="popup-close" onclick="closePopup('popup-boasvindas')">✕</button>
     <div class="popup-icon">🌿</div>
     <div class="popup-title" id="popup-bv-titulo">Bem-vindo!</div>
-    <div class="popup-sub" id="popup-bv-texto">Esperamos que a tua estadia seja inesquecível.<br/>Explora a app para tudo o que precisas.</div>
+    <div class="popup-sub" id="popup-bv-texto">Esperamos que a sua estadia seja inesquecível.<br/>Explora a app para tudo o que precisa.</div>
     <button class="popup-btn" onclick="closePopup('popup-boasvindas');goToApp()">Começar a explorar</button>
   </div>
 </div>
@@ -2469,8 +2501,8 @@ function wDesc(c)  { if(c===0)return'Céu limpo';if(c<=2)return'Parcialmente nub
 <div class="popup-overlay" id="popup-despedida">
   <div class="popup-box">
     <div class="popup-icon">💚</div>
-    <div class="popup-title">Obrigado pela tua visita!</div>
-    <div class="popup-sub">Foi um prazer receber-te. A tua opinião é muito importante para nós e ajuda outros hóspedes a descobrir este espaço.</div>
+    <div class="popup-title">Obrigado pela sua visita!</div>
+    <div class="popup-sub">Foi um prazer receber-te. A sua opinião é muito importante para nós e ajuda outros hóspedes a descobrir este espaço.</div>
 
     <!-- Google Review -->
     <button class="popup-btn" id="btn-review" onclick="abrirReview()" style="display:flex;align-items:center;justify-content:center;gap:8px;">
