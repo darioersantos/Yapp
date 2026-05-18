@@ -392,6 +392,23 @@ body.aviso-active #meteo-full{padding-top:2.2rem;}
 /* ── FORM INPUT INSIDE POPUP ─────────────────────────────────── */
 .popup-box .form-input{width:100%;border:1px solid rgba(45,74,30,.2);border-radius:10px;padding:.75rem 1rem;font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--text-dark);background:#fff;outline:none;box-sizing:border-box;display:block;}
 .popup-box .form-input:focus{border-color:var(--forest-light);}
+
+/* ── OFFLINE BANNER ──────────────────────────────────────────── */
+#offline-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:9600;background:#c0392b;color:#fff;text-align:center;font-size:.78rem;padding:6px;font-weight:500;}
+body.is-offline #offline-banner{display:block;}
+body.is-offline .section{padding-top:1.8rem;}
+
+/* ── TRANSLATION BAR ─────────────────────────────────────────── */
+#lang-bar{display:none;position:fixed;bottom:70px;right:12px;z-index:500;flex-direction:column;gap:5px;align-items:flex-end;}
+#lang-bar.open{display:flex;}
+#lang-toggle{background:var(--forest);color:#fff;border:none;border-radius:30px;padding:8px 14px;font-size:.78rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;box-shadow:0 2px 12px rgba(0,0,0,.2);}
+.lang-option{background:#fff;border:1px solid var(--card-border);border-radius:20px;padding:6px 12px;font-size:.78rem;cursor:pointer;font-weight:500;color:var(--forest);box-shadow:0 2px 8px rgba(0,0,0,.1);white-space:nowrap;}
+.lang-option:hover{background:var(--cream);}
+#translating-toast{display:none;position:fixed;bottom:130px;left:50%;transform:translateX(-50%);background:var(--bark);color:#fff;padding:8px 18px;border-radius:20px;font-size:.78rem;z-index:9999;}
+
+/* ── NOTIF PERMISSION BANNER ─────────────────────────────────── */
+#notif-banner{display:none;background:var(--forest);color:#fff;padding:.75rem 1rem;text-align:center;font-size:.8rem;}
+#notif-banner button{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:20px;padding:4px 14px;font-size:.78rem;cursor:pointer;margin-left:8px;}
 </style>
 </head>
 <body>
@@ -471,6 +488,16 @@ body.aviso-active #meteo-full{padding-top:2.2rem;}
 
 <!-- APP -->
 <div id="app">
+
+  <!-- OFFLINE BANNER -->
+  <div id="offline-banner">Sem ligação à internet — a mostrar dados guardados</div>
+
+  <!-- NOTIF PERMISSION BANNER -->
+  <div id="notif-banner">
+    Activa notificações para receber avisos da casa
+    <button onclick="requestNotifPermission()">Activar</button>
+    <button onclick="document.getElementById('notif-banner').style.display='none'">✕</button>
+  </div>
 
   <!-- AVISO BANNER -->
   <div id="aviso-banner"><span id="aviso-banner-inner"></span></div>
@@ -1036,6 +1063,218 @@ function clearSession() { localStorage.removeItem(SESSION_KEY); }
 function isExpired(co) { return new Date() > new Date(co + 'T23:59:59'); }
 
 /* ═══ ARRANQUE ══════════════════════════════════ */
+// ═══════════════════════════════════════════════════════════════
+// SERVICE WORKER — Offline + Notificações
+// ═══════════════════════════════════════════════════════════════
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('./sw.js').then(function(reg) {
+      console.log('SW registado:', reg.scope);
+      // Check notif permission after SW ready
+      if ('Notification' in window && Notification.permission === 'default') {
+        setTimeout(function() {
+          var nb = document.getElementById('notif-banner');
+          if (nb) nb.style.display = 'block';
+        }, 5000);
+      }
+    }).catch(function(e) { console.log('SW erro:', e); });
+  });
+}
+
+// Offline/Online detection
+window.addEventListener('offline', function() {
+  document.body.classList.add('is-offline');
+});
+window.addEventListener('online', function() {
+  document.body.classList.remove('is-offline');
+  loadAPIData(); // refresh when back online
+});
+if (!navigator.onLine) document.body.classList.add('is-offline');
+
+// ─── NOTIFICAÇÕES ──────────────────────────────────────────────
+function requestNotifPermission() {
+  document.getElementById('notif-banner').style.display = 'none';
+  if (!('Notification' in window)) return;
+  Notification.requestPermission().then(function(perm) {
+    if (perm === 'granted') {
+      showToast('Notificações activadas!');
+      // Store permission in localStorage
+      try { localStorage.setItem('yapp_notif', '1'); } catch(e) {}
+      // Send welcome notification
+      if (navigator.serviceWorker.controller) {
+        navigator.serviceWorker.ready.then(function(reg) {
+          reg.showNotification('YAPP — Casa do Gerês', {
+            body: 'Notificações activadas. Vais receber avisos importantes durante a tua estadia.',
+            icon: './favicon.svg'
+          });
+        });
+      }
+    }
+  });
+}
+
+// Send local notification (called from backoffice via API aviso)
+function sendLocalNotif(title, body, url) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  navigator.serviceWorker.ready.then(function(reg) {
+    reg.showNotification(title || 'YAPP', {
+      body: body || '',
+      icon: './favicon.svg',
+      data: url ? { url: url } : {}
+    });
+  });
+}
+
+// Auto-trigger notif for checkout day
+function checkCheckoutNotif() {
+  var s = getSession();
+  if (!s || s.checkout === '2099-12-31') return;
+  if (Notification.permission !== 'granted') return;
+  var hoje = new Date(); hoje.setHours(0,0,0,0);
+  var co = new Date(s.checkout + 'T00:00:00');
+  var diff = Math.round((co - hoje) / 86400000);
+  if (diff === 1) {
+    var key = 'yapp_conotif_' + s.checkout;
+    if (!localStorage.getItem(key)) {
+      localStorage.setItem(key, '1');
+      sendLocalNotif('Amanhã é dia de check-out', 'Check-out até às 11h00. Vê a checklist de saída na app.', null);
+    }
+  }
+  if (diff === 0) {
+    sendLocalNotif('Dia de check-out', 'Obrigado pela tua visita! Check-out até às 11h00.', null);
+  }
+}
+
+// ─── TRADUÇÃO AUTÓNOMA ─────────────────────────────────────────
+var _originalTexts = null;
+var _currentLang = 'pt';
+
+function toggleLangBar() {
+  var lb = document.getElementById('lang-bar');
+  lb.classList.toggle('open');
+}
+
+function translateApp(targetLang) {
+  document.getElementById('lang-bar').classList.remove('open');
+  if (targetLang === 'pt') {
+    restoreOriginalTexts();
+    _currentLang = 'pt';
+    return;
+  }
+  if (targetLang === _currentLang) return;
+  // Save original texts first time
+  if (!_originalTexts) saveOriginalTexts();
+  _currentLang = targetLang;
+  // Show loading
+  var toast = document.getElementById('translating-toast');
+  if (toast) toast.style.display = 'block';
+  // Collect all text nodes to translate
+  var elements = collectTranslatableElements();
+  var texts = elements.map(function(el) { return el._origText; });
+  if (!texts.length) { if (toast) toast.style.display = 'none'; return; }
+  // Batch translate via Claude API
+  callTranslationAPI(texts, targetLang, function(translated) {
+    if (toast) toast.style.display = 'none';
+    if (!translated) return;
+    elements.forEach(function(el, i) {
+      if (translated[i]) el.textContent = translated[i];
+    });
+    showToast('Traduzido para ' + targetLang.toUpperCase());
+  });
+}
+
+function saveOriginalTexts() {
+  var app = document.getElementById('app');
+  if (!app) return;
+  _originalTexts = [];
+  var walker = document.createTreeWalker(app, NodeFilter.SHOW_TEXT, {
+    acceptNode: function(node) {
+      var p = node.parentElement;
+      if (!p) return NodeFilter.FILTER_REJECT;
+      var tag = p.tagName.toLowerCase();
+      if (['script','style','input','textarea'].includes(tag)) return NodeFilter.FILTER_REJECT;
+      var txt = node.textContent.trim();
+      if (!txt || txt.length < 3) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  var node;
+  while (node = walker.nextNode()) {
+    node._origText = node.textContent;
+    _originalTexts.push({ node: node, text: node.textContent });
+  }
+}
+
+function collectTranslatableElements() {
+  var app = document.getElementById('app');
+  if (!app) return [];
+  var results = [];
+  var walker = document.createTreeWalker(app, NodeFilter.SHOW_TEXT, {
+    acceptNode: function(node) {
+      var p = node.parentElement;
+      if (!p) return NodeFilter.FILTER_REJECT;
+      var tag = p.tagName.toLowerCase();
+      if (['script','style','input','textarea'].includes(tag)) return NodeFilter.FILTER_REJECT;
+      var txt = node.textContent.trim();
+      if (!txt || txt.length < 3) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  var node;
+  while (node = walker.nextNode()) {
+    if (!node._origText) node._origText = node.textContent;
+    results.push(node);
+  }
+  return results;
+}
+
+function restoreOriginalTexts() {
+  if (!_originalTexts) return;
+  _originalTexts.forEach(function(item) { item.node.textContent = item.text; });
+  showToast('Português restaurado');
+}
+
+function callTranslationAPI(texts, lang, cb) {
+  var langNames = { en:'English', es:'Spanish', fr:'French', de:'German', it:'Italian' };
+  var langName = langNames[lang] || lang;
+  // Batch in chunks of 50 to avoid token limits
+  var CHUNK = 50;
+  var allTranslated = new Array(texts.length);
+  var chunks = [];
+  for (var i = 0; i < texts.length; i += CHUNK) chunks.push(i);
+  var done = 0;
+  if (!chunks.length) { cb([]); return; }
+  chunks.forEach(function(startIdx) {
+    var chunk = texts.slice(startIdx, startIdx + CHUNK);
+    fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: 'You are a translator. Translate each item to ' + langName + '. Return ONLY a JSON array of translated strings, same order as input. No explanation, no markdown, just the JSON array.',
+        messages: [{ role: 'user', content: JSON.stringify(chunk) }]
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var content = data.content && data.content[0] ? data.content[0].text : '[]';
+      try {
+        var clean = content.replace(/```json|```/g,'').trim();
+        var translated = JSON.parse(clean);
+        translated.forEach(function(t, i) { allTranslated[startIdx + i] = t; });
+      } catch(e) { console.log('translation parse error', e); }
+      done++;
+      if (done >= chunks.length) cb(allTranslated);
+    })
+    .catch(function(e) {
+      console.log('translation api error', e);
+      done++;
+      if (done >= chunks.length) cb(allTranslated);
+    });
+  });
+}
+
 window.addEventListener('DOMContentLoaded', function() {
   // Load live data from Google Sheets if API configured
   if (API_URL) { loadAPIData(); }
@@ -1091,6 +1330,7 @@ function goToApp() {
   document.getElementById('app').style.display = 'block';
   setTimeout(function(){ var pc=document.getElementById('page-casa'); if(pc){pc.style.opacity='1';pc.style.pointerEvents='';} },50);
   document.getElementById('bottom-nav').style.display = 'flex';
+  var lt=document.getElementById('lang-toggle'); if(lt) lt.style.display='flex';
   setTheme('#f5f0e8');
   calcSunset();
   checkFarewell();
@@ -1103,6 +1343,7 @@ function goToApp() {
   showBoasVindasPopup();
   checkCheckoutAlert();
   checkDespedidaPopup();
+  checkCheckoutNotif();
   scheduleSugestao();
 }
 
@@ -1604,6 +1845,27 @@ function applyConfig(c) {
   if (c.tema) applyTheme(c.tema);
 
   // Aviso banner — usa o elemento fixo já no HTML
+  // Check for pending notification from backoffice
+  if (c.notif_ativo === 'true' && c.notif_titulo && c.notif_ts) {
+    var lastSeen = localStorage.getItem('yapp_notif_seen');
+    if (lastSeen !== c.notif_ts) {
+      var s = getSession();
+      var dest = c.notif_dest || 'all';
+      var shouldShow = dest === 'all' ||
+        (dest === 'custom' && s && s.user === c.notif_user);
+      if (shouldShow) {
+        localStorage.setItem('yapp_notif_seen', c.notif_ts);
+        setTimeout(function() {
+          sendLocalNotif(c.notif_titulo, c.notif_msg, c.notif_url || null);
+          // Also show as in-app toast if not using push
+          if (!('Notification' in window) || Notification.permission !== 'granted') {
+            showToast(c.notif_titulo + ': ' + c.notif_msg);
+          }
+        }, 2000);
+      }
+    }
+  }
+
   var banner = document.getElementById('aviso-banner');
   var inner  = document.getElementById('aviso-banner-inner');
   if (banner) {
@@ -2168,6 +2430,17 @@ function wEmoji(c) {
 }
 function wDesc(c)  { if(c===0)return'Céu limpo';if(c<=2)return'Parcialmente nublado';if(c===3)return'Nublado';if(c<=49)return'Nevoeiro';if(c<=59)return'Chuviscos';if(c<=69)return'Chuva';if(c<=79)return'Neve';if(c<=99)return'Trovoada';return'Variável'; }
 </script>
+<!-- ── LANG BAR ──────────────────────────────────────────────── -->
+<div id="lang-bar">
+  <div class="lang-option" onclick="translateApp('en')">🇬🇧 English</div>
+  <div class="lang-option" onclick="translateApp('es')">🇪🇸 Español</div>
+  <div class="lang-option" onclick="translateApp('fr')">🇫🇷 Français</div>
+  <div class="lang-option" onclick="translateApp('de')">🇩🇪 Deutsch</div>
+  <div class="lang-option" onclick="translateApp('pt')">🇵🇹 Português</div>
+</div>
+<button id="lang-toggle" onclick="toggleLangBar()" style="display:none;position:fixed;bottom:80px;right:12px;z-index:500;">🌐 Idioma</button>
+<div id="translating-toast">A traduzir...</div>
+
 <!-- ── POPUP: BOAS-VINDAS ──────────────────────────────────────── -->
 <div class="popup-overlay" id="popup-boasvindas">
   <div class="popup-box">
