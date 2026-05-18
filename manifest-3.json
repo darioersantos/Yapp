@@ -1,0 +1,32 @@
+{
+  "name": "Casa do Ger\u00eas",
+  "short_name": "Casa do Ger\u00eas",
+  "description": "Guia digital para h\u00f3spedes",
+  "start_url": "./casa-do-geres-yapp.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f1908",
+  "theme_color": "#0f1908",
+  "orientation": "portrait",
+  "lang": "pt",
+  "icons": [
+    {
+      "src": "apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-180.png",
+      "type": "image/png",
+      "sizes": "180x180",
+      "purpose": "any"
+    }
+  ]
+}
