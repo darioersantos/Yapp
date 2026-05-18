@@ -1,0 +1,15 @@
+{
+  "name": "Casa do Gerês",
+  "short_name": "Casa do Gerês",
+  "description": "Guia digital para hóspedes",
+  "start_url": "./casa-do-geres-yapp.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f1908",
+  "theme_color": "#0f1908",
+  "orientation": "portrait",
+  "lang": "pt",
+  "icons": [
+    { "src": "favicon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any maskable" }
+  ]
+}

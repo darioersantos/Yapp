@@ -1,0 +1,15 @@
+{
+  "name": "YAPP Backoffice",
+  "short_name": "YAPP Admin",
+  "description": "Painel de administração YAPP",
+  "start_url": "./yapp-backoffice.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#1a3a0e",
+  "theme_color": "#1a3a0e",
+  "orientation": "portrait",
+  "lang": "pt",
+  "icons": [
+    { "src": "favicon-backoffice.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any maskable" }
+  ]
+}
