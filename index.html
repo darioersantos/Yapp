@@ -1294,48 +1294,49 @@ function callTranslationAPI(texts, lang, cb) {
   var allTranslated = texts.slice();
   if (!texts.length) { cb(allTranslated); return; }
 
-  var BATCH = 8;
-  var batches = [];
-  for (var i = 0; i < texts.length; i += BATCH) {
-    batches.push({ start: i, items: texts.slice(i, i + BATCH) });
+  // Translate one by one via script injection (no CORS)
+  var idx = 0;
+
+  function next() {
+    if (idx >= texts.length) { cb(allTranslated); return; }
+    var i = idx++;
+    var text = texts[i];
+    if (!text || text.trim().length < 2) { next(); return; }
+
+    var cbName = '__gtrans_' + Date.now() + '_' + i;
+    var timer;
+
+    window[cbName] = function(data) {
+      clearTimeout(timer);
+      window[cbName] = null;
+      var sc = document.getElementById(cbName);
+      if (sc) sc.parentNode.removeChild(sc);
+      try {
+        // data[0][0][0] is the translated text
+        if (data && data[0] && data[0][0] && data[0][0][0]) {
+          allTranslated[i] = data[0][0][0];
+        }
+      } catch(e) {}
+      setTimeout(next, 80);
+    };
+
+    timer = setTimeout(function() {
+      window[cbName] = null;
+      var sc = document.getElementById(cbName);
+      if (sc) sc.parentNode.removeChild(sc);
+      setTimeout(next, 80);
+    }, 3000);
+
+    var script = document.createElement('script');
+    script.id = cbName;
+    script.src = 'https://translate.googleapis.com/translate_a/single'
+      + '?client=gtx&sl=pt&tl=' + lang
+      + '&dt=t&q=' + encodeURIComponent(text)
+      + '&cb=' + cbName;
+    document.head.appendChild(script);
   }
-  var doneBatches = 0;
 
-  batches.forEach(function(batch, bi) {
-    setTimeout(function() {
-      // Google Translate — works in browsers, no API key needed
-      var qParams = batch.items.map(function(t) {
-        return 'q=' + encodeURIComponent(t);
-      }).join('&');
-      var url = 'https://translate.googleapis.com/translate_a/t?client=gtx&sl=pt&tl='
-        + lang + '&' + qParams;
-
-      fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } })
-        .then(function(r) {
-          if (!r.ok) throw new Error('HTTP ' + r.status);
-          return r.json();
-        })
-        .then(function(data) {
-          try {
-            // Response format: ["translated1","translated2"] or [["translated1","orig1"],...]
-            var arr = Array.isArray(data) ? data : [];
-            arr.forEach(function(item, i) {
-              var val = '';
-              if (typeof item === 'string') val = item;
-              else if (Array.isArray(item)) val = item[0] || '';
-              if (val.trim()) allTranslated[batch.start + i] = val.trim();
-            });
-          } catch(e) { console.warn('parse:', e, data); }
-          doneBatches++;
-          if (doneBatches >= batches.length) cb(allTranslated);
-        })
-        .catch(function(e) {
-          console.warn('translate batch', bi, 'failed:', e.message);
-          doneBatches++;
-          if (doneBatches >= batches.length) cb(allTranslated);
-        });
-    }, bi * 500);
-  });
+  next();
 }
 
 window.addEventListener('DOMContentLoaded', function() {
