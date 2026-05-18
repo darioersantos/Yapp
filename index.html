@@ -411,8 +411,10 @@ body.is-offline .section{padding-top:1.8rem;}
 #translating-toast{display:none;position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--bark);color:#fff;padding:8px 18px;border-radius:20px;font-size:.78rem;z-index:9999;}
 
 /* ── NOTIF PERMISSION BANNER ─────────────────────────────────── */
-#notif-banner{display:none;background:var(--forest);color:#fff;padding:.75rem 1rem;text-align:center;font-size:.8rem;}
+#notif-banner{display:none;background:var(--forest);color:#fff;padding:.75rem 1rem;text-align:center;font-size:.8rem;position:fixed;left:0;right:0;z-index:9400;top:0;}
 #notif-banner button{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:20px;padding:4px 14px;font-size:.78rem;cursor:pointer;margin-left:8px;}
+/* When aviso active, push notif banner below it */
+body.aviso-active #notif-banner{top:2.2rem;}
 </style>
 </head>
 <body>
@@ -1171,31 +1173,69 @@ function toggleLangBar() {
 }
 
 function translateApp(targetLang) {
-  document.getElementById('lang-bar').classList.remove('open');
+  var lb = document.getElementById('lang-bar');
+  if (lb) lb.classList.remove('open');
+  
   if (targetLang === 'pt') {
     restoreOriginalTexts();
     _currentLang = 'pt';
+    showToast('Português restaurado');
     return;
   }
   if (targetLang === _currentLang) return;
-  // Save original texts first time
-  if (!_originalTexts) saveOriginalTexts();
   _currentLang = targetLang;
-  // Show loading
+
+  var langLabels = { en:'English', es:'Español', fr:'Français', de:'Deutsch' };
   var toast = document.getElementById('translating-toast');
-  if (toast) { toast.style.display = 'block'; toast.textContent = 'A traduzir para ' + targetLang.toUpperCase() + '...'; }
-  // Collect all text nodes to translate
-  var elements = collectTranslatableElements();
-  var texts = elements.map(function(el) { return el._origText; });
-  if (!texts.length) { if (toast) toast.style.display = 'none'; return; }
-  // Batch translate via Claude API
+  if (toast) { toast.style.display = 'block'; toast.textContent = 'A traduzir... aguarde'; }
+  console.log('[YAPP] Translating', targets.length, 'elements to', targetLang, '| sample:', texts.slice(0,3));
+
+  // Save originals on first translation
+  if (!_originalTexts) saveOriginalTexts();
+
+  // Collect SHORT visible text strings only (labels, titles, descriptions)
+  var targets = [];
+  var selectors = [
+    '.section-tag', '.section-title', '.section-sub',
+    '.svc-card-label', '.svc-card-sub', '.acc-header-label', '.acc-header-sub',
+    '.modal-title', '.card p', '.card div[style*="font-weight"]',
+    '.contact-label', '.contact-sub', '.chip',
+    '.fc-name', '.fc-text', '.nav-btn-label',
+    '.hero-label', '.hero-sub', '.btn-primary',
+    '.popup-title', '.popup-sub', '.popup-btn', '.popup-btn-sec',
+    '.slider-card-type', '.slider-card-title',
+    '.img-card-tag', '.img-card-title', '.img-card-sub',
+    '.block-label', '.sponsor-badge', '.sponsor-name', '.sponsor-cta',
+    '.section-divider-label', '.acc-inner p', '.acc-inner li',
+    'h2.section-title', '#expired-sub', '.expired-title'
+  ];
+
+  selectors.forEach(function(sel) {
+    document.querySelectorAll(sel).forEach(function(el) {
+      var txt = el.textContent.trim();
+      if (txt && txt.length > 1 && txt.length < 200 && !el._translating) {
+        el._translating = true;
+        if (!el._origText) el._origText = txt;
+        targets.push(el);
+      }
+    });
+  });
+  targets.forEach(function(el) { el._translating = false; });
+
+  if (!targets.length) {
+    if (toast) toast.style.display = 'none';
+    showToast('Nada para traduzir');
+    return;
+  }
+
+  var texts = targets.map(function(el) { return el._origText || el.textContent.trim(); });
+
   callTranslationAPI(texts, targetLang, function(translated) {
     if (toast) toast.style.display = 'none';
-    if (!translated) return;
-    elements.forEach(function(el, i) {
-      if (translated[i]) el.textContent = translated[i];
+    targets.forEach(function(el, i) {
+      if (translated[i] && translated[i].trim()) el.textContent = translated[i];
     });
-    showToast('Traduzido para ' + targetLang.toUpperCase());
+    showToast('Traduzido para ' + (langLabels[targetLang]||targetLang) + ' ✓');
   });
 }
 
@@ -1251,52 +1291,51 @@ function restoreOriginalTexts() {
 }
 
 function callTranslationAPI(texts, lang, cb) {
-  // Use MyMemory free translation API — no CORS issues, no key needed
   var allTranslated = texts.slice();
-  var CHUNK = 5; // MyMemory limit per request
-  var chunks = [];
-  for (var i = 0; i < texts.length; i += CHUNK) chunks.push(i);
-  var done = 0;
-  if (!chunks.length) { cb(allTranslated); return; }
+  if (!texts.length) { cb(allTranslated); return; }
 
-  function processChunk(startIdx) {
-    var chunk = texts.slice(startIdx, Math.min(startIdx + CHUNK, texts.length));
-    // Join with separator, translate as block
-    var SEP = ' ||| ';
-    var combined = chunk.join(SEP);
-    var url = 'https://api.mymemory.translated.net/get?q='
-      + encodeURIComponent(combined)
-      + '&langpair=pt|' + lang
-      + '&de=geral@yapp.pt';
-
-    fetch(url)
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        try {
-          var translated = data.responseData.translatedText;
-          var parts = translated.split(SEP);
-          parts.forEach(function(t, i) {
-            if (t && t.trim()) allTranslated[startIdx + i] = t.trim();
-          });
-        } catch(e) { console.log('translation parse:', e); }
-        done++;
-        if (done >= chunks.length) cb(allTranslated);
-      })
-      .catch(function() {
-        done++;
-        if (done >= chunks.length) cb(allTranslated);
-      });
+  var BATCH = 8;
+  var batches = [];
+  for (var i = 0; i < texts.length; i += BATCH) {
+    batches.push({ start: i, items: texts.slice(i, i + BATCH) });
   }
+  var doneBatches = 0;
 
-  // Sequential with delay to respect rate limits
-  function runNext(idx) {
-    if (idx >= chunks.length) return;
+  batches.forEach(function(batch, bi) {
     setTimeout(function() {
-      processChunk(chunks[idx]);
-      runNext(idx + 1);
-    }, idx * 300);
-  }
-  runNext(0);
+      // Google Translate — works in browsers, no API key needed
+      var qParams = batch.items.map(function(t) {
+        return 'q=' + encodeURIComponent(t);
+      }).join('&');
+      var url = 'https://translate.googleapis.com/translate_a/t?client=gtx&sl=pt&tl='
+        + lang + '&' + qParams;
+
+      fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } })
+        .then(function(r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
+        .then(function(data) {
+          try {
+            // Response format: ["translated1","translated2"] or [["translated1","orig1"],...]
+            var arr = Array.isArray(data) ? data : [];
+            arr.forEach(function(item, i) {
+              var val = '';
+              if (typeof item === 'string') val = item;
+              else if (Array.isArray(item)) val = item[0] || '';
+              if (val.trim()) allTranslated[batch.start + i] = val.trim();
+            });
+          } catch(e) { console.warn('parse:', e, data); }
+          doneBatches++;
+          if (doneBatches >= batches.length) cb(allTranslated);
+        })
+        .catch(function(e) {
+          console.warn('translate batch', bi, 'failed:', e.message);
+          doneBatches++;
+          if (doneBatches >= batches.length) cb(allTranslated);
+        });
+    }, bi * 500);
+  });
 }
 
 window.addEventListener('DOMContentLoaded', function() {
@@ -2462,7 +2501,6 @@ function wDesc(c)  { if(c===0)return'Céu limpo';if(c<=2)return'Parcialmente nub
   <div class="lang-option" onclick="translateApp('de')">🇩🇪 Deutsch</div>
   <div class="lang-option" onclick="translateApp('pt')">🇵🇹 Português</div>
 </div>
-<button id="lang-toggle" onclick="toggleLangBar()" style="display:none;">🌐 Idioma</button>
 <div id="translating-toast">A traduzir...</div>
 
 <!-- ── POPUP: BOAS-VINDAS ──────────────────────────────────────── -->
