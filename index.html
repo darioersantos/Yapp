@@ -1183,7 +1183,7 @@ function translateApp(targetLang) {
   _currentLang = targetLang;
   // Show loading
   var toast = document.getElementById('translating-toast');
-  if (toast) toast.style.display = 'block';
+  if (toast) { toast.style.display = 'block'; toast.textContent = 'A traduzir para ' + targetLang.toUpperCase() + '...'; }
   // Collect all text nodes to translate
   var elements = collectTranslatableElements();
   var texts = elements.map(function(el) { return el._origText; });
@@ -1251,58 +1251,50 @@ function restoreOriginalTexts() {
 }
 
 function callTranslationAPI(texts, lang, cb) {
-  var langNames = { en:'English', es:'Spanish', fr:'French', de:'German', it:'Italian' };
-  var langName = langNames[lang] || lang;
-  // Use smaller chunks for reliability
-  var CHUNK = 30;
-  var allTranslated = texts.slice(); // start with originals as fallback
+  // Use MyMemory free translation API — no CORS issues, no key needed
+  var allTranslated = texts.slice();
+  var CHUNK = 5; // MyMemory limit per request
   var chunks = [];
   for (var i = 0; i < texts.length; i += CHUNK) chunks.push(i);
   var done = 0;
   if (!chunks.length) { cb(allTranslated); return; }
 
   function processChunk(startIdx) {
-    var chunk = texts.slice(startIdx, startIdx + CHUNK);
-    fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        system: 'Translate each string to ' + langName + '. Return ONLY a valid JSON array of strings. Same order and count as input. No markdown, no explanation.',
-        messages: [{ role: 'user', content: JSON.stringify(chunk) }]
-      })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      try {
-        var raw = data.content && data.content[0] ? data.content[0].text : '';
-        var clean = raw.replace(/```json|```/g,'').trim();
-        var translated = JSON.parse(clean);
-        if (Array.isArray(translated)) {
-          translated.forEach(function(t, i) {
-            if (t) allTranslated[startIdx + i] = t;
+    var chunk = texts.slice(startIdx, Math.min(startIdx + CHUNK, texts.length));
+    // Join with separator, translate as block
+    var SEP = ' ||| ';
+    var combined = chunk.join(SEP);
+    var url = 'https://api.mymemory.translated.net/get?q='
+      + encodeURIComponent(combined)
+      + '&langpair=pt|' + lang
+      + '&de=geral@yapp.pt';
+
+    fetch(url)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        try {
+          var translated = data.responseData.translatedText;
+          var parts = translated.split(SEP);
+          parts.forEach(function(t, i) {
+            if (t && t.trim()) allTranslated[startIdx + i] = t.trim();
           });
-        }
-      } catch(e) { console.log('parse err:', e); }
-      done++;
-      if (done >= chunks.length) cb(allTranslated);
-    })
-    .catch(function(e) {
-      console.log('translation err:', e);
-      done++;
-      if (done >= chunks.length) cb(allTranslated);
-    });
+        } catch(e) { console.log('translation parse:', e); }
+        done++;
+        if (done >= chunks.length) cb(allTranslated);
+      })
+      .catch(function() {
+        done++;
+        if (done >= chunks.length) cb(allTranslated);
+      });
   }
 
-  // Process chunks sequentially to avoid rate limits
+  // Sequential with delay to respect rate limits
   function runNext(idx) {
     if (idx >= chunks.length) return;
-    processChunk(chunks[idx]);
-    if (idx + 1 < chunks.length) setTimeout(function(){ runNext(idx+1); }, 500);
+    setTimeout(function() {
+      processChunk(chunks[idx]);
+      runNext(idx + 1);
+    }, idx * 300);
   }
   runNext(0);
 }
