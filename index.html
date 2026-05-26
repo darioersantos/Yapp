@@ -426,6 +426,13 @@ body.aviso-active #notif-banner{top:2.2rem;}
   <div class="login-leaf" style="bottom:-60px;left:-50px;transform:rotate(140deg);">🌿</div>
   <div class="login-logo">Casa do Gerês</div>
   <div class="login-sub">Guia do Hóspede</div>
+
+  <!-- DEMO STAMP -->
+  <div style="background:rgba(168,201,122,0.12);border:1.5px solid rgba(168,201,122,0.35);border-radius:12px;padding:.9rem 1.2rem;width:100%;max-width:340px;margin-bottom:1rem;text-align:center;">
+    <div style="font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#a8c97a;margin-bottom:.3rem;">Versão demonstração</div>
+    <div style="font-size:.82rem;color:rgba(255,255,255,.7);line-height:1.5;">Clique em <strong style="color:#a8c97a;">Entrar</strong> sem preencher nada para explorar a app completa</div>
+  </div>
+
   <div class="login-box">
     <div class="login-field">
       <label class="login-label">Utilizador</label>
@@ -438,7 +445,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
     <button class="login-btn" onclick="doLogin()">Entrar</button>
     <div class="login-error" id="login-error"></div>
   </div>
-  <p style="font-size:0.72rem;color:rgba(255,255,255,0.25);margin-top:2rem;text-align:center;">Credenciais fornecidas pelo proprietário</p>
+  <p style="font-size:0.72rem;color:rgba(255,255,255,0.25);margin-top:2rem;text-align:center;">App personalizada para cada alojamento · <a href="mailto:geral@yapp.pt" style="color:rgba(168,201,122,0.6);text-decoration:none;">geral@yapp.pt</a></p>
   <div style="display:flex;align-items:center;gap:12px;margin-top:1.2rem;">
     <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
     <div style="font-size:0.72rem;color:rgba(255,255,255,0.3);">ou</div>
@@ -1360,23 +1367,40 @@ window.addEventListener('DOMContentLoaded', function() {
 
 /* ═══ LOGIN ═════════════════════════════════════ */
 function doLogin() {
-  var user = document.getElementById('login-user').value.trim().toLowerCase();
-  var pass = document.getElementById('login-pass').value;
-  var errEl = document.getElementById('login-error');
+  var user = (document.getElementById('login-user').value || '').trim().toLowerCase();
+  var pass = (document.getElementById('login-pass').value || '').trim();
+
+  // DEMO MODE — enter without credentials
+  if (!user && !pass) {
+    setSession({ user: 'demo', pass: '', checkout: '2099-12-31', name: 'Visitante' });
+    hideLogin();
+    goToApp();
+    return;
+  }
+
+  // Normal login
+  if (!GUESTS[user]) {
+    var err = document.getElementById('login-error');
+    if (err) err.textContent = 'Utilizador não encontrado.';
+    return;
+  }
   var g = GUESTS[user];
-  if (!g || g.pass !== pass) {
-    errEl.textContent = 'Utilizador ou código incorretos.';
-    document.getElementById('login-pass').value = '';
+  if (g.pass && g.pass !== pass) {
+    var err2 = document.getElementById('login-error');
+    if (err2) err2.textContent = 'Código de acesso incorrecto.';
     return;
   }
-  saveSession(user, g.checkout);
-  if (isExpired(g.checkout)) {
-    showExpired();
+  // Check expiry
+  var today = new Date(); today.setHours(0,0,0,0);
+  var co = new Date(g.checkout + 'T00:00:00');
+  if (co < today) {
+    var err3 = document.getElementById('login-error');
+    if (err3) err3.textContent = 'Acesso expirado.';
     return;
   }
+  setSession({ user: user, pass: pass, checkout: g.checkout, name: g.name || '' });
   hideLogin();
-  showSplash();
-  loadWeather();
+  goToApp();
 }
 
 function hideLogin()  { document.getElementById('login-screen').style.display = 'none'; }
