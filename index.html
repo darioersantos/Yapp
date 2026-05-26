@@ -1195,11 +1195,76 @@ function translateApp(lang){
 
   // Collect elements once
   if(_tE.length===0){
-    var sels='.section-tag,.section-title,.section-sub,.svc-card-label,.svc-card-sub,.acc-header-label,.acc-header-sub,.modal-title,.block-label,.contact-label,.contact-sub,.nav-btn-label,.hero-label,.hero-sub,.img-card-tag,.img-card-title,.img-card-sub,.slider-card-title,.sponsor-name,.sponsor-badge,.sponsor-cta,.popup-title,.popup-sub';
+    var seen = new Set();
+
+    // 1. CSS selectors for known labelled elements
+    var sels=[
+      '.section-tag','.section-title','.section-sub','.block-label','.nav-pill',
+      '.hero-label','.hero-sub','.hero-title','.logo-name','.login-sub',
+      '.svc-card-label','.svc-card-sub',
+      '.acc-header-label','.acc-header-sub',
+      '.modal-title',
+      '.info-cell-label','.info-cell-val',
+      '.wifi-net-label',
+      '.contact-label','.contact-sub','.emg-label',
+      '.sponsor-name','.sponsor-badge','.sponsor-cta',
+      '.img-card-tag','.img-card-title','.img-card-sub','.map-cta',
+      '.slider-card-type','.slider-card-title','.slider-card-dist',
+      '.popup-title','.popup-sub','.popup-btn','.popup-btn-sec',
+      '.meteo-stat-label','.weather-pill','.fc-t','.fc-dow',
+      '.yapp-footer-brand','.yapp-footer-sub',
+      '.chip','.dist-badge',
+      '.expired-title','.expired-sub',
+      '.btn-primary','.form-btn','.social-btn',
+      '.suggestion-tag','.fc-icon-txt'
+    ].join(',');
+
     document.querySelectorAll(sels).forEach(function(el){
-      var t=el.textContent.trim();
-      if(t && t.length>1) _tE.push({el:el,orig:t});
+      var t = el.textContent.trim();
+      if(t && t.length > 1 && !seen.has(el)){
+        seen.add(el);
+        _tE.push({el:el, orig:t});
+      }
     });
+
+    // 2. TreeWalker — catches ALL remaining text nodes in #app
+    // (acc-inner paragraphs, modal paragraphs, card paragraphs, etc.)
+    var skipTags = new Set(['script','style','input','textarea','select','button']);
+    var skipClasses = new Set(['wifi-pass','copy-btn','login-input','form-input',
+                               'star-btn','check-box','rating','info-cell-val']);
+
+    var walker = document.createTreeWalker(
+      document.getElementById('app') || document.body,
+      NodeFilter.SHOW_ELEMENT,
+      {acceptNode: function(node){
+        // Skip invisible, interactive and already-captured elements
+        if(seen.has(node)) return NodeFilter.FILTER_REJECT;
+        var tag = node.tagName.toLowerCase();
+        if(skipTags.has(tag)) return NodeFilter.FILTER_REJECT;
+        // Only leaf-ish nodes (direct text, no complex children)
+        var hasOnlyText = true;
+        for(var i=0; i<node.childNodes.length; i++){
+          if(node.childNodes[i].nodeType === 1){ hasOnlyText = false; break; }
+        }
+        if(!hasOnlyText) return NodeFilter.FILTER_SKIP;
+        var cls = (node.className||'').split(' ');
+        for(var c=0; c<cls.length; c++){
+          if(skipClasses.has(cls[c])) return NodeFilter.FILTER_REJECT;
+        }
+        var t = node.textContent.trim();
+        if(!t || t.length < 2) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }}
+    );
+
+    var node;
+    while(node = walker.nextNode()){
+      var t = node.textContent.trim();
+      if(t && t.length > 1 && !seen.has(node)){
+        seen.add(node);
+        _tE.push({el:node, orig:t});
+      }
+    }
   }
 
   if(_tE.length===0){ showToast('Sem textos para traduzir'); return; }
