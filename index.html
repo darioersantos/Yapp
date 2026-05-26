@@ -1164,179 +1164,137 @@ function checkCheckoutNotif() {
 }
 
 // ─── TRADUÇÃO AUTÓNOMA ─────────────────────────────────────────
-var _originalTexts = null;
-var _currentLang = 'pt';
+
+// ═══════════════════════════════════════════════════════════════
+// TRADUÇÃO — versão limpa
+// Usa Google Translate JSONP (sem CORS, sem API key)
+// ═══════════════════════════════════════════════════════════════
+var _origCache = {};   // {elemento: texto original}
+var _activeLang = 'pt';
 
 function toggleLangBar() {
   var lb = document.getElementById('lang-bar');
+  if (!lb) return;
   lb.classList.toggle('open');
 }
 
-function translateApp(targetLang) {
+function translateApp(lang) {
+  // Fecha o menu
   var lb = document.getElementById('lang-bar');
   if (lb) lb.classList.remove('open');
-  
-  if (targetLang === 'pt') {
-    restoreOriginalTexts();
-    _currentLang = 'pt';
-    showToast('Português restaurado');
+
+  // Volta ao português
+  if (lang === 'pt') {
+    Object.keys(_origCache).forEach(function(uid) {
+      var el = document.querySelector('[data-tuid="' + uid + '"]');
+      if (el) el.textContent = _origCache[uid];
+    });
+    _origCache = {};
+    _activeLang = 'pt';
+    showToast('Português ✓');
     return;
   }
-  if (targetLang === _currentLang) return;
-  _currentLang = targetLang;
 
-  var langLabels = { en:'English', es:'Español', fr:'Français', de:'Deutsch' };
+  if (lang === _activeLang) return;
+  _activeLang = lang;
+
+  var labels = {en:'English', es:'Español', fr:'Français', de:'Deutsch'};
+
+  // Mostra loading
   var toast = document.getElementById('translating-toast');
-  if (toast) { toast.style.display = 'block'; toast.textContent = 'A traduzir... aguarde'; }
-  console.log('[YAPP] Translating', targets.length, 'elements to', targetLang, '| sample:', texts.slice(0,3));
+  if (toast) { toast.style.display = 'block'; toast.textContent = 'A traduzir...'; }
 
-  // Save originals on first translation
-  if (!_originalTexts) saveOriginalTexts();
-
-  // Collect SHORT visible text strings only (labels, titles, descriptions)
-  var targets = [];
-  var selectors = [
-    '.section-tag', '.section-title', '.section-sub',
-    '.svc-card-label', '.svc-card-sub', '.acc-header-label', '.acc-header-sub',
-    '.modal-title', '.card p', '.card div[style*="font-weight"]',
-    '.contact-label', '.contact-sub', '.chip',
-    '.fc-name', '.fc-text', '.nav-btn-label',
-    '.hero-label', '.hero-sub', '.btn-primary',
-    '.popup-title', '.popup-sub', '.popup-btn', '.popup-btn-sec',
-    '.slider-card-type', '.slider-card-title',
-    '.img-card-tag', '.img-card-title', '.img-card-sub',
-    '.block-label', '.sponsor-badge', '.sponsor-name', '.sponsor-cta',
-    '.section-divider-label', '.acc-inner p', '.acc-inner li',
-    'h2.section-title', '#expired-sub', '.expired-title'
+  // Recolhe todos os elementos de texto visíveis
+  var sels = [
+    '.section-tag','.section-title','.section-sub',
+    '.svc-card-label','.svc-card-sub',
+    '.acc-header-label','.acc-header-sub','.acc-inner p',
+    '.modal-title','.block-label',
+    '.contact-label','.contact-sub',
+    '.nav-btn-label','.hero-label','.hero-sub',
+    '.img-card-tag','.img-card-title','.img-card-sub',
+    '.slider-card-type','.slider-card-title',
+    '.sponsor-badge','.sponsor-name','.sponsor-cta',
+    '.popup-title','.popup-sub',
+    'h2.section-title','h3.section-title'
   ];
 
-  selectors.forEach(function(sel) {
+  var els = [];
+  var uid = 0;
+  sels.forEach(function(sel) {
     document.querySelectorAll(sel).forEach(function(el) {
       var txt = el.textContent.trim();
-      if (txt && txt.length > 1 && txt.length < 200 && !el._translating) {
-        el._translating = true;
-        if (!el._origText) el._origText = txt;
-        targets.push(el);
-      }
+      if (!txt || txt.length < 2 || el.dataset.tuid) return;
+      uid++;
+      el.dataset.tuid = uid;
+      _origCache[uid] = txt;
+      els.push({el: el, txt: txt});
     });
   });
-  targets.forEach(function(el) { el._translating = false; });
 
-  if (!targets.length) {
+  if (!els.length) {
     if (toast) toast.style.display = 'none';
     showToast('Nada para traduzir');
     return;
   }
 
-  var texts = targets.map(function(el) { return el._origText || el.textContent.trim(); });
-
-  callTranslationAPI(texts, targetLang, function(translated) {
-    if (toast) toast.style.display = 'none';
-    targets.forEach(function(el, i) {
-      if (translated[i] && translated[i].trim()) el.textContent = translated[i];
-    });
-    showToast('Traduzido para ' + (langLabels[targetLang]||targetLang) + ' ✓');
-  });
-}
-
-function saveOriginalTexts() {
-  var app = document.getElementById('app');
-  if (!app) return;
-  _originalTexts = [];
-  var walker = document.createTreeWalker(app, NodeFilter.SHOW_TEXT, {
-    acceptNode: function(node) {
-      var p = node.parentElement;
-      if (!p) return NodeFilter.FILTER_REJECT;
-      var tag = p.tagName.toLowerCase();
-      if (['script','style','input','textarea'].includes(tag)) return NodeFilter.FILTER_REJECT;
-      var txt = node.textContent.trim();
-      if (!txt || txt.length < 3) return NodeFilter.FILTER_REJECT;
-      return NodeFilter.FILTER_ACCEPT;
-    }
-  });
-  var node;
-  while (node = walker.nextNode()) {
-    node._origText = node.textContent;
-    _originalTexts.push({ node: node, text: node.textContent });
+  // Traduz em grupos de 8, sequencialmente
+  var BATCH = 8;
+  var groups = [];
+  for (var i = 0; i < els.length; i += BATCH) {
+    groups.push(els.slice(i, i + BATCH));
   }
-}
 
-function collectTranslatableElements() {
-  var app = document.getElementById('app');
-  if (!app) return [];
-  var results = [];
-  var walker = document.createTreeWalker(app, NodeFilter.SHOW_TEXT, {
-    acceptNode: function(node) {
-      var p = node.parentElement;
-      if (!p) return NodeFilter.FILTER_REJECT;
-      var tag = p.tagName.toLowerCase();
-      if (['script','style','input','textarea'].includes(tag)) return NodeFilter.FILTER_REJECT;
-      var txt = node.textContent.trim();
-      if (!txt || txt.length < 3) return NodeFilter.FILTER_REJECT;
-      return NodeFilter.FILTER_ACCEPT;
+  var gi = 0;
+  function translateGroup() {
+    if (gi >= groups.length) {
+      if (toast) toast.style.display = 'none';
+      showToast('Traduzido para ' + (labels[lang]||lang) + ' ✓');
+      return;
     }
-  });
-  var node;
-  while (node = walker.nextNode()) {
-    if (!node._origText) node._origText = node.textContent;
-    results.push(node);
-  }
-  return results;
-}
-
-function restoreOriginalTexts() {
-  if (!_originalTexts) return;
-  _originalTexts.forEach(function(item) { item.node.textContent = item.text; });
-  showToast('Português restaurado');
-}
-
-function callTranslationAPI(texts, lang, cb) {
-  var allTranslated = texts.slice();
-  if (!texts.length) { cb(allTranslated); return; }
-
-  // Translate one by one via script injection (no CORS)
-  var idx = 0;
-
-  function next() {
-    if (idx >= texts.length) { cb(allTranslated); return; }
-    var i = idx++;
-    var text = texts[i];
-    if (!text || text.trim().length < 2) { next(); return; }
-
-    var cbName = '__gtrans_' + Date.now() + '_' + i;
-    var timer;
+    var group = groups[gi++];
+    var SEP = ' || ';
+    var combined = group.map(function(o){ return o.txt; }).join(SEP);
+    var cbName = '__tr_' + Date.now();
+    var done = false;
 
     window[cbName] = function(data) {
-      clearTimeout(timer);
+      done = true;
       window[cbName] = null;
       var sc = document.getElementById(cbName);
       if (sc) sc.parentNode.removeChild(sc);
       try {
-        // data[0][0][0] is the translated text
-        if (data && data[0] && data[0][0] && data[0][0][0]) {
-          allTranslated[i] = data[0][0][0];
-        }
-      } catch(e) {}
-      setTimeout(next, 80);
+        // data[0] = array de [traducao, original, ...]
+        var full = data[0].map(function(p){ return p[0]; }).join('');
+        var parts = full.split(SEP);
+        group.forEach(function(o, i) {
+          if (parts[i] && parts[i].trim()) o.el.textContent = parts[i].trim();
+        });
+      } catch(e) {
+        console.warn('translate parse:', e);
+      }
+      setTimeout(translateGroup, 150);
     };
 
-    timer = setTimeout(function() {
+    // Timeout de segurança
+    setTimeout(function() {
+      if (done) return;
       window[cbName] = null;
       var sc = document.getElementById(cbName);
       if (sc) sc.parentNode.removeChild(sc);
-      setTimeout(next, 80);
-    }, 3000);
+      setTimeout(translateGroup, 150);
+    }, 5000);
 
-    var script = document.createElement('script');
-    script.id = cbName;
-    script.src = 'https://translate.googleapis.com/translate_a/single'
-      + '?client=gtx&sl=pt&tl=' + lang
-      + '&dt=t&q=' + encodeURIComponent(text)
+    var sc = document.createElement('script');
+    sc.id = cbName;
+    sc.src = 'https://translate.googleapis.com/translate_a/single'
+      + '?client=gtx&sl=pt&tl=' + lang + '&dt=t'
+      + '&q=' + encodeURIComponent(combined)
       + '&cb=' + cbName;
-    document.head.appendChild(script);
+    document.head.appendChild(sc);
   }
 
-  next();
+  translateGroup();
 }
 
 window.addEventListener('DOMContentLoaded', function() {
@@ -2495,13 +2453,7 @@ function wEmoji(c) {
 function wDesc(c)  { if(c===0)return'Céu limpo';if(c<=2)return'Parcialmente nublado';if(c===3)return'Nublado';if(c<=49)return'Nevoeiro';if(c<=59)return'Chuviscos';if(c<=69)return'Chuva';if(c<=79)return'Neve';if(c<=99)return'Trovoada';return'Variável'; }
 </script>
 <!-- ── LANG BAR ──────────────────────────────────────────────── -->
-<div id="lang-bar">
-  <div class="lang-option" onclick="translateApp('en')">🇬🇧 English</div>
-  <div class="lang-option" onclick="translateApp('es')">🇪🇸 Español</div>
-  <div class="lang-option" onclick="translateApp('fr')">🇫🇷 Français</div>
-  <div class="lang-option" onclick="translateApp('de')">🇩🇪 Deutsch</div>
-  <div class="lang-option" onclick="translateApp('pt')">🇵🇹 Português</div>
-</div>
+
 <div id="translating-toast">A traduzir...</div>
 
 <!-- ── POPUP: BOAS-VINDAS ──────────────────────────────────────── -->
