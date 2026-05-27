@@ -1242,7 +1242,15 @@ function translateApp(lang){
       /* Outros */
       '.chip','.dist-badge','.expired-title','.expired-sub',
       '.btn-primary','.social-btn','.suggestion-tag',
-      '.section-divider-label','#meteo-source'
+      '.section-divider-label','#meteo-source',
+      /* Botões de ação */
+      'button.form-btn','button[onclick]',
+      /* Guestbook */
+      '.gb-entry-text','.gb-entry-author',
+      /* Newsletter */
+      '.newsletter-title','.newsletter-sub',
+      /* Ver tudo / inline buttons */
+      'button[style]'
     ].join(',');
 
     document.querySelectorAll(sels).forEach(function(el){
@@ -1255,7 +1263,7 @@ function translateApp(lang){
 
     // 2. TreeWalker — catches ALL remaining text nodes in #app
     // (acc-inner paragraphs, modal paragraphs, card paragraphs, etc.)
-    var skipTags = new Set(['script','style','input','textarea','select','button','svg','path','circle','polyline','line','polygon']);
+    var skipTags = new Set(['script','style','input','textarea','select','svg','path','circle','polyline','line','polygon']);
     var skipClasses = new Set(['wifi-pass','copy-btn','login-input','form-input',
                                'star-btn','check-box','rating','info-cell-val']);
 
