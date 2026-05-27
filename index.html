@@ -834,7 +834,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
       <!-- SECÇÃO 1: ATRAÇÕES -->
       <div style="display:flex;align-items:center;gap:10px;margin:1.2rem 0 0.75rem;">
         <div style="flex:1;height:1px;background:var(--cream-dark);"></div>
-        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--forest);white-space:nowrap;padding:0 4px;">Atrações Próximas</div>
+        <div class="section-divider-label" style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--forest);white-space:nowrap;padding:0 4px;">Atrações Próximas</div>
         <div style="flex:1;height:1px;background:var(--cream-dark);"></div>
       </div>
 
@@ -856,7 +856,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
       <!-- SECÇÃO 2: RESTAURANTES -->
       <div style="display:flex;align-items:center;gap:10px;margin:1.4rem 0 0.75rem;">
         <div style="flex:1;height:1px;background:var(--cream-dark);"></div>
-        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--forest);white-space:nowrap;padding:0 4px;">Restaurantes</div>
+        <div class="section-divider-label" style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--forest);white-space:nowrap;padding:0 4px;">Restaurantes</div>
         <div style="flex:1;height:1px;background:var(--cream-dark);"></div>
       </div>
 
@@ -1271,61 +1271,59 @@ function translateApp(lang){
   _tK[lang]={};
   animateToast('A traduzir');
 
-  // Traduz um texto individual via Google Translate (endpoint público)
-  function gtrans(text, targetLang, cb){
-    var url = 'https://translate.googleapis.com/translate_a/single'
-      + '?client=gtx&sl=pt&tl=' + targetLang
-      + '&dt=t&q=' + encodeURIComponent(text);
-    fetch(url)
-      .then(function(r){ return r.json(); })
-      .then(function(d){
-        // Resposta: [[[translated, original, ...],...], ...]
-        var result = '';
-        if(d && d[0]){ d[0].forEach(function(chunk){ if(chunk[0]) result += chunk[0]; }); }
-        cb(result || text);
-      })
-      .catch(function(){ cb(text); });
-  }
-
-  var total = _tE.length;
-  var done = 0;
-
-  // Textos únicos (evitar duplicados para poupar pedidos)
+  // Textos únicos
   var uniqueTexts = [];
   var seen2 = {};
   _tE.forEach(function(o){
     if(!seen2[o.orig]){ seen2[o.orig]=true; uniqueTexts.push(o.orig); }
   });
 
-  var uDone = 0;
-  var CONCURRENT = 5; // pedidos em paralelo
-  var uTotal = uniqueTexts.length;
-
-  function runNext(idx){
-    if(idx >= uTotal) return;
-    gtrans(uniqueTexts[idx], lang, function(tr){
-      _tK[lang][uniqueTexts[idx]] = tr;
-      uDone++;
-      if(uDone >= uTotal){
-        // Aplicar todas as traduções
-        _tE.forEach(function(o){ if(_tK[lang][o.orig]) o.el.textContent=_tK[lang][o.orig]; });
-        if(_bannerInner&&_bannerInner._avisoBase&&_tK[lang][_bannerInner._avisoBase]){
-          var tr2=_tK[lang][_bannerInner._avisoBase];
-          _bannerInner.textContent=tr2+'  ·  '+tr2+'  ·  '+tr2;
-        }
-        _tL=lang;
-        hideToast();
-        showToast('Traduzido para '+names[lang]+' ✓');
-      } else {
-        runNext(idx + CONCURRENT);
-      }
-    });
+  // Partir em batches de 50 textos (Google aceita ~5000 chars por pedido)
+  var BSIZE = 50;
+  var batches = [];
+  for(var bi=0; bi<uniqueTexts.length; bi+=BSIZE){
+    batches.push(uniqueTexts.slice(bi, bi+BSIZE));
   }
 
-  // Lançar CONCURRENT pedidos em paralelo
-  for(var si=0; si<Math.min(CONCURRENT, uTotal); si++){
-    runNext(si);
+  var bDone = 0;
+
+  function applyAll(){
+    _tE.forEach(function(o){ if(_tK[lang][o.orig]) o.el.textContent=_tK[lang][o.orig]; });
+    if(_bannerInner&&_bannerInner._avisoBase&&_tK[lang][_bannerInner._avisoBase]){
+      var tr2=_tK[lang][_bannerInner._avisoBase];
+      _bannerInner.textContent=tr2+'  ·  '+tr2+'  ·  '+tr2;
+    }
+    _tL=lang;
+    hideToast();
+    showToast('Traduzido para '+names[lang]+' ✓');
   }
+
+  batches.forEach(function(batch, idx){
+    // Juntar textos com \n — Google Translate preserva as quebras de linha
+    var combined = batch.join('\n');
+    var url = 'https://translate.googleapis.com/translate_a/single'
+      + '?client=gtx&sl=pt&tl=' + lang
+      + '&dt=t&q=' + encodeURIComponent(combined);
+
+    fetch(url)
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        // Reconstruir texto traduzido completo
+        var raw = '';
+        if(d && d[0]){ d[0].forEach(function(chunk){ if(chunk[0]) raw += chunk[0]; }); }
+        // Split por \n — preservado pelo Google
+        var lines = raw.split('\n');
+        batch.forEach(function(orig, i){
+          var tr = (lines[i]||'').trim();
+          if(tr && tr !== orig) _tK[lang][orig] = tr;
+        });
+      })
+      .catch(function(e){ console.warn('gtrans batch',idx,e); })
+      .finally(function(){
+        bDone++;
+        if(bDone >= batches.length) applyAll();
+      });
+  });
 }
 
 window.addEventListener('DOMContentLoaded', function() {
