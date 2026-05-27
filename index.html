@@ -381,7 +381,6 @@ body.aviso-active #meteo-full{padding-top:2.2rem;}
 
 /* ── SLIDER DE ATRAÇÕES ─────────────────────────────────────── */
 #atracoes-slider::-webkit-scrollbar{display:none;}
-@keyframes sliderScroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
 .slider-card{flex:0 0 160px;border-radius:var(--radius-sm);overflow:hidden;position:relative;scroll-snap-align:start;cursor:pointer;opacity:.88;}
 .slider-card img{width:100%;height:100px;object-fit:cover;display:block;}
 .slider-card-body{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,20,5,.85) 0%,rgba(10,20,5,.1) 60%);padding:.7rem .75rem;display:flex;flex-direction:column;justify-content:flex-end;}
@@ -1272,55 +1271,61 @@ function translateApp(lang){
   _tK[lang]={};
   animateToast('A traduzir');
 
-  var texts=_tE.map(function(o){return o.orig;});
-  var SEP='\n---\n';
-  var LIMIT=500;
-  var batches=[];
-  var cur=[]; var curLen=0;
-  texts.forEach(function(t,i){
-    var add=t.length+SEP.length;
-    if(curLen+add>LIMIT&&cur.length>0){ batches.push(cur.slice()); cur=[]; curLen=0; }
-    cur.push({i:i,t:t}); curLen+=add;
-  });
-  if(cur.length) batches.push(cur);
+  // Traduz um texto individual via Google Translate (endpoint público)
+  function gtrans(text, targetLang, cb){
+    var url = 'https://translate.googleapis.com/translate_a/single'
+      + '?client=gtx&sl=pt&tl=' + targetLang
+      + '&dt=t&q=' + encodeURIComponent(text);
+    fetch(url)
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        // Resposta: [[[translated, original, ...],...], ...]
+        var result = '';
+        if(d && d[0]){ d[0].forEach(function(chunk){ if(chunk[0]) result += chunk[0]; }); }
+        cb(result || text);
+      })
+      .catch(function(){ cb(text); });
+  }
 
-  var bDone=0;
+  var total = _tE.length;
+  var done = 0;
 
-  batches.forEach(function(batch,bi){
-    setTimeout(function(){
-      var joined=batch.map(function(o){return o.t;}).join(SEP);
-      var url='https://api.mymemory.translated.net/get'
-        +'?q='+encodeURIComponent(joined)
-        +'&langpair=pt|'+lang
-        +'&de=geral@yapp.pt';
-      fetch(url)
-        .then(function(r){return r.json();})
-        .then(function(d){
-          var raw=d.responseData&&d.responseData.translatedText||'';
-          if(raw&&raw.indexOf('MYMEMORY WARNING')===-1){
-            var parts=raw.split(SEP);
-            batch.forEach(function(o,j){
-              var tr=(parts[j]||'').trim();
-              if(tr) _tK[lang][o.t]=tr;
-            });
-          }
-        })
-        .catch(function(e){console.warn('translate batch',bi,e);})
-        .finally(function(){
-          bDone++;
-          if(bDone>=batches.length){
-            _tE.forEach(function(o){ if(_tK[lang][o.orig]) o.el.textContent=_tK[lang][o.orig]; });
-            if(_bannerInner&&_bannerInner._avisoBase&&_tK[lang][_bannerInner._avisoBase]){
-              var tr=_tK[lang][_bannerInner._avisoBase];
-              _bannerInner.textContent=tr+'  ·  '+tr+'  ·  '+tr;
-            }
-            _tL=lang;
-            hideToast();
-            showToast('Traduzido para '+names[lang]+' ✓');
-          }
-        });
-    }, bi*150);
+  // Textos únicos (evitar duplicados para poupar pedidos)
+  var uniqueTexts = [];
+  var seen2 = {};
+  _tE.forEach(function(o){
+    if(!seen2[o.orig]){ seen2[o.orig]=true; uniqueTexts.push(o.orig); }
   });
+
+  var uDone = 0;
+  var CONCURRENT = 5; // pedidos em paralelo
+  var uTotal = uniqueTexts.length;
+
+  function runNext(idx){
+    if(idx >= uTotal) return;
+    gtrans(uniqueTexts[idx], lang, function(tr){
+      _tK[lang][uniqueTexts[idx]] = tr;
+      uDone++;
+      if(uDone >= uTotal){
+        // Aplicar todas as traduções
+        _tE.forEach(function(o){ if(_tK[lang][o.orig]) o.el.textContent=_tK[lang][o.orig]; });
+        if(_bannerInner&&_bannerInner._avisoBase&&_tK[lang][_bannerInner._avisoBase]){
+          var tr2=_tK[lang][_bannerInner._avisoBase];
+          _bannerInner.textContent=tr2+'  ·  '+tr2+'  ·  '+tr2;
+        }
+        _tL=lang;
+        hideToast();
+        showToast('Traduzido para '+names[lang]+' ✓');
+      } else {
+        runNext(idx + CONCURRENT);
+      }
+    });
+  }
+
+  // Lançar CONCURRENT pedidos em paralelo
+  for(var si=0; si<Math.min(CONCURRENT, uTotal); si++){
+    runNext(si);
+  }
 }
 
 window.addEventListener('DOMContentLoaded', function() {
@@ -1514,21 +1519,29 @@ function scheduleSugestao() {
         return div;
       });
       slider.innerHTML = '';
-      // Duplicar cards para loop infinito contínuo
-      var allCards = cards.concat(cards.map(function(c){ return c.cloneNode(true); }));
-      allCards.forEach(function(c){ slider.appendChild(c); });
+      cards.forEach(function(c){ slider.appendChild(c); });
       wrap.style.display = 'block';
       document.getElementById('atracoes-divider').style.display='block';
-      // Scroll CSS contínuo sem setTimeout — sem falhas
-      var totalW = cards.length * (160 + 8); // card width + gap
-      slider.style.animation = 'sliderScroll '+(cards.length*3)+'s linear infinite';
-      slider.style.width = (totalW*2)+'px';
-      // Re-add click listeners nos clones
-      allCards.forEach(function(div,i){
-        var p = places[i % places.length];
-        var url='https://www.google.com/maps/dir/?api=1&destination='+p.lat+','+p.lng;
-        div.onclick = function(){ window.open(url,'_blank'); };
-      });
+
+      // Scroll snap — sem espaço vazio: padding-right = largura do contentor - largura do card
+      slider.style.cssText += ';display:flex;gap:.5rem;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:.4rem;scrollbar-width:none;';
+
+      // Auto-avança suavemente a cada 3.5s, volta ao início sem salto
+      clearInterval(window._sliderInterval);
+      window._sliderInterval = setInterval(function(){
+        var s = document.getElementById('atracoes-slider');
+        if(!s || !s.firstChild) return;
+        var cardW = s.firstChild.offsetWidth + 8;
+        var maxScroll = s.scrollWidth - s.clientWidth;
+        if(s.scrollLeft >= maxScroll - 10){
+          // Volta ao início sem animação para não se notar
+          s.style.scrollBehavior = 'auto';
+          s.scrollLeft = 0;
+          s.style.scrollBehavior = '';
+        } else {
+          s.scrollBy({left: cardW, behavior:'smooth'});
+        }
+      }, 3500);
     }
     // Popup only from day 2 onwards
     var s2 = getSession();
