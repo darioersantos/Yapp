@@ -356,7 +356,7 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
 
 /* ── AVISO BANNER — rodapé ticker horizontal ──────────────────── */
 #aviso-banner{display:none;background:var(--earth);color:#fff;font-size:0.8rem;padding:7px 0;position:fixed;top:0;left:0;right:0;z-index:9500;font-weight:500;overflow:hidden;white-space:nowrap;}
-#aviso-banner-inner{display:inline-block;animation:ticker 18s linear infinite;padding-left:100%;}
+#aviso-banner-inner{display:inline-block;animation:ticker 30s linear infinite;padding-left:100%;}
 @keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-100%);}}
 #aviso-banner a{color:rgba(255,255,255,0.85);text-decoration:underline;}
 /* When aviso active, push page content down */
@@ -381,11 +381,11 @@ body.aviso-active #meteo-full{padding-top:2.2rem;}
 
 /* ── SLIDER DE ATRAÇÕES ─────────────────────────────────────── */
 #atracoes-slider::-webkit-scrollbar{display:none;}
-.slider-card{flex:0 0 200px;border-radius:var(--radius);overflow:hidden;position:relative;scroll-snap-align:start;cursor:pointer;}
-.slider-card img{width:100%;height:130px;object-fit:cover;display:block;}
+.slider-card{flex:0 0 160px;border-radius:var(--radius-sm);overflow:hidden;position:relative;scroll-snap-align:start;cursor:pointer;opacity:.88;}
+.slider-card img{width:100%;height:100px;object-fit:cover;display:block;}
 .slider-card-body{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,20,5,.85) 0%,rgba(10,20,5,.1) 60%);padding:.7rem .75rem;display:flex;flex-direction:column;justify-content:flex-end;}
 .slider-card-type{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sage-light);margin-bottom:2px;}
-.slider-card-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;color:#fff;line-height:1.2;}
+.slider-card-title{font-family:'Cormorant Garamond',serif;font-size:.88rem;font-weight:600;color:#fff;line-height:1.2;}
 .slider-card-dist{font-size:.7rem;color:rgba(255,255,255,.65);margin-top:3px;}
 /* legacy kept */
 .suggestion-dist{font-size:.72rem;color:rgba(255,255,255,.6);background:rgba(255,255,255,.15);border-radius:20px;padding:2px 9px;}
@@ -544,8 +544,8 @@ body.aviso-active #notif-banner{top:2.2rem;}
 
       <!-- Slider de atrações -->
       <div id="atracoes-slider-wrap" style="display:none;margin-bottom:.75rem;">
-        <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--forest);margin-bottom:.5rem;">✨ Sugestões para hoje</div>
-        <div id="atracoes-slider" style="display:flex;gap:.6rem;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:.4rem;scrollbar-width:none;">
+        <div style="font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-light);margin-bottom:.4rem;opacity:.8;">✨ Sugestão para hoje</div>
+        <div id="atracoes-slider" style="display:flex;gap:.5rem;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:.4rem;scrollbar-width:none;opacity:.85;transform:scale(0.97);transform-origin:left center;">
         </div>
       </div>
 
@@ -1242,15 +1242,7 @@ function translateApp(lang){
       /* Outros */
       '.chip','.dist-badge','.expired-title','.expired-sub',
       '.btn-primary','.social-btn','.suggestion-tag',
-      '.section-divider-label','#meteo-source',
-      /* Botões de ação */
-      'button.form-btn','button[onclick]',
-      /* Guestbook */
-      '.gb-entry-text','.gb-entry-author',
-      /* Newsletter */
-      '.newsletter-title','.newsletter-sub',
-      /* Ver tudo / inline buttons */
-      'button[style]'
+      '.section-divider-label','#meteo-source'
     ].join(',');
 
     document.querySelectorAll(sels).forEach(function(el){
@@ -1261,9 +1253,23 @@ function translateApp(lang){
       }
     });
 
+    // Botões específicos por texto direto (não apanhados pelos seletores acima)
+    document.querySelectorAll('button.form-btn, button[style]').forEach(function(btn){
+      if(seen.has(btn)) return;
+      // Só botões com texto direto (sem filhos complexos)
+      var hasElementChild = false;
+      for(var i=0;i<btn.childNodes.length;i++){
+        if(btn.childNodes[i].nodeType===1){ hasElementChild=true; break; }
+      }
+      if(!hasElementChild){
+        var t = btn.textContent.trim();
+        if(t && t.length>1){ seen.add(btn); _tE.push({el:btn,orig:t}); }
+      }
+    });
+
     // 2. TreeWalker — catches ALL remaining text nodes in #app
     // (acc-inner paragraphs, modal paragraphs, card paragraphs, etc.)
-    var skipTags = new Set(['script','style','input','textarea','select','svg','path','circle','polyline','line','polygon']);
+    var skipTags = new Set(['script','style','input','textarea','select','button','svg','path','circle','polyline','line','polygon']);
     var skipClasses = new Set(['wifi-pass','copy-btn','login-input','form-input',
                                'star-btn','check-box','rating','info-cell-val']);
 
@@ -1303,14 +1309,22 @@ function translateApp(lang){
 
   if(_tE.length===0){ showToast('Sem textos para traduzir'); return; }
 
+  // Banner ticker — texto dinâmico, tratar separadamente
+  var _bannerInner = document.getElementById('aviso-banner-inner');
+
   // Use cached translations
   if(_tK[lang]){
     _tE.forEach(function(o){ if(_tK[lang][o.orig]) o.el.textContent=_tK[lang][o.orig]; });
+    // Banner ticker com cache
+    if(_bannerInner && _bannerInner._avisoBase && _tK[lang][_bannerInner._avisoBase]){
+      var tr=_tK[lang][_bannerInner._avisoBase];
+      _bannerInner.textContent=tr+'  ·  '+tr+'  ·  '+tr;
+    }
     _tL=lang; showToast('Traduzido para '+names[lang]+' ✓'); return;
   }
 
   _tK[lang]={};
-  setToast('A traduzir (0/'+_tE.length+')...');
+  setToast('A traduzir...');
 
   // Send ALL texts in ONE request joined by \n
   // MyMemory translates the whole block at once
@@ -1358,17 +1372,21 @@ function translateApp(lang){
         .catch(function(e){ console.warn('translate batch',bi,e); })
         .finally(function(){
           bDone++;
-          setToast('A traduzir ('+bDone+'/'+batches.length+')...');
           if(bDone>=batches.length){
             _tE.forEach(function(o){
               if(_tK[lang][o.orig]) o.el.textContent=_tK[lang][o.orig];
             });
+            // Banner ticker
+            if(_bannerInner && _bannerInner._avisoBase && _tK[lang][_bannerInner._avisoBase]){
+              var tr=_tK[lang][_bannerInner._avisoBase];
+              _bannerInner.textContent=tr+'  ·  '+tr+'  ·  '+tr;
+            }
             _tL=lang;
             hideToast();
             showToast('Traduzido para '+names[lang]+' ✓');
           }
         });
-    }, bi*600);
+    }, bi*200);
   });
 }
 
@@ -1985,7 +2003,12 @@ function applyConfig(c) {
     var ativo = String(c.aviso_ativo).toLowerCase();
     if ((ativo === 'true' || ativo === 'TRUE') && c.aviso_texto) {
       var txt = c.aviso_texto + '  ·  ' + c.aviso_texto + '  ·  ' + c.aviso_texto;
-      if (inner) inner.textContent = txt;
+      if (inner) {
+        inner.textContent = txt;
+        // Registar para tradução (com o texto base, não triplicado)
+        inner._avisoOrig = txt;
+        inner._avisoBase = c.aviso_texto;
+      }
       banner.style.display = 'block'; document.body.classList.add('aviso-active');
     } else {
       banner.style.display = 'none'; document.body.classList.remove('aviso-active');
