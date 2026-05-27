@@ -1095,7 +1095,7 @@ function fillCasa(c) {
   s('rec-v', c.rec_verde); s('rec-a', c.rec_azul); s('rec-am', c.rec_amarelo); s('rec-p', c.rec_preto);
   s('checklist', c.checklist_saida);
   // preview images
-  ['wc','qts','sala','coz','chur','pisc','ext'].forEach(function(k) {
+  ['wc','qts','sala','coz','chur','pisc','ext','info'].forEach(function(k) {
     var inp = document.getElementById('img-' + k);
     var prev = document.getElementById('prev-' + k);
     if (inp && prev && inp.value) prev.src = inp.value;
