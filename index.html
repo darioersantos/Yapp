@@ -402,13 +402,8 @@ body.is-offline #offline-banner{display:block;}
 body.is-offline .section{padding-top:1.8rem;}
 
 /* ── TRANSLATION BAR ─────────────────────────────────────────── */
-#lang-bar{display:none;position:absolute;top:100%;right:0;z-index:500;flex-direction:column;gap:5px;align-items:flex-end;padding-top:6px;}
-#lang-bar.open{display:flex;}
-#lang-toggle{background:transparent;color:var(--forest-mid);border:1px solid rgba(45,74,30,.2);border-radius:20px;padding:5px 12px;font-size:.75rem;font-weight:500;cursor:pointer;display:none;align-items:center;gap:4px;}
-#lang-toggle:hover{background:rgba(45,74,30,.06);}
-.lang-option{background:#fff;border:1px solid var(--card-border);border-radius:20px;padding:6px 12px;font-size:.78rem;cursor:pointer;font-weight:500;color:var(--forest);box-shadow:0 2px 8px rgba(0,0,0,.1);white-space:nowrap;}
-.lang-option:hover{background:var(--cream);}
-#translating-toast{display:none;position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--forest);color:#fff;padding:10px 22px;border-radius:20px;font-size:.82rem;font-weight:500;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.25);letter-spacing:.01em;}
+
+
 
 /* ── NOTIF PERMISSION BANNER ─────────────────────────────────── */
 #notif-banner{display:none;background:var(--forest);color:#fff;padding:.75rem 1rem;text-align:center;font-size:.8rem;position:fixed;left:0;right:0;z-index:9400;top:0;}
@@ -520,19 +515,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
   <div id="page-casa" class="page active">
     <div class="section">
       <div class="section-header" style="position:relative;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-          <div class="section-tag">A sua estadia</div>
-          <div style="position:relative;">
-            <button id="lang-toggle" onclick="toggleLangBar()">🌐 Idioma</button>
-            <div id="lang-bar">
-              <div class="lang-option" onclick="translateApp('en')">🇬🇧 English</div>
-              <div class="lang-option" onclick="translateApp('es')">🇪🇸 Español</div>
-              <div class="lang-option" onclick="translateApp('fr')">🇫🇷 Français</div>
-              <div class="lang-option" onclick="translateApp('de')">🇩🇪 Deutsch</div>
-              <div class="lang-option" onclick="translateApp('pt')">🇵🇹 Português</div>
-            </div>
-          </div>
-        </div>
+        <div class="section-tag">A sua estadia</div>
         <h2 class="section-title">Casa do Gerês</h2>
         <p class="section-sub">Bem-vindo. Tudo o que precisa para uma estadia inesquecível.</p>
       </div>
@@ -1178,153 +1161,8 @@ function checkCheckoutNotif() {
 
 
 // TRADUÇÃO
-var _tE=[], _tL='pt', _tK={};
 
-function toggleLangBar(){
-  var lb=document.getElementById('lang-bar');
-  if(lb) lb.classList.toggle('open');
-}
 
-function translateApp(lang){
-  var lb=document.getElementById('lang-bar');
-  if(lb) lb.classList.remove('open');
-  if(lang===_tL) return;
-
-  var names={en:'English',es:'Español',fr:'Français',de:'Deutsch',pt:'Português'};
-
-  if(lang==='pt'){
-    _tE.forEach(function(o){ o.el.textContent=o.orig; });
-    _tL='pt'; showToast('Português ✓'); return;
-  }
-
-  var toast=document.getElementById('translating-toast');
-  var _dotInterval=null;
-  function setToast(t){ if(toast){toast.style.display='block';toast.textContent=t;} }
-  function hideToast(){ if(toast) toast.style.display='none'; if(_dotInterval) clearInterval(_dotInterval); }
-  function animateToast(base){
-    var dots=0;
-    setToast(base+'.');
-    _dotInterval=setInterval(function(){
-      dots=(dots+1)%4;
-      setToast(base+('.'.repeat(dots||1)));
-    },400);
-  }
-
-  // Recolher elementos (sempre fresh — garante que DOM está populado)
-  _tE=[];
-  var seen = new Set();
-
-  var sels=[
-    '[data-t]',
-    '.section-tag','.section-title','.section-sub','.block-label','.nav-pill',
-    '.hero-label','.hero-sub','.logo-name','.login-sub',
-    '.svc-card-label','.svc-card-sub',
-    '.acc-header-label','.acc-header-sub',
-    '.acc-inner p','.acc-inner li',
-    '.acc-inner div[style*="font-weight"]',
-    '.modal-title','.modal-sheet p','.modal-sheet li',
-    '.form-stack .card p',
-    '.form-stack .card div[style*="font-weight"]',
-    '.info-cell-label',
-    '.wifi-net-label','.wifi-ssid',
-    '.contact-label','.contact-sub','.emg-label',
-    '.sponsor-name','.sponsor-badge','.sponsor-cta',
-    '.img-card-tag','.img-card-title','.img-card-sub','.map-cta',
-    '.slider-card-type','.slider-card-title','.slider-card-dist',
-    '.popup-title','.popup-sub','.popup-btn','.popup-btn-sec',
-    '.popup-checklist li',
-    '.meteo-stat-label','.weather-pill','.fc-t','.fc-dow',
-    '.yapp-footer-brand','.yapp-footer-sub',
-    '.chip','.dist-badge','.expired-title','.expired-sub',
-    '.btn-primary','.social-btn','.suggestion-tag',
-    '.section-divider-label','#meteo-source'
-  ].join(',');
-
-  document.querySelectorAll(sels).forEach(function(el){
-    var t=el.textContent.trim();
-    if(t && t.length>1 && !seen.has(el)){ seen.add(el); _tE.push({el:el,orig:t}); }
-  });
-
-  // Botões de ação com texto direto
-  document.querySelectorAll('button.form-btn, button[style]').forEach(function(btn){
-    if(seen.has(btn)) return;
-    var hasEl=false;
-    for(var i=0;i<btn.childNodes.length;i++){ if(btn.childNodes[i].nodeType===1){hasEl=true;break;} }
-    if(!hasEl){ var t=btn.textContent.trim(); if(t&&t.length>1){seen.add(btn);_tE.push({el:btn,orig:t});} }
-  });
-
-  if(_tE.length===0){ showToast('Sem textos para traduzir'); return; }
-
-  // Banner ticker
-  var _bannerInner=document.getElementById('aviso-banner-inner');
-
-  // Cache
-  if(_tK[lang]){
-    _tE.forEach(function(o){ if(_tK[lang][o.orig]) o.el.textContent=_tK[lang][o.orig]; });
-    if(_bannerInner&&_bannerInner._avisoBase&&_tK[lang][_bannerInner._avisoBase]){
-      var tr=_tK[lang][_bannerInner._avisoBase];
-      _bannerInner.textContent=tr+'  ·  '+tr+'  ·  '+tr;
-    }
-    _tL=lang; showToast('Traduzido para '+names[lang]+' ✓'); return;
-  }
-
-  _tK[lang]={};
-  animateToast('A traduzir');
-
-  // Textos únicos
-  var uniqueTexts = [];
-  var seen2 = {};
-  _tE.forEach(function(o){
-    if(!seen2[o.orig]){ seen2[o.orig]=true; uniqueTexts.push(o.orig); }
-  });
-
-  // Partir em batches de 50 textos (Google aceita ~5000 chars por pedido)
-  var BSIZE = 50;
-  var batches = [];
-  for(var bi=0; bi<uniqueTexts.length; bi+=BSIZE){
-    batches.push(uniqueTexts.slice(bi, bi+BSIZE));
-  }
-
-  var bDone = 0;
-
-  function applyAll(){
-    _tE.forEach(function(o){ if(_tK[lang][o.orig]) o.el.textContent=_tK[lang][o.orig]; });
-    if(_bannerInner&&_bannerInner._avisoBase&&_tK[lang][_bannerInner._avisoBase]){
-      var tr2=_tK[lang][_bannerInner._avisoBase];
-      _bannerInner.textContent=tr2+'  ·  '+tr2+'  ·  '+tr2;
-    }
-    _tL=lang;
-    hideToast();
-    showToast('Traduzido para '+names[lang]+' ✓');
-  }
-
-  batches.forEach(function(batch, idx){
-    // Juntar textos com \n — Google Translate preserva as quebras de linha
-    var combined = batch.join('\n');
-    var url = 'https://translate.googleapis.com/translate_a/single'
-      + '?client=gtx&sl=pt&tl=' + lang
-      + '&dt=t&q=' + encodeURIComponent(combined);
-
-    fetch(url)
-      .then(function(r){ return r.json(); })
-      .then(function(d){
-        // Reconstruir texto traduzido completo
-        var raw = '';
-        if(d && d[0]){ d[0].forEach(function(chunk){ if(chunk[0]) raw += chunk[0]; }); }
-        // Split por \n — preservado pelo Google
-        var lines = raw.split('\n');
-        batch.forEach(function(orig, i){
-          var tr = (lines[i]||'').trim();
-          if(tr && tr !== orig) _tK[lang][orig] = tr;
-        });
-      })
-      .catch(function(e){ console.warn('gtrans batch',idx,e); })
-      .finally(function(){
-        bDone++;
-        if(bDone >= batches.length) applyAll();
-      });
-  });
-}
 
 window.addEventListener('DOMContentLoaded', function() {
   // Load live data from Google Sheets if API configured
@@ -1397,7 +1235,7 @@ function goToApp() {
   document.getElementById('app').style.display = 'block';
   setTimeout(function(){ document.body.classList.add('app-ready'); }, 50);
   document.getElementById('bottom-nav').style.display = 'flex';
-  var lt=document.getElementById('lang-toggle'); if(lt) lt.style.display='inline-flex';
+
   setTheme('#f5f0e8');
   calcSunset();
   checkFarewell();
@@ -2512,7 +2350,7 @@ function wDesc(c)  { if(c===0)return'Céu limpo';if(c<=2)return'Parcialmente nub
 </script>
 <!-- ── LANG BAR ──────────────────────────────────────────────── -->
 
-<div id="translating-toast">A traduzir...</div>
+
 
 <!-- ── POPUP: BOAS-VINDAS ──────────────────────────────────────── -->
 <div class="popup-overlay" id="popup-boasvindas">
