@@ -1722,8 +1722,11 @@ function applyData(d) {
     STATIC_ENTRIES = d.feedbacks.filter(function(f){ return f.approved; });
     renderGuestbook();
   }
-  if (d.attractions && d.attractions.length) renderAtracoes(d.attractions);
-  if (d.restaurants && d.restaurants.length) renderRestaurantes(d.restaurants);
+  // Render Descobrir lists
+  if (d.attractions !== undefined) renderAtracoes(d.attractions || []);
+  if (d.restaurants !== undefined) renderRestaurantes(d.restaurants || []);
+  // Refresh Casa slider with fresh data (catches deletions)
+  if (d.attractions !== undefined) refreshSlider(d.attractions || []);
 }
 
 function loadAPIData() {
@@ -1871,6 +1874,59 @@ function applyTheme(tema) {
 
   // 5. Save to localStorage
   try { localStorage.setItem('yapp_tema', tema || 'natureza'); } catch(e) {}
+}
+
+// ── REFRESH SLIDER WITH FRESH DATA ──────────────────────────────
+// Called when API returns fresh attractions (handles deletions)
+function refreshSlider(places) {
+  var wrap = document.getElementById('atracoes-slider-wrap');
+  var slider = document.getElementById('atracoes-slider');
+  if (!wrap || !slider) return;
+
+  if (!places.length) {
+    wrap.style.display = 'none';
+    var div = document.getElementById('atracoes-divider');
+    if (div) div.style.display = 'none';
+    return;
+  }
+
+  // Rebuild slider cards from fresh list
+  clearInterval(window._sliderInterval);
+  slider.innerHTML = '';
+  places.forEach(function(p) {
+    var url = 'https://www.google.com/maps/dir/?api=1&destination=' + p.lat + ',' + p.lng;
+    var div = document.createElement('div');
+    div.className = 'slider-card';
+    div.addEventListener('click', function() { window.open(url, '_blank'); });
+    var img = document.createElement('img');
+    img.src = p.img;
+    img.alt = p.name;
+    img.onerror = function(){ this.src='https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400'; };
+    div.appendChild(img);
+    var body = document.createElement('div');
+    body.className = 'slider-card-body';
+    body.innerHTML = '<div class="slider-card-type">' + p.type + '</div>'
+      + '<div class="slider-card-title">' + p.name + '</div>'
+      + '<div class="slider-card-dist">' + p.dist + '</div>';
+    div.appendChild(body);
+    slider.appendChild(div);
+  });
+  wrap.style.display = 'block';
+
+  // Restart auto-scroll
+  window._sliderInterval = setInterval(function(){
+    var s = document.getElementById('atracoes-slider');
+    if (!s || !s.firstChild) return;
+    var cardW = s.firstChild.offsetWidth + 8;
+    var maxScroll = s.scrollWidth - s.clientWidth;
+    if (s.scrollLeft >= maxScroll - 10) {
+      s.style.scrollBehavior = 'auto';
+      s.scrollLeft = 0;
+      s.style.scrollBehavior = '';
+    } else {
+      s.scrollBy({ left: cardW, behavior: 'smooth' });
+    }
+  }, 3500);
 }
 
 // ── WHATSAPP NOTIFICATION TO OWNER ───────────────────────────────
@@ -2100,6 +2156,7 @@ function renderAtracoes(list) {
   var container = document.getElementById('atracoes-dynamic');
   if (!container) return;
   container.innerHTML = '';
+  if (!list || !list.length) return;
   var fallback = 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600';
   list.forEach(function(p) { container.appendChild(makePlaceCard(p, fallback)); });
 }
