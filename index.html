@@ -1248,7 +1248,11 @@ function goToApp() {
   setTimeout(function(){ document.body.classList.add('app-ready'); }, 50);
   document.getElementById('bottom-nav').style.display = 'flex';
 
-  setTheme('#f5f0e8');
+  // Apply saved theme immediately before API responds
+  var _st = localStorage.getItem('yapp_tema') || 'natureza';
+  var _tc = { natureza:'#0f1908', oceano:'#061a35', urbano:'#1a1a1a' };
+  setTheme(_tc[_st] || '#0f1908');
+  if (_st !== 'natureza') applyTheme(_st);
   calcSunset();
   checkFarewell();
   renderChecklist();
@@ -1860,6 +1864,13 @@ function sendWANotification(msg) {
   } catch(e) {}
 }
 
+// Apply correct theme colour instantly on load
+(function() {
+  var t = localStorage.getItem('yapp_tema') || 'natureza';
+  var tc = { natureza:'#0f1908', oceano:'#061a35', urbano:'#1a1a1a' };
+  var meta = document.getElementById('theme-meta');
+  if (meta) meta.setAttribute('content', tc[t] || '#0f1908');
+})();
 // Apply cached theme instantly on load (before API responds)
 (function() {
   try {
