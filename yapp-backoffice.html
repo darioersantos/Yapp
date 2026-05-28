@@ -255,11 +255,11 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 <div id="login">
   <div class="lb">
     <div style="display:flex;justify-content:center;margin-bottom:1.2rem;">
-      <svg width="120" height="90" viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="75"  cy="90" r="55" fill="#4da6ff"/>
-        <circle cx="125" cy="68" r="44" fill="#4da6ff"/>
-        <circle cx="170" cy="90" r="40" fill="#4da6ff"/>
-        <rect   x="20"  y="100" width="200" height="60" fill="#4da6ff"/>
+      <svg width="120" height="95" viewBox="0 0 240 210" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="75"  cy="85" r="55" fill="#4da6ff"/>
+        <circle cx="125" cy="63" r="44" fill="#4da6ff"/>
+        <circle cx="170" cy="85" r="40" fill="#4da6ff"/>
+        <rect   x="20"  y="95" width="200" height="70" fill="#4da6ff"/>
         <text x="120" y="148" text-anchor="middle" font-family="Arial,sans-serif" font-size="32" font-weight="800" letter-spacing="6" fill="white">YAPP</text>
       </svg>
     </div>
@@ -308,11 +308,12 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
   <div class="sidebar" id="drawer">
     <div class="sb-logo">
       <div class="sb-logo-inner">
-        <svg class="sb-yapp-icon" viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="75"  cy="90" r="55" fill="#4da6ff"/>
-          <circle cx="125" cy="68" r="44" fill="#4da6ff"/>
-          <circle cx="170" cy="90" r="40" fill="#4da6ff"/>
-          <rect   x="20"  y="100" width="200" height="60" fill="#4da6ff"/>
+        <!-- Logo: viewBox aumentado em baixo para a nuvem não ficar cortada -->
+        <svg class="sb-yapp-icon" viewBox="0 0 240 210" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="75"  cy="85" r="55" fill="#4da6ff"/>
+          <circle cx="125" cy="63" r="44" fill="#4da6ff"/>
+          <circle cx="170" cy="85" r="40" fill="#4da6ff"/>
+          <rect   x="20"  y="95" width="200" height="70" fill="#4da6ff"/>
           <text x="120" y="148" text-anchor="middle" font-family="Arial,sans-serif" font-size="32" font-weight="800" letter-spacing="6" fill="white">YAPP</text>
         </svg>
         <div>
@@ -323,36 +324,37 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
       <button class="sb-close" onclick="closeDrawer()">✕</button>
     </div>
     <nav class="sbnav">
+
       <div class="sbsec">Geral</div>
       <div class="sbi on" onclick="go('dashboard',this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
 
-      <div class="sbsec">Configuração</div>
-      <div class="sbi" onclick="go('config',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Propriedade & Splash</div>
-      <div class="sbi" onclick="go('wifi',this)"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>Wi-Fi</div>
+      <div class="sbsec">Hóspedes</div>
       <div class="sbi" onclick="go('hospedes',this)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Hóspedes</div>
+      <div class="sbi" onclick="go('notificacoes',this)"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>Notificações</div>
 
-      <div class="sbsec">Página Casa</div>
-      <div class="sbi" onclick="go('casa-geral',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Info geral</div>
-      <div class="sbi" onclick="go('casa-quartos',this)"><svg viewBox="0 0 24 24"><path d="M2 4v16M22 4v16M2 12h20M12 4v8"/></svg>Quartos</div>
-      <div class="sbi" onclick="go('casa-wc',this)"><svg viewBox="0 0 24 24"><path d="M4 4h16v4H4zM4 12h16M4 20h16"/></svg>Casa de banho</div>
-      <div class="sbi" onclick="go('casa-piscina',this)"><svg viewBox="0 0 24 24"><path d="M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg>Piscina & Exterior</div>
-      <div class="sbi" onclick="go('casa-cozinha',this)"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2l-3 8h3"/></svg>Cozinha & Churrasqueira</div>
-      <div class="sbi" onclick="go('casa-sala',this)"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>Sala & TV</div>
+      <div class="sbsec">Propriedade</div>
+      <div class="sbi" onclick="go('config',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Info & Splash</div>
+      <div class="sbi" onclick="go('wifi',this)"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>Wi-Fi</div>
       <div class="sbi" onclick="go('casa-regras',this)"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Regras & Check-out</div>
       <div class="sbi" onclick="go('servicos',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Serviços</div>
+
+      <div class="sbsec">Divisões</div>
+      <div class="sbi" onclick="go('casa-quartos',this)"><svg viewBox="0 0 24 24"><path d="M2 4v16M22 4v16M2 12h20M12 4v8"/></svg>Quartos</div>
+      <div class="sbi" onclick="go('casa-wc',this)"><svg viewBox="0 0 24 24"><path d="M4 4h16v4H4zM4 12h16M4 20h16"/></svg>Casa de banho</div>
+      <div class="sbi" onclick="go('casa-cozinha',this)"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2l-3 8h3"/></svg>Cozinha & Churrasqueira</div>
+      <div class="sbi" onclick="go('casa-sala',this)"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>Sala & TV</div>
+      <div class="sbi" onclick="go('casa-piscina',this)"><svg viewBox="0 0 24 24"><path d="M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg>Piscina & Exterior</div>
 
       <div class="sbsec">Descobrir</div>
       <div class="sbi" onclick="go('atracoes',this)"><svg viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Atrações</div>
       <div class="sbi" onclick="go('restaurantes',this)"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Restaurantes</div>
-
-      <div class="sbsec">Contacto</div>
       <div class="sbi" onclick="go('contacto',this)"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.07 1.17 2 2 0 012 .92h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>Contactos</div>
       <div class="sbi" onclick="go('patrocinadores',this)"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Patrocinadores</div>
 
       <div class="sbsec">Dados</div>
       <div class="sbi" onclick="go('feedbacks',this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Feedbacks</div>
       <div class="sbi" onclick="go('newsletter',this)"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Newsletter</div>
-      <div class="sbi" onclick="go('notificacoes',this)"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>Notificações</div>
+
     </nav>
     <div class="sbfoot">
       <button class="sbout" onclick="doLogout()">
