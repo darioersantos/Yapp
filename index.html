@@ -11,6 +11,7 @@
 <link rel="icon" type="image/png" href="apple-touch-icon.png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <title>Casa do Gerês · Guia do Hóspede</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Playfair+Display:ital,wght@0,600;1,400&family=Nunito:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -595,12 +596,12 @@ body.aviso-active #notif-banner{top:2.2rem;}
       </div>
 
       <!-- Wi-Fi -->
-      <div class="wifi-hero" onclick="showModal('m-wifi')">
-        <div class="wifi-net-label">Rede Wi-Fi · toque para copiar</div>
+      <div class="wifi-hero" onclick="openWifiQR(0)">
+        <div class="wifi-net-label">Rede Wi-Fi · toque para ligar</div>
         <div class="wifi-ssid">CasaGeres_5G</div>
         <div class="wifi-row">
           <span class="wifi-pass">natureza2026</span>
-          <button class="copy-btn" onclick="copyText(event,'natureza2026')">Copiar</button>
+          <button class="copy-btn" onclick="openWifiQR(0)">Ligar</button>
         </div>
       </div>
 
@@ -995,7 +996,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
 </div>
 
 <!-- MODALS -->
-<div class="modal-overlay" id="m-wifi" onclick="cm('m-wifi')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Wi-Fi</div><div class="wifi-hero" style="margin-bottom:0.6rem;"><div class="wifi-net-label">Rede principal · 5 GHz</div><div class="wifi-ssid">CasaGeres_5G</div><div class="wifi-row"><span class="wifi-pass">natureza2026</span><button class="copy-btn" onclick="copyText(event,'natureza2026')">Copiar</button></div></div><div class="wifi-hero" style="background:var(--forest-mid);"><div class="wifi-net-label">Rede secundária · 2.4 GHz</div><div class="wifi-ssid">CasaGeres_2G</div><div class="wifi-row"><span class="wifi-pass">natureza2026</span><button class="copy-btn" onclick="copyText(event,'natureza2026')">Copiar</button></div></div></div></div>
+<div class="modal-overlay" id="m-wifi" onclick="cm('m-wifi')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Wi-Fi</div><div class="wifi-hero" style="margin-bottom:0.6rem;"><div class="wifi-net-label">Rede principal · 5 GHz</div><div class="wifi-ssid">CasaGeres_5G</div><div class="wifi-row"><span class="wifi-pass">natureza2026</span><button class="copy-btn" onclick="openWifiQR(1)">Ligar</button></div></div><div class="wifi-hero" style="background:var(--forest-mid);"><div class="wifi-net-label">Rede secundária · 2.4 GHz</div><div class="wifi-ssid">CasaGeres_2G</div><div class="wifi-row"><span class="wifi-pass">natureza2026</span><button class="copy-btn" onclick="copyText(event,'natureza2026')">Copiar</button></div></div></div></div>
 <div class="modal-overlay" id="m-limpeza" onclick="cm('m-limpeza')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><img class="modal-img" src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&auto=format&fit=crop&q=75" alt="Limpeza"/><div class="modal-title">Limpeza extra</div><p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.5;">Serviço disponível das 10h às 16h. Pedido confirmado por WhatsApp.</p><div class="form-stack"><select class="form-input" style="height:46px;"><option>Hoje</option><option>Amanhã</option><option>Depois de amanhã</option></select><select class="form-input" style="height:46px;"><option>10:00</option><option>12:00</option><option>14:00</option></select><input class="form-input" placeholder="Observações (opcional)"/><button class="form-btn" onclick="pedidoOk('m-limpeza')">Enviar pedido</button></div></div></div>
 <div class="modal-overlay" id="m-bicicletas" onclick="cm('m-bicicletas')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><img class="modal-img" src="https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=600&auto=format&fit=crop&q=75" alt="Bicicletas"/><div class="modal-title">Aluguer de bicicletas</div><div class="card" style="margin-bottom:0.6rem;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.9rem;font-weight:500;">Bicicleta de montanha</span><span class="chip">€12/dia</span></div><div style="font-size:0.78rem;color:var(--text-light);margin-top:4px;">21 velocidades · Capacete incluído</div></div><div class="card" style="margin-bottom:0.6rem;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.9rem;font-weight:500;">Bicicleta de estrada</span><span class="chip">€10/dia</span></div><div style="font-size:0.78rem;color:var(--text-light);margin-top:4px;">Ciclovia do rio Cávado</div></div><div class="card" style="margin-bottom:1rem;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.9rem;font-weight:500;">E-Bike elétrica</span><span class="chip">€20/dia</span></div><div style="font-size:0.78rem;color:var(--text-light);margin-top:4px;">Bateria 80 km · Carregamento incluído</div></div><button class="form-btn" onclick="pedidoOk('m-bicicletas')">Reservar via WhatsApp</button></div></div>
 <div class="modal-overlay" id="m-churrasco" onclick="cm('m-churrasco')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><img class="modal-img" src="churrasco-real.jpg" alt="Churrasqueira"/><div class="modal-title" data-api="churrasco_titulo">Churrasqueira</div><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">1. Preparação</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;" data-api="churrasco_prep">Carvão e acendalha no armário exterior. Utilizar no local designado no jardim.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">2. Utilização</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;" data-api="churrasco_uso">Grelha na prateleira inferior. Pinça e espátula no gancho à direita.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">3. Limpeza</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;" data-api="churrasco_limp">Aguardar arrefecimento. Cinzas no balde metálico. Grelha limpar com escova própria.</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Utensílios disponíveis</div><div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-top:4px;"><span class="chip">Pinça</span><span class="chip">Garfo</span><span class="chip">Faca</span><span class="chip">Pratos</span><span class="chip">Extintor</span></div></div></div></div></div>
@@ -1780,10 +1781,15 @@ function applyConfig(c) {
   var ssids = document.querySelectorAll('.wifi-ssid');
   if (ssids[0] && c.wifi_ssid) ssids[0].textContent = c.wifi_ssid;
   if (ssids[1] && c.wifi_ssid2) ssids[1].textContent = c.wifi_ssid2;
+  // Keep _wifiData in sync for QR generation
+  if (c.wifi_ssid) _wifiData[0].ssid = c.wifi_ssid;
+  if (c.wifi_ssid2) _wifiData[1].ssid = c.wifi_ssid2;
   if (c.wifi_pass) {
+    _wifiData[0].pass = c.wifi_pass;
     var passes = document.querySelectorAll('.wifi-pass');
     if (passes[0]) passes[0].textContent = c.wifi_pass;
     if (passes[1]) passes[1].textContent = c.wifi_pass2 || c.wifi_pass;
+    _wifiData[1].pass = c.wifi_pass2 || c.wifi_pass;
     document.querySelectorAll('.copy-btn').forEach(function(btn, i) {
       btn.setAttribute('onclick', "copyText(event,'" + (i===0||i===2 ? c.wifi_pass : (c.wifi_pass2||c.wifi_pass)) + "')");
     });
@@ -1927,6 +1933,66 @@ function refreshSlider(places) {
       s.scrollBy({ left: cardW, behavior: 'smooth' });
     }
   }, 3500);
+}
+
+// ── WIFI QR CODE ─────────────────────────────────────────────────
+var _wifiData = [
+  { ssid: 'CasaGeres_5G',  pass: 'natureza2026', type: 'WPA' },
+  { ssid: 'CasaGeres_2G',  pass: 'natureza2026', type: 'WPA' }
+];
+
+function openWifiQR(idx) {
+  var w = _wifiData[idx] || _wifiData[0];
+  var ssid = w.ssid;
+  var pass = w.pass;
+  var enc  = w.type || 'WPA';
+
+  // Update labels
+  var label = document.getElementById('wifi-qr-ssid-label');
+  var passEl = document.getElementById('wifi-qr-pass-display');
+  if (label) label.textContent = ssid;
+  if (passEl) passEl.textContent = pass;
+
+  // Store for copy button
+  document.getElementById('wifi-qr-copy-btn').dataset.pass = pass;
+
+  // Generate QR code
+  var canvas = document.getElementById('wifi-qr-canvas');
+  if (canvas) {
+    canvas.innerHTML = '';
+    try {
+      new QRCode(canvas, {
+        text: 'WIFI:S:' + ssid + ';T:' + enc + ';P:' + pass + ';;',
+        width: 200,
+        height: 200,
+        colorDark: '#0f1908',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    } catch(e) {
+      canvas.innerHTML = '<p style="font-size:.75rem;color:#c0392b;">Não foi possível gerar o QR Code</p>';
+    }
+  }
+  openPopup('popup-wifi-qr');
+}
+
+function copyWifiPassFromQR() {
+  var btn = document.getElementById('wifi-qr-copy-btn');
+  var pass = btn ? btn.dataset.pass : '';
+  if (!pass) return;
+  navigator.clipboard.writeText(pass).then(function() {
+    btn.textContent = '✓';
+    setTimeout(function() { btn.textContent = 'Copiar'; }, 2000);
+  }).catch(function() {
+    // Fallback
+    var ta = document.createElement('textarea');
+    ta.value = pass; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✓';
+    setTimeout(function() { btn.textContent = 'Copiar'; }, 2000);
+  });
 }
 
 // ── WHATSAPP NOTIFICATION TO OWNER ───────────────────────────────
@@ -2469,6 +2535,27 @@ function wDesc(c)  { if(c===0)return'Céu limpo';if(c<=2)return'Parcialmente nub
 <!-- ── LANG BAR ──────────────────────────────────────────────── -->
 
 
+
+<!-- ── POPUP: WIFI QR CODE ─────────────────────────────────────── -->
+<div class="popup-overlay" id="popup-wifi-qr" onclick="closePopup('popup-wifi-qr')" style="display:none;">
+  <div class="popup-box" onclick="event.stopPropagation()" style="text-align:center;">
+    <button class="popup-close" onclick="closePopup('popup-wifi-qr')">✕</button>
+    <div class="popup-icon">📶</div>
+    <div class="popup-title">Ligar ao Wi-Fi</div>
+    <div class="popup-sub" id="wifi-qr-ssid-label" style="margin-bottom:1rem;"></div>
+    <!-- QR Code container -->
+    <div id="wifi-qr-canvas" style="display:inline-block;padding:12px;background:#fff;border-radius:12px;margin-bottom:1rem;"></div>
+    <p style="font-size:.75rem;color:var(--text-light);line-height:1.5;margin-bottom:.75rem;">Aponte a câmara do telemóvel para o código.<br/>Aceite a ligação quando aparecer o aviso.</p>
+    <!-- Manual copy fallback -->
+    <div style="background:var(--cream);border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;">
+      <div>
+        <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-light);margin-bottom:2px;">Password</div>
+        <div class="wifi-pass" id="wifi-qr-pass-display" style="font-size:.95rem;color:var(--text-dark);"></div>
+      </div>
+      <button id="wifi-qr-copy-btn" class="copy-btn" onclick="copyWifiPassFromQR()">Copiar</button>
+    </div>
+  </div>
+</div>
 
 <!-- ── POPUP: BOAS-VINDAS ──────────────────────────────────────── -->
 <div class="popup-overlay" id="popup-boasvindas">
