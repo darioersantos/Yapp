@@ -255,13 +255,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 <div id="login">
   <div class="lb">
     <div style="display:flex;justify-content:center;margin-bottom:1.2rem;">
-      <svg width="130" height="95" viewBox="0 0 240 165" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="75"  cy="80" r="55" fill="#4da6ff"/>
-        <circle cx="125" cy="58" r="44" fill="#4da6ff"/>
-        <circle cx="170" cy="80" r="40" fill="#4da6ff"/>
-        <rect   x="20"  y="90" width="200" height="60" fill="#4da6ff"/>
-        <text x="120" y="140" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="800" letter-spacing="6" fill="white">YAPP</text>
-      </svg>
+      <svg width="138" height="96" viewBox="0 0 230 160" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="75" cy="80" r="55" fill="#4da6ff"/><circle cx="125" cy="58" r="44" fill="#4da6ff"/><circle cx="170" cy="80" r="40" fill="#4da6ff"/><rect x="20" y="90" width="200" height="60" fill="#4da6ff"/><text x="120" y="140" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="800" letter-spacing="6" fill="white">YAPP</text></svg>
     </div>
     <div class="ll">YAPP Backoffice</div>
     <div class="lsub">Casa do Gerês</div>
@@ -287,12 +281,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
     <button class="ham" id="ham-btn" onclick="toggleDrawer()">
       <span></span><span></span><span></span>
     </button>
-    <svg width="32" height="24" viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-      <circle cx="75"  cy="90" r="55" fill="#4da6ff"/>
-      <circle cx="125" cy="68" r="44" fill="#4da6ff"/>
-      <circle cx="170" cy="90" r="40" fill="#4da6ff"/>
-      <rect   x="20"  y="100" width="200" height="60" fill="#4da6ff"/>
-    </svg>
+    <svg width="36" height="25" viewBox="0 0 230 160" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><circle cx="75" cy="80" r="55" fill="#4da6ff"/><circle cx="125" cy="58" r="44" fill="#4da6ff"/><circle cx="170" cy="80" r="40" fill="#4da6ff"/><rect x="20" y="90" width="200" height="60" fill="#4da6ff"/></svg>
     <div>
       <div class="topbar-title">YAPP Backoffice</div>
     </div>
@@ -309,13 +298,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
     <div class="sb-logo">
       <div class="sb-logo-inner">
         <!-- Logo: viewBox aumentado em baixo para a nuvem não ficar cortada -->
-        <svg class="sb-yapp-icon" viewBox="0 0 240 165" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="75"  cy="80" r="55" fill="#4da6ff"/>
-          <circle cx="125" cy="58" r="44" fill="#4da6ff"/>
-          <circle cx="170" cy="80" r="40" fill="#4da6ff"/>
-          <rect   x="20"  y="90" width="200" height="60" fill="#4da6ff"/>
-          <text x="120" y="140" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="800" letter-spacing="6" fill="white">YAPP</text>
-        </svg>
+        <svg class="sb-yapp-icon" viewBox="0 0 230 160" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="75" cy="80" r="55" fill="#4da6ff"/><circle cx="125" cy="58" r="44" fill="#4da6ff"/><circle cx="170" cy="80" r="40" fill="#4da6ff"/><rect x="20" y="90" width="200" height="60" fill="#4da6ff"/><text x="120" y="140" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="800" letter-spacing="6" fill="white">YAPP</text></svg>
         <div>
           <div class="sb-name">YAPP</div>
           <div class="sb-sub">Casa do Gerês</div>
@@ -918,36 +901,12 @@ Entregar as chaves ao proprietário</textarea>
 
         <div id="sec-patrocinadores" class="sec">
     <div class="content-wrap">
-      <div class="ph"><div><div class="ptitle">Patrocinadores</div></div></div>
-      <div class="card"><div class="ctitle">Patrocinador 1 (menu Casa)</div>
-        <div class="fld"><label>Foto</label>
-          <div class="photo-row">
-            <img id="prev-p1" class="photo-prev wide" src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&auto=format&fit=crop&q=75"/>
-            <div style="flex:1;"><input class="photo-url" id="img-p1" value="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-p1','img-p1')"/></div>
-          </div>
-        </div>
-        <div class="g2">
-          <div class="fld"><label>Badge</label><input class="inp" id="p1-badge" value="Parceiro local"/></div>
-          <div class="fld"><label>Nome</label><input class="inp" id="p1-nome" value="Adega do Gerês"/></div>
-          <div class="fld"><label>CTA</label><input class="inp" id="p1-cta" value="10% desconto a apresentar esta app"/></div>
-          <div class="fld"><label>URL</label><input class="inp" id="p1-url" value="https://www.google.com/maps/search/Adega+Geres"/></div>
-        </div>
+      <div class="ph">
+        <div><div class="ptitle">Patrocinadores</div><div class="psub">Parceiros e anunciantes na app</div></div>
+        <button class="addbtn" onclick="addPatrocinador()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar</button>
       </div>
-      <div class="card"><div class="ctitle">Patrocinador 2 (menu Descobrir)</div>
-        <div class="fld"><label>Foto</label>
-          <div class="photo-row">
-            <img id="prev-p2" class="photo-prev wide" src="https://images.unsplash.com/photo-1530866495561-507c9faab2ed?w=400&auto=format&fit=crop&q=75"/>
-            <div style="flex:1;"><input class="photo-url" id="img-p2" value="https://images.unsplash.com/photo-1530866495561-507c9faab2ed?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-p2','img-p2')"/></div>
-          </div>
-        </div>
-        <div class="g2">
-          <div class="fld"><label>Badge</label><input class="inp" id="p2-badge" value="Atividades locais"/></div>
-          <div class="fld"><label>Nome</label><input class="inp" id="p2-nome" value="Gerês Aventura"/></div>
-          <div class="fld"><label>CTA</label><input class="inp" id="p2-cta" value="Rafting · Canyoning · Trilhos guiados"/></div>
-          <div class="fld"><label>URL</label><input class="inp" id="p2-url" value="https://www.google.com/maps/search/Gerês+Aventura"/></div>
-        </div>
-      </div>
-      <button class="savebtn" onclick="saveSection('patrocinadores')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-patrocinadores">Guardado!</span></button>
+      <div id="pat-editor"></div>
+      <button class="savebtn" onclick="savePatrocinadores()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar todos<span class="oktxt" id="ok-patrocinadores">Guardado!</span></button>
     </div>
 
     <!-- CASA DE BANHO -->
