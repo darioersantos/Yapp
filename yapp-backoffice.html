@@ -190,48 +190,6 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 .api-status-bar{background:rgba(26,74,138,0.06);border:1px solid rgba(26,74,138,0.15);border-radius:var(--rs);padding:.7rem .9rem;margin-bottom:1rem;font-size:.8rem;color:var(--gm);display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;}
 .sync-btn{background:var(--g);color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:.75rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;}
 
-/* ── DASHBOARD SECÇÕES ──────────────────────────── */
-.dash-sec-row{display:flex;align-items:center;gap:12px;padding:.75rem 0;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .12s;border-radius:8px;margin:0 -4px;padding-left:4px;}
-.dash-sec-row:last-child{border-bottom:none;}
-.dash-sec-row:hover{background:rgba(59,125,216,0.04);}
-.dash-sec-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
-.dash-sec-info{flex:1;}
-.dash-sec-name{font-size:.88rem;font-weight:600;color:var(--tx);}
-.dash-sec-sub{font-size:.75rem;color:var(--txl);margin-top:1px;}
-.dash-sec-arrow{font-size:1.3rem;color:var(--txl);font-weight:300;}
-
-/* ── HÓSPEDE ATIVO HOJE ─────────────────────────── */
-.today-guest{display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;gap:.5rem;flex-wrap:wrap;border-bottom:1px solid var(--bd);}
-.today-guest:last-child{border-bottom:none;}
-.today-guest-name{font-weight:600;font-size:.9rem;}
-.today-guest-info{font-size:.75rem;color:var(--txl);}
-.days-badge{background:rgba(26,74,138,0.1);color:var(--g);border-radius:20px;padding:3px 9px;font-size:.72rem;font-weight:600;white-space:nowrap;}
-
-/* ── UNSAVED INDICATOR ──────────────────────────── */
-.unsaved-bar{display:none;background:#1a4a8a;color:#fff;padding:.55rem 1.2rem;font-size:.8rem;font-weight:500;align-items:center;justify-content:space-between;gap:1rem;border-radius:var(--rs);margin-bottom:.9rem;}
-.unsaved-bar.show{display:flex;}
-.unsaved-bar button{background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:6px;padding:4px 12px;font-size:.75rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
-
-/* ── OFFLINE BANNER ─────────────────────────────── */
-#offline-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:9000;background:#c0392b;color:#fff;text-align:center;padding:.5rem;font-size:.82rem;font-weight:500;}
-#offline-banner.show{display:block;}
-@media(min-width:900px){#offline-banner{left:240px;}}
-
-/* ── GUEST FILTER TABS ──────────────────────────── */
-.filter-tabs{display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;}
-.ftab{background:rgba(26,74,138,0.08);border:1px solid var(--bd);border-radius:20px;padding:5px 14px;font-size:.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--txm);transition:all .15s;}
-.ftab.on{background:var(--g);color:#fff;border-color:var(--g);}
-
-/* ── PREVIEW BUTTON ─────────────────────────────── */
-.preview-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(59,125,216,0.1);border:1px solid rgba(59,125,216,0.25);color:var(--g);border-radius:var(--rs);padding:.55rem 1rem;font-size:.8rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;transition:background .15s;}
-.preview-btn:hover{background:rgba(59,125,216,0.18);}
-
-/* ── DRAG HANDLE ────────────────────────────────── */
-.drag-handle{cursor:grab;padding:0 8px;color:var(--txl);font-size:1.1rem;user-select:none;flex-shrink:0;line-height:1;}
-.drag-handle:active{cursor:grabbing;}
-.place-row.dragging{opacity:.4;border:2px dashed var(--gl);}
-.place-row.drag-over{border-top:2px solid var(--gl);}
-
 /* ── SPINNER / LOADING ─────────────────────────── */
 @keyframes spin{to{transform:rotate(360deg);}}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
@@ -255,16 +213,25 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 <div id="login">
   <div class="lb">
     <div style="display:flex;justify-content:center;margin-bottom:1rem;">
-      <svg width="70" height="56" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="30" cy="38" rx="28" ry="28" fill="#4da6ff"/>
-        <ellipse cx="60" cy="28" rx="22" ry="22" fill="#4da6ff"/>
-        <ellipse cx="78" cy="42" rx="20" ry="20" fill="#4da6ff"/>
+      <svg width="110" height="88" viewBox="0 0 220 176" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- nuvem: 3 círculos + rectângulo base -->
+        <circle cx="72" cy="82" r="52" fill="#4da6ff"/>
+        <circle cx="118" cy="62" r="42" fill="#4da6ff"/>
+        <circle cx="158" cy="82" r="38" fill="#4da6ff"/>
+        <rect x="20" y="90" width="176" height="56" fill="#4da6ff"/>
+        <!-- texto YAPP branco -->
+        <text x="110" y="132" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="800" letter-spacing="6" fill="white">YAPP</text>
       </svg>
     </div>
     <div class="ll">YAPP Backoffice</div>
     <div class="lsub">Casa do Gerês</div>
     <label class="llbl">Password de acesso</label>
-    <input class="li" id="lpass" type="password" placeholder="••••••••"/>
+    <div style="position:relative;margin-bottom:.9rem;">
+      <input class="li" id="lpass" type="password" placeholder="••••••••" style="margin-bottom:0;padding-right:3rem;"/>
+      <button onclick="togglePass()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:rgba(255,255,255,0.45);display:flex;align-items:center;">
+        <svg id="eye-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
     <button class="lbtn" onclick="doLogin()">Entrar no backoffice</button>
     <div class="lerr" id="lerr"></div>
   </div>
@@ -272,8 +239,6 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 
 <!-- APP -->
 <div id="app">
-
-  <div id="offline-banner">📵 Sem ligação à internet — as alterações não serão guardadas</div>
 
   <!-- TOP BAR (mobile only) -->
   <div class="topbar">
@@ -358,81 +323,19 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
     <div id="sec-dashboard" class="sec on">
     <div class="content-wrap">
       <div class="ph">
-        <div>
-          <div class="ptitle" id="dash-prop-title">Casa do Gerês</div>
-          <div class="psub" id="dash-sync-lbl">A ligar ao Google Sheets...</div>
-        </div>
-        <button class="sync-btn" onclick="loadAll()" style="align-self:center;">↻ Sincronizar</button>
+        <div><div class="ptitle">Casa do Gerês</div><div class="psub">Dados em tempo real · Google Sheets</div></div>
       </div>
-
-      <!-- STAT CARDS -->
+      <div class="api-status-bar">
+        <span id="api-lbl" style="font-size:.8rem;">A ligar ao Google Sheets...</span>
+        <button class="sync-btn" onclick="loadAll()">↻ Sincronizar</button>
+      </div>
       <div class="stats">
-        <div class="stat">
-          <div class="statv" id="s-hosp">—</div>
-          <div class="statl">Hóspedes ativos</div>
-        </div>
-        <div class="stat">
-          <div class="statv" id="s-feed">—</div>
-          <div class="statl">Feedbacks</div>
-        </div>
-        <div class="stat">
-          <div class="statv" id="s-rat">—</div>
-          <div class="statl">Avaliação média</div>
-        </div>
-        <div class="stat">
-          <div class="statv" id="s-nl">—</div>
-          <div class="statl">Newsletter</div>
-        </div>
+        <div class="stat"><div class="statv" id="s-hosp">—</div><div class="statl">Hóspedes ativos</div></div>
+        <div class="stat"><div class="statv" id="s-feed">—</div><div class="statl">Feedbacks</div></div>
+        <div class="stat"><div class="statv" id="s-rat">—</div><div class="statl">Rating médio</div></div>
+        <div class="stat"><div class="statv" id="s-nl">—</div><div class="statl">Newsletter</div></div>
       </div>
-
-      <!-- HÓSPEDE ATIVO HOJE -->
-      <div id="dash-hoje-wrap" style="display:none;" class="card" style="border-left:3px solid var(--gl);">
-        <div class="ctitle" style="display:flex;justify-content:space-between;align-items:center;">
-          Hóspedes hoje
-          <span id="dash-hoje-badge" class="pill p-ok"></span>
-        </div>
-        <div id="dash-hoje"></div>
-      </div>
-
-      <!-- SECÇÕES DO GUIA -->
-      <div class="card">
-        <div class="ctitle" style="display:flex;justify-content:space-between;align-items:center;">
-          Secções do guia
-          <button class="actbtn" onclick="loadAll()" style="font-size:.72rem;">↻ Atualizar</button>
-        </div>
-        <div id="dash-seccoes">
-          <div class="dash-sec-row" onclick="go('casa-geral',document.querySelector('.sbi[onclick*=casa-geral]'))">
-            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#3b7dd8,#5b9ef0);">🏠</div>
-            <div class="dash-sec-info"><div class="dash-sec-name">Informações da casa</div><div class="dash-sec-sub">Wi-Fi, regras, check-out</div></div>
-            <div class="dash-sec-arrow">›</div>
-          </div>
-          <div class="dash-sec-row" onclick="go('atracoes',document.querySelector('.sbi[onclick*=atracoes]'))">
-            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">📍</div>
-            <div class="dash-sec-info"><div class="dash-sec-name">Atrações</div><div class="dash-sec-sub" id="dash-count-atracoes">A carregar...</div></div>
-            <div class="dash-sec-arrow">›</div>
-          </div>
-          <div class="dash-sec-row" onclick="go('restaurantes',document.querySelector('.sbi[onclick*=restaurantes]'))">
-            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#059669,#34d399);">🍽️</div>
-            <div class="dash-sec-info"><div class="dash-sec-name">Restaurantes</div><div class="dash-sec-sub" id="dash-count-restaurantes">A carregar...</div></div>
-            <div class="dash-sec-arrow">›</div>
-          </div>
-          <div class="dash-sec-row" onclick="go('servicos',document.querySelector('.sbi[onclick*=servicos]'))">
-            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#d97706,#fbbf24);">⚙️</div>
-            <div class="dash-sec-info"><div class="dash-sec-name">Serviços</div><div class="dash-sec-sub">Limpeza, bicicletas</div></div>
-            <div class="dash-sec-arrow">›</div>
-          </div>
-          <div class="dash-sec-row" onclick="go('notificacoes',document.querySelector('.sbi[onclick*=notificacoes]'))">
-            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#dc2626,#f87171);">🔔</div>
-            <div class="dash-sec-info"><div class="dash-sec-name">Notificações</div><div class="dash-sec-sub" id="dash-count-notif">Enviar mensagem aos hóspedes</div></div>
-            <div class="dash-sec-arrow">›</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- FEEDBACKS RECENTES -->
       <div class="card"><div class="ctitle">Feedbacks recentes</div><div id="dash-fb"><div style="font-size:.82rem;color:var(--txl);">A carregar...</div></div></div>
-
-      <!-- HÓSPEDES ATIVOS -->
       <div class="card"><div class="ctitle">Hóspedes com acesso ativo</div><div id="dash-hospedes"><div style="font-size:.82rem;color:var(--txl);">A carregar...</div></div></div>
     </div>
 
@@ -442,12 +345,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 
         <div id="sec-config" class="sec">
     <div class="content-wrap">
-      <div class="ph"><div><div class="ptitle">Propriedade & Splash</div><div class="psub">Dados gerais e ecrã de boas-vindas</div></div>
-        <a class="preview-btn" href="https://darioersantos.github.io/Yapp/versao-web.html" target="_blank">👁 Ver app</a>
-      </div>
-      <div id="unsaved-config" class="unsaved-bar">⚠️ Tens alterações por guardar nesta secção
-        <button onclick="saveConfig()">Guardar agora</button>
-      </div>
+      <div class="ph"><div><div class="ptitle">Propriedade & Splash</div><div class="psub">Dados gerais e ecrã de boas-vindas</div></div></div>
       <div class="info-box">As alterações aqui são guardadas <strong>diretamente na Google Sheet "Config"</strong> e ficam disponíveis na app dos hóspedes imediatamente.</div>
       <div class="card">
         <div class="ctitle">Identificação</div>
@@ -557,12 +455,6 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
         <div id="sec-hospedes" class="sec">
     <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Hóspedes</div><div class="psub">Gerir acessos à app · dados do Google Sheets</div></div></div>
-      <div class="filter-tabs">
-        <div class="ftab on" onclick="filterGuests('todos',this)">Todos</div>
-        <div class="ftab" onclick="filterGuests('ativos',this)">Ativos</div>
-        <div class="ftab" onclick="filterGuests('hoje',this)">Check-in/out hoje</div>
-        <div class="ftab" onclick="filterGuests('expirados',this)">Expirados</div>
-      </div>
       <div class="card">
         <div class="ctitle">Adicionar novo hóspede</div>
         <div class="g3">
@@ -1043,8 +935,14 @@ var API     = 'https://script.google.com/macros/s/AKfycbxqy-PfUD4XS0dCbe8vGUNDbJ
 var DB = { config:{}, guests:[], feedbacks:[], newsletter:[], atracoes:[], restaurantes:[] };
 
 // ── AUTH ────────────────────────────────────────
+function togglePass() {
+  var inp = document.getElementById('lpass');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
 function doLogin() {
-  if (document.getElementById('lpass').value === BO_PASS) {
+  var val = document.getElementById('lpass').value;
+  if (val === BO_PASS) {
+    document.getElementById('lerr').textContent = '';
     localStorage.setItem(BO_KEY, '1');
     document.getElementById('login').classList.add('off');
     document.getElementById('app').style.display = 'block';
@@ -1064,25 +962,6 @@ window.addEventListener('DOMContentLoaded', function() {
   // Restore local fields
   var local = localStorage.getItem(LS_KEY);
   if (local) { try { restoreLocal(JSON.parse(local)); } catch(e) {} }
-
-  // Offline detection
-  function checkOnline() {
-    var b = document.getElementById('offline-banner');
-    if (b) b.classList.toggle('show', !navigator.onLine);
-  }
-  window.addEventListener('online', checkOnline);
-  window.addEventListener('offline', checkOnline);
-  checkOnline();
-
-  // Unsaved indicator — watch inputs in config section
-  document.addEventListener('input', function(e) {
-    var sec = e.target.closest('.sec');
-    if (!sec) return;
-    var id = sec.id;
-    var barId = 'unsaved-' + id.replace('sec-','');
-    var bar = document.getElementById(barId);
-    if (bar) bar.classList.add('show');
-  });
 });
 
 // ── DRAWER ───────────────────────────────────────
@@ -1291,9 +1170,7 @@ function saveConfig() {
     instagram_url:v('c-ig'),
     facebook_url:v('c-fb'),
     google_reviews_url:v('c-grev')
-  }, function() { hideLoading(); showOk('ok-config'); toast('✓ Config guardada!');
-    var b = document.getElementById('unsaved-config'); if (b) b.classList.remove('show');
-  });
+  }, function() { hideLoading(); showOk('ok-config'); toast('✓ Config guardada!'); });
 }
 function saveWifi() {
   saveLocal();
@@ -1513,66 +1390,36 @@ function addGuest() {
     DB.guests.push({ user: user, pass: pass, checkout: co, name: v('h-nome'), active: true });
     renderGuests(); showOk('ok-hosp');
     ['h-user','h-pass','h-nome','h-co','h-notas'].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
-    toast('✓ Hóspede adicionado!');
-    // Auto notificação de boas-vindas
-    var bvMsg = (DB.config && DB.config.notif_tmpl_bv) || 'Bem-vindo! A tua app está pronta. Explora tudo o que temos para ti.';
-    apiWrite({ action:'saveConfig', notif_titulo:'Bem-vindo à ' + ((DB.config && DB.config.propriedade_nome)||'Casa do Gerês') + '!', notif_msg: bvMsg, notif_dest: user, notif_ts: new Date().toISOString(), notif_ativo: 'true' }, function() {});
+    toast('✓ Hóspede adicionado na Google Sheet!');
   });
 }
 
 function renderGuests() {
+  var h = '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Username</th><th>Password</th><th>Nome</th><th>Check-out</th><th>Estado</th><th>Ações</th></tr></thead><tbody>';
   var today = new Date();
-  var all = DB.guests.filter(function(g){ return g.user !== 'admin'; });
-  renderGuestsFiltered(all);
-  var s = document.getElementById('s-hosp');
-  if (s) s.textContent = DB.guests.filter(function(g) { return g.active && g.user !== 'admin' && new Date(g.checkout+'T23:59:59') >= today; }).length;
-}
-
-function filterGuests(mode, el) {
-  document.querySelectorAll('.ftab').forEach(function(t){ t.classList.remove('on'); });
-  if (el) el.classList.add('on');
-  var today = new Date();
-  var todayStr = today.toISOString().slice(0,10);
-  var filtered;
-  if (mode === 'ativos') {
-    filtered = DB.guests.filter(function(g){ return g.active && new Date(g.checkout+'T23:59:59') >= today && g.user !== 'admin'; });
-  } else if (mode === 'expirados') {
-    filtered = DB.guests.filter(function(g){ return new Date(g.checkout+'T23:59:59') < today; });
-  } else if (mode === 'hoje') {
-    filtered = DB.guests.filter(function(g){ return g.checkout === todayStr || g.checkin === todayStr; });
-  } else {
-    filtered = DB.guests.filter(function(g){ return g.user !== 'admin'; });
-  }
-  renderGuestsFiltered(filtered);
-}
-
-function renderGuestsFiltered(list) {
-  var h = '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Username</th><th>Password</th><th>Nome</th><th>Check-out</th><th>Dias</th><th>Estado</th><th>Ações</th></tr></thead><tbody>';
-  var today = new Date();
-  list.forEach(function(g) {
+  DB.guests.forEach(function(g, i) {
     var exp = new Date(g.checkout + 'T23:59:59') < today;
     var pill = !g.active ? '<span class="pill p-off">Inativo</span>' :
                exp ? '<span class="pill p-pend">Expirado</span>' :
                '<span class="pill p-ok">Ativo</span>';
-    var diff = g.checkout === '2099-12-31' ? '∞' : Math.ceil((new Date(g.checkout+'T23:59:59') - today) / 86400000);
-    var daysLabel = typeof diff === 'number' ? (diff <= 0 ? 'Hoje' : diff + 'd') : diff;
-    var idx = DB.guests.indexOf(g);
     h += '<tr><td><strong>' + esc(g.user) + '</strong></td>'
       + '<td style="font-family:monospace;font-size:.8rem;">' + esc(g.pass) + '</td>'
       + '<td>' + esc(g.name || '—') + '</td>'
       + '<td>' + (g.checkout === '2099-12-31' ? 'Permanente' : g.checkout) + '</td>'
-      + '<td><span class="days-badge">' + daysLabel + '</span></td>'
       + '<td>' + pill + '</td>'
       + '<td style="display:flex;gap:4px;flex-wrap:wrap;">'
-      + '<button class="actbtn" onclick="editPass(' + idx + ')">Editar</button>'
-      + (g.user !== 'admin' ? '<button class="actbtn del" onclick="deleteGuest(' + idx + ')">Eliminar</button>' : '')
+      + '<button class="actbtn" onclick="editPass(' + i + ')">Editar</button>'
+      + (g.user !== 'admin' ? '<button class="actbtn del" onclick="deleteGuest(' + i + ')">Eliminar</button>' : '')
       + '</td></tr>';
   });
-  if (!list.length) h += '<tr><td colspan="7" style="font-size:.82rem;color:var(--txl);padding:1rem;">Sem hóspedes nesta categoria.</td></tr>';
   h += '</tbody></table></div>';
   var el = document.getElementById('guests-tbl');
   if (el) el.innerHTML = h;
+  var s = document.getElementById('s-hosp');
+  if (s) s.textContent = DB.guests.filter(function(g) { return g.active && g.user !== 'admin'; }).length;
 }
+
+function editPass(i) {
   var g = DB.guests[i];
   var np = prompt('Nova password para "' + g.user + '" (atual: ' + g.pass + '):', g.pass);
   if (np !== null && np.trim()) {
@@ -1600,12 +1447,7 @@ function renderPlaces(type) {
   var list = DB[type] || [];
   var h = '';
   list.forEach(function(p, i) {
-    h += '<div class="place-row" draggable="true" data-idx="' + i + '" data-type="' + type + '" id="pr-' + type + '-' + i + '">'
-      + '<div style="display:flex;align-items:center;gap:6px;margin-bottom:.5rem;">'
-      + '<span class="drag-handle" title="Arrastar para reordenar">⠿</span>'
-      + '<span style="font-size:.82rem;font-weight:600;color:var(--txm);">#' + (i+1) + ' ' + esc(p.name||'') + '</span>'
-      + '<button class="actbtn del" style="margin-left:auto;" onclick="removePlace(\'' + type + '\',' + i + ')">Remover</button>'
-      + '</div>'
+    h += '<div class="place-row">'
       + '<div class="place-grid">'
       + '<img class="place-img-prev" id="pi-' + type + '-' + i + '" src="' + esc(p.img || p.image || '') + '" onerror="this.style.background=\'#eee\'" />'
       + '<div class="place-fields">'
@@ -1615,49 +1457,15 @@ function renderPlaces(type) {
       + '<input class="inp" style="font-size:.8rem;grid-column:1/-1;" value="' + esc(p.desc) + '" onchange="DB.' + type + '[' + i + '].desc=this.value" placeholder="Descrição"/>'
       + '<input class="photo-url" style="grid-column:1/-1;" value="' + esc(p.img || p.image || '') + '" placeholder="URL da imagem" oninput="DB.' + type + '[' + i + '].img=this.value;document.getElementById(\'pi-' + type + '-' + i + '\').src=this.value"/>'
       + '<input class="inp" style="font-size:.8rem;" value="' + (p.lat || '') + '" onchange="DB.' + type + '[' + i + '].lat=parseFloat(this.value)||this.value" placeholder="Lat"/>'
-      + '<input class="inp" style="font-size:.8rem;" value="' + (p.lng||'') + '" onchange="DB.' + type + '[' + i + '].lng=parseFloat(this.value)||this.value" placeholder="Lng"/>'
+      + '<input class="inp" style="font-size:.8rem;" value="' + (p.lng) + '" onchange="DB.' + type + '[' + i + '].lng=parseFloat(this.value)||this.value" placeholder="Lng"/>'
       + '<input class="inp" style="font-size:.8rem;" value="' + esc(p.rating) + '" onchange="DB.' + type + '[' + i + '].rating=this.value" placeholder="Rating"/>'
       + '</div></div>'
+      + '<div style="text-align:right;margin-top:.5rem;"><button class="actbtn del" onclick="removePlace(\'' + type + '\',' + i + ')">Remover</button></div>'
       + '</div>';
   });
   if (!h) h = '<div style="font-size:.82rem;color:var(--txl);padding:1rem 0;">Sem itens. Clica em Adicionar.</div>';
   var el = document.getElementById(type + '-list');
-  if (el) { el.innerHTML = h; initDragDrop(type); }
-}
-
-function initDragDrop(type) {
-  var rows = document.querySelectorAll('[data-type="' + type + '"]');
-  var dragSrc = null;
-  rows.forEach(function(row) {
-    row.addEventListener('dragstart', function(e) {
-      dragSrc = this;
-      this.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-    });
-    row.addEventListener('dragend', function() {
-      this.classList.remove('dragging');
-      rows.forEach(function(r){ r.classList.remove('drag-over'); });
-    });
-    row.addEventListener('dragover', function(e) {
-      e.preventDefault();
-      if (this !== dragSrc) {
-        rows.forEach(function(r){ r.classList.remove('drag-over'); });
-        this.classList.add('drag-over');
-      }
-    });
-    row.addEventListener('drop', function(e) {
-      e.preventDefault();
-      if (dragSrc && this !== dragSrc) {
-        var fromIdx = parseInt(dragSrc.getAttribute('data-idx'));
-        var toIdx = parseInt(this.getAttribute('data-idx'));
-        var arr = DB[type];
-        var item = arr.splice(fromIdx, 1)[0];
-        arr.splice(toIdx, 0, item);
-        renderPlaces(type);
-        toast('↕ Ordem atualizada — clica em Guardar para aplicar.');
-      }
-    });
-  });
+  if (el) el.innerHTML = h;
 }
 
 function addPlace(type) {
@@ -1742,64 +1550,18 @@ function renderNewsletter() {
 // ── DASHBOARD ─────────────────────────────────────
 function updateDashboard() {
   renderGuests(); renderFeedbacks(); renderNewsletter();
-
-  // Timestamp sync
-  var now = new Date();
-  var ts = now.toLocaleTimeString('pt-PT', {hour:'2-digit',minute:'2-digit'});
-  var sl = document.getElementById('dash-sync-lbl');
-  if (sl) sl.textContent = 'Última sincronização: ' + ts;
-
-  // Property name from config
-  var pt = document.getElementById('dash-prop-title');
-  if (pt && DB.config && DB.config.propriedade_nome) pt.textContent = DB.config.propriedade_nome;
-
-  // Feedbacks recentes
-  var h = '';
-  DB.feedbacks.slice(0, 3).forEach(function(f) {
+  var h = ''; DB.feedbacks.slice(0, 3).forEach(function(f) {
     var s = ''; for (var j = 0; j < 5; j++) s += j < f.rating ? '★' : '☆';
     h += '<div class="fc"><div class="fc-top"><span class="fc-name">' + esc(f.name) + '</span><span class="fc-date">' + f.date + '</span></div><div class="fc-stars">' + s + '</div><div class="fc-text">' + esc(f.text) + '</div></div>';
   });
-  var df = document.getElementById('dash-fb');
-  if (df) df.innerHTML = h || '<div style="font-size:.82rem;color:var(--txl);">Sem feedbacks.</div>';
-
-  // Hóspedes ativos
-  var today = new Date();
-  var todayStr = today.toISOString().slice(0,10);
-  var ativos = DB.guests.filter(function(g) { return g.active && new Date(g.checkout + 'T23:59:59') >= today && g.user !== 'admin'; });
-  var dh = '';
-  ativos.forEach(function(g) {
-    var diff = Math.ceil((new Date(g.checkout + 'T23:59:59') - today) / 86400000);
-    var daysLabel = g.checkout === '2099-12-31' ? 'Permanente' : (diff <= 1 ? 'Check-out amanhã' : diff + ' dias restantes');
-    dh += '<div style="display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid rgba(59,125,216,0.08);">'
+  var df = document.getElementById('dash-fb'); if (df) df.innerHTML = h || '<div style="font-size:.82rem;color:var(--txl);">Sem feedbacks.</div>';
+  var dh = ''; var today = new Date();
+  DB.guests.filter(function(g) { return g.active && new Date(g.checkout + 'T23:59:59') >= today; }).forEach(function(g) {
+    dh += '<div style="display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid rgba(90,138,60,0.08);">'
       + '<div><strong style="font-size:.85rem;">' + esc(g.user) + '</strong> <span style="font-size:.75rem;color:var(--txl);">' + esc(g.name || '') + '</span></div>'
-      + '<span class="days-badge">' + daysLabel + '</span></div>';
+      + '<span style="font-size:.75rem;color:var(--txl);">Check-out: ' + g.checkout + '</span></div>';
   });
-  var dho = document.getElementById('dash-hospedes');
-  if (dho) dho.innerHTML = dh || '<div style="font-size:.82rem;color:var(--txl);">Nenhum hóspede ativo.</div>';
-
-  // Hóspedes com check-in ou check-out HOJE
-  var hospedesHoje = DB.guests.filter(function(g) { return g.checkout === todayStr || g.checkin === todayStr; });
-  var hojewrap = document.getElementById('dash-hoje-wrap');
-  var hoje = document.getElementById('dash-hoje');
-  if (hojewrap && hoje) {
-    if (hospedesHoje.length > 0) {
-      hojewrap.style.display = 'block';
-      var badge = document.getElementById('dash-hoje-badge');
-      if (badge) { badge.textContent = hospedesHoje.length + ' hoje'; }
-      hoje.innerHTML = hospedesHoje.map(function(g) {
-        var tipo = g.checkout === todayStr ? '🚪 Check-out' : '🏠 Check-in';
-        return '<div class="today-guest"><div><div class="today-guest-name">' + esc(g.user) + (g.name ? ' · ' + esc(g.name) : '') + '</div><div class="today-guest-info">' + tipo + ' · ' + g.checkout + '</div></div></div>';
-      }).join('');
-    } else {
-      hojewrap.style.display = 'none';
-    }
-  }
-
-  // Contagem secções
-  var ca = document.getElementById('dash-count-atracoes');
-  if (ca) ca.textContent = DB.atracoes.length ? DB.atracoes.length + ' pontos de interesse' : 'Sem itens';
-  var cr = document.getElementById('dash-count-restaurantes');
-  if (cr) cr.textContent = DB.restaurantes.length ? DB.restaurantes.length + ' sugestões' : 'Sem itens';
+  var dho = document.getElementById('dash-hospedes'); if (dho) dho.innerHTML = dh || '<div style="font-size:.82rem;color:var(--txl);">Nenhum hóspede ativo.</div>';
 }
 
 // ── apiWrite — envia via GET params (funciona sem CORS) ──────────
