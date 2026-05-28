@@ -882,6 +882,18 @@ body.aviso-active #notif-banner{top:2.2rem;}
         </a>
       </div>
       <div class="block-label">Proprietário</div>
+      <!-- Nome do proprietário — dinâmico via backoffice -->
+      <div class="card" id="prop-nome-card" style="display:none;margin-bottom:.6rem;">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <div style="width:42px;height:42px;border-radius:50%;background:var(--forest);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div>
+            <div class="contact-label" id="prop-nome-display">Proprietário</div>
+            <div class="contact-sub" id="prop-nome-sub">Gestor do alojamento</div>
+          </div>
+        </div>
+      </div>
       <a href="https://wa.me/351914713808" class="contact-link">
         <div class="contact-icon" style="background:#25D366;"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div>
         <div><div class="contact-label">WhatsApp</div><div class="contact-sub">Estamos sempre disponíveis para ajudar</div></div>
@@ -940,7 +952,24 @@ body.aviso-active #notif-banner{top:2.2rem;}
         </div>
       </div>
       <a href="https://yapp.pt" target="_blank" class="yapp-footer" style="display:block;text-decoration:none;">
-        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:6px;"><circle cx="30" cy="30" r="28" fill="none" stroke="var(--forest)" stroke-width="2"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="18" font-weight="600" fill="var(--forest)">YAPP</text></svg>
+        <!-- YAPP Logo — exact cloud shape from brand -->
+        <svg width="90" height="70" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto 6px;">
+          <g fill="var(--forest)">
+            <!-- Left bump -->
+            <circle cx="85" cy="95" r="42"/>
+            <!-- Center main bump (tallest) -->
+            <circle cx="148" cy="72" r="52"/>
+            <!-- Right bump -->
+            <circle cx="220" cy="90" r="38"/>
+            <!-- Fill bottom gap -->
+            <rect x="50" y="98" width="210" height="44" rx="8"/>
+          </g>
+          <!-- YAPP text below -->
+          <text x="150" y="182" text-anchor="middle"
+            font-family="'Courier New',monospace"
+            font-size="30" font-weight="700" letter-spacing="10"
+            fill="var(--forest)">YAPP</text>
+        </svg>
         <div class="yapp-footer-brand">YAPP · Guia do Hóspede</div>
         <div class="yapp-footer-sub">yapp.pt</div>
       </a>
@@ -1800,27 +1829,25 @@ function applyConfig(c) {
 
 function applyTheme(tema) {
   var body = document.body;
-  body.classList.remove('tema-oceano', 'tema-natureza');
-  // Theme color map
+  body.classList.remove('tema-oceano', 'tema-natureza', 'tema-urbano');
+  // Theme color map — browser bar colour per theme
   var colors = {
-    natureza: { bar: '#0f1908', apple: 'black-translucent', login: '#0f1908' },
-    oceano:   { bar: '#061a35', apple: 'black-translucent', login: '#061a35' }
+    natureza: { bar: '#0f1908', login: '#0f1908' },  // verde escuro
+    oceano:   { bar: '#061a35', login: '#061a35' },  // azul marinho
+    urbano:   { bar: '#1a1a1a', login: '#1a1a1a' }   // cinzento escuro
   };
   var t = colors[tema] || colors.natureza;
-  // Update browser bar color
   var tc = document.getElementById('theme-meta');
   if (tc) tc.setAttribute('content', t.bar);
   var as = document.getElementById('apple-status-bar');
-  if (as) as.setAttribute('content', t.apple);
+  if (as) as.setAttribute('content', 'black-translucent');
   if (!tema || tema === 'natureza') {
     try { localStorage.setItem('yapp_tema', 'natureza'); } catch(e) {}
     return;
   }
-  if (tema === 'oceano') {
-    body.classList.add('tema-oceano');
-    var ls = document.getElementById('login-screen');
-    if (ls) ls.style.background = t.login;
-  }
+  body.classList.add('tema-' + tema);
+  var ls = document.getElementById('login-screen');
+  if (ls) ls.style.background = t.login;
   try { localStorage.setItem('yapp_tema', tema); } catch(e) {}
 }
 
@@ -1975,8 +2002,16 @@ function applyContacto(c) {
     if (wa) wa.href = 'https://wa.me/' + c.prop_whatsapp.replace(/[^0-9]/g,'');
   }
   if (c.prop_nome) {
+    // Show name card at top of proprietário section
+    var card = document.getElementById('prop-nome-card');
+    var nameEl = document.getElementById('prop-nome-display');
+    var subEl = document.getElementById('prop-nome-sub');
+    if (card) card.style.display = 'block';
+    if (nameEl) nameEl.textContent = c.prop_nome;
+    if (subEl && c.prop_cargo) subEl.textContent = c.prop_cargo;
+    // Also update WA sub
     document.querySelectorAll('.contact-sub').forEach(function(el) {
-      if (el.textContent.indexOf('Carlos') !== -1 || el.textContent.indexOf('minutos') !== -1)
+      if (el.textContent.indexOf('disponíveis') !== -1 || el.textContent.indexOf('minutos') !== -1)
         el.textContent = 'Resposta em minutos · ' + c.prop_nome;
     });
   }
