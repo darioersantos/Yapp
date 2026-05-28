@@ -14,18 +14,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=DM+Sans:wght@300;400;500&family=Playfair+Display:wght@600&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --g:#2d4a1e;--gm:#3d6428;--gl:#5a8a3c;--sl:#b8d4a0;--sage:#8aab6e;
-  --cream:#f5f0e8;--cd:#ede5d4;--earth:#8b6f47;
-  --tx:#1e2d14;--txm:#4a5e38;--txl:#7a8f6a;
-  --bd:rgba(90,138,60,0.18);--r:12px;--rs:8px;
+  --g:#1a4a8a;--gm:#2158a3;--gl:#3b7dd8;--sl:#a8c8f0;--sage:#6aaad4;
+  --cream:#f0f6ff;--cd:#e0edf8;--earth:#4a7ab5;
+  --tx:#0d1f3c;--txm:#2d4e7a;--txl:#6a8aaa;
+  --bd:rgba(59,125,216,0.18);--r:12px;--rs:8px;
   --red:#c0392b;--ora:#e67e22;
+  /* desktop sidebar */
+  --sb-bg:#1e3a6e;--sb-active:rgba(255,255,255,0.14);--sb-hover:rgba(255,255,255,0.07);
+  --sb-sec-clr:rgba(255,255,255,0.35);--sb-txt:rgba(255,255,255,0.7);
+  --sb-accent:#6ab3f5;
 }
 /* ── BASE ─────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-height:100vh;overflow-x:hidden;}
+body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-height:100vh;overflow-x:hidden;}
 
 /* ── LOGIN ────────────────────────────────────── */
-#login{position:fixed;inset:0;background:#0f1908;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;padding:1.5rem;}
+#login{position:fixed;inset:0;background:#0a1a3a;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;padding:1.5rem;}
 #login.off{display:none;}
 .lb{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:2rem 1.6rem;width:100%;max-width:340px;}
 .ll{font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:#fff;text-align:center;margin-bottom:2px;}
@@ -53,29 +57,31 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
 /* ── SIDEBAR — overlay em mobile, fixa em desktop ─ */
 #drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;opacity:0;pointer-events:none;transition:opacity .25s;}
 #drawer-overlay.open{opacity:1;pointer-events:all;}
-.sidebar{position:fixed;top:0;left:-260px;width:260px;height:100vh;background:var(--g);display:flex;flex-direction:column;overflow-y:auto;z-index:400;transition:left .28s cubic-bezier(0.4,0,0.2,1);}
+.sidebar{position:fixed;top:0;left:-260px;width:260px;height:100vh;background:var(--sb-bg);display:flex;flex-direction:column;overflow-y:auto;z-index:400;transition:left .28s cubic-bezier(0.4,0,0.2,1);}
 .sidebar.open{left:0;}
-.sb-logo{padding:1.3rem 1.2rem .9rem;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:space-between;}
-.sb-name{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:#fff;}
-.sb-sub{font-size:9px;color:rgba(255,255,255,0.35);margin-top:1px;text-transform:uppercase;letter-spacing:.08em;}
+.sb-logo{padding:0 1.2rem 0;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:space-between;height:68px;}
+.sb-logo-inner{display:flex;align-items:center;gap:10px;}
+.sb-yapp-icon{width:34px;height:34px;flex-shrink:0;}
+.sb-name{font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;color:#fff;}
+.sb-sub{font-size:9px;color:rgba(255,255,255,0.4);margin-top:1px;text-transform:uppercase;letter-spacing:.08em;}
 .sb-close{background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.3rem;cursor:pointer;padding:4px;}
 .sbnav{padding:.4rem 0;flex:1;overflow-y:auto;}
-.sbsec{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.3);padding:.75rem 1.2rem .25rem;}
-.sbi{display:flex;align-items:center;gap:10px;padding:.65rem 1.2rem;font-size:.82rem;color:rgba(255,255,255,0.65);cursor:pointer;border-left:3px solid transparent;transition:all .15s;user-select:none;}
-.sbi:hover{background:rgba(255,255,255,0.07);color:#fff;}
-.sbi.on{background:rgba(255,255,255,0.12);color:#fff;border-left-color:var(--sl);}
+.sbsec{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--sb-sec-clr);padding:.75rem 1.2rem .25rem;}
+.sbi{display:flex;align-items:center;gap:10px;padding:.65rem 1.2rem;font-size:.82rem;color:var(--sb-txt);cursor:pointer;border-left:3px solid transparent;transition:all .15s;user-select:none;}
+.sbi:hover{background:var(--sb-hover);color:#fff;}
+.sbi.on{background:var(--sb-active);color:#fff;border-left-color:var(--sb-accent);}
 .sbi svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;flex-shrink:0;}
 .sbfoot{padding:1rem 1.2rem;border-top:1px solid rgba(255,255,255,0.08);}
 .sbout{background:none;border:none;color:rgba(255,255,255,0.4);font-family:'DM Sans',sans-serif;font-size:.82rem;cursor:pointer;display:flex;align-items:center;gap:8px;padding:.5rem 0;}
 
 /* ── MAIN CONTENT ─────────────────────────────── */
-.main{margin-left:0;padding:72px 1rem 2rem;min-height:100vh;}
+.main{margin-left:0;padding:72px 1rem 2rem;min-height:100vh;background:#e8f0fb;}
 /* conteúdo centrado com max-width para não esticar */
 .content-wrap{max-width:780px;margin:0 auto;}
 .ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.4rem;flex-wrap:wrap;gap:.75rem;}
 .ptitle{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--g);}
 .psub{font-size:.8rem;color:var(--txl);margin-top:2px;}
-.synced{display:inline-flex;align-items:center;gap:6px;background:rgba(90,138,60,0.1);border-radius:20px;padding:4px 10px;font-size:.72rem;color:var(--gm);font-weight:500;}
+.synced{display:inline-flex;align-items:center;gap:6px;background:rgba(59,125,216,0.1);border-radius:20px;padding:4px 10px;font-size:.72rem;color:var(--gm);font-weight:500;}
 
 /* ── SECTIONS ─────────────────────────────────── */
 .sec{display:none;}
@@ -121,12 +127,12 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
 
 /* ── DESKTOP — sidebar fixa, grids 2 col ──────── */
 @media(min-width:900px){
-  .topbar{left:260px;}
-  .sidebar{left:0;transition:none;}
+  .topbar{display:none;}
+  .sidebar{left:0;transition:none;width:240px;}
   #drawer-overlay{display:none!important;}
   .sb-close{display:none;}
   .ham{display:none;}
-  .main{margin-left:260px;padding:80px 2.5rem 3rem;}
+  .main{margin-left:240px;padding:2.5rem 3rem 3rem;}
   .g2{grid-template-columns:1fr 1fr;}
   .g3{grid-template-columns:1fr 1fr 1fr;}
   .g4{grid-template-columns:1fr 1fr 1fr 1fr;}
@@ -134,27 +140,32 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
   .photo-prev{width:140px;height:100px;flex-shrink:0;}
   .photo-prev.wide{width:180px;}
   .savebtn{width:auto;}
-  .stats{grid-template-columns:repeat(4,1fr);}
+  .stats{grid-template-columns:repeat(3,1fr);}
+  /* desktop page header */
+  .ptitle{font-size:1.75rem;font-weight:700;}
+  /* stat cards bigger on desktop */
+  .stat{padding:1.3rem 1.4rem;}
+  .statv{font-size:2.4rem;}
 }
 
 /* ── TABLE — scroll horizontal ────────────────── */
 .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .tbl{width:100%;border-collapse:collapse;font-size:.82rem;min-width:480px;}
 .tbl th{text-align:left;padding:.55rem .7rem;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--txl);border-bottom:1px solid var(--bd);}
-.tbl td{padding:.65rem .7rem;border-bottom:1px solid rgba(90,138,60,0.07);vertical-align:middle;}
+.tbl td{padding:.65rem .7rem;border-bottom:1px solid rgba(59,125,216,0.07);vertical-align:middle;}
 .tbl tr:last-child td{border-bottom:none;}
 
 /* ── PILLS ─────────────────────────────────────── */
 .pill{display:inline-flex;border-radius:20px;padding:2px 9px;font-size:10px;font-weight:600;}
-.p-ok{background:rgba(45,74,30,0.1);color:var(--g);}
+.p-ok{background:rgba(26,74,138,0.1);color:var(--g);}
 .p-off{background:rgba(192,57,43,0.1);color:var(--red);}
 .p-pend{background:rgba(230,126,34,0.1);color:var(--ora);}
 
 /* ── STATS ─────────────────────────────────────── */
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1.2rem;}
 .stat{background:#fff;border-radius:var(--r);border:1px solid var(--bd);padding:1rem;}
-.statv{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--g);line-height:1;}
-.statl{font-size:.7rem;color:var(--txl);margin-top:3px;}
+.statv{font-family:'DM Sans',sans-serif;font-size:2rem;font-weight:700;color:var(--g);line-height:1;}
+.statl{font-size:.7rem;color:var(--txl);margin-top:3px;text-transform:uppercase;letter-spacing:.05em;}
 
 /* ── FEEDBACK CARDS ───────────────────────────── */
 .fc{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:1rem;margin-bottom:.7rem;}
@@ -166,7 +177,7 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
 .fc-acts{display:flex;gap:.4rem;margin-top:8px;flex-wrap:wrap;}
 
 /* ── INFO BOX ───────────────────────────────────── */
-.info-box{background:rgba(45,74,30,0.07);border:1px solid rgba(45,74,30,0.15);border-radius:var(--rs);padding:.85rem 1rem;font-size:.82rem;color:var(--gm);line-height:1.6;margin-bottom:.9rem;}
+.info-box{background:rgba(26,74,138,0.06);border:1px solid rgba(26,74,138,0.15);border-radius:var(--rs);padding:.85rem 1rem;font-size:.82rem;color:var(--gm);line-height:1.6;margin-bottom:.9rem;}
 .info-box strong{color:var(--g);}
 
 /* ── PLACE ROWS ─────────────────────────────────── */
@@ -176,15 +187,57 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
 .place-fields{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;}
 
 /* ── STATUS / API ────────────────────────────────── */
-.api-status-bar{background:rgba(45,74,30,0.07);border:1px solid rgba(45,74,30,0.15);border-radius:var(--rs);padding:.7rem .9rem;margin-bottom:1rem;font-size:.8rem;color:var(--gm);display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;}
+.api-status-bar{background:rgba(26,74,138,0.06);border:1px solid rgba(26,74,138,0.15);border-radius:var(--rs);padding:.7rem .9rem;margin-bottom:1rem;font-size:.8rem;color:var(--gm);display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;}
 .sync-btn{background:var(--g);color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:.75rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+/* ── DASHBOARD SECÇÕES ──────────────────────────── */
+.dash-sec-row{display:flex;align-items:center;gap:12px;padding:.75rem 0;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .12s;border-radius:8px;margin:0 -4px;padding-left:4px;}
+.dash-sec-row:last-child{border-bottom:none;}
+.dash-sec-row:hover{background:rgba(59,125,216,0.04);}
+.dash-sec-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.dash-sec-info{flex:1;}
+.dash-sec-name{font-size:.88rem;font-weight:600;color:var(--tx);}
+.dash-sec-sub{font-size:.75rem;color:var(--txl);margin-top:1px;}
+.dash-sec-arrow{font-size:1.3rem;color:var(--txl);font-weight:300;}
+
+/* ── HÓSPEDE ATIVO HOJE ─────────────────────────── */
+.today-guest{display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;gap:.5rem;flex-wrap:wrap;border-bottom:1px solid var(--bd);}
+.today-guest:last-child{border-bottom:none;}
+.today-guest-name{font-weight:600;font-size:.9rem;}
+.today-guest-info{font-size:.75rem;color:var(--txl);}
+.days-badge{background:rgba(26,74,138,0.1);color:var(--g);border-radius:20px;padding:3px 9px;font-size:.72rem;font-weight:600;white-space:nowrap;}
+
+/* ── UNSAVED INDICATOR ──────────────────────────── */
+.unsaved-bar{display:none;background:#1a4a8a;color:#fff;padding:.55rem 1.2rem;font-size:.8rem;font-weight:500;align-items:center;justify-content:space-between;gap:1rem;border-radius:var(--rs);margin-bottom:.9rem;}
+.unsaved-bar.show{display:flex;}
+.unsaved-bar button{background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:6px;padding:4px 12px;font-size:.75rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+/* ── OFFLINE BANNER ─────────────────────────────── */
+#offline-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:9000;background:#c0392b;color:#fff;text-align:center;padding:.5rem;font-size:.82rem;font-weight:500;}
+#offline-banner.show{display:block;}
+@media(min-width:900px){#offline-banner{left:240px;}}
+
+/* ── GUEST FILTER TABS ──────────────────────────── */
+.filter-tabs{display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;}
+.ftab{background:rgba(26,74,138,0.08);border:1px solid var(--bd);border-radius:20px;padding:5px 14px;font-size:.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--txm);transition:all .15s;}
+.ftab.on{background:var(--g);color:#fff;border-color:var(--g);}
+
+/* ── PREVIEW BUTTON ─────────────────────────────── */
+.preview-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(59,125,216,0.1);border:1px solid rgba(59,125,216,0.25);color:var(--g);border-radius:var(--rs);padding:.55rem 1rem;font-size:.8rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;transition:background .15s;}
+.preview-btn:hover{background:rgba(59,125,216,0.18);}
+
+/* ── DRAG HANDLE ────────────────────────────────── */
+.drag-handle{cursor:grab;padding:0 8px;color:var(--txl);font-size:1.1rem;user-select:none;flex-shrink:0;line-height:1;}
+.drag-handle:active{cursor:grabbing;}
+.place-row.dragging{opacity:.4;border:2px dashed var(--gl);}
+.place-row.drag-over{border-top:2px solid var(--gl);}
 
 /* ── SPINNER / LOADING ─────────────────────────── */
 @keyframes spin{to{transform:rotate(360deg);}}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(16px);background:#1e2d14;color:#fff;padding:10px 20px;border-radius:30px;font-size:.82rem;font-weight:500;z-index:9999;opacity:0;transition:all .28s;pointer-events:none;max-width:88vw;text-align:center;}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(16px);background:#0d1f3c;color:#fff;padding:10px 20px;border-radius:30px;font-size:.82rem;font-weight:500;z-index:9999;opacity:0;transition:all .28s;pointer-events:none;max-width:88vw;text-align:center;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.loading-overlay{position:fixed;inset:0;background:rgba(15,25,8,0.65);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:1rem;}
+.loading-overlay{position:fixed;inset:0;background:rgba(10,26,58,0.65);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:1rem;}
 .loading-overlay.show{display:flex;}
 .loading-spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,0.2);border-top-color:var(--sl);border-radius:50%;animation:spin .8s linear infinite;}
 .loading-txt{font-size:.88rem;color:rgba(255,255,255,0.7);}
@@ -201,6 +254,13 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
 <!-- LOGIN -->
 <div id="login">
   <div class="lb">
+    <div style="display:flex;justify-content:center;margin-bottom:1rem;">
+      <svg width="70" height="56" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="30" cy="38" rx="28" ry="28" fill="#4da6ff"/>
+        <ellipse cx="60" cy="28" rx="22" ry="22" fill="#4da6ff"/>
+        <ellipse cx="78" cy="42" rx="20" ry="20" fill="#4da6ff"/>
+      </svg>
+    </div>
     <div class="ll">YAPP Backoffice</div>
     <div class="lsub">Casa do Gerês</div>
     <label class="llbl">Password de acesso</label>
@@ -213,11 +273,18 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
 <!-- APP -->
 <div id="app">
 
-  <!-- TOP BAR -->
+  <div id="offline-banner">📵 Sem ligação à internet — as alterações não serão guardadas</div>
+
+  <!-- TOP BAR (mobile only) -->
   <div class="topbar">
     <button class="ham" id="ham-btn" onclick="toggleDrawer()">
       <span></span><span></span><span></span>
     </button>
+    <svg width="28" height="22" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+      <ellipse cx="30" cy="38" rx="28" ry="28" fill="#4da6ff"/>
+      <ellipse cx="60" cy="28" rx="22" ry="22" fill="#4da6ff"/>
+      <ellipse cx="78" cy="42" rx="20" ry="20" fill="#4da6ff"/>
+    </svg>
     <div>
       <div class="topbar-title">YAPP Backoffice</div>
     </div>
@@ -232,9 +299,16 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
 
   <div class="sidebar" id="drawer">
     <div class="sb-logo">
-      <div>
-        <div class="sb-name">YAPP Backoffice</div>
-        <div class="sb-sub">Casa do Gerês</div>
+      <div class="sb-logo-inner">
+        <svg class="sb-yapp-icon" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="30" cy="38" rx="28" ry="28" fill="#4da6ff"/>
+          <ellipse cx="60" cy="28" rx="22" ry="22" fill="#4da6ff"/>
+          <ellipse cx="78" cy="42" rx="20" ry="20" fill="#4da6ff"/>
+        </svg>
+        <div>
+          <div class="sb-name">YAPP</div>
+          <div class="sb-sub">Casa do Gerês</div>
+        </div>
       </div>
       <button class="sb-close" onclick="closeDrawer()">✕</button>
     </div>
@@ -284,20 +358,81 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
     <div id="sec-dashboard" class="sec on">
     <div class="content-wrap">
       <div class="ph">
-        <div><div class="ptitle">Dashboard</div><div class="psub">Dados em tempo real do Google Sheets</div></div>
+        <div>
+          <div class="ptitle" id="dash-prop-title">Casa do Gerês</div>
+          <div class="psub" id="dash-sync-lbl">A ligar ao Google Sheets...</div>
+        </div>
+        <button class="sync-btn" onclick="loadAll()" style="align-self:center;">↻ Sincronizar</button>
+      </div>
 
-      </div>
-      <div class="api-status-bar">
-        <span id="api-lbl" style="font-size:.8rem;">A ligar ao Google Sheets...</span>
-        <button class="sync-btn" onclick="loadAll()">↻ Sincronizar</button>
-      </div>
+      <!-- STAT CARDS -->
       <div class="stats">
-        <div class="stat"><div class="statv" id="s-hosp">—</div><div class="statl">Hóspedes ativos</div></div>
-        <div class="stat"><div class="statv" id="s-feed">—</div><div class="statl">Feedbacks</div></div>
-        <div class="stat"><div class="statv" id="s-rat">—</div><div class="statl">Rating médio</div></div>
-        <div class="stat"><div class="statv" id="s-nl">—</div><div class="statl">Newsletter</div></div>
+        <div class="stat">
+          <div class="statv" id="s-hosp">—</div>
+          <div class="statl">Hóspedes ativos</div>
+        </div>
+        <div class="stat">
+          <div class="statv" id="s-feed">—</div>
+          <div class="statl">Feedbacks</div>
+        </div>
+        <div class="stat">
+          <div class="statv" id="s-rat">—</div>
+          <div class="statl">Avaliação média</div>
+        </div>
+        <div class="stat">
+          <div class="statv" id="s-nl">—</div>
+          <div class="statl">Newsletter</div>
+        </div>
       </div>
+
+      <!-- HÓSPEDE ATIVO HOJE -->
+      <div id="dash-hoje-wrap" style="display:none;" class="card" style="border-left:3px solid var(--gl);">
+        <div class="ctitle" style="display:flex;justify-content:space-between;align-items:center;">
+          Hóspedes hoje
+          <span id="dash-hoje-badge" class="pill p-ok"></span>
+        </div>
+        <div id="dash-hoje"></div>
+      </div>
+
+      <!-- SECÇÕES DO GUIA -->
+      <div class="card">
+        <div class="ctitle" style="display:flex;justify-content:space-between;align-items:center;">
+          Secções do guia
+          <button class="actbtn" onclick="loadAll()" style="font-size:.72rem;">↻ Atualizar</button>
+        </div>
+        <div id="dash-seccoes">
+          <div class="dash-sec-row" onclick="go('casa-geral',document.querySelector('.sbi[onclick*=casa-geral]'))">
+            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#3b7dd8,#5b9ef0);">🏠</div>
+            <div class="dash-sec-info"><div class="dash-sec-name">Informações da casa</div><div class="dash-sec-sub">Wi-Fi, regras, check-out</div></div>
+            <div class="dash-sec-arrow">›</div>
+          </div>
+          <div class="dash-sec-row" onclick="go('atracoes',document.querySelector('.sbi[onclick*=atracoes]'))">
+            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">📍</div>
+            <div class="dash-sec-info"><div class="dash-sec-name">Atrações</div><div class="dash-sec-sub" id="dash-count-atracoes">A carregar...</div></div>
+            <div class="dash-sec-arrow">›</div>
+          </div>
+          <div class="dash-sec-row" onclick="go('restaurantes',document.querySelector('.sbi[onclick*=restaurantes]'))">
+            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#059669,#34d399);">🍽️</div>
+            <div class="dash-sec-info"><div class="dash-sec-name">Restaurantes</div><div class="dash-sec-sub" id="dash-count-restaurantes">A carregar...</div></div>
+            <div class="dash-sec-arrow">›</div>
+          </div>
+          <div class="dash-sec-row" onclick="go('servicos',document.querySelector('.sbi[onclick*=servicos]'))">
+            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#d97706,#fbbf24);">⚙️</div>
+            <div class="dash-sec-info"><div class="dash-sec-name">Serviços</div><div class="dash-sec-sub">Limpeza, bicicletas</div></div>
+            <div class="dash-sec-arrow">›</div>
+          </div>
+          <div class="dash-sec-row" onclick="go('notificacoes',document.querySelector('.sbi[onclick*=notificacoes]'))">
+            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#dc2626,#f87171);">🔔</div>
+            <div class="dash-sec-info"><div class="dash-sec-name">Notificações</div><div class="dash-sec-sub" id="dash-count-notif">Enviar mensagem aos hóspedes</div></div>
+            <div class="dash-sec-arrow">›</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEEDBACKS RECENTES -->
       <div class="card"><div class="ctitle">Feedbacks recentes</div><div id="dash-fb"><div style="font-size:.82rem;color:var(--txl);">A carregar...</div></div></div>
+
+      <!-- HÓSPEDES ATIVOS -->
       <div class="card"><div class="ctitle">Hóspedes com acesso ativo</div><div id="dash-hospedes"><div style="font-size:.82rem;color:var(--txl);">A carregar...</div></div></div>
     </div>
 
@@ -307,7 +442,12 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
 
         <div id="sec-config" class="sec">
     <div class="content-wrap">
-      <div class="ph"><div><div class="ptitle">Propriedade & Splash</div><div class="psub">Dados gerais e ecrã de boas-vindas</div></div></div>
+      <div class="ph"><div><div class="ptitle">Propriedade & Splash</div><div class="psub">Dados gerais e ecrã de boas-vindas</div></div>
+        <a class="preview-btn" href="https://darioersantos.github.io/Yapp/versao-web.html" target="_blank">👁 Ver app</a>
+      </div>
+      <div id="unsaved-config" class="unsaved-bar">⚠️ Tens alterações por guardar nesta secção
+        <button onclick="saveConfig()">Guardar agora</button>
+      </div>
       <div class="info-box">As alterações aqui são guardadas <strong>diretamente na Google Sheet "Config"</strong> e ficam disponíveis na app dos hóspedes imediatamente.</div>
       <div class="card">
         <div class="ctitle">Identificação</div>
@@ -417,6 +557,12 @@ body{font-family:'DM Sans',sans-serif;background:#eee8d8;color:var(--tx);min-hei
         <div id="sec-hospedes" class="sec">
     <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Hóspedes</div><div class="psub">Gerir acessos à app · dados do Google Sheets</div></div></div>
+      <div class="filter-tabs">
+        <div class="ftab on" onclick="filterGuests('todos',this)">Todos</div>
+        <div class="ftab" onclick="filterGuests('ativos',this)">Ativos</div>
+        <div class="ftab" onclick="filterGuests('hoje',this)">Check-in/out hoje</div>
+        <div class="ftab" onclick="filterGuests('expirados',this)">Expirados</div>
+      </div>
       <div class="card">
         <div class="ctitle">Adicionar novo hóspede</div>
         <div class="g3">
@@ -889,7 +1035,7 @@ Entregar as chaves ao proprietário</textarea>
 <div id="toast"></div>
 
 <script>
-var BO_PASS = 'yapp2025';
+var BO_PASS = 'yapp2026';
 var BO_KEY  = 'yapp_bo_auth';
 var LS_KEY  = 'yapp_bo_local';
 var API     = 'https://script.google.com/macros/s/AKfycbxqy-PfUD4XS0dCbe8vGUNDbJ5P8GUHlIbEz4I1hnAwjG-EZAZb_YyG_lUNx3AKd1yMJg/exec';
@@ -918,6 +1064,25 @@ window.addEventListener('DOMContentLoaded', function() {
   // Restore local fields
   var local = localStorage.getItem(LS_KEY);
   if (local) { try { restoreLocal(JSON.parse(local)); } catch(e) {} }
+
+  // Offline detection
+  function checkOnline() {
+    var b = document.getElementById('offline-banner');
+    if (b) b.classList.toggle('show', !navigator.onLine);
+  }
+  window.addEventListener('online', checkOnline);
+  window.addEventListener('offline', checkOnline);
+  checkOnline();
+
+  // Unsaved indicator — watch inputs in config section
+  document.addEventListener('input', function(e) {
+    var sec = e.target.closest('.sec');
+    if (!sec) return;
+    var id = sec.id;
+    var barId = 'unsaved-' + id.replace('sec-','');
+    var bar = document.getElementById(barId);
+    if (bar) bar.classList.add('show');
+  });
 });
 
 // ── DRAWER ───────────────────────────────────────
@@ -1126,7 +1291,9 @@ function saveConfig() {
     instagram_url:v('c-ig'),
     facebook_url:v('c-fb'),
     google_reviews_url:v('c-grev')
-  }, function() { hideLoading(); showOk('ok-config'); toast('✓ Config guardada!'); });
+  }, function() { hideLoading(); showOk('ok-config'); toast('✓ Config guardada!');
+    var b = document.getElementById('unsaved-config'); if (b) b.classList.remove('show');
+  });
 }
 function saveWifi() {
   saveLocal();
@@ -1346,36 +1513,66 @@ function addGuest() {
     DB.guests.push({ user: user, pass: pass, checkout: co, name: v('h-nome'), active: true });
     renderGuests(); showOk('ok-hosp');
     ['h-user','h-pass','h-nome','h-co','h-notas'].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
-    toast('✓ Hóspede adicionado na Google Sheet!');
+    toast('✓ Hóspede adicionado!');
+    // Auto notificação de boas-vindas
+    var bvMsg = (DB.config && DB.config.notif_tmpl_bv) || 'Bem-vindo! A tua app está pronta. Explora tudo o que temos para ti.';
+    apiWrite({ action:'saveConfig', notif_titulo:'Bem-vindo à ' + ((DB.config && DB.config.propriedade_nome)||'Casa do Gerês') + '!', notif_msg: bvMsg, notif_dest: user, notif_ts: new Date().toISOString(), notif_ativo: 'true' }, function() {});
   });
 }
 
 function renderGuests() {
-  var h = '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Username</th><th>Password</th><th>Nome</th><th>Check-out</th><th>Estado</th><th>Ações</th></tr></thead><tbody>';
   var today = new Date();
-  DB.guests.forEach(function(g, i) {
+  var all = DB.guests.filter(function(g){ return g.user !== 'admin'; });
+  renderGuestsFiltered(all);
+  var s = document.getElementById('s-hosp');
+  if (s) s.textContent = DB.guests.filter(function(g) { return g.active && g.user !== 'admin' && new Date(g.checkout+'T23:59:59') >= today; }).length;
+}
+
+function filterGuests(mode, el) {
+  document.querySelectorAll('.ftab').forEach(function(t){ t.classList.remove('on'); });
+  if (el) el.classList.add('on');
+  var today = new Date();
+  var todayStr = today.toISOString().slice(0,10);
+  var filtered;
+  if (mode === 'ativos') {
+    filtered = DB.guests.filter(function(g){ return g.active && new Date(g.checkout+'T23:59:59') >= today && g.user !== 'admin'; });
+  } else if (mode === 'expirados') {
+    filtered = DB.guests.filter(function(g){ return new Date(g.checkout+'T23:59:59') < today; });
+  } else if (mode === 'hoje') {
+    filtered = DB.guests.filter(function(g){ return g.checkout === todayStr || g.checkin === todayStr; });
+  } else {
+    filtered = DB.guests.filter(function(g){ return g.user !== 'admin'; });
+  }
+  renderGuestsFiltered(filtered);
+}
+
+function renderGuestsFiltered(list) {
+  var h = '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Username</th><th>Password</th><th>Nome</th><th>Check-out</th><th>Dias</th><th>Estado</th><th>Ações</th></tr></thead><tbody>';
+  var today = new Date();
+  list.forEach(function(g) {
     var exp = new Date(g.checkout + 'T23:59:59') < today;
     var pill = !g.active ? '<span class="pill p-off">Inativo</span>' :
                exp ? '<span class="pill p-pend">Expirado</span>' :
                '<span class="pill p-ok">Ativo</span>';
+    var diff = g.checkout === '2099-12-31' ? '∞' : Math.ceil((new Date(g.checkout+'T23:59:59') - today) / 86400000);
+    var daysLabel = typeof diff === 'number' ? (diff <= 0 ? 'Hoje' : diff + 'd') : diff;
+    var idx = DB.guests.indexOf(g);
     h += '<tr><td><strong>' + esc(g.user) + '</strong></td>'
       + '<td style="font-family:monospace;font-size:.8rem;">' + esc(g.pass) + '</td>'
       + '<td>' + esc(g.name || '—') + '</td>'
       + '<td>' + (g.checkout === '2099-12-31' ? 'Permanente' : g.checkout) + '</td>'
+      + '<td><span class="days-badge">' + daysLabel + '</span></td>'
       + '<td>' + pill + '</td>'
       + '<td style="display:flex;gap:4px;flex-wrap:wrap;">'
-      + '<button class="actbtn" onclick="editPass(' + i + ')">Editar</button>'
-      + (g.user !== 'admin' ? '<button class="actbtn del" onclick="deleteGuest(' + i + ')">Eliminar</button>' : '')
+      + '<button class="actbtn" onclick="editPass(' + idx + ')">Editar</button>'
+      + (g.user !== 'admin' ? '<button class="actbtn del" onclick="deleteGuest(' + idx + ')">Eliminar</button>' : '')
       + '</td></tr>';
   });
+  if (!list.length) h += '<tr><td colspan="7" style="font-size:.82rem;color:var(--txl);padding:1rem;">Sem hóspedes nesta categoria.</td></tr>';
   h += '</tbody></table></div>';
   var el = document.getElementById('guests-tbl');
   if (el) el.innerHTML = h;
-  var s = document.getElementById('s-hosp');
-  if (s) s.textContent = DB.guests.filter(function(g) { return g.active && g.user !== 'admin'; }).length;
 }
-
-function editPass(i) {
   var g = DB.guests[i];
   var np = prompt('Nova password para "' + g.user + '" (atual: ' + g.pass + '):', g.pass);
   if (np !== null && np.trim()) {
@@ -1403,7 +1600,12 @@ function renderPlaces(type) {
   var list = DB[type] || [];
   var h = '';
   list.forEach(function(p, i) {
-    h += '<div class="place-row">'
+    h += '<div class="place-row" draggable="true" data-idx="' + i + '" data-type="' + type + '" id="pr-' + type + '-' + i + '">'
+      + '<div style="display:flex;align-items:center;gap:6px;margin-bottom:.5rem;">'
+      + '<span class="drag-handle" title="Arrastar para reordenar">⠿</span>'
+      + '<span style="font-size:.82rem;font-weight:600;color:var(--txm);">#' + (i+1) + ' ' + esc(p.name||'') + '</span>'
+      + '<button class="actbtn del" style="margin-left:auto;" onclick="removePlace(\'' + type + '\',' + i + ')">Remover</button>'
+      + '</div>'
       + '<div class="place-grid">'
       + '<img class="place-img-prev" id="pi-' + type + '-' + i + '" src="' + esc(p.img || p.image || '') + '" onerror="this.style.background=\'#eee\'" />'
       + '<div class="place-fields">'
@@ -1413,15 +1615,49 @@ function renderPlaces(type) {
       + '<input class="inp" style="font-size:.8rem;grid-column:1/-1;" value="' + esc(p.desc) + '" onchange="DB.' + type + '[' + i + '].desc=this.value" placeholder="Descrição"/>'
       + '<input class="photo-url" style="grid-column:1/-1;" value="' + esc(p.img || p.image || '') + '" placeholder="URL da imagem" oninput="DB.' + type + '[' + i + '].img=this.value;document.getElementById(\'pi-' + type + '-' + i + '\').src=this.value"/>'
       + '<input class="inp" style="font-size:.8rem;" value="' + (p.lat || '') + '" onchange="DB.' + type + '[' + i + '].lat=parseFloat(this.value)||this.value" placeholder="Lat"/>'
-      + '<input class="inp" style="font-size:.8rem;" value="' + (p.lng) + '" onchange="DB.' + type + '[' + i + '].lng=parseFloat(this.value)||this.value" placeholder="Lng"/>'
+      + '<input class="inp" style="font-size:.8rem;" value="' + (p.lng||'') + '" onchange="DB.' + type + '[' + i + '].lng=parseFloat(this.value)||this.value" placeholder="Lng"/>'
       + '<input class="inp" style="font-size:.8rem;" value="' + esc(p.rating) + '" onchange="DB.' + type + '[' + i + '].rating=this.value" placeholder="Rating"/>'
       + '</div></div>'
-      + '<div style="text-align:right;margin-top:.5rem;"><button class="actbtn del" onclick="removePlace(\'' + type + '\',' + i + ')">Remover</button></div>'
       + '</div>';
   });
   if (!h) h = '<div style="font-size:.82rem;color:var(--txl);padding:1rem 0;">Sem itens. Clica em Adicionar.</div>';
   var el = document.getElementById(type + '-list');
-  if (el) el.innerHTML = h;
+  if (el) { el.innerHTML = h; initDragDrop(type); }
+}
+
+function initDragDrop(type) {
+  var rows = document.querySelectorAll('[data-type="' + type + '"]');
+  var dragSrc = null;
+  rows.forEach(function(row) {
+    row.addEventListener('dragstart', function(e) {
+      dragSrc = this;
+      this.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    row.addEventListener('dragend', function() {
+      this.classList.remove('dragging');
+      rows.forEach(function(r){ r.classList.remove('drag-over'); });
+    });
+    row.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      if (this !== dragSrc) {
+        rows.forEach(function(r){ r.classList.remove('drag-over'); });
+        this.classList.add('drag-over');
+      }
+    });
+    row.addEventListener('drop', function(e) {
+      e.preventDefault();
+      if (dragSrc && this !== dragSrc) {
+        var fromIdx = parseInt(dragSrc.getAttribute('data-idx'));
+        var toIdx = parseInt(this.getAttribute('data-idx'));
+        var arr = DB[type];
+        var item = arr.splice(fromIdx, 1)[0];
+        arr.splice(toIdx, 0, item);
+        renderPlaces(type);
+        toast('↕ Ordem atualizada — clica em Guardar para aplicar.');
+      }
+    });
+  });
 }
 
 function addPlace(type) {
@@ -1506,18 +1742,64 @@ function renderNewsletter() {
 // ── DASHBOARD ─────────────────────────────────────
 function updateDashboard() {
   renderGuests(); renderFeedbacks(); renderNewsletter();
-  var h = ''; DB.feedbacks.slice(0, 3).forEach(function(f) {
+
+  // Timestamp sync
+  var now = new Date();
+  var ts = now.toLocaleTimeString('pt-PT', {hour:'2-digit',minute:'2-digit'});
+  var sl = document.getElementById('dash-sync-lbl');
+  if (sl) sl.textContent = 'Última sincronização: ' + ts;
+
+  // Property name from config
+  var pt = document.getElementById('dash-prop-title');
+  if (pt && DB.config && DB.config.propriedade_nome) pt.textContent = DB.config.propriedade_nome;
+
+  // Feedbacks recentes
+  var h = '';
+  DB.feedbacks.slice(0, 3).forEach(function(f) {
     var s = ''; for (var j = 0; j < 5; j++) s += j < f.rating ? '★' : '☆';
     h += '<div class="fc"><div class="fc-top"><span class="fc-name">' + esc(f.name) + '</span><span class="fc-date">' + f.date + '</span></div><div class="fc-stars">' + s + '</div><div class="fc-text">' + esc(f.text) + '</div></div>';
   });
-  var df = document.getElementById('dash-fb'); if (df) df.innerHTML = h || '<div style="font-size:.82rem;color:var(--txl);">Sem feedbacks.</div>';
-  var dh = ''; var today = new Date();
-  DB.guests.filter(function(g) { return g.active && new Date(g.checkout + 'T23:59:59') >= today; }).forEach(function(g) {
-    dh += '<div style="display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid rgba(90,138,60,0.08);">'
+  var df = document.getElementById('dash-fb');
+  if (df) df.innerHTML = h || '<div style="font-size:.82rem;color:var(--txl);">Sem feedbacks.</div>';
+
+  // Hóspedes ativos
+  var today = new Date();
+  var todayStr = today.toISOString().slice(0,10);
+  var ativos = DB.guests.filter(function(g) { return g.active && new Date(g.checkout + 'T23:59:59') >= today && g.user !== 'admin'; });
+  var dh = '';
+  ativos.forEach(function(g) {
+    var diff = Math.ceil((new Date(g.checkout + 'T23:59:59') - today) / 86400000);
+    var daysLabel = g.checkout === '2099-12-31' ? 'Permanente' : (diff <= 1 ? 'Check-out amanhã' : diff + ' dias restantes');
+    dh += '<div style="display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid rgba(59,125,216,0.08);">'
       + '<div><strong style="font-size:.85rem;">' + esc(g.user) + '</strong> <span style="font-size:.75rem;color:var(--txl);">' + esc(g.name || '') + '</span></div>'
-      + '<span style="font-size:.75rem;color:var(--txl);">Check-out: ' + g.checkout + '</span></div>';
+      + '<span class="days-badge">' + daysLabel + '</span></div>';
   });
-  var dho = document.getElementById('dash-hospedes'); if (dho) dho.innerHTML = dh || '<div style="font-size:.82rem;color:var(--txl);">Nenhum hóspede ativo.</div>';
+  var dho = document.getElementById('dash-hospedes');
+  if (dho) dho.innerHTML = dh || '<div style="font-size:.82rem;color:var(--txl);">Nenhum hóspede ativo.</div>';
+
+  // Hóspedes com check-in ou check-out HOJE
+  var hospedesHoje = DB.guests.filter(function(g) { return g.checkout === todayStr || g.checkin === todayStr; });
+  var hojewrap = document.getElementById('dash-hoje-wrap');
+  var hoje = document.getElementById('dash-hoje');
+  if (hojewrap && hoje) {
+    if (hospedesHoje.length > 0) {
+      hojewrap.style.display = 'block';
+      var badge = document.getElementById('dash-hoje-badge');
+      if (badge) { badge.textContent = hospedesHoje.length + ' hoje'; }
+      hoje.innerHTML = hospedesHoje.map(function(g) {
+        var tipo = g.checkout === todayStr ? '🚪 Check-out' : '🏠 Check-in';
+        return '<div class="today-guest"><div><div class="today-guest-name">' + esc(g.user) + (g.name ? ' · ' + esc(g.name) : '') + '</div><div class="today-guest-info">' + tipo + ' · ' + g.checkout + '</div></div></div>';
+      }).join('');
+    } else {
+      hojewrap.style.display = 'none';
+    }
+  }
+
+  // Contagem secções
+  var ca = document.getElementById('dash-count-atracoes');
+  if (ca) ca.textContent = DB.atracoes.length ? DB.atracoes.length + ' pontos de interesse' : 'Sem itens';
+  var cr = document.getElementById('dash-count-restaurantes');
+  if (cr) cr.textContent = DB.restaurantes.length ? DB.restaurantes.length + ' sugestões' : 'Sem itens';
 }
 
 // ── apiWrite — envia via GET params (funciona sem CORS) ──────────
