@@ -255,7 +255,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 <div id="login">
   <div class="lb">
     <div style="display:flex;justify-content:center;margin-bottom:1.2rem;">
-      <svg width="138" height="96" viewBox="0 0 230 160" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="75" cy="80" r="55" fill="#4da6ff"/><circle cx="125" cy="58" r="44" fill="#4da6ff"/><circle cx="170" cy="80" r="40" fill="#4da6ff"/><rect x="20" y="90" width="200" height="60" fill="#4da6ff"/><text x="120" y="140" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="800" letter-spacing="6" fill="white">YAPP</text></svg>
+      <svg width="138" height="105" viewBox="0 0 230 175" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="75" cy="80" r="55" fill="#4da6ff"/><circle cx="125" cy="60" r="44" fill="#4da6ff"/><circle cx="170" cy="80" r="40" fill="#4da6ff"/><rect x="20" y="88" width="190" height="72" rx="8" fill="#4da6ff"/><text x="115" y="143" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" font-weight="800" letter-spacing="5" fill="white">YAPP</text></svg>
     </div>
     <div class="ll">YAPP Backoffice</div>
     <div class="lsub">Casa do Gerês</div>
@@ -281,7 +281,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
     <button class="ham" id="ham-btn" onclick="toggleDrawer()">
       <span></span><span></span><span></span>
     </button>
-    <svg width="36" height="25" viewBox="0 0 230 160" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><circle cx="75" cy="80" r="55" fill="#4da6ff"/><circle cx="125" cy="58" r="44" fill="#4da6ff"/><circle cx="170" cy="80" r="40" fill="#4da6ff"/><rect x="20" y="90" width="200" height="60" fill="#4da6ff"/></svg>
+    <svg width="36" height="28" viewBox="0 0 230 175" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><circle cx="75" cy="80" r="55" fill="#4da6ff"/><circle cx="125" cy="60" r="44" fill="#4da6ff"/><circle cx="170" cy="80" r="40" fill="#4da6ff"/><rect x="20" y="88" width="190" height="72" rx="8" fill="#4da6ff"/></svg>
     <div>
       <div class="topbar-title">YAPP Backoffice</div>
     </div>
@@ -298,7 +298,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
     <div class="sb-logo">
       <div class="sb-logo-inner">
         <!-- Logo: viewBox aumentado em baixo para a nuvem não ficar cortada -->
-        <svg class="sb-yapp-icon" viewBox="0 0 230 160" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="75" cy="80" r="55" fill="#4da6ff"/><circle cx="125" cy="58" r="44" fill="#4da6ff"/><circle cx="170" cy="80" r="40" fill="#4da6ff"/><rect x="20" y="90" width="200" height="60" fill="#4da6ff"/><text x="120" y="140" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="800" letter-spacing="6" fill="white">YAPP</text></svg>
+        <svg class="sb-yapp-icon" viewBox="0 0 230 175" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="75" cy="80" r="55" fill="#4da6ff"/><circle cx="125" cy="60" r="44" fill="#4da6ff"/><circle cx="170" cy="80" r="40" fill="#4da6ff"/><rect x="20" y="88" width="190" height="72" rx="8" fill="#4da6ff"/><text x="115" y="143" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" font-weight="800" letter-spacing="5" fill="white">YAPP</text></svg>
         <div>
           <div class="sb-name">YAPP</div>
           <div class="sb-sub">Casa do Gerês</div>
@@ -1647,30 +1647,45 @@ function addPlace(type) {
 }
 
 function removePlace(type, i) {
-  if (confirm('Remover este item?')) { DB[type].splice(i, 1); renderPlaces(type); }
+  if (confirm('Remover este item?')) {
+    DB[type].splice(i, 1);
+    renderPlaces(type);
+    // Guardar imediatamente para sincronizar com o Sheet
+    savePlacesWithClear(type);
+  }
 }
 
 function savePlaces(type) {
+  savePlacesWithClear(type);
+}
+
+function savePlacesWithClear(type) {
   var sheetAction = type === 'atracoes' ? 'saveAtracoes' : 'saveRestaurantes';
+  var clearAction = type === 'atracoes' ? 'clearAtracoes' : 'clearRestaurantes';
   var items = DB[type];
-  if (!items || items.length === 0) { toast('Sem itens para guardar.'); return; }
-  showLoading('A guardar ' + items.length + ' itens...');
-  var done = 0;
-  // Send one at a time with delay to avoid JSONP callback collisions
-  function saveNext(i) {
-    if (i >= items.length) {
+  showLoading('A guardar na Google Sheet...');
+  // Primeiro limpa todas as linhas do Sheet, depois escreve os actuais
+  apiWrite({ action: clearAction, total: items.length }, function() {
+    if (!items || items.length === 0) {
       hideLoading(); showOk('ok-'+type);
-      toast('✓ ' + items.length + ' itens guardados na Google Sheet!');
+      toast('✓ Lista limpa na Google Sheet!');
       return;
     }
-    var p = items[i];
-    apiWrite({ action:sheetAction, idx:i, name:p.name||'', type:p.type||'',
-      desc:p.desc||'', dist:p.dist||'', rating:p.rating||'',
-      img:p.img||'', lat:p.lat||0, lng:p.lng||0 }, function() {
-      setTimeout(function() { saveNext(i+1); }, 400);
-    });
-  }
-  saveNext(0);
+    function saveNext(i) {
+      if (i >= items.length) {
+        hideLoading(); showOk('ok-'+type);
+        toast('✓ ' + items.length + ' itens guardados na Google Sheet!');
+        return;
+      }
+      var p = items[i];
+      apiWrite({ action:sheetAction, idx:i, name:p.name||'', type:p.type||'',
+        desc:p.desc||'', dist:p.dist||'', rating:p.rating||'',
+        img:p.img||'', lat:p.lat||0, lng:p.lng||0 }, function() {
+        setTimeout(function() { saveNext(i+1); }, 400);
+      });
+    }
+    saveNext(0);
+  });
 }
 
 // ── FEEDBACKS ─────────────────────────────────────
