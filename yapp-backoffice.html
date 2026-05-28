@@ -529,7 +529,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
           <div class="fld"><label>Google Reviews URL</label><input class="inp" id="c-grev" placeholder="https://g.page/r/..."/></div>
         </div>
       </div>
-      <button class="savebtn" onclick="saveConfig()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar na Google Sheet<span class="oktxt" id="ok-config">Guardado!</span></button>
+      <button class="savebtn" onclick="saveConfig()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-config">Guardado!</span></button>
     </div>
 
     <!-- WIFI -->
@@ -553,7 +553,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
           <div class="fld"><label>Password</label><input class="inp" id="w-pass2" placeholder="natureza2026"/></div>
         </div>
       </div>
-      <button class="savebtn" onclick="saveWifi()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar Wi-Fi<span class="oktxt" id="ok-wifi">Guardado!</span></button>
+      <button class="savebtn" onclick="saveWifi()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-wifi">Guardado!</span></button>
     </div>
 
     <!-- HÓSPEDES -->
@@ -657,7 +657,7 @@ Máq. de lavar roupa</textarea>
         </div>
       </div>
       <button class="addbtn" onclick="addQuarto()" style="margin-bottom:.75rem;"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar quarto</button>
-      <button class="savebtn" onclick="saveQuartos()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar quartos<span class="oktxt" id="ok-casa-quartos">Guardado!</span></button>
+      <button class="savebtn" onclick="saveQuartos()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-quartos">Guardado!</span></button>
     </div>
 
     <!-- PISCINA -->
@@ -853,7 +853,7 @@ Entregar as chaves ao proprietário</textarea>
         <button class="addbtn" onclick="addPlace('atracoes')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar</button>
       </div>
       <div id="atracoes-list"><div style="font-size:.82rem;color:var(--txl);">A carregar...</div></div>
-      <button class="savebtn" id="save-atracoes-btn" style="display:none;" onclick="savePlaces('atracoes')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar atrações<span class="oktxt" id="ok-atracoes">Guardado!</span></button>
+      <button class="savebtn" id="save-atracoes-btn" style="display:none;" onclick="savePlaces('atracoes')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-atracoes">Guardado!</span></button>
     </div>
 
     <!-- RESTAURANTES -->
@@ -866,7 +866,7 @@ Entregar as chaves ao proprietário</textarea>
         <button class="addbtn" onclick="addPlace('restaurantes')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar</button>
       </div>
       <div id="restaurantes-list"><div style="font-size:.82rem;color:var(--txl);">A carregar...</div></div>
-      <button class="savebtn" id="save-restaurantes-btn" style="display:none;" onclick="savePlaces('restaurantes')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar restaurantes<span class="oktxt" id="ok-restaurantes">Guardado!</span></button>
+      <button class="savebtn" id="save-restaurantes-btn" style="display:none;" onclick="savePlaces('restaurantes')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-restaurantes">Guardado!</span></button>
     </div>
 
     <!-- CONTACTO -->
@@ -917,7 +917,7 @@ Entregar as chaves ao proprietário</textarea>
         <button class="addbtn" onclick="addPatrocinador()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar</button>
       </div>
       <div id="pat-editor"></div>
-      <button class="savebtn" onclick="savePatrocinadores()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar todos<span class="oktxt" id="ok-patrocinadores">Guardado!</span></button>
+      <button class="savebtn" onclick="savePatrocinadores()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-patrocinadores">Guardado!</span></button>
     </div>
 
     <!-- CASA DE BANHO -->
@@ -999,7 +999,7 @@ Entregar as chaves ao proprietário</textarea>
         <div class="fld"><label>Dia antes do check-out</label><textarea class="inp ta" id="n-auto-co1" placeholder="Amanhã é o teu último dia. Check-out até às 11h00.">Amanhã é o teu último dia. Check-out até às 11h00.</textarea></div>
         <div class="fld"><label>Dia do check-out</label><textarea class="inp ta" id="n-auto-co0" placeholder="Hoje é dia de check-out. Obrigado pela tua visita!">Hoje é dia de check-out. Obrigado pela tua visita!</textarea></div>
         <div class="fld"><label>Mensagem de boas-vindas (após login)</label><textarea class="inp ta" id="n-auto-bv" placeholder="Bem-vindo! A tua app está pronta. Explora tudo o que temos para ti.">Bem-vindo! A tua app está pronta. Explora tudo o que temos para ti.</textarea></div>
-        <button class="savebtn" onclick="saveNotifTemplates()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar templates<span class="oktxt" id="ok-notif-tmpl">Guardado!</span></button>
+        <button class="savebtn" onclick="saveNotifTemplates()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-notif-tmpl">Guardado!</span></button>
       </div>
 
       <!-- HISTÓRICO -->
@@ -1467,7 +1467,7 @@ function fillCasa(c) {
 // ── SAVE CONFIG TO SHEET (via POST) ──────────────
 function saveConfig() {
   saveLocal();
-  showLoading('A guardar Config...');
+  showLoading('A guardar...');
   apiWrite({ action:'saveConfig',
     propriedade_nome:v('c-nome'),
     propriedade_subtitulo:v('c-sub'),
@@ -1494,7 +1494,7 @@ function saveConfig() {
 }
 function saveWifi() {
   saveLocal();
-  showLoading('A guardar Wi-Fi...');
+  showLoading('A guardar...');
   apiWrite({ action:'saveConfig',
     wifi_ssid:v('w-ssid1'),
     wifi_pass:v('w-pass1'),
@@ -1604,8 +1604,8 @@ function saveSection(sec) {
   var fields = maps[sec];
   if (fields === null || fields === 'dynamic') { savePatrocinadores(); return; }
   if (!fields) { showOk('ok-'+sec); toast('Guardado localmente.'); return; }
-  showLoading('A guardar na servidor...');
-  apiWrite(fields, function() { hideLoading(); showOk('ok-'+sec); toast('✓ Guardado na servidor!'); });
+  showLoading('A guardar...');
+  apiWrite(fields, function() { hideLoading(); showOk('ok-'+sec); toast('✓ Guardado!'); });
 }
 // ── PATROCINADORES DINÂMICOS ─────────────────────────────────────
 var _pats = [
@@ -1645,7 +1645,7 @@ function removePat(i) {
   if (!confirm('Remover este patrocinador?')) return;
   _pats.splice(i, 1);
   renderPats();
-  toast('Removido. Clica em "Guardar todos" para aplicar.');
+  toast('Removido. Clica em "Guardar" para aplicar.');
 }
 
 function collectPats() {
@@ -1881,18 +1881,18 @@ function savePlacesWithClear(type) {
   var sheetAction = type === 'atracoes' ? 'saveAtracoes' : 'saveRestaurantes';
   var clearAction = type === 'atracoes' ? 'clearAtracoes' : 'clearRestaurantes';
   var items = DB[type];
-  showLoading('A guardar na servidor...');
+  showLoading('A guardar...');
   // Primeiro limpa todas as linhas do Sheet, depois escreve os actuais
   apiWrite({ action: clearAction, total: items.length }, function() {
     if (!items || items.length === 0) {
       hideLoading(); showOk('ok-'+type);
-      toast('✓ Lista limpa na servidor!');
+      toast('✓ Guardado!');
       return;
     }
     function saveNext(i) {
       if (i >= items.length) {
         hideLoading(); showOk('ok-'+type);
-        toast('✓ ' + items.length + ' itens guardados na servidor!');
+        toast('✓ Guardado!');
         return;
       }
       var p = items[i];
@@ -1932,7 +1932,7 @@ function renderFeedbacks() {
 function approveFb(i) {
   DB.feedbacks[i].approved = true;
   apiWrite({ action: 'approveFeedback', index: i }, function() {});
-  renderFeedbacks(); toast('✓ Feedback aprovado na servidor.');
+  renderFeedbacks(); toast('✓ Feedback aprovado!');
 }
 function deleteFb(i) {
   if (confirm('Remover este feedback?')) {
