@@ -232,6 +232,32 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 .place-row.dragging{opacity:.4;border:2px dashed var(--gl);}
 .place-row.drag-over{border-top:2px solid var(--gl);}
 
+/* ── TEMA CARDS ─────────────────────────────────── */
+.tema-card{border:2px solid transparent;border-radius:var(--r);padding:.75rem;cursor:pointer;background:#fafafa;text-align:center;transition:all .15s;}
+.tema-card:hover{background:#f0f4ff;}
+.tema-preview{width:100%;height:56px;border-radius:8px;margin-bottom:.5rem;display:flex;align-items:center;justify-content:center;}
+.tema-label{font-size:.82rem;font-weight:600;color:var(--tx);}
+.tema-sub{font-size:.72rem;color:var(--txl);margin-top:2px;}
+
+/* ── TUTORIAL ───────────────────────────────────── */
+.tut-card{padding:0;overflow:hidden;}
+.tut-header{display:flex;align-items:center;gap:12px;padding:1rem;cursor:pointer;user-select:none;}
+.tut-header:hover{background:rgba(59,125,216,0.03);}
+.tut-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tut-title-wrap{flex:1;}
+.tut-title{font-size:.9rem;font-weight:600;color:var(--tx);}
+.tut-sub{font-size:.75rem;color:var(--txl);margin-top:1px;}
+.tut-chevron{color:var(--txl);transition:transform .2s;flex-shrink:0;}
+.tut-chevron.open{transform:rotate(180deg);}
+.tut-body{padding:0 1rem 1.2rem;border-top:1px solid var(--bd);}
+.tut-step{display:flex;gap:12px;margin-bottom:.85rem;margin-top:.85rem;}
+.tut-num{width:24px;height:24px;border-radius:50%;background:var(--g);color:#fff;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.tut-text{font-size:.83rem;color:var(--txm);line-height:1.6;}
+.tut-text strong{color:var(--tx);}
+.tut-code{font-family:monospace;font-size:.78rem;background:rgba(26,74,138,0.07);border:1px solid rgba(26,74,138,0.12);border-radius:4px;padding:2px 6px;color:var(--g);}
+.tut-tip{display:flex;align-items:flex-start;gap:7px;background:rgba(59,125,216,0.06);border-left:3px solid var(--gl);border-radius:0 6px 6px 0;padding:.6rem .8rem;font-size:.78rem;color:var(--txm);line-height:1.5;margin-top:.5rem;}
+.tut-tip svg{flex-shrink:0;margin-top:1px;color:var(--gl);}
+
 /* ── SPINNER / LOADING ─────────────────────────── */
 @keyframes spin{to{transform:rotate(360deg);}}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
@@ -255,7 +281,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 <div id="login">
   <div class="lb">
     <div style="display:flex;justify-content:center;margin-bottom:1.2rem;">
-      <svg width="138" height="105" viewBox="0 0 230 175" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="75" cy="80" r="55" fill="#4da6ff"/><circle cx="125" cy="60" r="44" fill="#4da6ff"/><circle cx="170" cy="80" r="40" fill="#4da6ff"/><rect x="20" y="88" width="190" height="72" rx="8" fill="#4da6ff"/><text x="115" y="143" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" font-weight="800" letter-spacing="5" fill="white">YAPP</text></svg>
+      <svg width="148" height="106" viewBox="0 5 220 158" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="65" cy="95" r="62" fill="#4da6ff"/><circle cx="115" cy="60" r="50" fill="#4da6ff"/><circle cx="170" cy="75" r="45" fill="#4da6ff"/><circle cx="155" cy="108" r="42" fill="#4da6ff"/></svg>
     </div>
     <div class="ll">YAPP Backoffice</div>
     <div class="lsub">Casa do Gerês</div>
@@ -281,7 +307,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
     <button class="ham" id="ham-btn" onclick="toggleDrawer()">
       <span></span><span></span><span></span>
     </button>
-    <svg width="36" height="28" viewBox="0 0 230 175" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><circle cx="75" cy="80" r="55" fill="#4da6ff"/><circle cx="125" cy="60" r="44" fill="#4da6ff"/><circle cx="170" cy="80" r="40" fill="#4da6ff"/><rect x="20" y="88" width="190" height="72" rx="8" fill="#4da6ff"/></svg>
+    <svg width="38" height="27" viewBox="0 5 220 158" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><circle cx="65" cy="95" r="62" fill="#4da6ff"/><circle cx="115" cy="60" r="50" fill="#4da6ff"/><circle cx="170" cy="75" r="45" fill="#4da6ff"/><circle cx="155" cy="108" r="42" fill="#4da6ff"/></svg>
     <div>
       <div class="topbar-title">YAPP Backoffice</div>
     </div>
@@ -298,7 +324,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
     <div class="sb-logo">
       <div class="sb-logo-inner">
         <!-- Logo: viewBox aumentado em baixo para a nuvem não ficar cortada -->
-        <svg class="sb-yapp-icon" viewBox="0 0 230 175" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="75" cy="80" r="55" fill="#4da6ff"/><circle cx="125" cy="60" r="44" fill="#4da6ff"/><circle cx="170" cy="80" r="40" fill="#4da6ff"/><rect x="20" y="88" width="190" height="72" rx="8" fill="#4da6ff"/><text x="115" y="143" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" font-weight="800" letter-spacing="5" fill="white">YAPP</text></svg>
+        <svg class="sb-yapp-icon" viewBox="0 5 220 158" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="65" cy="95" r="62" fill="#4da6ff"/><circle cx="115" cy="60" r="50" fill="#4da6ff"/><circle cx="170" cy="75" r="45" fill="#4da6ff"/><circle cx="155" cy="108" r="42" fill="#4da6ff"/></svg>
         <div>
           <div class="sb-name">YAPP</div>
           <div class="sb-sub">Casa do Gerês</div>
@@ -338,6 +364,12 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
       <div class="sbi" onclick="go('feedbacks',this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Feedbacks</div>
       <div class="sbi" onclick="go('newsletter',this)"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Newsletter</div>
 
+      <div class="sbsec">Tema</div>
+      <div class="sbi" onclick="go('tema',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>Tema visual</div>
+
+      <div class="sbsec">Ajuda</div>
+      <div class="sbi" onclick="go('tutorial',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>Tutorial</div>
+
     </nav>
     <div class="sbfoot">
       <button class="sbout" onclick="doLogout()">
@@ -355,7 +387,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
       <div class="ph">
         <div>
           <div class="ptitle" id="dash-prop-title">Casa do Gerês</div>
-          <div class="psub" id="dash-sync-lbl">A ligar ao Google Sheets...</div>
+          <div class="psub" id="dash-sync-lbl">A sincronizar...</div>
         </div>
         <button class="sync-btn" onclick="loadAll()" style="align-self:center;">↻ Sincronizar</button>
       </div>
@@ -397,27 +429,27 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
         </div>
         <div id="dash-seccoes">
           <div class="dash-sec-row" onclick="go('casa-geral',document.querySelector('.sbi[onclick*=casa-geral]'))">
-            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#3b7dd8,#5b9ef0);">🏠</div>
+            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#3b7dd8,#5b9ef0);"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
             <div class="dash-sec-info"><div class="dash-sec-name">Informações da casa</div><div class="dash-sec-sub">Wi-Fi, regras, check-out</div></div>
             <div class="dash-sec-arrow">›</div>
           </div>
           <div class="dash-sec-row" onclick="go('atracoes',document.querySelector('.sbi[onclick*=atracoes]'))">
-            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">📍</div>
+            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#7c3aed,#a855f7);"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg></div>
             <div class="dash-sec-info"><div class="dash-sec-name">Atrações</div><div class="dash-sec-sub" id="dash-count-atracoes">A carregar...</div></div>
             <div class="dash-sec-arrow">›</div>
           </div>
           <div class="dash-sec-row" onclick="go('restaurantes',document.querySelector('.sbi[onclick*=restaurantes]'))">
-            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#059669,#34d399);">🍽️</div>
+            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#059669,#34d399);"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2l-3 8h3"/></svg></div>
             <div class="dash-sec-info"><div class="dash-sec-name">Restaurantes</div><div class="dash-sec-sub" id="dash-count-restaurantes">A carregar...</div></div>
             <div class="dash-sec-arrow">›</div>
           </div>
           <div class="dash-sec-row" onclick="go('servicos',document.querySelector('.sbi[onclick*=servicos]'))">
-            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#d97706,#fbbf24);">⚙️</div>
+            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#d97706,#fbbf24);"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div>
             <div class="dash-sec-info"><div class="dash-sec-name">Serviços</div><div class="dash-sec-sub">Limpeza, bicicletas</div></div>
             <div class="dash-sec-arrow">›</div>
           </div>
           <div class="dash-sec-row" onclick="go('notificacoes',document.querySelector('.sbi[onclick*=notificacoes]'))">
-            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#dc2626,#f87171);">🔔</div>
+            <div class="dash-sec-icon" style="background:linear-gradient(135deg,#dc2626,#f87171);"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg></div>
             <div class="dash-sec-info"><div class="dash-sec-name">Notificações</div><div class="dash-sec-sub" id="dash-count-notif">Enviar mensagem aos hóspedes</div></div>
             <div class="dash-sec-arrow">›</div>
           </div>
@@ -475,28 +507,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
         <div class="ctitle">Mensagem de boas-vindas</div>
         <textarea class="inp ta-lg" id="c-bv" placeholder="Bem-vindo à Casa do Gerês..."></textarea>
       </div>
-      <div class="card">
-        <div class="ctitle">Tema visual da app</div>
-        <p style="font-size:.82rem;color:var(--txl);margin-bottom:1rem;line-height:1.5;">Escolhe o tema de cores e tipografia da app dos hóspedes. Só o administrador pode alterar. O hóspede vê sempre o tema activo.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
-          <div id="tema-natureza-card" onclick="selectTema('natureza')" style="border:2px solid var(--gl);border-radius:var(--r);padding:1rem;cursor:pointer;background:#f7faf5;text-align:center;">
-            <div style="width:100%;height:60px;border-radius:8px;background:linear-gradient(135deg,#2d4a1e,#5a8a3c);margin-bottom:.6rem;display:flex;align-items:center;justify-content:center;">
-              <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:#fff;font-weight:600;">Casa do Gerês</span>
-            </div>
-            <div style="font-size:.82rem;font-weight:600;color:var(--g);">🌿 Natureza</div>
-            <div style="font-size:.72rem;color:var(--txl);margin-top:2px;">Verde floresta · Cormorant</div>
-          </div>
-          <div id="tema-oceano-card" onclick="selectTema('oceano')" style="border:2px solid transparent;border-radius:var(--r);padding:1rem;cursor:pointer;background:#f0f7ff;text-align:center;">
-            <div style="width:100%;height:60px;border-radius:8px;background:linear-gradient(135deg,#0c3a6e,#2874c8);margin-bottom:.6rem;display:flex;align-items:center;justify-content:center;">
-              <span style="font-family:'Playfair Display',serif;font-size:1.1rem;color:#fff;font-weight:600;">Casa do Gerês</span>
-            </div>
-            <div style="font-size:.82rem;font-weight:600;color:#0c3a6e;">🌊 Oceano</div>
-            <div style="font-size:.72rem;color:#5a82a8;margin-top:2px;">Azul mar · Playfair</div>
-          </div>
-        </div>
-        <input type="hidden" id="c-tema" value="natureza"/>
-        <button class="savebtn" onclick="saveTema()" style="margin-top:0;"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Aplicar tema<span class="oktxt" id="ok-tema">Aplicado!</span></button>
-      </div>
+
 
       <div class="card">
         <div class="ctitle">Aviso especial (aparece no topo da app quando ativo)</div>
@@ -551,7 +562,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 
         <div id="sec-hospedes" class="sec">
     <div class="content-wrap">
-      <div class="ph"><div><div class="ptitle">Hóspedes</div><div class="psub">Gerir acessos à app · dados do Google Sheets</div></div></div>
+      <div class="ph"><div><div class="ptitle">Hóspedes</div><div class="psub">Gerir acessos à app · sincronizado</div></div></div>
       <div class="filter-tabs">
         <div class="ftab on" onclick="filterGuests('todos',this)">Todos</div>
         <div class="ftab" onclick="filterGuests('ativos',this)">Ativos</div>
@@ -937,7 +948,7 @@ Entregar as chaves ao proprietário</textarea>
 
         <div id="sec-feedbacks" class="sec">
     <div class="content-wrap">
-      <div class="ph"><div><div class="ptitle">Feedbacks</div><div class="psub">Direto do Google Sheets "Feedbacks"</div></div>
+      <div class="ph"><div><div class="ptitle">Feedbacks</div><div class="psub">Direto do servidor "Feedbacks"</div></div>
         <button class="addbtn" onclick="loadAll()">↻ Atualizar</button>
       </div>
       <div id="feedbacks-list"><div style="font-size:.82rem;color:var(--txl);">A carregar...</div></div>
@@ -1000,6 +1011,203 @@ Entregar as chaves ao proprietário</textarea>
 
       </div><!-- /content-wrap -->
 
+    <!-- TEMA -->
+    <div id="sec-tema" class="sec">
+    <div class="content-wrap">
+      <div class="ph"><div><div class="ptitle">Tema Visual</div><div class="psub">Aparência da app dos hóspedes</div></div></div>
+      <div class="card">
+        <div class="ctitle">Escolhe o tema</div>
+        <p style="font-size:.82rem;color:var(--txl);margin-bottom:1.2rem;line-height:1.5;">O tema altera as cores, fontes e a barra do browser na app dos hóspedes.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:1rem;">
+          <div id="tema-natureza-card" onclick="selectTema('natureza')" class="tema-card">
+            <div class="tema-preview" style="background:linear-gradient(135deg,#2d4a1e,#5a8a3c);">
+              <span style="font-family:'Cormorant Garamond',serif;font-size:.85rem;color:#fff;font-weight:600;">Aa</span>
+            </div>
+            <div class="tema-label">Natureza</div>
+            <div class="tema-sub">Verde floresta</div>
+          </div>
+          <div id="tema-oceano-card" onclick="selectTema('oceano')" class="tema-card">
+            <div class="tema-preview" style="background:linear-gradient(135deg,#0c3a6e,#2874c8);">
+              <span style="font-family:'Playfair Display',serif;font-size:.85rem;color:#fff;font-weight:600;">Aa</span>
+            </div>
+            <div class="tema-label">Oceano</div>
+            <div class="tema-sub">Azul mar</div>
+          </div>
+          <div id="tema-urbano-card" onclick="selectTema('urbano')" class="tema-card">
+            <div class="tema-preview" style="background:linear-gradient(135deg,#2d2d2d,#5a5a5a);">
+              <span style="font-family:'DM Sans',sans-serif;font-size:.85rem;color:#fff;font-weight:600;">Aa</span>
+            </div>
+            <div class="tema-label">Urbano</div>
+            <div class="tema-sub">Cinzento moderno</div>
+          </div>
+        </div>
+        <input type="hidden" id="c-tema" value="natureza"/>
+        <button class="savebtn" onclick="saveTema()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Aplicar tema<span class="oktxt" id="ok-tema">Aplicado!</span></button>
+      </div>
+    </div>
+    </div>
+
+    <!-- TUTORIAL -->
+    <div id="sec-tutorial" class="sec">
+    <div class="content-wrap">
+      <div class="ph"><div><div class="ptitle">Tutorial</div><div class="psub">Como gerir a tua app de forma autónoma</div></div></div>
+
+      <!-- FOTOS -->
+      <div class="card tut-card" id="tut-fotos">
+        <div class="tut-header" onclick="toggleTut('fotos')">
+          <div class="tut-icon" style="background:linear-gradient(135deg,#3b7dd8,#5b9ef0);">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <div class="tut-title-wrap">
+            <div class="tut-title">Como alterar fotos</div>
+            <div class="tut-sub">Usar Google Drive para gerir imagens</div>
+          </div>
+          <svg class="tut-chevron" id="chev-fotos" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="tut-body" id="body-fotos">
+          <div class="tut-step"><div class="tut-num">1</div><div class="tut-text"><strong>Abre o Google Drive</strong> e faz upload da foto que queres usar (arrasta o ficheiro ou clica em "Novo").</div></div>
+          <div class="tut-step"><div class="tut-num">2</div><div class="tut-text"><strong>Clica com o botão direito</strong> na foto → "Partilhar" → muda para <strong>"Qualquer pessoa com o link"</strong> e define como "Visualizador".</div></div>
+          <div class="tut-step"><div class="tut-num">3</div><div class="tut-text"><strong>Copia o ID</strong> do link de partilha. O link tem este formato:<br><code class="tut-code">https://drive.google.com/file/d/<strong>1L9iO5UZa66Fp4p9uuL4jrEW7tgfW5413</strong>/view</code><br>O ID é a parte a negrito entre <code>/d/</code> e <code>/view</code>.</div></div>
+          <div class="tut-step"><div class="tut-num">4</div><div class="tut-text"><strong>Constrói o link direto</strong> para usar no backoffice:<br><code class="tut-code">https://lh3.googleusercontent.com/d/<strong>SEU_ID_AQUI</strong></code><br>Cola este link no campo de URL da imagem em qualquer secção.</div></div>
+          <div class="tut-tip"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> A foto demora até 5 minutos a ficar disponível após a partilha. Se não aparecer, verifica se o ficheiro é público.</div>
+          <div class="tut-tip"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Cria uma pasta no Drive chamada "YAPP Fotos" para organizares todas as imagens da app.</div>
+        </div>
+      </div>
+
+      <!-- HÓSPEDES -->
+      <div class="card tut-card" id="tut-hospedes">
+        <div class="tut-header" onclick="toggleTut('hospedes')">
+          <div class="tut-icon" style="background:linear-gradient(135deg,#059669,#34d399);">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <div class="tut-title-wrap">
+            <div class="tut-title">Como gerir hóspedes</div>
+            <div class="tut-sub">Adicionar, editar e remover acessos</div>
+          </div>
+          <svg class="tut-chevron" id="chev-hospedes" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="tut-body" id="body-hospedes" style="display:none;">
+          <div class="tut-step"><div class="tut-num">1</div><div class="tut-text"><strong>Vai a Hóspedes</strong> no menu lateral. Clica em <strong>"Adicionar hóspede"</strong> e preenche: username (ex: familia_silva), password, nome e data de check-out.</div></div>
+          <div class="tut-step"><div class="tut-num">2</div><div class="tut-text"><strong>Partilha o acesso</strong> com o hóspede: envia o link da app + o username e password que criaste. O hóspede entra e vê toda a informação da casa.</div></div>
+          <div class="tut-step"><div class="tut-num">3</div><div class="tut-text"><strong>Após o check-out</strong>, o acesso expira automaticamente pela data definida. Podes também clicar em "Eliminar" para remover o acesso imediatamente.</div></div>
+          <div class="tut-step"><div class="tut-num">4</div><div class="tut-text"><strong>Usa os filtros</strong> (Ativos / Check-in hoje / Expirados) para ver rapidamente quem está a usar a app neste momento.</div></div>
+          <div class="tut-tip"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Para acesso permanente (ex: familiar), usa <code class="tut-code">2099-12-31</code> como data de check-out.</div>
+        </div>
+      </div>
+
+      <!-- CONTEÚDO -->
+      <div class="card tut-card" id="tut-conteudo">
+        <div class="tut-header" onclick="toggleTut('conteudo')">
+          <div class="tut-icon" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </div>
+          <div class="tut-title-wrap">
+            <div class="tut-title">Como editar o conteúdo</div>
+            <div class="tut-sub">Quartos, piscina, regras, restaurantes...</div>
+          </div>
+          <svg class="tut-chevron" id="chev-conteudo" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="tut-body" id="body-conteudo" style="display:none;">
+          <div class="tut-step"><div class="tut-num">1</div><div class="tut-text"><strong>Navega pela secção</strong> que queres editar (ex: Quartos, Piscina, Cozinha). Altera os textos diretamente nos campos.</div></div>
+          <div class="tut-step"><div class="tut-num">2</div><div class="tut-text"><strong>Para alterar fotos</strong>, cola o link da imagem no campo "URL da imagem". Ver tutorial de fotos acima para saber como obter o link.</div></div>
+          <div class="tut-step"><div class="tut-num">3</div><div class="tut-text"><strong>Clica em Guardar</strong> no fundo de cada secção. As alterações ficam disponíveis na app dos hóspedes em segundos.</div></div>
+          <div class="tut-tip"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> A barra azul que aparece no topo da secção avisa-te quando há alterações por guardar.</div>
+        </div>
+      </div>
+
+      <!-- ATRAÇÕES -->
+      <div class="card tut-card" id="tut-atracoes">
+        <div class="tut-header" onclick="toggleTut('atracoes')">
+          <div class="tut-icon" style="background:linear-gradient(135deg,#d97706,#fbbf24);">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
+          </div>
+          <div class="tut-title-wrap">
+            <div class="tut-title">Atrações e restaurantes</div>
+            <div class="tut-sub">Adicionar, reordenar e remover pontos de interesse</div>
+          </div>
+          <svg class="tut-chevron" id="chev-atracoes" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="tut-body" id="body-atracoes" style="display:none;">
+          <div class="tut-step"><div class="tut-num">1</div><div class="tut-text"><strong>Vai a Atrações ou Restaurantes</strong> e clica em <strong>"Adicionar"</strong>. Preenche nome, tipo, distância e descrição.</div></div>
+          <div class="tut-step"><div class="tut-num">2</div><div class="tut-text"><strong>Para as coordenadas GPS</strong>, abre o Google Maps, clica com o botão direito no local → copia as coordenadas (ex: 41.7482, -8.1608). Cola a latitude e longitude nos campos.</div></div>
+          <div class="tut-step"><div class="tut-num">3</div><div class="tut-text"><strong>Para reordenar</strong>, usa o handle <strong>⠿</strong> à esquerda de cada item — arrasta para cima ou para baixo. Guarda depois de reordenar.</div></div>
+          <div class="tut-step"><div class="tut-num">4</div><div class="tut-text"><strong>Para remover</strong>, clica em "Remover" no item. A lista é guardada automaticamente e a atração desaparece da app.</div></div>
+          <div class="tut-tip"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Usa fotos horizontais (landscape) para melhor aparência na app. Tamanho ideal: 800×500px.</div>
+        </div>
+      </div>
+
+      <!-- NOTIFICAÇÕES -->
+      <div class="card tut-card" id="tut-notif">
+        <div class="tut-header" onclick="toggleTut('notif')">
+          <div class="tut-icon" style="background:linear-gradient(135deg,#dc2626,#f87171);">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+          </div>
+          <div class="tut-title-wrap">
+            <div class="tut-title">Enviar notificações</div>
+            <div class="tut-sub">Comunicar com os hóspedes em tempo real</div>
+          </div>
+          <svg class="tut-chevron" id="chev-notif" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="tut-body" id="body-notif" style="display:none;">
+          <div class="tut-step"><div class="tut-num">1</div><div class="tut-text"><strong>Vai a Notificações</strong> e escreve um título e mensagem. Exemplo: "Piscina encerrada hoje para manutenção."</div></div>
+          <div class="tut-step"><div class="tut-num">2</div><div class="tut-text"><strong>Escolhe o destinatário:</strong> todos os hóspedes ativos, só os que fizeram check-in hoje, ou um hóspede específico pelo username.</div></div>
+          <div class="tut-step"><div class="tut-num">3</div><div class="tut-text"><strong>Clica em Enviar.</strong> A notificação aparece na app dos hóspedes. Podes também adicionar um link para redirecionar para mais info.</div></div>
+          <div class="tut-tip"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Ao adicionar um novo hóspede, uma notificação de boas-vindas é enviada automaticamente.</div>
+        </div>
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="card tut-card" id="tut-pass">
+        <div class="tut-header" onclick="toggleTut('pass')">
+          <div class="tut-icon" style="background:linear-gradient(135deg,#1a4a8a,#3b7dd8);">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          </div>
+          <div class="tut-title-wrap">
+            <div class="tut-title">Alterar a password do backoffice</div>
+            <div class="tut-sub">Manter o acesso seguro</div>
+          </div>
+          <svg class="tut-chevron" id="chev-pass" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="tut-body" id="body-pass" style="display:none;">
+          <div class="tut-step"><div class="tut-num">1</div><div class="tut-text"><strong>A password atual</strong> do backoffice está definida no código do ficheiro HTML. Procura pela linha:<br><code class="tut-code">var BO_PASS = 'yapp2025';</code></div></div>
+          <div class="tut-step"><div class="tut-num">2</div><div class="tut-text"><strong>Para alterar</strong>, abre o ficheiro HTML num editor de texto (ex: Notepad, TextEdit), substitui <code class="tut-code">yapp2025</code> pela nova password e guarda o ficheiro.</div></div>
+          <div class="tut-step"><div class="tut-num">3</div><div class="tut-text"><strong>Faz upload do ficheiro atualizado</strong> para o GitHub Pages para o backoffice ficar disponível com a nova password.</div></div>
+          <div class="tut-tip"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Escolhe uma password com letras e números. Nunca partilhes a password do backoffice com os hóspedes — só com o proprietário.</div>
+        </div>
+      </div>
+
+      <!-- GOOGLE DRIVE ORGANIZAÇÃO -->
+      <div class="card tut-card" id="tut-drive">
+        <div class="tut-header" onclick="toggleTut('drive')">
+          <div class="tut-icon" style="background:linear-gradient(135deg,#059669,#34d399);">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+          </div>
+          <div class="tut-title-wrap">
+            <div class="tut-title">Organizar o Google Drive</div>
+            <div class="tut-sub">Estrutura recomendada para gerir os ficheiros</div>
+          </div>
+          <svg class="tut-chevron" id="chev-drive" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="tut-body" id="body-drive" style="display:none;">
+          <div class="tut-step"><div class="tut-num">1</div><div class="tut-text"><strong>Cria esta estrutura de pastas</strong> no Google Drive:<br>
+            <code class="tut-code" style="display:block;margin-top:.5rem;line-height:2;">
+              📁 YAPP — Casa do Gerês<br>
+              &nbsp;&nbsp;📁 Fotos — Quartos<br>
+              &nbsp;&nbsp;📁 Fotos — Exterior<br>
+              &nbsp;&nbsp;📁 Fotos — Atrações<br>
+              &nbsp;&nbsp;📁 Fotos — Restaurantes<br>
+              &nbsp;&nbsp;📄 Config (Google Sheet)
+            </code>
+          </div></div>
+          <div class="tut-step"><div class="tut-num">2</div><div class="tut-text"><strong>Partilha a pasta principal</strong> como pública (só leitura) para que todos os links das imagens funcionem automaticamente.</div></div>
+          <div class="tut-step"><div class="tut-num">3</div><div class="tut-text"><strong>Quando substituíres uma foto</strong>, mantém o mesmo nome de ficheiro — o link permanece o mesmo e não precisas de atualizar o backoffice.</div></div>
+          <div class="tut-tip"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> O Google Drive oferece 15GB gratuitos — mais que suficiente para centenas de fotos de alta qualidade.</div>
+        </div>
+      </div>
+
+    </div>
+    </div>
+
   </div><!-- /main -->
 </div><!-- /app -->
 
@@ -1012,6 +1220,16 @@ var LS_KEY  = 'yapp_bo_local';
 var API     = 'https://script.google.com/macros/s/AKfycbxqy-PfUD4XS0dCbe8vGUNDbJ5P8GUHlIbEz4I1hnAwjG-EZAZb_YyG_lUNx3AKd1yMJg/exec';
 
 var DB = { config:{}, guests:[], feedbacks:[], newsletter:[], atracoes:[], restaurantes:[] };
+
+// ── TUTORIAL ──────────────────────────────────────
+function toggleTut(id) {
+  var body = document.getElementById('body-' + id);
+  var chev = document.getElementById('chev-' + id);
+  if (!body) return;
+  var isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  if (chev) chev.classList.toggle('open', !isOpen);
+}
 
 // ── AUTH ────────────────────────────────────────
 function togglePass() {
@@ -1139,14 +1357,14 @@ function setStatus(msg, color) {
 
 function loadAll() {
   setStatus('A ligar...', '#e67e22');
-  showLoading('A ligar ao Google Sheets...');
+  showLoading('A sincronizar...');
   jsonpCall({ action: 'all' }, function(err, d) {
     hideLoading();
     if (err || !d || d.status !== 'ok') {
-      setStatus('Sem ligação — verifica o Apps Script', '#c0392b');
+      setStatus('Sem ligação à internet', '#c0392b');
       return;
     }
-    setStatus('Ligado ao Google Sheets ✓', '#5a8a3c');
+    setStatus('Sincronizado ✓', '#5a8a3c');
     if (d.config) { DB.config = d.config; fillConfig(d.config); fillNotifTemplates(d.config); }
     if (d.casa)   fillCasa(d.casa);
     if (d.patrocinadores && d.patrocinadores.length) {
@@ -1353,10 +1571,10 @@ function saveSection(sec) {
       codigo_desconto:v('c-codesc')
     },
     'contacto': { action:'saveContacto',
-      prop_nome:v('ct-nome'),
-      prop_whatsapp:v('ct-wa'),
-      prop_telefone:v('ct-tel'),
-      prop_email:v('ct-email'),
+      proprietario_nome:v('ct-nome'),
+      proprietario_whatsapp:v('ct-wa'),
+      proprietario_telefone:v('ct-tel'),
+      proprietario_email:v('ct-email'),
       em_taxi:v('em-taxi'),
       em_hosp_tel:v('em-hosp'),
       em_hosp_nome:v('em-hosp-n'),
@@ -1386,8 +1604,8 @@ function saveSection(sec) {
   var fields = maps[sec];
   if (fields === null || fields === 'dynamic') { savePatrocinadores(); return; }
   if (!fields) { showOk('ok-'+sec); toast('Guardado localmente.'); return; }
-  showLoading('A guardar na Google Sheet...');
-  apiWrite(fields, function() { hideLoading(); showOk('ok-'+sec); toast('✓ Guardado na Google Sheet!'); });
+  showLoading('A guardar na servidor...');
+  apiWrite(fields, function() { hideLoading(); showOk('ok-'+sec); toast('✓ Guardado na servidor!'); });
 }
 // ── PATROCINADORES DINÂMICOS ─────────────────────────────────────
 var _pats = [
@@ -1572,7 +1790,7 @@ function deleteGuest(i) {
     hideLoading();
     DB.guests.splice(i, 1);
     renderGuests();
-    toast('✓ Hóspede eliminado da Google Sheet!');
+    toast('✓ Hóspede eliminado da servidor!');
   });
 }
 
@@ -1663,18 +1881,18 @@ function savePlacesWithClear(type) {
   var sheetAction = type === 'atracoes' ? 'saveAtracoes' : 'saveRestaurantes';
   var clearAction = type === 'atracoes' ? 'clearAtracoes' : 'clearRestaurantes';
   var items = DB[type];
-  showLoading('A guardar na Google Sheet...');
+  showLoading('A guardar na servidor...');
   // Primeiro limpa todas as linhas do Sheet, depois escreve os actuais
   apiWrite({ action: clearAction, total: items.length }, function() {
     if (!items || items.length === 0) {
       hideLoading(); showOk('ok-'+type);
-      toast('✓ Lista limpa na Google Sheet!');
+      toast('✓ Lista limpa na servidor!');
       return;
     }
     function saveNext(i) {
       if (i >= items.length) {
         hideLoading(); showOk('ok-'+type);
-        toast('✓ ' + items.length + ' itens guardados na Google Sheet!');
+        toast('✓ ' + items.length + ' itens guardados na servidor!');
         return;
       }
       var p = items[i];
@@ -1714,7 +1932,7 @@ function renderFeedbacks() {
 function approveFb(i) {
   DB.feedbacks[i].approved = true;
   apiWrite({ action: 'approveFeedback', index: i }, function() {});
-  renderFeedbacks(); toast('✓ Feedback aprovado na Google Sheet.');
+  renderFeedbacks(); toast('✓ Feedback aprovado na servidor.');
 }
 function deleteFb(i) {
   if (confirm('Remover este feedback?')) {
@@ -1844,14 +2062,23 @@ function saveQuartos() {
 
 // ── TEMA ─────────────────────────────────────────────────────────
 function selectTema(t) {
-  document.getElementById('c-tema').value = t;
-  var cards = ['natureza','oceano'];
-  cards.forEach(function(c) {
-    var el = document.getElementById('tema-'+c+'-card');
-    if (!el) return;
-    el.style.border = (c === t) ? '2px solid var(--gl)' : '2px solid transparent';
-    el.style.background = (c === t) ? (c === 'oceano' ? '#e8f4fd' : '#f7faf5') : (c === 'oceano' ? '#f0f7ff' : '#fafafa');
+  var el = document.getElementById('c-tema'); if (el) el.value = t;
+  var temas = {
+    natureza: { border:'#5a8a3c', bg:'#f7faf5', themeColor:'#2d4a1e' },
+    oceano:   { border:'#2874c8', bg:'#e8f4fd', themeColor:'#0c3a6e' },
+    urbano:   { border:'#5a5a5a', bg:'#f5f5f5', themeColor:'#2d2d2d' }
+  };
+  ['natureza','oceano','urbano'].forEach(function(c) {
+    var card = document.getElementById('tema-'+c+'-card');
+    if (!card) return;
+    var active = (c === t);
+    card.style.border = active ? '2px solid ' + temas[c].border : '2px solid transparent';
+    card.style.background = active ? temas[c].bg : '#fafafa';
   });
+  // Update browser theme-color meta tag
+  var meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) { meta = document.createElement('meta'); meta.name = 'theme-color'; document.head.appendChild(meta); }
+  if (temas[t]) meta.content = temas[t].themeColor;
 }
 function saveTema() {
   var tema = document.getElementById('c-tema').value || 'natureza';
