@@ -255,12 +255,12 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 <div id="login">
   <div class="lb">
     <div style="display:flex;justify-content:center;margin-bottom:1.2rem;">
-      <svg width="120" height="95" viewBox="0 0 240 210" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="75"  cy="85" r="55" fill="#4da6ff"/>
-        <circle cx="125" cy="63" r="44" fill="#4da6ff"/>
-        <circle cx="170" cy="85" r="40" fill="#4da6ff"/>
-        <rect   x="20"  y="95" width="200" height="70" fill="#4da6ff"/>
-        <text x="120" y="148" text-anchor="middle" font-family="Arial,sans-serif" font-size="32" font-weight="800" letter-spacing="6" fill="white">YAPP</text>
+      <svg width="130" height="95" viewBox="0 0 240 165" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="75"  cy="80" r="55" fill="#4da6ff"/>
+        <circle cx="125" cy="58" r="44" fill="#4da6ff"/>
+        <circle cx="170" cy="80" r="40" fill="#4da6ff"/>
+        <rect   x="20"  y="90" width="200" height="60" fill="#4da6ff"/>
+        <text x="120" y="140" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="800" letter-spacing="6" fill="white">YAPP</text>
       </svg>
     </div>
     <div class="ll">YAPP Backoffice</div>
@@ -309,12 +309,12 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
     <div class="sb-logo">
       <div class="sb-logo-inner">
         <!-- Logo: viewBox aumentado em baixo para a nuvem não ficar cortada -->
-        <svg class="sb-yapp-icon" viewBox="0 0 240 210" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="75"  cy="85" r="55" fill="#4da6ff"/>
-          <circle cx="125" cy="63" r="44" fill="#4da6ff"/>
-          <circle cx="170" cy="85" r="40" fill="#4da6ff"/>
-          <rect   x="20"  y="95" width="200" height="70" fill="#4da6ff"/>
-          <text x="120" y="148" text-anchor="middle" font-family="Arial,sans-serif" font-size="32" font-weight="800" letter-spacing="6" fill="white">YAPP</text>
+        <svg class="sb-yapp-icon" viewBox="0 0 240 165" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="75"  cy="80" r="55" fill="#4da6ff"/>
+          <circle cx="125" cy="58" r="44" fill="#4da6ff"/>
+          <circle cx="170" cy="80" r="40" fill="#4da6ff"/>
+          <rect   x="20"  y="90" width="200" height="60" fill="#4da6ff"/>
+          <text x="120" y="140" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="800" letter-spacing="6" fill="white">YAPP</text>
         </svg>
         <div>
           <div class="sb-name">YAPP</div>
@@ -1079,9 +1079,11 @@ window.addEventListener('DOMContentLoaded', function() {
     document.getElementById('app').style.display = 'block';
     loadAll();
   }
-  // Restore local fields
+  // Restore local fields — nunca restaurar o campo password
   var local = localStorage.getItem(LS_KEY);
   if (local) { try { restoreLocal(JSON.parse(local)); } catch(e) {} }
+  // Garantir que o campo password fica sempre limpo
+  var lp = document.getElementById('lpass'); if (lp) lp.value = '';
 
   // Offline detection
   function checkOnline() {
@@ -1591,6 +1593,8 @@ function renderGuestsFiltered(list) {
   var el = document.getElementById('guests-tbl');
   if (el) el.innerHTML = h;
 }
+
+function editPass(i) {
   var g = DB.guests[i];
   var np = prompt('Nova password para "' + g.user + '" (atual: ' + g.pass + '):', g.pass);
   if (np !== null && np.trim()) {
