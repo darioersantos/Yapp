@@ -1932,148 +1932,6 @@ function refreshSlider(places) {
   }, 3500);
 }
 
-// ── QR CODE GENERATOR (inline, no CDN) ───────────────────────────
-// Minimal QR Code generator for Wi-Fi strings
-// Based on: simple-qrcode algorithm
-var _QR = (function() {
-  // Reed-Solomon error correction tables
-  var GF = new Uint8Array(512);
-  var LOG = new Uint8Array(256);
-  (function(){
-    var x = 1;
-    for (var i = 0; i < 255; i++) {
-      GF[i] = x; LOG[x] = i;
-      x <<= 1; if (x & 256) x ^= 0x11d;
-    }
-    for (var i = 255; i < 512; i++) GF[i] = GF[i-255];
-  })();
-
-  function gfMul(a, b) { return a && b ? GF[LOG[a]+LOG[b]] : 0; }
-  function rsEncode(data, n) {
-    var g = [1];
-    for (var i = 0; i < n; i++) {
-      var r = [1, GF[i]];
-      var t = new Uint8Array(g.length + 1);
-      for (var j = 0; j < g.length; j++) { t[j] ^= g[j]; t[j+1] ^= gfMul(g[j], r[1]); }
-      g = Array.from(t);
-    }
-    var msg = data.concat(new Array(n).fill(0));
-    for (var i = 0; i < data.length; i++) {
-      var c = msg[i];
-      if (c) for (var j = 0; j < g.length; j++) msg[i+j] ^= gfMul(c, g[j]);
-    }
-    return msg.slice(data.length);
-  }
-
-  // Generate QR Version 3 (29x29) — handles ~25 chars, enough for simple Wi-Fi
-  // For longer strings use Version 5 (37x37)
-  function generate(text) {
-    // Encode as byte mode
-    var bytes = [];
-    for (var i = 0; i < text.length; i++) bytes.push(text.charCodeAt(i) & 0xff);
-    var len = bytes.length;
-    // Auto-select version based on length
-    var version = len <= 25 ? 3 : len <= 47 ? 4 : 5;
-    var size = 17 + 4 * version;
-    // Data capacity and EC words for version/M level
-    var ecTable = { 3:15, 4:18, 5:22 };
-    var capTable = { 3:15, 4:20, 5:26 };
-    var ecWords = ecTable[version];
-    var dataCapacity = capTable[version];
-
-    // Build data bits
-    var bits = [];
-    function pushBits(val, n) { for (var i = n-1; i >= 0; i--) bits.push((val>>i)&1); }
-    pushBits(0b0100, 4);        // Byte mode
-    pushBits(len, 8);           // Length
-    for (var i = 0; i < len; i++) pushBits(bytes[i], 8);
-    pushBits(0, 4);             // Terminator
-    while (bits.length % 8) bits.push(0);
-    var codewords = [];
-    for (var i = 0; i < bits.length; i += 8) {
-      var b = 0; for (var j = 0; j < 8; j++) b = (b<<1)|bits[i+j];
-      codewords.push(b);
-    }
-    // Pad
-    var pad = [0xEC, 0x11];
-    while (codewords.length < dataCapacity) codewords.push(pad[(codewords.length-dataCapacity%2)%2]);
-    // EC
-    var ec = rsEncode(codewords, ecWords);
-    var all = codewords.concat(ec);
-    // Build bit stream
-    var stream = [];
-    for (var i = 0; i < all.length; i++) pushBitsTo(stream, all[i], 8);
-    function pushBitsTo(arr, val, n) { for (var i = n-1; i >= 0; i--) arr.push((val>>i)&1); }
-
-    // Build matrix
-    var mat = [];
-    for (var i = 0; i < size; i++) { mat.push([]); for (var j = 0; j < size; j++) mat[i].push(-1); }
-
-    function addFinder(r, c) {
-      for (var i = -1; i <= 7; i++) for (var j = -1; j <= 7; j++) {
-        var v = (i===0||i===6||j===0||j===6) ? 1 : (i>=1&&i<=5&&j>=1&&j<=5) ? (i===1||i===5||j===1||j===5?0:1) : 0;
-        if (r+i >= 0 && r+i < size && c+j >= 0 && c+j < size) mat[r+i][c+j] = v;
-      }
-    }
-    addFinder(0,0); addFinder(0,size-7); addFinder(size-7,0);
-
-    // Timing
-    for (var i = 8; i < size-8; i++) { mat[6][i] = i%2===0?1:0; mat[i][6] = i%2===0?1:0; }
-
-    // Dark module
-    mat[size-8][8] = 1;
-
-    // Format info (mask 0, M error correction)
-    var fmt = [1,1,1,0,1,1,1,1,1,0,0,0,1,0,0];
-    [[0,8],[1,8],[2,8],[3,8],[4,8],[5,8],[7,8],[8,8],[8,7],[8,5],[8,4],[8,3],[8,2],[8,1],[8,0]].forEach(function(p,i){mat[p[0]][p[1]]=fmt[i];});
-    [[8,size-1],[8,size-2],[8,size-3],[8,size-4],[8,size-5],[8,size-6],[8,size-7],[size-8,8],[size-7,8],[size-6,8],[size-5,8],[size-4,8],[size-3,8],[size-2,8],[size-1,8]].forEach(function(p,i){mat[p[0]][p[1]]=fmt[14-i]||0;});
-
-    // Place data bits
-    var col = size-1; var row = size-1; var up = true; var bit = 0;
-    while (col > 0) {
-      if (col === 6) col--;
-      for (var dr = 0; dr < size; dr++) {
-        var r = up ? size-1-dr : dr;
-        for (var dc = 0; dc < 2; dc++) {
-          var c = col - dc;
-          if (mat[r][c] === -1) {
-            var b = bit < stream.length ? stream[bit++] : 0;
-            mat[r][c] = b ^ ((r+c)%2===0 ? 0 : 0); // mask 0
-          }
-        }
-      }
-      col -= 2; up = !up;
-    }
-
-    return { mat: mat, size: size };
-  }
-
-  return { generate: generate };
-})();
-
-function drawQR(container, text, px) {
-  try {
-    var qr = _QR.generate(text);
-    var mod = px / (qr.size + 8);
-    var cvs = document.createElement('canvas');
-    cvs.width = px; cvs.height = px;
-    var ctx = cvs.getContext('2d');
-    ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,px,px);
-    ctx.fillStyle = '#0f1908';
-    var off = mod * 4;
-    for (var r = 0; r < qr.size; r++) {
-      for (var c = 0; c < qr.size; c++) {
-        if (qr.mat[r][c] === 1) ctx.fillRect(off+c*mod, off+r*mod, mod, mod);
-      }
-    }
-    container.innerHTML = '';
-    container.appendChild(cvs);
-  } catch(e) {
-    // Fallback: show text link to open wifi settings
-    container.innerHTML = '<p style="font-size:.78rem;color:var(--text-mid);padding:.5rem;">Use o botão Copiar abaixo para copiar a password e ligar manualmente ao Wi-Fi.</p>';
-  }
-}
-
 // ── WIFI QR CODE ─────────────────────────────────────────────────
 var _wifiData = [
   { ssid: 'CasaGeres_5G',  pass: 'natureza2026', type: 'WPA' },
@@ -2099,12 +1957,17 @@ function openWifiQR(idx) {
   var canvas = document.getElementById('wifi-qr-canvas');
   if (canvas) {
     canvas.innerHTML = '';
-    try {
-      var wifiStr = 'WIFI:S:' + ssid + ';T:' + enc + ';P:' + pass + ';;';
-      drawQR(canvas, wifiStr, 200);
-    } catch(e) {
-      canvas.innerHTML = '<p style="font-size:.75rem;color:#c0392b;">Erro ao gerar QR Code</p>';
-    }
+    var wifiCode = 'WIFI:S:' + ssid + ';T:' + enc + ';P:' + pass + ';;';
+    var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=10&data=' + encodeURIComponent(wifiCode);
+    var img = document.createElement('img');
+    img.src = qrUrl;
+    img.width = 200;
+    img.height = 200;
+    img.style.borderRadius = '8px';
+    img.onerror = function() {
+      canvas.innerHTML = '<p style="font-size:.78rem;color:var(--text-mid);padding:.5rem;">Sem internet. Use o botão Copiar abaixo.</p>';
+    };
+    canvas.appendChild(img);
   }
   openPopup('popup-wifi-qr');
 }
