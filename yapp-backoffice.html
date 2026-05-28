@@ -1035,7 +1035,7 @@ Entregar as chaves ao proprietário</textarea>
 <div id="toast"></div>
 
 <script>
-var BO_PASS = 'yapp2026';
+var BO_PASS = 'yapp2025';
 var BO_KEY  = 'yapp_bo_auth';
 var LS_KEY  = 'yapp_bo_local';
 var API     = 'https://script.google.com/macros/s/AKfycbxqy-PfUD4XS0dCbe8vGUNDbJ5P8GUHlIbEz4I1hnAwjG-EZAZb_YyG_lUNx3AKd1yMJg/exec';
@@ -1054,8 +1054,8 @@ function doLogin() {
   }
 }
 function doLogout() { localStorage.removeItem(BO_KEY); location.reload(); }
-document.getElementById('lpass').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
 window.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('lpass').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
   if (localStorage.getItem(BO_KEY)) {
     document.getElementById('login').classList.add('off');
     document.getElementById('app').style.display = 'block';
