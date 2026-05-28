@@ -58,6 +58,30 @@ body.tema-oceano .modal-title,
 body.tema-oceano .login-logo,
 body.tema-oceano .sponsor-name{font-family:'Playfair Display',serif;}
 
+/* ── TEMA: URBANO CINZENTO ───────────────────────────────────── */
+body.tema-urbano{
+  --forest:#2c2c2c;--forest-mid:#444;--forest-light:#666;
+  --sage:#888;--sage-light:#bbb;
+  --cream:#f2f2f2;--cream-dark:#e0e0e0;
+  --earth:#7a5c3a;--earth-light:#b08050;--bark:#333;
+  --text-dark:#1a1a1a;--text-mid:#444;--text-light:#888;
+  --card-border:rgba(0,0,0,0.1);
+  background:#f2f2f2;
+}
+body.tema-urbano #login-screen{background:#1a1a1a;}
+body.tema-urbano .hero-video-wrap{background:linear-gradient(160deg,#1a1a1a 0%,#2c2c2c 60%,#444 100%);}
+body.tema-urbano .wifi-hero{background:#2c2c2c;}
+body.tema-urbano .nav-bar{background:rgba(242,242,242,0.95);}
+body.tema-urbano .chip{background:rgba(0,0,0,0.07);color:#444;}
+body.tema-urbano .dist-badge{background:rgba(0,0,0,0.07);color:#444;}
+body.tema-urbano .amenity-dot{background:#888;}
+body.tema-urbano .section-tag{color:#888;}
+body.tema-urbano .section-title{color:#1a1a1a;}
+body.tema-urbano .hero-label{color:#bbb;}
+body.tema-urbano .card{border-color:rgba(0,0,0,0.1);}
+body.tema-urbano .acc-header-label{color:#1a1a1a;}
+body.tema-urbano .bottom-nav,.tema-urbano .nav-bar{background:rgba(242,242,242,0.95);}
+
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;height:-webkit-fill-available;}
 html{scroll-behavior:smooth;}
@@ -1816,29 +1840,37 @@ function applyConfig(c) {
 
 function applyTheme(tema) {
   var body = document.body;
+  // Remove all theme classes
   body.classList.remove('tema-oceano', 'tema-natureza', 'tema-urbano');
-  // Theme color map
-  var colors = {
-    natureza: { bar: '#0f1908', apple: 'black-translucent', login: '#0f1908' },
-    oceano:   { bar: '#061a35', apple: 'black-translucent', login: '#061a35' },
-    urbano:   { bar: '#1a1a1a', apple: 'black-translucent', login: '#1a1a1a' }
+
+  // Theme definitions
+  var themes = {
+    natureza: { bar: '#0f1908', login: '#0f1908' },
+    oceano:   { bar: '#061a35', login: '#061a35' },
+    urbano:   { bar: '#1a1a1a', login: '#1a1a1a' }
   };
-  var t = colors[tema] || colors.natureza;
-  // Update browser bar color
+
+  var t = themes[tema] || themes.natureza;
+
+  // 1. Browser bar colour (Android Chrome + PWA)
   var tc = document.getElementById('theme-meta');
   if (tc) tc.setAttribute('content', t.bar);
-  var as = document.getElementById('apple-status-bar');
-  if (as) as.setAttribute('content', t.apple);
-  if (!tema || tema === 'natureza') {
-    try { localStorage.setItem('yapp_tema', 'natureza'); } catch(e) {}
-    return;
+
+  // 2. iOS status bar
+  var sb = document.getElementById('apple-status-bar');
+  if (sb) sb.setAttribute('content', 'black-translucent');
+
+  // 3. Login screen background
+  var ls = document.getElementById('login-screen');
+  if (ls) ls.style.background = t.login;
+
+  // 4. Apply theme class (drives all CSS vars)
+  if (tema && tema !== 'natureza') {
+    body.classList.add('tema-' + tema);
   }
-  if (tema === 'oceano') {
-    body.classList.add('tema-oceano');
-    var ls = document.getElementById('login-screen');
-    if (ls) ls.style.background = t.login;
-  }
-  try { localStorage.setItem('yapp_tema', tema); } catch(e) {}
+
+  // 5. Save to localStorage
+  try { localStorage.setItem('yapp_tema', tema || 'natureza'); } catch(e) {}
 }
 
 // ── WHATSAPP NOTIFICATION TO OWNER ───────────────────────────────
@@ -1864,12 +1896,13 @@ function sendWANotification(msg) {
   } catch(e) {}
 }
 
-// Apply correct theme colour instantly on load
+// Apply correct theme instantly on load — before any JS runs
 (function() {
   var t = localStorage.getItem('yapp_tema') || 'natureza';
   var tc = { natureza:'#0f1908', oceano:'#061a35', urbano:'#1a1a1a' };
   var meta = document.getElementById('theme-meta');
   if (meta) meta.setAttribute('content', tc[t] || '#0f1908');
+  if (t && t !== 'natureza') document.body.classList.add('tema-' + t);
 })();
 // Apply cached theme instantly on load (before API responds)
 (function() {
