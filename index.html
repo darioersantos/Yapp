@@ -882,16 +882,10 @@ body.aviso-active #notif-banner{top:2.2rem;}
         </a>
       </div>
       <div class="block-label">Proprietário</div>
-      <!-- Nome do proprietário — dinâmico via backoffice -->
       <div class="card" id="prop-nome-card" style="display:none;margin-bottom:.6rem;">
         <div style="display:flex;align-items:center;gap:.75rem;">
-          <div style="width:42px;height:42px;border-radius:50%;background:var(--forest);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </div>
-          <div>
-            <div class="contact-label" id="prop-nome-display">Proprietário</div>
-            <div class="contact-sub" id="prop-nome-sub">Gestor do alojamento</div>
-          </div>
+          <div style="width:42px;height:42px;border-radius:50%;background:var(--forest);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div><div class="contact-label" id="prop-nome-display">Proprietário</div><div class="contact-sub" id="prop-nome-sub">Gestor do alojamento</div></div>
         </div>
       </div>
       <a href="https://wa.me/351914713808" class="contact-link">
@@ -952,23 +946,12 @@ body.aviso-active #notif-banner{top:2.2rem;}
         </div>
       </div>
       <a href="https://yapp.pt" target="_blank" class="yapp-footer" style="display:block;text-decoration:none;">
-        <!-- YAPP Logo — exact cloud shape from brand -->
-        <svg width="90" height="70" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto 6px;">
-          <g fill="var(--forest)">
-            <!-- Left bump -->
-            <circle cx="85" cy="95" r="42"/>
-            <!-- Center main bump (tallest) -->
-            <circle cx="148" cy="72" r="52"/>
-            <!-- Right bump -->
-            <circle cx="220" cy="90" r="38"/>
-            <!-- Fill bottom gap -->
-            <rect x="50" y="98" width="210" height="44" rx="8"/>
-          </g>
-          <!-- YAPP text below -->
-          <text x="150" y="182" text-anchor="middle"
-            font-family="'Courier New',monospace"
-            font-size="30" font-weight="700" letter-spacing="10"
-            fill="var(--forest)">YAPP</text>
+        <svg width="90" height="66" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto 6px;">
+          <circle cx="85"  cy="95" r="42" fill="var(--forest)"/>
+          <circle cx="148" cy="72" r="52" fill="var(--forest)"/>
+          <circle cx="220" cy="90" r="38" fill="var(--forest)"/>
+          <rect x="50" y="98" width="210" height="44" rx="6" fill="var(--forest)"/>
+          <text x="150" y="183" text-anchor="middle" font-family="'Courier New',monospace" font-size="30" font-weight="700" letter-spacing="10" fill="var(--forest)">YAPP</text>
         </svg>
         <div class="yapp-footer-brand">YAPP · Guia do Hóspede</div>
         <div class="yapp-footer-sub">yapp.pt</div>
@@ -1830,24 +1813,27 @@ function applyConfig(c) {
 function applyTheme(tema) {
   var body = document.body;
   body.classList.remove('tema-oceano', 'tema-natureza', 'tema-urbano');
-  // Theme color map — browser bar colour per theme
+  // Theme color map
   var colors = {
-    natureza: { bar: '#0f1908', login: '#0f1908' },  // verde escuro
-    oceano:   { bar: '#061a35', login: '#061a35' },  // azul marinho
-    urbano:   { bar: '#1a1a1a', login: '#1a1a1a' }   // cinzento escuro
+    natureza: { bar: '#0f1908', apple: 'black-translucent', login: '#0f1908' },
+    oceano:   { bar: '#061a35', apple: 'black-translucent', login: '#061a35' },
+    urbano:   { bar: '#1a1a1a', apple: 'black-translucent', login: '#1a1a1a' }
   };
   var t = colors[tema] || colors.natureza;
+  // Update browser bar color
   var tc = document.getElementById('theme-meta');
   if (tc) tc.setAttribute('content', t.bar);
   var as = document.getElementById('apple-status-bar');
-  if (as) as.setAttribute('content', 'black-translucent');
+  if (as) as.setAttribute('content', t.apple);
   if (!tema || tema === 'natureza') {
     try { localStorage.setItem('yapp_tema', 'natureza'); } catch(e) {}
     return;
   }
-  body.classList.add('tema-' + tema);
-  var ls = document.getElementById('login-screen');
-  if (ls) ls.style.background = t.login;
+  if (tema === 'oceano') {
+    body.classList.add('tema-oceano');
+    var ls = document.getElementById('login-screen');
+    if (ls) ls.style.background = t.login;
+  }
   try { localStorage.setItem('yapp_tema', tema); } catch(e) {}
 }
 
@@ -2002,14 +1988,10 @@ function applyContacto(c) {
     if (wa) wa.href = 'https://wa.me/' + c.prop_whatsapp.replace(/[^0-9]/g,'');
   }
   if (c.prop_nome) {
-    // Show name card at top of proprietário section
     var card = document.getElementById('prop-nome-card');
     var nameEl = document.getElementById('prop-nome-display');
-    var subEl = document.getElementById('prop-nome-sub');
     if (card) card.style.display = 'block';
     if (nameEl) nameEl.textContent = c.prop_nome;
-    if (subEl && c.prop_cargo) subEl.textContent = c.prop_cargo;
-    // Also update WA sub
     document.querySelectorAll('.contact-sub').forEach(function(el) {
       if (el.textContent.indexOf('disponíveis') !== -1 || el.textContent.indexOf('minutos') !== -1)
         el.textContent = 'Resposta em minutos · ' + c.prop_nome;
