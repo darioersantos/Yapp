@@ -2056,18 +2056,12 @@ function openWifiQR(idx) {
 }
 
 
-// Prevent pinch zoom
+// Prevent pinch zoom only (multi-touch)
 document.addEventListener('touchstart', function(e) {
   if (e.touches.length > 1) e.preventDefault();
 }, { passive: false });
 document.addEventListener('touchmove', function(e) {
   if (e.touches.length > 1) e.preventDefault();
-}, { passive: false });
-var _lastTap = 0;
-document.addEventListener('touchend', function(e) {
-  var now = Date.now();
-  if (now - _lastTap < 300) e.preventDefault();
-  _lastTap = now;
 }, { passive: false });
 
 function copyWifiPassFromQR() {
@@ -2626,20 +2620,6 @@ function wEmoji(c) {
 }
 function wDesc(c)  { if(c===0)return'Céu limpo';if(c<=2)return'Parcialmente nublado';if(c===3)return'Nublado';if(c<=49)return'Nevoeiro';if(c<=59)return'Chuviscos';if(c<=69)return'Chuva';if(c<=79)return'Neve';if(c<=99)return'Trovoada';return'Variável'; }
 
-
-// Prevent pinch zoom
-document.addEventListener('touchstart', function(e) {
-  if (e.touches.length > 1) e.preventDefault();
-}, { passive: false });
-document.addEventListener('touchmove', function(e) {
-  if (e.touches.length > 1) e.preventDefault();
-}, { passive: false });
-var _lastTap = 0;
-document.addEventListener('touchend', function(e) {
-  var now = Date.now();
-  if (now - _lastTap < 300) e.preventDefault();
-  _lastTap = now;
-}, { passive: false });
 
 function copyWifiPass(e, idx) {
   if (e) e.stopPropagation();
