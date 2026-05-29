@@ -988,7 +988,12 @@ Entregar as chaves ao proprietário</textarea>
             <option value="custom">Username específico</option>
           </select>
         </div>
-        <div class="fld" id="n-user-wrap" style="display:none;"><label>Username</label><input class="inp" id="n-user" placeholder="ex: familia2025"/></div>
+        <div class="fld" id="n-user-wrap" style="display:none;">
+          <label>Username</label>
+          <select class="inp" id="n-user">
+            <option value="">— Seleciona o hóspede —</option>
+          </select>
+        </div>
         <button class="savebtn" onclick="sendNotif()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Enviar agora<span class="oktxt" id="ok-notif">Enviado!</span></button>
       </div>
 
@@ -2101,7 +2106,28 @@ function saveTema() {
 var _notifHistory = [];
 
 document.getElementById('n-dest').addEventListener('change', function() {
-  document.getElementById('n-user-wrap').style.display = this.value === 'custom' ? 'block' : 'none';
+  var wrap = document.getElementById('n-user-wrap');
+  var sel  = document.getElementById('n-user');
+  if (this.value === 'custom') {
+    wrap.style.display = 'block';
+    // Populate with active guests
+    var today = new Date();
+    var active = DB.guests.filter(function(g) {
+      return g.user !== 'admin' && g.active && new Date(g.checkout + 'T23:59:59') >= today;
+    });
+    sel.innerHTML = '<option value="">— Seleciona o hóspede —</option>';
+    active.forEach(function(g) {
+      var opt = document.createElement('option');
+      opt.value = g.user;
+      opt.textContent = g.user + (g.name ? '  ·  ' + g.name : '');
+      sel.appendChild(opt);
+    });
+    if (active.length === 0) {
+      sel.innerHTML = '<option value="">Sem hóspedes ativos</option>';
+    }
+  } else {
+    wrap.style.display = 'none';
+  }
 });
 
 function sendNotif() {
