@@ -384,6 +384,24 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
 .toast{position:fixed;bottom:85px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--bark);color:#fff;padding:10px 22px;border-radius:30px;font-size:0.82rem;font-weight:500;z-index:9999;opacity:0;transition:all 0.25s;white-space:nowrap;pointer-events:none;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
+/* ── IN-APP NOTIFICATION ── */
+#inapp-notif{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9800;display:none;align-items:flex-end;justify-content:center;padding:0 0 90px;}
+#inapp-notif.show{display:flex;}
+#inapp-notif-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.45);}
+#inapp-notif-card{position:relative;width:calc(100% - 2rem);max-width:420px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.25);animation:notifSlideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes notifSlideUp{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+#inapp-notif-bar{height:4px;background:var(--forest);}
+#inapp-notif-body{padding:1.2rem 1.2rem 0.4rem;}
+#inapp-notif-header{display:flex;align-items:center;gap:10px;margin-bottom:0.75rem;}
+#inapp-notif-icon{width:36px;height:36px;border-radius:10px;background:var(--forest);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+#inapp-notif-from{font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--forest);opacity:0.8;}
+#inapp-notif-title{font-size:1rem;font-weight:700;color:#1a1a1a;margin-bottom:0.4rem;line-height:1.3;}
+#inapp-notif-msg{font-size:0.85rem;color:#555;line-height:1.55;margin-bottom:1rem;}
+#inapp-notif-actions{display:flex;border-top:1px solid rgba(0,0,0,0.07);}
+#inapp-notif-actions button{flex:1;padding:0.85rem;background:none;border:none;font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;}
+#inapp-notif-dismiss{color:#999;}
+#inapp-notif-ok{color:var(--forest);font-weight:600;border-left:1px solid rgba(0,0,0,0.07);}
+
 /* FOOTER */
 .yapp-footer{text-align:center;padding:2rem 1.2rem 1rem;border-top:1px solid var(--cream-dark);}
 .yapp-footer-brand{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;color:var(--forest);letter-spacing:0.06em;}
@@ -541,6 +559,28 @@ body.aviso-active #notif-banner{top:2.2rem;}
     Activa notificações para receber avisos da casa
     <button onclick="requestNotifPermission()">Activar</button>
     <button onclick="document.getElementById('notif-banner').style.display='none'">✕</button>
+  </div>
+
+  <!-- IN-APP NOTIFICATION MODAL -->
+  <div id="inapp-notif">
+    <div id="inapp-notif-backdrop" onclick="closeInAppNotif()"></div>
+    <div id="inapp-notif-card">
+      <div id="inapp-notif-bar"></div>
+      <div id="inapp-notif-body">
+        <div id="inapp-notif-header">
+          <div id="inapp-notif-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          </div>
+          <div id="inapp-notif-from">Casa do Gerês</div>
+        </div>
+        <div id="inapp-notif-title">Mensagem</div>
+        <div id="inapp-notif-msg"></div>
+      </div>
+      <div id="inapp-notif-actions">
+        <button id="inapp-notif-dismiss" onclick="closeInAppNotif()">Dispensar</button>
+        <button id="inapp-notif-ok" onclick="closeInAppNotif()">OK</button>
+      </div>
+    </div>
   </div>
 
   <!-- AVISO BANNER -->
@@ -1674,6 +1714,35 @@ function cm(id) {
 }
 
 /* ═══ TOAST ═════════════════════════════════════ */
+function showInAppNotif(title, msg, url) {
+  var el = document.getElementById('inapp-notif');
+  if (!el) return;
+  document.getElementById('inapp-notif-title').textContent = title || 'Mensagem';
+  document.getElementById('inapp-notif-msg').textContent  = msg   || '';
+  var okBtn = document.getElementById('inapp-notif-ok');
+  if (url) {
+    okBtn.textContent = 'Ver mais';
+    okBtn.onclick = function() { closeInAppNotif(); window.open(url, '_blank'); };
+  } else {
+    okBtn.textContent = 'OK';
+    okBtn.onclick = closeInAppNotif;
+  }
+  // Update bar colour per theme
+  var bar = document.getElementById('inapp-notif-bar');
+  var icon = document.getElementById('inapp-notif-icon');
+  var theme = document.body.className;
+  var col = theme.includes('oceano') ? '#0c3a6e' : theme.includes('urbano') ? '#2d2d2d' : 'var(--forest)';
+  if (bar)  bar.style.background  = col;
+  if (icon) icon.style.background = col;
+  el.classList.add('show');
+  // Also try native push as bonus
+  sendLocalNotif(title, msg, url);
+}
+function closeInAppNotif() {
+  var el = document.getElementById('inapp-notif');
+  if (el) el.classList.remove('show');
+}
+
 function showToast(msg) {
   var el = document.getElementById('toast');
   el.textContent = msg;
@@ -1898,12 +1967,8 @@ function applyConfig(c) {
       if (shouldShow) {
         localStorage.setItem('yapp_notif_seen', c.notif_ts);
         setTimeout(function() {
-          sendLocalNotif(c.notif_titulo, c.notif_msg, c.notif_url || null);
-          // Also show as in-app toast if not using push
-          if (!('Notification' in window) || Notification.permission !== 'granted') {
-            showToast(c.notif_titulo + ': ' + c.notif_msg);
-          }
-        }, 2000);
+          showInAppNotif(c.notif_titulo, c.notif_msg, c.notif_url || null);
+        }, 1200);
       }
     }
   }
