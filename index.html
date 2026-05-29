@@ -1438,23 +1438,22 @@ function updateDiasBadge() {
 
 // ── POPUP BOAS-VINDAS ─────────────────────────────────────────────
 function showBoasVindasPopup() {
-  var key = 'yapp_bv_shown_' + (getSession() ? getSession().user : 'x');
-  if (sessionStorage.getItem(key)) return; // só uma vez por sessão
-  sessionStorage.setItem(key, '1');
   var s = getSession();
+  var user = s ? s.user : 'x';
+  var today = new Date().toDateString();
+  var key = 'yapp_bv_' + user + '_' + today;
+  if (localStorage.getItem(key)) return; // só uma vez por dia
+  localStorage.setItem(key, '1');
   var nome = s && s.name ? s.name.split(' ')[0] : '';
   var titulo = document.getElementById('popup-bv-titulo');
   var texto = document.getElementById('popup-bv-texto');
   if (titulo) titulo.textContent = nome ? 'Bem-vindo, ' + nome + '!' : 'Bem-vindo!';
-  // Use boas_vindas from cache if available
   try {
     var cached = localStorage.getItem('yapp_data_cache');
     if (cached) {
       var d = JSON.parse(cached);
       var bv = (d.casa && d.casa.boas_vindas) ? d.casa.boas_vindas : '';
-      if (bv && texto) {
-        texto.innerHTML = bv.replace(/\n/g,'<br/>');
-      }
+      if (bv && texto) texto.innerHTML = bv.replace(/\n/g,'<br/>');
     }
   } catch(e) {}
   setTimeout(function() { openPopup('popup-boasvindas'); }, 600);
@@ -1555,8 +1554,8 @@ function scheduleSugestao() {
       localStorage.setItem(firstKey, '1');
       if (!isFirst) {
         var sugKey = 'yapp_sug_' + hoje.toDateString() + '_' + s2.user;
-        if (!sessionStorage.getItem(sugKey)) {
-          sessionStorage.setItem(sugKey, '1');
+        if (!localStorage.getItem(sugKey)) {
+          localStorage.setItem(sugKey, '1');
           setTimeout(function() { openSugestao(); }, 4000);
         }
       }
