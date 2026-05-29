@@ -2563,7 +2563,8 @@ function closeQR() { stopQR(); cm('m-qr'); }
 
 /* ═══ METEOROLOGIA ══════════════════════════════ */
 function loadWeather() {
-  fetch('https://api.open-meteo.com/v1/forecast?latitude=41.72&longitude=-8.20&current=temperature_2m,relative_humidity_2m,wind_speed_10m,uv_index,weather_code&timezone=Europe%2FLisbon&forecast_days=7&daily=weather_code,temperature_2m_max')
+  var url = 'https://api.open-meteo.com/v1/forecast?latitude=41.72&longitude=-8.20&current=temperature_2m,relative_humidity_2m,wind_speed_10m,uv_index,weather_code&timezone=Europe%2FLisbon&forecast_days=7&daily=weather_code,temperature_2m_max&_=' + Date.now();
+  fetch(url, { cache: 'no-store' })
     .then(function(r) { return r.json(); })
     .then(function(d) {
       var c = d.current;
