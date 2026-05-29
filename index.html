@@ -597,7 +597,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
 
       <!-- Dias restantes badge -->
       <div id="dias-badge" style="display:none;">
-        <span>📅</span><span id="dias-badge-txt"></span>
+        <span id="dias-badge-txt"></span>
       </div>
 
       <!-- Slider de atrações -->
@@ -1430,30 +1430,39 @@ function updateDiasBadge() {
   var badge = document.getElementById('dias-badge');
   var txt = document.getElementById('dias-badge-txt');
   if (!badge || !txt) return;
-  if (diff > 0 && diff <= 14) {
-    txt.textContent = diff === 1 ? 'Último dia de estadia' : diff + ' dias de estadia restantes';
+  if (diff === 0) {
+    txt.textContent = 'Hoje é dia de check-out';
     badge.style.display = 'inline-flex';
+  } else if (diff === 1) {
+    txt.textContent = 'Amanhã é o último dia de estadia';
+    badge.style.display = 'inline-flex';
+  } else if (diff === 2) {
+    txt.textContent = 'Ficam 2 dias de estadia';
+    badge.style.display = 'inline-flex';
+  } else {
+    badge.style.display = 'none';
   }
 }
 
 // ── POPUP BOAS-VINDAS ─────────────────────────────────────────────
 function showBoasVindasPopup() {
   var s = getSession();
-  var user = s ? s.user : 'x';
-  var today = new Date().toDateString();
-  var key = 'yapp_bv_' + user + '_' + today;
-  if (localStorage.getItem(key)) return; // só uma vez por dia
-  localStorage.setItem(key, '1');
-  var nome = s && s.name ? s.name.split(' ')[0] : '';
+  if (!s || s.user === 'demo') return;
+  var todayStr = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  var key = 'yapp_bv_date_' + s.user;
+  var last = localStorage.getItem(key) || '';
+  if (last === todayStr) return; // já apareceu hoje
+  localStorage.setItem(key, todayStr);
+  var nome = s.name ? s.name.split(' ')[0] : '';
   var titulo = document.getElementById('popup-bv-titulo');
-  var texto = document.getElementById('popup-bv-texto');
+  var texto  = document.getElementById('popup-bv-texto');
   if (titulo) titulo.textContent = nome ? 'Bem-vindo, ' + nome + '!' : 'Bem-vindo!';
   try {
     var cached = localStorage.getItem('yapp_data_cache');
     if (cached) {
       var d = JSON.parse(cached);
       var bv = (d.casa && d.casa.boas_vindas) ? d.casa.boas_vindas : '';
-      if (bv && texto) texto.innerHTML = bv.replace(/\n/g,'<br/>');
+      if (bv && texto) texto.innerHTML = bv.replace(/\n/g, '<br/>');
     }
   } catch(e) {}
   setTimeout(function() { openPopup('popup-boasvindas'); }, 600);
@@ -1546,16 +1555,18 @@ function scheduleSugestao() {
         }
       }, 3500);
     }
-    // Popup only from day 2 onwards
+    // Popup only from day 2 onwards — máximo 1x por dia
     var s2 = getSession();
-    if (s2 && s2.checkout !== '2099-12-31') {
+    if (s2 && s2.checkout !== '2099-12-31' && s2.user !== 'demo') {
       var firstKey = 'yapp_first_' + s2.user;
       var isFirst = !localStorage.getItem(firstKey);
       localStorage.setItem(firstKey, '1');
       if (!isFirst) {
-        var sugKey = 'yapp_sug_' + hoje.toDateString() + '_' + s2.user;
-        if (!localStorage.getItem(sugKey)) {
-          localStorage.setItem(sugKey, '1');
+        var todayISO = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+        var sugKey   = 'yapp_sug_date_' + s2.user;
+        var lastSug  = localStorage.getItem(sugKey) || '';
+        if (lastSug !== todayISO) {
+          localStorage.setItem(sugKey, todayISO);
           setTimeout(function() { openSugestao(); }, 4000);
         }
       }
