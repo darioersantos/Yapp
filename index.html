@@ -1175,7 +1175,12 @@ var SESSION_KEY = 'yapp_cdg_v2';
 function getSession()  { try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch(e) { return null; } }
 function saveSession(u, co) { localStorage.setItem(SESSION_KEY, JSON.stringify({ user: u, checkout: co })); }
 function clearSession() { localStorage.removeItem(SESSION_KEY); }
-function isExpired(co) { return new Date() > new Date(co + 'T23:59:59'); }
+function isExpired(co) {
+  if (!co || co === '2099-12-31') return false;
+  var grace = new Date(co + 'T23:59:59');
+  grace.setDate(grace.getDate() + 5); // 5 dias de graça após checkout
+  return new Date() > grace;
+}
 
 /* ═══ ARRANQUE ══════════════════════════════════ */
 // ═══════════════════════════════════════════════════════════════
@@ -1862,9 +1867,9 @@ function submitFeedback() {
 /* ═══ DADOS DA API (Google Sheets) ═════════════ */
 var CACHE_KEY = 'yapp_data_cache';
 
-function applyData(d) {
+function applyData(d, fromCache) {
   if (!d || d.status !== 'ok') return;
-  applyConfig(d.config || {});
+  applyConfig(d.config || {}, !fromCache);
   applyCasa(d.casa || {});
   applyServicos(d.servicos || {});
   applyContacto(d.contacto || {});
@@ -1889,7 +1894,7 @@ function loadAPIData() {
     var cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
       var cdata = JSON.parse(cached);
-      applyData(cdata);
+      applyData(cdata, true);
     }
   } catch(e) {}
 
@@ -1912,7 +1917,7 @@ function loadAPIData() {
   document.head.appendChild(script);
 }
 
-function applyConfig(c) {
+function applyConfig(c, checkNotif) {
   function s(sel, val) { var el = document.querySelector(sel); if (el && val) el.textContent = val; }
   function si(sel, val) { var el = document.querySelector(sel); if (el && val) el.src = val; }
   function sh(sel, val) { var el = document.querySelector(sel); if (el && val) el.innerHTML = val.replace(/\n/g,'<br/>'); }
@@ -1955,20 +1960,24 @@ function applyConfig(c) {
   // Tema
   if (c.tema) applyTheme(c.tema);
 
-  // Aviso banner — usa o elemento fixo já no HTML
-  // Check for pending notification from backoffice
-  if (c.notif_ativo === 'true' && c.notif_titulo && c.notif_ts) {
-    var lastSeen = localStorage.getItem('yapp_notif_seen');
-    if (lastSeen !== c.notif_ts) {
-      var s = getSession();
-      var dest = c.notif_dest || 'all';
-      var shouldShow = dest === 'all' ||
-        (dest === 'custom' && s && s.user === c.notif_user);
-      if (shouldShow) {
-        localStorage.setItem('yapp_notif_seen', c.notif_ts);
-        setTimeout(function() {
-          showInAppNotif(c.notif_titulo, c.notif_msg, c.notif_url || null);
-        }, 1200);
+  // Check for pending notification from backoffice (só com dados frescos)
+  if (checkNotif && c.notif_titulo && c.notif_ts) {
+    var nAtivo = String(c.notif_ativo || '').toLowerCase().trim();
+    if (nAtivo === 'true' || nAtivo === '1') {
+      var lastSeen = localStorage.getItem('yapp_notif_seen');
+      var tsStr = String(c.notif_ts).trim();
+      if (lastSeen !== tsStr) {
+        var sn = getSession();
+        var dest = String(c.notif_dest || 'all').trim();
+        var nu   = String(c.notif_user || '').trim().toLowerCase();
+        var shouldShow = (dest === 'all') ||
+          (dest === 'custom' && sn && sn.user && sn.user.toLowerCase() === nu);
+        if (shouldShow) {
+          localStorage.setItem('yapp_notif_seen', tsStr);
+          setTimeout(function() {
+            showInAppNotif(c.notif_titulo, c.notif_msg, c.notif_url || null);
+          }, 1200);
+        }
       }
     }
   }
