@@ -1706,9 +1706,14 @@ function loadAll() {
     }
     if (d.guests) {
       DB.guests = Object.keys(d.guests).map(function(k) {
-        return { user:k, pass:d.guests[k].pass, checkout:d.guests[k].checkout, name:d.guests[k].name||'', active:true };
+        var g = d.guests[k];
+        return { user:k, pass:g.pass, checkin:g.checkin||'', checkout:g.checkout, name:g.name||'', email:g.email||'', active:true };
       });
       renderGuests();
+    }
+    // Re-render calendar if it's the active section
+    if (document.getElementById('sec-ocupacao') && document.getElementById('sec-ocupacao').classList.contains('on')) {
+      renderCalendar();
     }
     if (d.feedbacks)   { DB.feedbacks   = d.feedbacks;   renderFeedbacks(); }
     if (d.newsletter)  { DB.newsletter  = d.newsletter;  renderNewsletter(); }
