@@ -336,12 +336,13 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 
       <div class="sbsec">Gestão</div>
       <div class="sbi" onclick="go('ocupacao',this)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendário</div>
-      <div class="sbi" onclick="go('receitas',this)"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Reservas</div>
+      <div class="sbi" onclick="go('receitas',this)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="8" cy="15" r="1" fill="currentColor"/><circle cx="12" cy="15" r="1" fill="currentColor"/></svg>Reservas</div>
+      <div class="sbi" onclick="go('financeiro',this)"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Receitas</div>
       <div class="sbsec">Geral</div>
       <div class="sbi on" onclick="go('dashboard',this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
 
-      <div class="sbsec">Hóspedes</div>
-      <div class="sbi" onclick="go('hospedes',this)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Hóspedes</div>
+      <div class="sbsec">Utilizadores app</div>
+      <div class="sbi" onclick="go('hospedes',this)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Utilizadores app</div>
       <div class="sbi" onclick="go('notificacoes',this)"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>Notificações</div>
 
       <div class="sbsec">Propriedade</div>
@@ -1055,26 +1056,12 @@ Entregar as chaves ao proprietário</textarea>
     </div>
     </div>
 
-    <!-- DASHBOARD DE RECEITAS -->
+    <!-- RESERVAS -->
     <div id="sec-receitas" class="sec">
     <div class="content-wrap">
       <div class="ph">
         <div><div class="ptitle">Reservas</div><div class="psub">Gestão de reservas · acesso automático à app</div></div>
         <button class="addbtn" onclick="addReserva()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nova reserva</button>
-      </div>
-
-      <!-- Stats -->
-      <div class="stats">
-        <div class="stat"><div class="statv" id="rec-total">€0</div><div class="statl">Este mês</div></div>
-        <div class="stat"><div class="statv" id="rec-ano">€0</div><div class="statl">Este ano</div></div>
-        <div class="stat"><div class="statv" id="rec-media">€0</div><div class="statl">Média/noite</div></div>
-      </div>
-
-      <!-- Monthly chart -->
-      <div class="card">
-        <div class="ctitle">Receita mensal</div>
-        <div id="rec-chart" style="display:flex;align-items:flex-end;gap:6px;height:100px;margin-top:.5rem;"></div>
-        <div id="rec-chart-labels" style="display:flex;gap:6px;margin-top:4px;"></div>
       </div>
 
       <!-- Reservations list -->
@@ -1087,10 +1074,10 @@ Entregar as chaves ao proprietário</textarea>
       <div class="card" id="rec-form-card" style="display:none;">
         <div class="ctitle">Nova reserva</div>
         <div class="g2">
-          <div class="fld"><label>Nome do hóspede</label><input class="inp" id="rec-guest" placeholder="Ex: Família Silva"/></div>
+          <div class="fld"><label>Nome do hóspede</label><input class="inp" id="rec-guest" placeholder="Ex: Família Santos"/></div>
           <div class="fld"><label>Email do hóspede</label><input class="inp" type="email" id="rec-email" placeholder="email@exemplo.com"/></div>
-          <div class="fld"><label>Check-in</label><input class="inp" type="date" id="rec-checkin"/></div>
-          <div class="fld"><label>Check-out</label><input class="inp" type="date" id="rec-checkout"/></div>
+          <div class="fld"><label>Check-in</label><input class="inp" type="date" id="rec-checkin" style="font-size:1rem;padding:.75rem;cursor:pointer;min-height:48px;"/></div>
+          <div class="fld"><label>Check-out</label><input class="inp" type="date" id="rec-checkout" style="font-size:1rem;padding:.75rem;cursor:pointer;min-height:48px;"/></div>
           <div class="fld"><label>Valor total (€)</label><input class="inp" type="number" id="rec-valor" placeholder="0"/></div>
           <div class="fld"><label>Plataforma</label>
             <select class="inp" id="rec-plat">
@@ -1107,8 +1094,8 @@ Entregar as chaves ao proprietário</textarea>
         <div id="rec-credentials-preview" style="display:none;background:rgba(26,74,138,0.07);border:1px solid rgba(26,74,138,0.2);border-radius:8px;padding:.85rem 1rem;margin:.6rem 0;font-size:.82rem;">
           <div style="font-weight:600;color:var(--g);margin-bottom:.4rem;">✓ Acesso gerado automaticamente</div>
           <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
-            <div>Username: <strong id="prev-username" style="font-family:monospace;"></strong></div>
-            <div>Password: <strong id="prev-password" style="font-family:monospace;"></strong></div>
+            <div>Username: <strong id="prev-username" style="font-family:monospace;font-size:1rem;"></strong></div>
+            <div>Password: <strong id="prev-password" style="font-family:monospace;font-size:1rem;"></strong></div>
           </div>
           <div style="font-size:.75rem;color:var(--txl);margin-top:.4rem;">Enviado por email no dia do check-in</div>
         </div>
@@ -1116,6 +1103,30 @@ Entregar as chaves ao proprietário</textarea>
           <button class="savebtn" onclick="saveReserva()" style="flex:1;"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar reserva<span class="oktxt" id="ok-reserva">Guardado!</span></button>
           <button class="actbtn" onclick="document.getElementById('rec-form-card').style.display='none'">Cancelar</button>
         </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- RECEITAS / FINANCEIRO -->
+    <div id="sec-financeiro" class="sec">
+    <div class="content-wrap">
+      <div class="ph"><div><div class="ptitle">Receitas</div><div class="psub">Controlo financeiro · pagamentos e rendimento</div></div></div>
+
+      <div class="stats">
+        <div class="stat"><div class="statv" id="rec-total">€0</div><div class="statl">Este mês</div></div>
+        <div class="stat"><div class="statv" id="rec-ano">€0</div><div class="statl">Este ano</div></div>
+        <div class="stat"><div class="statv" id="rec-media">€0</div><div class="statl">Média/noite</div></div>
+      </div>
+
+      <div class="card">
+        <div class="ctitle">Receita mensal</div>
+        <div id="rec-chart" style="display:flex;align-items:flex-end;gap:6px;height:100px;margin-top:.5rem;"></div>
+        <div id="rec-chart-labels" style="display:flex;gap:6px;margin-top:4px;"></div>
+      </div>
+
+      <div class="card">
+        <div class="ctitle">Detalhe por reserva</div>
+        <div id="rec-fin-list"><div style="font-size:.82rem;color:var(--txl);">Nenhuma reserva registada.</div></div>
       </div>
     </div>
     </div>
@@ -1438,16 +1449,16 @@ function loadReservas() {
 }
 
 function _genUser(name) {
-  var base = (name || 'hospede').toLowerCase()
+  // Usa o apelido (última palavra do nome)
+  var parts = (name || 'hospede').trim().split(/\s+/);
+  var surname = parts[parts.length - 1];
+  return surname.toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/[^a-z0-9]/g,'').slice(0,10);
-  return (base || 'hospede') + Math.floor(1000 + Math.random() * 9000);
+    .replace(/[^a-z]/g,'') || 'hospede';
 }
 function _genPass() {
-  var chars = 'abcdefghjkmnpqrstuvwxyz23456789';
-  var p = '';
-  for (var i = 0; i < 8; i++) p += chars[Math.floor(Math.random() * chars.length)];
-  return p;
+  // 4 dígitos simples
+  return String(Math.floor(1000 + Math.random() * 9000));
 }
 
 function addReserva() {
@@ -1560,29 +1571,55 @@ function renderReceitas() {
     }).join('');
   }
 
-  // List
-  var list = document.getElementById('rec-list');
-  if (!list) return;
-  if (!_reservas.length) { list.innerHTML = '<div style="font-size:.82rem;color:var(--txl);">Nenhuma reserva registada.</div>'; return; }
+  // Cores por plataforma
   var plColors = { 'Airbnb':'#ff5a5f','Booking.com':'#003580','Direto':'var(--g)','Outro':'#888' };
-  list.innerHTML = _reservas.map(function(r) {
-    var col = plColors[r.plat] || '#888';
-    var pill = r.estado === 'pago'
-      ? '<span class="pill p-ok">Pago</span>'
-      : '<span class="pill p-pend">Pendente</span>';
-    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:.65rem 0;border-bottom:1px solid var(--bd);gap:.5rem;flex-wrap:wrap;">'
-      + '<div style="display:flex;align-items:center;gap:8px;">'
-      + '<div style="width:3px;height:36px;background:' + col + ';border-radius:2px;"></div>'
-      + '<div><div style="font-size:.85rem;font-weight:600;">' + (r.guest || '—') + '</div>'
-      + '<div style="font-size:.72rem;color:var(--txl);">' + r.ci + ' → ' + r.co + ' · ' + r.nights + ' noites · ' + r.plat + '</div></div>'
-      + '</div>'
-      + '<div style="display:flex;align-items:center;gap:.5rem;">'
-      + pill
-      + '<div style="font-size:.95rem;font-weight:700;color:var(--g);">€' + r.valor.toLocaleString('pt-PT') + '</div>'
-      + '<button class="actbtn del" onclick="deleteReserva(' + r.id + ')">×</button>'
-      + '</div></div>';
-  }).join('');
+
+  // Reservas section: nome + datas + credenciais + eliminar
+  var recList = document.getElementById('rec-list');
+  if (recList) {
+    if (!_reservas.length) {
+      recList.innerHTML = '<div style="font-size:.82rem;color:var(--txl);">Nenhuma reserva registada.</div>';
+    } else {
+      recList.innerHTML = _reservas.map(function(r) {
+        var col = plColors[r.plat] || '#888';
+        var pill = r.estado === 'pago' ? '<span class="pill p-ok">Pago</span>' : '<span class="pill p-pend">Pendente</span>';
+        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:.65rem 0;border-bottom:1px solid var(--bd);gap:.5rem;flex-wrap:wrap;">'
+          + '<div style="display:flex;align-items:center;gap:8px;">'
+          + '<div style="width:3px;height:40px;background:' + col + ';border-radius:2px;flex-shrink:0;"></div>'
+          + '<div><div style="font-size:.85rem;font-weight:600;">' + esc(r.guest || '—') + '</div>'
+          + '<div style="font-size:.72rem;color:var(--txl);">' + r.ci + ' → ' + r.co + ' · ' + (r.nights||'?') + ' noites</div>'
+          + (r.user ? '<div style="font-size:.72rem;color:var(--txl);">User: <strong>' + r.user + '</strong> · Pass: <strong>' + r.pass + '</strong></div>' : '')
+          + '</div></div>'
+          + '<div style="display:flex;align-items:center;gap:.4rem;">' + pill
+          + '<button class="actbtn del" onclick="deleteReserva(' + r.id + ')">×</button>'
+          + '</div></div>';
+      }).join('');
+    }
+  }
+
+  // Financeiro section: valor + plataforma
+  var finList = document.getElementById('rec-fin-list');
+  if (finList) {
+    if (!_reservas.length) {
+      finList.innerHTML = '<div style="font-size:.82rem;color:var(--txl);">Nenhuma reserva registada.</div>';
+    } else {
+      finList.innerHTML = _reservas.map(function(r) {
+        var col = plColors[r.plat] || '#888';
+        var pill = r.estado === 'pago' ? '<span class="pill p-ok">Pago</span>' : '<span class="pill p-pend">Pendente</span>';
+        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:.65rem 0;border-bottom:1px solid var(--bd);gap:.5rem;flex-wrap:wrap;">'
+          + '<div style="display:flex;align-items:center;gap:8px;">'
+          + '<div style="width:3px;height:36px;background:' + col + ';border-radius:2px;"></div>'
+          + '<div><div style="font-size:.85rem;font-weight:600;">' + esc(r.guest || '—') + '</div>'
+          + '<div style="font-size:.72rem;color:var(--txl);">' + r.ci + ' → ' + r.co + ' · ' + (r.nights||'?') + ' noites · ' + (r.plat||'') + '</div></div>'
+          + '</div>'
+          + '<div style="display:flex;align-items:center;gap:.5rem;">' + pill
+          + '<div style="font-size:.95rem;font-weight:700;color:var(--g);">€' + ((r.valor||0).toLocaleString('pt-PT')) + '</div>'
+          + '</div></div>';
+      }).join('');
+    }
+  }
 }
+
 
 // ── TUTORIAL ──────────────────────────────────────
 function toggleTut(id) {
@@ -1674,6 +1711,7 @@ function go(sec, el) {
   window.scrollTo(0, 0);
   if (sec === 'ocupacao') renderCalendar();
   if (sec === 'receitas') { loadReservas(); renderReceitas(); }
+  if (sec === 'financeiro') { loadReservas(); renderReceitas(); }
 }
 
 // ── LOAD ALL FROM API ────────────────────────────
