@@ -1503,20 +1503,23 @@ var _dpYear  = new Date().getFullYear();
 var _dpMonth = new Date().getMonth();
 var _dpOccupied = {}; // date strings that are occupied
 
+// Formata data em local time (evita desvio UTC)
+function _isoLocal(d) {
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
 function openDatePicker(fieldId) {
   _dpField = fieldId;
-  // Build occupied map from existing reservations (excluding current edit)
   _dpOccupied = {};
   _reservas.forEach(function(r) {
     if (!r.ci || !r.co) return;
-    var d = new Date(r.ci + 'T00:00:00');
+    var d   = new Date(r.ci + 'T00:00:00');
     var end = new Date(r.co + 'T00:00:00');
     while (d <= end) {
-      _dpOccupied[d.toISOString().slice(0,10)] = r.guest || '?';
+      _dpOccupied[_isoLocal(d)] = r.guest || '?';
       d.setDate(d.getDate() + 1);
     }
   });
-  // Position modal near the field
   var wrap = document.querySelector('[onclick*="' + fieldId + '"]');
   var overlay = document.getElementById('datepicker-overlay');
   var modal   = document.getElementById('datepicker-modal');
@@ -1529,7 +1532,6 @@ function openDatePicker(fieldId) {
     modal.style.top  = Math.max(8, top) + 'px';
     modal.style.left = Math.max(8, left) + 'px';
   }
-  // Set month to current value if already set
   var cur = v(fieldId);
   if (cur && cur.match(/^\d{4}-\d{2}-\d{2}/)) {
     var d2 = new Date(cur + 'T00:00:00');
@@ -1560,48 +1562,43 @@ function renderDPGrid() {
   var html = dayNames.map(function(d){ return '<div style="text-align:center;font-size:.65rem;font-weight:700;color:var(--txl);padding:4px 0;">' + d + '</div>'; }).join('');
   for (var i = 0; i < firstDay; i++) html += '<div></div>';
   for (var day = 1; day <= daysInMonth; day++) {
-    var iso  = _dpYear + '-' + String(_dpMonth+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+    var iso   = _isoLocal(new Date(_dpYear, _dpMonth, day));
     var isOcc = !!_dpOccupied[iso];
     var isSel = (selVal === iso);
-    var isToday = (new Date(_dpYear, _dpMonth, day).getTime() === today.getTime());
-    var bg = isSel ? 'var(--g)' : isOcc ? '#e53935' : isToday ? 'rgba(59,125,216,0.12)' : '#f5f7fa';
-    var fg = (isSel || isOcc) ? '#fff' : 'var(--tx)';
-    var cur = isOcc ? ' title="' + _dpOccupied[iso] + '" style="cursor:not-allowed;"' : ' onclick="dpSelect(\'' + iso + '\')"  style="cursor:pointer;"';
-    html += '<div' + cur + ' style="text-align:center;padding:8px 2px;border-radius:8px;font-size:.85rem;font-weight:' + (isSel?'700':'400') + ';background:' + bg + ';color:' + fg + ';' + (isOcc ? 'cursor:not-allowed;' : 'cursor:pointer;') + '">' + day + '</div>';
+    var isToday = (_isoLocal(new Date()) === iso);
+    var bg  = isSel ? 'var(--g)' : isOcc ? '#e53935' : isToday ? 'rgba(59,125,216,0.12)' : '#f5f7fa';
+    var fg  = (isSel || isOcc) ? '#fff' : 'var(--tx)';
+    var clickAttr = isOcc
+      ? ' title="Ocupado: ' + _dpOccupied[iso] + '"'
+      : ' onclick="dpSelect(\'' + iso + '\')" title="Selecionar"';
+    html += '<div' + clickAttr + ' style="text-align:center;padding:8px 2px;border-radius:8px;font-size:.85rem;font-weight:' + (isSel?'700':'400') + ';background:' + bg + ';color:' + fg + ';cursor:' + (isOcc?'not-allowed':'pointer') + ';">' + day + '</div>';
   }
   document.getElementById('dp-grid').innerHTML = html;
 }
 
 function dpSelect(iso) {
   if (_dpOccupied[iso]) { toast('Data já ocupada — ' + _dpOccupied[iso]); return; }
-  if (_dpField) {
-    var el = document.getElementById(_dpField);
-    if (el) {
-      el.value = iso;
-      // Update preview credentials when name changes
-      var guestInput = document.getElementById('rec-guest');
-      if (guestInput && guestInput.value.trim().length > 1) {
-        // trigger credentials preview if not yet shown
-      }
-    }
+  // Guardar campo ANTES de fechar (closeDatePicker limpa _dpField)
+  var field = _dpField;
+  if (field) {
+    var el = document.getElementById(field);
+    if (el) el.value = iso;
   }
   closeDatePicker();
-  // Auto-open checkout picker after checkin is selected
-  if (_dpField === 'rec-checkin') {
-    setTimeout(function() { openDatePicker('rec-checkout'); }, 200);
+  // Auto-salto para check-out após escolher check-in
+  if (field === 'rec-checkin') {
+    setTimeout(function() { openDatePicker('rec-checkout'); }, 220);
   }
 }
 
 // ── OVERLAP DETECTION ────────────────────────────────
 function hasOverlap(ci, co, excludeId) {
-  var newCi = new Date(ci + 'T00:00:00');
-  var newCo = new Date(co + 'T00:00:00');
+  // Usa comparação de strings ISO (YYYY-MM-DD) para evitar problemas de timezone
   return _reservas.some(function(r) {
     if (excludeId && r.id === excludeId) return false;
     if (!r.ci || !r.co) return false;
-    var rCi = new Date(r.ci + 'T00:00:00');
-    var rCo = new Date(r.co + 'T00:00:00');
-    return newCi <= rCo && newCo >= rCi;
+    // Overlap se: novo check-in <= checkout existente E novo checkout >= checkin existente
+    return ci <= r.co && co >= r.ci;
   });
 }
 
