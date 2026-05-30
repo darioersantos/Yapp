@@ -579,6 +579,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
           <div class="fld"><label>Username (sem espaços)</label><input class="inp" id="h-user" placeholder="familia2025"/></div>
           <div class="fld"><label>Password</label><input class="inp" id="h-pass" placeholder="geres2025"/></div>
           <div class="fld"><label>Nome</label><input class="inp" id="h-nome" placeholder="Família Silva"/></div>
+          <div class="fld"><label>Check-in</label><input class="inp" id="h-ci" type="date"/></div>
           <div class="fld"><label>Check-out</label><input class="inp" id="h-co" type="date"/></div>
           <div class="fld"><label>Email</label><input class="inp" id="h-email" type="email" placeholder="email@exemplo.com"/></div>
           <div class="fld"><label>Notas</label><input class="inp" id="h-notas" placeholder="Reserva Airbnb #123"/></div>
@@ -1047,6 +1048,7 @@ Entregar as chaves ao proprietário</textarea>
         </div>
         <!-- Calendar grid -->
         <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;"></div>
+      <p style="font-size:.72rem;color:var(--txl);margin-top:.5rem;">Duplo clique num dia livre para bloquear · Duplo clique num dia bloqueado para desbloquear</p>
       </div>
       <!-- Guests this month -->
       <div class="card">
@@ -1332,7 +1334,19 @@ var DB = { config:{}, guests:[], feedbacks:[], newsletter:[], atracoes:[], resta
 
 // ── CALENDÁRIO DE OCUPAÇÃO ────────────────────────
 var _calYear  = new Date().getFullYear();
-var _calMonth = new Date().getMonth(); // 0-based
+var _calMonth = new Date().getMonth();
+var _blockedDays = JSON.parse(localStorage.getItem('yapp_blocked') || '{}'); // {YYYY-MM-DD: true}
+
+function toggleBlock(year, month, day) {
+  var key = year + '-' + String(month+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+  if (_blockedDays[key]) {
+    delete _blockedDays[key];
+  } else {
+    _blockedDays[key] = true;
+  }
+  localStorage.setItem('yapp_blocked', JSON.stringify(_blockedDays));
+  renderCalendar();
+}
 
 function renderCalendar() {
   var year = _calYear, month = _calMonth;
@@ -1341,20 +1355,18 @@ function renderCalendar() {
   if (lbl) lbl.textContent = months[month] + ' ' + year;
 
   var daysInMonth = new Date(year, month + 1, 0).getDate();
-  var firstDay    = new Date(year, month, 1).getDay(); // 0=Sun
+  var firstDay    = new Date(year, month, 1).getDay();
   firstDay = (firstDay + 6) % 7; // Mon=0
 
-  // Build occupied days map
-  var occupied = {};
-  var checkinDays = {}, checkoutDays = {};
+  var occupied = {}, checkinDays = {}, checkoutDays = {};
   var today = new Date(); today.setHours(0,0,0,0);
 
   DB.guests.forEach(function(g) {
-    if (!g.checkin && !g.checkout) return;
-    var ci = g.checkin ? new Date(g.checkin + 'T00:00:00') : null;
     var co = g.checkout && g.checkout !== '2099-12-31' ? new Date(g.checkout + 'T00:00:00') : null;
-    if (!ci || !co) return;
-    var d = new Date(ci);
+    if (!co) return;
+    // Use checkin if available, otherwise just mark checkout day
+    var ci = g.checkin ? new Date(g.checkin + 'T00:00:00') : new Date(co);
+    var d  = new Date(ci);
     while (d <= co) {
       if (d.getFullYear() === year && d.getMonth() === month) {
         var day = d.getDate();
@@ -1380,11 +1392,13 @@ function renderCalendar() {
     var isCi    = !!checkinDays[day];
     var isCo    = !!checkoutDays[day];
     var isToday = (new Date(year, month, day).getTime() === today.getTime());
-    var bg = isOcc ? (isCi || isCo ? '#f0a500' : '#3b7dd8') : '#e8f0fb';
-    var fg = isOcc ? '#fff' : 'var(--txm)';
-    var title = occupied[day] ? ' title="' + occupied[day] + '"' : '';
+    var dateKey = year + '-' + String(month+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+    var isBlocked = !!_blockedDays[dateKey];
+    var bg = isBlocked ? '#e53935' : isOcc ? (isCi || isCo ? '#f0a500' : '#3b7dd8') : '#e8f0fb';
+    var fg = (isBlocked || isOcc) ? '#fff' : 'var(--txm)';
+    var title = isBlocked ? ' title="Bloqueado (duplo clique para desbloquear)"' : occupied[day] ? ' title="' + occupied[day] + '"' : ' title="Duplo clique para bloquear"';
     var border = isToday ? '2px solid var(--g)' : '1px solid transparent';
-    html += '<div' + title + ' style="text-align:center;padding:6px 2px;border-radius:6px;font-size:.78rem;font-weight:' + (isOcc?'600':'400') + ';background:' + bg + ';color:' + fg + ';border:' + border + ';cursor:default;">' + day + '</div>';
+    html += '<div' + title + ' ondblclick="toggleBlock(' + year + ',' + month + ',' + day + ')" style="text-align:center;padding:6px 2px;border-radius:6px;font-size:.78rem;font-weight:' + ((isOcc||isBlocked)?'600':'400') + ';background:' + bg + ';color:' + fg + ';border:' + border + ';cursor:pointer;" >' + day + '</div>';
   }
   grid.innerHTML = html;
 
@@ -2024,11 +2038,11 @@ function addGuest() {
   var co   = v('h-co');
   if (!user || !pass || !co) { toast('Preenche username, password e check-out.'); return; }
   showLoading('A adicionar hóspede...');
-  apiWrite({ action: 'addGuest', user: user, pass: pass, checkout: co, name: v('h-nome'), notes: v('h-notas'), email: v('h-email').trim() }, function() {
+  apiWrite({ action: 'addGuest', user: user, pass: pass, checkin: v('h-ci'), checkout: co, name: v('h-nome'), notes: v('h-notas'), email: v('h-email').trim() }, function() {
     hideLoading();
-    DB.guests.push({ user: user, pass: pass, checkout: co, name: v('h-nome'), email: v('h-email').trim(), active: true });
+    DB.guests.push({ user: user, pass: pass, checkin: v('h-ci'), checkout: co, name: v('h-nome'), email: v('h-email').trim(), active: true });
     renderGuests(); showOk('ok-hosp');
-    ['h-user','h-pass','h-nome','h-co','h-email','h-notas'].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
+    ['h-user','h-pass','h-nome','h-ci','h-co','h-email','h-notas'].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
     toast('✓ Hóspede adicionado!');
     // Auto notificação de boas-vindas
     var bvMsg = (DB.config && DB.config.notif_tmpl_bv) || 'Bem-vindo! A tua app está pronta. Explora tudo o que temos para ti.';
