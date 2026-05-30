@@ -336,7 +336,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 
       <div class="sbsec">Gestão</div>
       <div class="sbi" onclick="go('ocupacao',this)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendário</div>
-      <div class="sbi" onclick="go('receitas',this)"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Receitas</div>
+      <div class="sbi" onclick="go('receitas',this)"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Reservas</div>
       <div class="sbsec">Geral</div>
       <div class="sbi on" onclick="go('dashboard',this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
 
@@ -566,25 +566,16 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 
         <div id="sec-hospedes" class="sec">
     <div class="content-wrap">
-      <div class="ph"><div><div class="ptitle">Hóspedes</div><div class="psub">Gerir acessos à app · sincronizado</div></div></div>
+      <div class="ph"><div><div class="ptitle">Utilizadores app</div><div class="psub">Acessos à app gerados automaticamente pelas reservas</div></div></div>
       <div class="filter-tabs">
         <div class="ftab on" onclick="filterGuests('todos',this)">Todos</div>
         <div class="ftab" onclick="filterGuests('ativos',this)">Ativos</div>
         <div class="ftab" onclick="filterGuests('hoje',this)">Check-in/out hoje</div>
         <div class="ftab" onclick="filterGuests('expirados',this)">Expirados</div>
       </div>
-      <div class="card">
-        <div class="ctitle">Adicionar novo hóspede</div>
-        <div class="g3">
-          <div class="fld"><label>Username (sem espaços)</label><input class="inp" id="h-user" placeholder="familia2025"/></div>
-          <div class="fld"><label>Password</label><input class="inp" id="h-pass" placeholder="geres2025"/></div>
-          <div class="fld"><label>Nome</label><input class="inp" id="h-nome" placeholder="Família Silva"/></div>
-          <div class="fld"><label>Check-in</label><input class="inp" id="h-ci" type="date"/></div>
-          <div class="fld"><label>Check-out</label><input class="inp" id="h-co" type="date"/></div>
-          <div class="fld"><label>Email</label><input class="inp" id="h-email" type="email" placeholder="email@exemplo.com"/></div>
-          <div class="fld"><label>Notas</label><input class="inp" id="h-notas" placeholder="Reserva Airbnb #123"/></div>
-        </div>
-        <button class="savebtn" onclick="addGuest()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar<span class="oktxt" id="ok-hosp">Adicionado!</span></button>
+      <div class="info-box">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-right:6px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Os utilizadores são criados automaticamente ao adicionar uma reserva em <strong>Gestão → Reservas</strong>. O acesso à app é gerado e enviado por email no dia do check-in.
       </div>
       <div class="card"><div class="ctitle">Hóspedes registados</div><div id="guests-tbl"><div style="font-size:.82rem;color:var(--txl);">A carregar...</div></div></div>
     </div>
@@ -1068,7 +1059,7 @@ Entregar as chaves ao proprietário</textarea>
     <div id="sec-receitas" class="sec">
     <div class="content-wrap">
       <div class="ph">
-        <div><div class="ptitle">Receitas</div><div class="psub">Controlo de pagamentos e rendimento</div></div>
+        <div><div class="ptitle">Reservas</div><div class="psub">Gestão de reservas · acesso automático à app</div></div>
         <button class="addbtn" onclick="addReserva()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nova reserva</button>
       </div>
 
@@ -1096,9 +1087,10 @@ Entregar as chaves ao proprietário</textarea>
       <div class="card" id="rec-form-card" style="display:none;">
         <div class="ctitle">Nova reserva</div>
         <div class="g2">
+          <div class="fld"><label>Nome do hóspede</label><input class="inp" id="rec-guest" placeholder="Ex: Família Silva"/></div>
+          <div class="fld"><label>Email do hóspede</label><input class="inp" type="email" id="rec-email" placeholder="email@exemplo.com"/></div>
           <div class="fld"><label>Check-in</label><input class="inp" type="date" id="rec-checkin"/></div>
           <div class="fld"><label>Check-out</label><input class="inp" type="date" id="rec-checkout"/></div>
-          <div class="fld"><label>Hóspede</label><input class="inp" id="rec-guest" placeholder="Nome ou username"/></div>
           <div class="fld"><label>Valor total (€)</label><input class="inp" type="number" id="rec-valor" placeholder="0"/></div>
           <div class="fld"><label>Plataforma</label>
             <select class="inp" id="rec-plat">
@@ -1110,9 +1102,18 @@ Entregar as chaves ao proprietário</textarea>
               <option value="pago">Pago</option><option value="pendente">Pendente</option>
             </select>
           </div>
+          <div class="fld"><label>Notas</label><input class="inp" id="rec-notas" placeholder="Opcional"/></div>
+        </div>
+        <div id="rec-credentials-preview" style="display:none;background:rgba(26,74,138,0.07);border:1px solid rgba(26,74,138,0.2);border-radius:8px;padding:.85rem 1rem;margin:.6rem 0;font-size:.82rem;">
+          <div style="font-weight:600;color:var(--g);margin-bottom:.4rem;">✓ Acesso gerado automaticamente</div>
+          <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
+            <div>Username: <strong id="prev-username" style="font-family:monospace;"></strong></div>
+            <div>Password: <strong id="prev-password" style="font-family:monospace;"></strong></div>
+          </div>
+          <div style="font-size:.75rem;color:var(--txl);margin-top:.4rem;">Enviado por email no dia do check-in</div>
         </div>
         <div style="display:flex;gap:.5rem;margin-top:.5rem;">
-          <button class="savebtn" onclick="saveReserva()" style="flex:1;"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-reserva">Guardado!</span></button>
+          <button class="savebtn" onclick="saveReserva()" style="flex:1;"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar reserva<span class="oktxt" id="ok-reserva">Guardado!</span></button>
           <button class="actbtn" onclick="document.getElementById('rec-form-card').style.display='none'">Cancelar</button>
         </div>
       </div>
@@ -1436,27 +1437,70 @@ function loadReservas() {
   renderReceitas();
 }
 
-function saveReserva() {
-  var ci    = v('rec-checkin');
-  var co    = v('rec-checkout');
-  var guest = v('rec-guest').trim();
-  var valor = parseFloat(v('rec-valor')) || 0;
-  var plat  = v('rec-plat');
-  var estado= v('rec-estado');
-  if (!ci || !co || !valor) { toast('Preenche check-in, check-out e valor.'); return; }
-  var nights = Math.round((new Date(co) - new Date(ci)) / 86400000);
-  _reservas.push({ id: Date.now(), ci:ci, co:co, guest:guest, valor:valor, plat:plat, estado:estado, nights:nights });
-  _reservas.sort(function(a,b){ return new Date(b.ci) - new Date(a.ci); });
-  localStorage.setItem(REC_KEY, JSON.stringify(_reservas));
-  document.getElementById('rec-form-card').style.display = 'none';
-  showOk('ok-reserva');
-  renderReceitas();
-  toast('✓ Reserva guardada!');
+function _genUser(name) {
+  var base = (name || 'hospede').toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]/g,'').slice(0,10);
+  return (base || 'hospede') + Math.floor(1000 + Math.random() * 9000);
+}
+function _genPass() {
+  var chars = 'abcdefghjkmnpqrstuvwxyz23456789';
+  var p = '';
+  for (var i = 0; i < 8; i++) p += chars[Math.floor(Math.random() * chars.length)];
+  return p;
 }
 
 function addReserva() {
   document.getElementById('rec-form-card').style.display = 'block';
+  document.getElementById('rec-credentials-preview').style.display = 'none';
   document.getElementById('rec-form-card').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  var guestInput = document.getElementById('rec-guest');
+  if (guestInput) guestInput.oninput = function() {
+    if (this.value.trim().length > 1) {
+      var u = _genUser(this.value.trim());
+      var p = _genPass();
+      var ue = document.getElementById('prev-username');
+      var pe = document.getElementById('prev-password');
+      if (ue) { ue.textContent = u; ue.dataset.val = u; }
+      if (pe) { pe.textContent = p; pe.dataset.val = p; }
+      document.getElementById('rec-credentials-preview').style.display = 'block';
+    }
+  };
+}
+
+function saveReserva() {
+  var ci    = v('rec-checkin');
+  var co    = v('rec-checkout');
+  var guest = v('rec-guest').trim();
+  var email = v('rec-email').trim();
+  var valor = parseFloat(v('rec-valor')) || 0;
+  var plat  = v('rec-plat');
+  var estado= v('rec-estado');
+  var notas = v('rec-notas').trim();
+  if (!ci || !co || !guest) { toast('Preenche nome, check-in e check-out.'); return; }
+  var userEl = document.getElementById('prev-username');
+  var passEl = document.getElementById('prev-password');
+  var user   = (userEl && userEl.dataset.val) ? userEl.dataset.val : _genUser(guest);
+  var pass   = (passEl && passEl.dataset.val) ? passEl.dataset.val : _genPass();
+  var nights = Math.round((new Date(co) - new Date(ci)) / 86400000);
+  _reservas.push({ id:Date.now(), ci:ci, co:co, guest:guest, email:email, valor:valor, plat:plat, estado:estado, nights:nights, notes:notas, user:user, pass:pass });
+  _reservas.sort(function(a,b){ return new Date(b.ci) - new Date(a.ci); });
+  localStorage.setItem(REC_KEY, JSON.stringify(_reservas));
+  showLoading('A criar acesso à app...');
+  apiWrite({ action:'addGuest', user:user, pass:pass, checkin:ci, checkout:co, name:guest, email:email, notes:notas }, function() {
+    hideLoading();
+    DB.guests.push({ user:user, pass:pass, checkin:ci, checkout:co, name:guest, email:email, active:true });
+    renderGuests();
+    document.getElementById('rec-form-card').style.display = 'none';
+    showOk('ok-reserva');
+    renderReceitas();
+    renderCalendar();
+    toast('✓ Reserva criada! Acesso enviado por email no check-in.');
+    ['rec-guest','rec-email','rec-checkin','rec-checkout','rec-valor','rec-notas'].forEach(function(id){
+      var el = document.getElementById(id); if (el) el.value = '';
+    });
+    document.getElementById('rec-credentials-preview').style.display = 'none';
+  });
 }
 
 function deleteReserva(id) {
@@ -1464,7 +1508,9 @@ function deleteReserva(id) {
   _reservas = _reservas.filter(function(r){ return r.id !== id; });
   localStorage.setItem(REC_KEY, JSON.stringify(_reservas));
   renderReceitas();
+  renderCalendar();
 }
+
 
 function renderReceitas() {
   var now  = new Date();
