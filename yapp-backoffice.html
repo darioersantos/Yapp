@@ -267,6 +267,24 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 .loading-overlay.show{display:flex;}
 .loading-spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,0.2);border-top-color:var(--sl);border-radius:50%;animation:spin .8s linear infinite;}
 .loading-txt{font-size:.88rem;color:rgba(255,255,255,0.7);}
+
+/* ── DYNAMIC SECTION EDITOR ──────────────────── */
+.dyn-editor{display:flex;flex-direction:column;gap:.6rem;}
+.dyn-card-wrap{background:#fff;border:1px solid var(--bd);border-radius:10px;padding:.85rem;position:relative;}
+.dyn-card-header{display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem;}
+.dyn-title-inp{flex:1;background:#f7f9ff;border:1px solid var(--bd);border-radius:7px;padding:.5rem .7rem;font-family:inherit;font-size:.82rem;font-weight:600;color:var(--tx);}
+.dyn-title-inp:focus{outline:none;border-color:var(--g);}
+.dyn-del-btn{background:#fff0f0;border:1px solid #fcc;color:#e55;border-radius:7px;padding:.4rem .6rem;font-size:.85rem;cursor:pointer;flex-shrink:0;line-height:1;}
+.dyn-del-btn:hover{background:#ffe0e0;}
+.dyn-text-area{width:100%;box-sizing:border-box;background:#f7f9ff;border:1px solid var(--bd);border-radius:7px;padding:.6rem .8rem;font-family:inherit;font-size:.83rem;color:var(--tx);min-height:70px;resize:vertical;line-height:1.55;}
+.dyn-text-area:focus{outline:none;border-color:var(--g);}
+.dyn-add-btn{display:flex;align-items:center;gap:6px;padding:.6rem 1rem;background:#f0f4ff;border:1px dashed #7090c0;border-radius:8px;color:#4060a0;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;}
+.dyn-add-btn:hover{background:#e4eaff;}
+.dyn-chips-wrap{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.5rem;}
+.dyn-chip{display:flex;align-items:center;gap:4px;background:#e8f0fb;border-radius:20px;padding:3px 10px;font-size:.78rem;}
+.dyn-chip input{background:none;border:none;font-size:.78rem;color:var(--tx);font-family:inherit;width:80px;outline:none;}
+.dyn-chip-del{background:none;border:none;color:#888;cursor:pointer;padding:0;font-size:.85rem;line-height:1;}
+
 </style>
 </head>
 <body>
@@ -632,16 +650,9 @@ Máquina de café
 Máq. de lavar roupa</textarea>
       </div>
       <div class="card">
-        <div class="ctitle">Informações úteis — itens editáveis</div>
-        <p style="font-size:.78rem;color:var(--txl);margin-bottom:.75rem;">Estes textos aparecem no accordion "Informações úteis" da app.</p>
-        <div class="g2">
-          <div class="fld"><label>Estacionamento</label><textarea class="inp ta" id="info-estac">Dois lugares cobertos no lado esquerdo do portão.</textarea></div>
-          <div class="fld"><label>Água potável</label><textarea class="inp ta" id="info-agua">A água da torneira é potável e tratada.</textarea></div>
-          <div class="fld"><label>Alarme</label><textarea class="inp ta" id="info-alarme">Código no envelope junto às chaves. Activar ao sair.</textarea></div>
-          <div class="fld"><label>Cofre</label><textarea class="inp ta" id="info-cofre">Disponível no quarto principal. Código definido por si à chegada.</textarea></div>
-          <div class="fld"><label>Corrente elétrica</label><textarea class="inp ta" id="info-corrente">Tomadas tipo F (220V). Quadro elétrico no corredor da entrada.</textarea></div>
-          <div class="fld"><label>Drones</label><textarea class="inp ta" id="info-drones">Uso de drones permitido no exterior com respeito pela privacidade dos vizinhos.</textarea></div>
-        </div>
+        <div class="ctitle">Informações úteis — edita, adiciona ou remove itens</div>
+        <p style="font-size:.78rem;color:var(--txl);margin-bottom:.6rem;">Estes itens aparecem no accordion "Informações úteis" da app.</p>
+        <div id="dyn-info"></div>
       </div>
       <button class="savebtn" onclick="saveSection('casa-geral')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-geral">Guardado!</span></button>
     </div>
@@ -713,12 +724,10 @@ Máq. de lavar roupa</textarea>
           </div>
         </div>
       </div>
-      <div class="card"><div class="ctitle">Textos da piscina</div>
-        <div class="g2">
-          <div class="fld"><label>Alerta crianças (aparece em destaque)</label><textarea class="inp ta" id="pisc-criancas">Mantenha as crianças sempre sob vigilância!</textarea></div>
-          <div class="fld"><label>Informação (profundidade, etc)</label><textarea class="inp ta" id="pisc-info">Profundidade 1,50m</textarea></div>
-          <div class="fld"><label>Equipamento</label><textarea class="inp ta" id="pisc-e">Espreguiçadeiras e guarda-sol disponíveis. Toalhas no armário do corredor.</textarea></div>
-        </div>
+      <div class="card">
+        <div class="ctitle">Itens da piscina — edita, adiciona ou remove</div>
+        <p style="font-size:.75rem;color:var(--txl);margin-bottom:.6rem;">O primeiro item aparece em destaque vermelho (alerta crianças).</p>
+        <div id="dyn-pisc"></div>
       </div>
       <div class="card"><div class="ctitle">Textos do espaço exterior</div>
         <div class="g2">
@@ -756,15 +765,16 @@ Máq. de lavar roupa</textarea>
       <div class="card"><div class="ctitle">Eletrodomésticos (separados por vírgula)</div>
         <input class="inp" id="coz-el" value="Fogão a gás, Forno elétrico, Micro-ondas, Frigorífico, Nespresso, Torradeira, Máq. loiça"/>
       </div>
-      <div class="card"><div class="ctitle">Textos</div>
-        <div class="g2">
-          <div class="fld"><label>Café</label><textarea class="inp ta" id="coz-cafe">Cápsulas Nespresso no armário superior esquerdo.</textarea></div>
-          <div class="fld"><label>Detergentes</label><textarea class="inp ta" id="coz-det">Armário debaixo do lava-loiça. Pastilhas incluídas.</textarea></div>
-          <div class="fld"><label>Churrasqueira — Preparação</label><textarea class="inp ta" id="chur-p">Carvão e acendalha no armário exterior.</textarea></div>
-          <div class="fld"><label>Churrasqueira — Utilização</label><textarea class="inp ta" id="chur-u">Grelha na prateleira inferior. Pinça e espátula no gancho à direita.</textarea></div>
-          <div class="fld"><label>Churrasqueira — Limpeza</label><textarea class="inp ta" id="chur-l">Aguardar arrefecimento. Cinzas no balde metálico.</textarea></div>
-          <div class="fld"><label>Churrasqueira — Utensílios (separados por vírgula)</label><input class="inp" id="chur-utens" value="Pinça,Garfo,Faca,Pratos,Extintor"/></div>
-        </div>
+      <div class="card">
+        <div class="ctitle">Itens da cozinha — edita, adiciona ou remove</div>
+        <div id="dyn-coz"></div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Itens da churrasqueira — edita, adiciona ou remove</div>
+        <div id="dyn-chur"></div>
+      </div>
+      <div class="card"><div class="ctitle">Utensílios disponíveis (separados por vírgula)</div>
+        <input class="inp" id="chur-utens" placeholder="Pinça,Garfo,Faca,Pratos,Extintor"/>
       </div>
       <button class="savebtn" onclick="saveSection('casa-cozinha')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-cozinha">Guardado!</span></button>
     </div>
@@ -782,13 +792,9 @@ Máq. de lavar roupa</textarea>
           <div style="flex:1;"><input class="photo-url" id="img-sala" value="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-sala','img-sala')"/></div>
         </div>
       </div>
-      <div class="card"><div class="ctitle">Textos</div>
-        <div class="g2">
-          <div class="fld"><label>Smart TV — Plataformas streaming</label><textarea class="inp ta" id="sala-tv">NOS TV, Netflix, Amazon Prime, Disney+ e Canal+. Credenciais no dossier.</textarea></div>
-          <div class="fld"><label>Lareira</label><textarea class="inp ta" id="sala-lar">Lenha no cesto junto à lareira. Não deixar sem vigilância.</textarea></div>
-          <div class="fld"><label>Ar condicionado</label><textarea class="inp ta" id="sala-ac">Disponível na sala. Comando no apoio de braço do sofá. Temperatura recomendada: 22°C.</textarea></div>
-          <div class="fld"><label>Sofá-cama</label><textarea class="inp ta" id="sala-sofa">O sofá converte-se em cama de casal. Roupa de cama no armário do corredor.</textarea></div>
-        </div>
+      <div class="card">
+        <div class="ctitle">Itens — edita título e texto, adiciona ou remove</div>
+        <div id="dyn-sala"></div>
       </div>
       <button class="savebtn" onclick="saveSection('casa-sala')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-sala">Guardado!</span></button>
     </div>
@@ -959,9 +965,8 @@ Entregar as chaves ao proprietário</textarea>
         </div>
       </div>
       <div class="card">
-        <div class="ctitle">Textos</div>
-        <div class="fld"><label>Produtos de higiene</label><textarea class="inp ta" id="wc-produtos">Shampoo, gel de banho e sabão disponíveis. Toalhas limpas no armário branco.</textarea></div>
-        <div class="fld"><label>Máquina de lavar roupa</label><textarea class="inp ta" id="wc-lavar">Disponível na casa de banho de serviço. Detergente no armário de baixo.</textarea></div>
+        <div class="ctitle">Itens — edita título e texto, adiciona ou remove</div>
+        <div id="dyn-wc"></div>
       </div>
       <button class="savebtn" onclick="saveSection('casa-wc')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-wc">Guardado!</span></button>
     </div>
@@ -1776,6 +1781,68 @@ function renderReceitas() {
 
 
 
+
+// ── DYNAMIC SECTION EDITOR ────────────────────────────────────
+var _dynData = {}; // { sectionKey: [{title, text}] }
+
+function esc(s) { var d=document.createElement('div');d.textContent=String(s||'');return d.innerHTML; }
+
+function dynLoad(key, jsonStr) {
+  try { _dynData[key] = JSON.parse(jsonStr || '[]'); } catch(e) { _dynData[key] = []; }
+  if (!_dynData[key].length) _dynData[key] = [{title:'',text:''}];
+  dynRender(key);
+}
+
+function dynRender(key) {
+  var container = document.getElementById('dyn-' + key);
+  if (!container) return;
+  var cards = _dynData[key] || [];
+  var html = '<div class="dyn-editor">';
+  cards.forEach(function(card, i) {
+    html += '<div class="dyn-card-wrap">'
+      + '<div class="dyn-card-header">'
+      + '<input class="dyn-title-inp" id="dyn-' + key + '-t-' + i + '" value="' + esc(card.title||'') + '" placeholder="Título do item"/>'
+      + '<button class="dyn-del-btn" onclick="dynDel('' + key + '',' + i + ')">×</button>'
+      + '</div>'
+      + '<textarea class="dyn-text-area" id="dyn-' + key + '-c-' + i + '">' + esc(card.text||'') + '</textarea>'
+      + '</div>';
+  });
+  html += '</div>'
+    + '<button class="dyn-add-btn" onclick="dynAdd('' + key + '')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar item</button>';
+  container.innerHTML = html;
+}
+
+function dynAdd(key) {
+  if (!_dynData[key]) _dynData[key] = [];
+  _dynData[key].push({title:'', text:''});
+  dynRender(key);
+  // Focus new title input
+  var newIdx = _dynData[key].length - 1;
+  var input = document.getElementById('dyn-' + key + '-t-' + newIdx);
+  if (input) { input.focus(); input.scrollIntoView({behavior:'smooth',block:'center'}); }
+}
+
+function dynDel(key, idx) {
+  if (!_dynData[key] || _dynData[key].length <= 1) { toast('Deve ter pelo menos 1 item.'); return; }
+  if (!confirm('Eliminar este item?')) return;
+  _dynData[key].splice(idx, 1);
+  dynRender(key);
+}
+
+function dynGet(key) {
+  // Read current values from DOM
+  var cards = (_dynData[key] || []).map(function(card, i) {
+    var tEl = document.getElementById('dyn-' + key + '-t-' + i);
+    var cEl = document.getElementById('dyn-' + key + '-c-' + i);
+    return {
+      title: tEl ? tEl.value.trim() : (card.title||''),
+      text:  cEl ? cEl.value.trim() : (card.text||'')
+    };
+  }).filter(function(c) { return c.title || c.text; });
+  return JSON.stringify(cards);
+}
+
+
 // ── UNSAVED CHANGES WARNING ─────────────────────────────────
 var _hasUnsaved = false;
 document.addEventListener('input', function(e) {
@@ -2042,8 +2109,19 @@ function fillCasa(c) {
   s('img-wc', c.wc_img); s('img-info', c.info_img);
   // Texts
   s('c-bv', c.boas_vindas);
-  s('sala-tv', c.sala_tv); s('sala-lar', c.sala_lareira);
-  s('sala-ac', c.sala_ac); s('sala-sofa', c.sala_sofa);
+  // Dynamic editors — load JSON data
+  var dynDefaults = {
+    sala: '[{"title":"Smart TV","text":"NOS TV, Netflix, Amazon Prime, Disney+ e Canal+. Credenciais no dossier."},{"title":"Lareira","text":"Lenha no cesto junto à lareira. Não deixar sem vigilância."},{"title":"Ar condicionado","text":"Disponível na sala. Temperatura recomendada: 22°C."},{"title":"Sofá-cama","text":"O sofá converte-se em cama de casal. Roupa de cama no armário do corredor."}]',
+    wc:   '[{"title":"Produtos de higiene","text":"Shampoo, gel de banho e sabão disponíveis. Toalhas limpas no armário branco."},{"title":"Máquina de lavar roupa","text":"Disponível na casa de banho de serviço. Detergente no armário de baixo."}]',
+    coz:  '[{"title":"Café","text":"Cápsulas Nespresso no armário superior esquerdo."},{"title":"Detergentes","text":"Armário debaixo do lava-loiça. Pastilhas incluídas."}]',
+    chur: '[{"title":"Preparação","text":"Carvão e acendalha no armário exterior. Utilizar no local designado no jardim."},{"title":"Utilização","text":"Grelha na prateleira inferior. Pinça e espátula no gancho à direita."},{"title":"Limpeza","text":"Aguardar arrefecimento. Cinzas no balde metálico."}]',
+    pisc: '[{"title":"⚠️ Atenção","text":"Mantenha as crianças sempre sob vigilância!"},{"title":"Informação","text":"Profundidade 1,50m"},{"title":"Equipamento","text":"Espreguiçadeiras e guarda-sol disponíveis. Toalhas no armário do corredor."}]',
+    info: '[{"title":"Estacionamento","text":"Dois lugares cobertos no lado esquerdo do portão."},{"title":"Água potável","text":"A água da torneira é potável e tratada."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior com respeito pela privacidade dos vizinhos."}]'
+  };
+  ['sala','wc','coz','chur','pisc','info'].forEach(function(key) {
+    dynLoad(key, c[key + '_json'] || dynDefaults[key] || '[]');
+  });
+  s('chur-utens', c.churrasco_utens);
   s('coz-el', c.cozinha_eletros); s('coz-cafe', c.cozinha_cafe); s('coz-det', c.cozinha_det);
   s('chur-p', c.churrasco_prep); s('chur-u', c.churrasco_uso); s('chur-l', c.churrasco_limp);
   s('chur-utens', c.churrasco_utens);
@@ -2109,12 +2187,7 @@ function saveSection(sec) {
       info_img:v('img-info'),
       boas_vindas:v('c-bv'),
       comodidades:v('c-comod'),
-      info_estac:v('info-estac'),
-      info_agua:v('info-agua'),
-      info_alarme:v('info-alarme'),
-      info_cofre:v('info-cofre'),
-      info_corrente:v('info-corrente'),
-      info_drones:v('info-drones')
+      info_json:dynGet('info')
     },
     'casa-quartos': { action:'saveCasa',
       quartos_img:v('img-qts'),
@@ -2125,9 +2198,7 @@ function saveSection(sec) {
     'casa-piscina': { action:'saveCasa',
       piscina_img:v('img-pisc'),
       exterior_img:v('img-ext'),
-      piscina_criancas:v('pisc-criancas'),
-      piscina_info:v('pisc-info'),
-      piscina_equip:v('pisc-e'),
+      pisc_json:dynGet('pisc'),
       exterior_jardim:v('ext-j'),
       exterior_equip:v('ext-e'),
       exterior_notas:v('ext-n')
@@ -2136,19 +2207,13 @@ function saveSection(sec) {
       cozinha_img:v('img-coz'),
       churrasco_img:v('img-chur'),
       cozinha_eletros:v('coz-el'),
-      cozinha_cafe:v('coz-cafe'),
-      cozinha_det:v('coz-det'),
-      churrasco_prep:v('chur-p'),
-      churrasco_uso:v('chur-u'),
-      churrasco_limp:v('chur-l'),
+      coz_json:dynGet('coz'),
+      chur_json:dynGet('chur'),
       churrasco_utens:v('chur-utens')
     },
     'casa-sala': { action:'saveCasa',
       sala_img:v('img-sala'),
-      sala_tv:v('sala-tv'),
-      sala_lareira:v('sala-lar'),
-      sala_ac:v('sala-ac'),
-      sala_sofa:v('sala-sofa')
+      sala_json:dynGet('sala')
     },
     'casa-regras': { action:'saveCasa',
       reg_silencio:v('reg-s'),
@@ -2198,8 +2263,7 @@ function saveSection(sec) {
     'patrocinadores': 'dynamic',
     'casa-wc': { action:'saveCasa',
       wc_img:v('img-wc'),
-      wc_produtos:v('wc-produtos'),
-      wc_lavar:v('wc-lavar')
+      wc_json:dynGet('wc')
     },
     'transportes': { action:'saveServicos',
       taxi_nome:v('taxi-nome')||'',
