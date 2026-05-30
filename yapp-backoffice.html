@@ -1349,92 +1349,80 @@ function toggleBlock(year, month, day) {
 }
 
 function renderCalendar() {
+  if (!_reservas || !_reservas.length) loadReservas();
+
   var year = _calYear, month = _calMonth;
   var months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   var lbl = document.getElementById('cal-month-label');
   if (lbl) lbl.textContent = months[month] + ' ' + year;
 
   var daysInMonth = new Date(year, month + 1, 0).getDate();
-  var firstDay    = new Date(year, month, 1).getDay();
-  firstDay = (firstDay + 6) % 7; // Mon=0
-
+  var firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
   var occupied = {}, checkinDays = {}, checkoutDays = {};
   var today = new Date(); today.setHours(0,0,0,0);
 
-  DB.guests.forEach(function(g) {
-    var co = g.checkout && g.checkout !== '2099-12-31' ? new Date(g.checkout + 'T00:00:00') : null;
-    if (!co) return;
-    // Use checkin if available, otherwise just mark checkout day
-    var ci = g.checkin ? new Date(g.checkin + 'T00:00:00') : new Date(co);
+  // Usa _reservas (reservas reais da propriedade, não logins da app)
+  _reservas.forEach(function(r) {
+    if (!r.ci || !r.co) return;
+    var ci = new Date(r.ci + 'T00:00:00');
+    var co = new Date(r.co + 'T00:00:00');
     var d  = new Date(ci);
     while (d <= co) {
       if (d.getFullYear() === year && d.getMonth() === month) {
         var day = d.getDate();
-        occupied[day] = g.user + (g.name ? ' · ' + g.name : '');
+        occupied[day] = r.guest || '—';
         if (d.getTime() === ci.getTime()) checkinDays[day] = true;
-        if (d.getTime() === co.getTime()) checkoutDays[day] = true;
+        if (d.getTime() === co.getTime())  checkoutDays[day] = true;
       }
       d.setDate(d.getDate() + 1);
     }
   });
 
-  // Render grid
   var grid = document.getElementById('cal-grid');
   if (!grid) return;
   var days = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
   var html = days.map(function(d){ return '<div style="text-align:center;font-size:.65rem;font-weight:700;color:var(--txl);padding:4px 0;text-transform:uppercase;letter-spacing:.05em;">' + d + '</div>'; }).join('');
-
-  // Empty cells before first day
   for (var i = 0; i < firstDay; i++) html += '<div></div>';
 
   for (var day = 1; day <= daysInMonth; day++) {
-    var isOcc   = !!occupied[day];
-    var isCi    = !!checkinDays[day];
-    var isCo    = !!checkoutDays[day];
-    var isToday = (new Date(year, month, day).getTime() === today.getTime());
-    var dateKey = year + '-' + String(month+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+    var isOcc     = !!occupied[day];
+    var isCi      = !!checkinDays[day];
+    var isCo      = !!checkoutDays[day];
+    var isToday   = (new Date(year, month, day).getTime() === today.getTime());
+    var dateKey   = year + '-' + String(month+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
     var isBlocked = !!_blockedDays[dateKey];
-    var bg = isBlocked ? '#e53935' : isOcc ? (isCi || isCo ? '#f0a500' : '#3b7dd8') : '#e8f0fb';
-    var fg = (isBlocked || isOcc) ? '#fff' : 'var(--txm)';
-    var title = isBlocked ? ' title="Bloqueado (duplo clique para desbloquear)"' : occupied[day] ? ' title="' + occupied[day] + '"' : ' title="Duplo clique para bloquear"';
-    var border = isToday ? '2px solid var(--g)' : '1px solid transparent';
-    html += '<div' + title + ' ondblclick="toggleBlock(' + year + ',' + month + ',' + day + ')" style="text-align:center;padding:6px 2px;border-radius:6px;font-size:.78rem;font-weight:' + ((isOcc||isBlocked)?'600':'400') + ';background:' + bg + ';color:' + fg + ';border:' + border + ';cursor:pointer;" >' + day + '</div>';
+    var bg  = isBlocked ? '#e53935' : isOcc ? (isCi || isCo ? '#f0a500' : '#3b7dd8') : '#e8f0fb';
+    var fg  = (isBlocked || isOcc) ? '#fff' : 'var(--txm)';
+    var ttl = isBlocked ? 'Bloqueado' : (occupied[day] || 'Duplo clique para bloquear');
+    var bdr = isToday ? '2px solid var(--g)' : '1px solid transparent';
+    html += '<div title="' + ttl + '" ondblclick="toggleBlock(' + year + ',' + month + ',' + day + ')" style="text-align:center;padding:6px 2px;border-radius:6px;font-size:.78rem;font-weight:' + ((isOcc||isBlocked)?'600':'400') + ';background:' + bg + ';color:' + fg + ';border:' + bdr + ';cursor:pointer;">' + day + '</div>';
   }
   grid.innerHTML = html;
 
-  // Stats
   var noites = Object.keys(occupied).length;
-  var pct    = Math.round(noites / daysInMonth * 100);
-  var uniqGuests = new Set(Object.values(occupied)).size;
-  var sn = document.getElementById('cal-stat-noites');
-  var sp = document.getElementById('cal-stat-pct');
-  var sh = document.getElementById('cal-stat-hospedes');
-  if (sn) sn.textContent = noites;
-  if (sp) sp.textContent = pct + '%';
-  if (sh) sh.textContent = uniqGuests;
+  var sn = document.getElementById('cal-stat-noites'); if (sn) sn.textContent = noites;
+  var sp = document.getElementById('cal-stat-pct');    if (sp) sp.textContent = Math.round(noites/daysInMonth*100) + '%';
+  var sh = document.getElementById('cal-stat-hospedes'); if (sh) sh.textContent = new Set(Object.values(occupied)).size;
 
-  // Guest list this month
-  var seen = {};
   var listH = '';
-  DB.guests.forEach(function(g) {
-    if (!g.checkin || !g.checkout) return;
-    var ci = new Date(g.checkin + 'T00:00:00');
-    var co = new Date(g.checkout + 'T00:00:00');
-    var inMonth = (ci.getFullYear() === year && ci.getMonth() === month) ||
-                  (co.getFullYear() === year && co.getMonth() === month) ||
-                  (ci <= new Date(year, month, 1) && co >= new Date(year, month, daysInMonth));
-    if (!inMonth || seen[g.user]) return;
-    seen[g.user] = true;
-    var ciStr = g.checkin || '—';
-    var coStr = g.checkout !== '2099-12-31' ? g.checkout : 'Permanente';
-    listH += '<div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--bd);font-size:.82rem;">'
-      + '<div><strong>' + (g.name || g.user) + '</strong><span style="color:var(--txl);margin-left:6px;font-size:.75rem;">' + g.user + '</span></div>'
-      + '<span style="color:var(--txl);font-size:.75rem;">' + ciStr + ' → ' + coStr + '</span>'
+  _reservas.forEach(function(r) {
+    if (!r.ci || !r.co) return;
+    var ci = new Date(r.ci + 'T00:00:00');
+    var co = new Date(r.co + 'T00:00:00');
+    var inMonth = (ci.getFullYear()===year&&ci.getMonth()===month) ||
+                  (co.getFullYear()===year&&co.getMonth()===month) ||
+                  (ci<=new Date(year,month,1) && co>=new Date(year,month,daysInMonth));
+    if (!inMonth) return;
+    var pill = r.estado==='pago' ? '<span class="pill p-ok">Pago</span>' : '<span class="pill p-pend">Pendente</span>';
+    listH += '<div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--bd);font-size:.82rem;gap:.5rem;flex-wrap:wrap;">'
+      + '<div><strong>' + esc(r.guest||'—') + '</strong><span style="color:var(--txl);font-size:.75rem;margin-left:6px;">' + r.ci + ' → ' + r.co + ' · ' + (r.nights||'?') + ' noites · ' + (r.plat||'') + '</span></div>'
+      + '<div style="display:flex;gap:.4rem;align-items:center;">' + pill + '<strong style="color:var(--g);">€' + (r.valor||0) + '</strong></div>'
       + '</div>';
   });
   var gl = document.getElementById('cal-guests-list');
-  if (gl) gl.innerHTML = listH || '<div style="font-size:.82rem;color:var(--txl);">Nenhum hóspede neste mês.</div>';
+  if (gl) gl.innerHTML = listH || '<div style="font-size:.82rem;color:var(--txl);">Nenhuma reserva neste mês.</div>';
 }
+
 
 function calPrev() { _calMonth--; if (_calMonth < 0) { _calMonth = 11; _calYear--; } renderCalendar(); }
 function calNext() { _calMonth++; if (_calMonth > 11) { _calMonth = 0; _calYear++; } renderCalendar(); }
