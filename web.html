@@ -270,8 +270,8 @@ h1 em{font-style:italic;color:#A8DCFF;}
 /* ── FEATURES ── */
 #funcionalidades{background:#fff;}
 .ft-hdr{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:end;margin-bottom:3.5rem;}
-.ft-grid{display:grid;grid-template-columns:repeat(3,1fr);border-radius:var(--r);overflow:hidden;border:1px solid var(--bdg);}
-.fc{background:#fff;padding:2rem 1.7rem;border-right:1px solid var(--bdg);border-bottom:1px solid var(--bdg);transition:background .25s;position:relative;overflow:hidden;}
+/* ft-grid replaced by feat-acc */
+/* fc replaced */
 .fc:nth-child(3n){border-right:none;}
 .fc:nth-last-child(-n+3){border-bottom:none;}
 .fc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--blue-deep));opacity:0;transition:opacity .3s;}
@@ -539,18 +539,18 @@ footer{background:var(--sky);border-top:1px solid var(--bdg);padding:2.3rem 5vw;
 @media(max-width:768px){
   #pagamento .max-w>div{grid-template-columns:1fr!important;gap:2rem;}
   section{padding:70px 5vw;}
-  #hero{padding:100px 5vw 70px;min-height:100svh;}
+  #hero{padding:0 5vw 0;height:100svh;min-height:600px;}
   #formulario{padding:70px 5vw;}
   nav .nav-links{display:none;}
   .nav-ham{display:flex;}
-  h1{font-size:clamp(2.2rem,7.5vw,3.2rem);text-align:center;}
+  h1{font-size:clamp(2rem,7vw,3rem);text-align:center;margin-top:1.4rem;margin-bottom:1rem;line-height:1.05;}
   .hero-pill{margin:0 auto;}
-  .hero-sub{text-align:center;max-width:100%;}
-  .hero-c{display:flex;flex-direction:column;align-items:center;text-align:center;}
-  .hero-stats{gap:1.5rem;justify-content:center;}
-  .hero-btns{flex-direction:column;align-items:center;}
+  .hero-sub{text-align:center;max-width:100%;margin-bottom:1.4rem;font-size:.95rem;line-height:1.65;}
+  .hero-c{display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;height:100%;padding-top:calc(70px + env(safe-area-inset-top, 0px));padding-bottom:max(1.5rem, env(safe-area-inset-bottom, 1.5rem));justify-content:space-between;}
+  .hero-stats{gap:1.5rem;justify-content:center;margin-top:0;padding-top:1.2rem;}
+  .hero-btns{flex-direction:column;align-items:center;width:100%;gap:.8rem;}
   .btn-hw,.btn-hs{width:100%;justify-content:center;max-width:340px;}
-  .hero-scroll-inline{justify-content:center;}
+  .hero-scroll-inline{justify-content:center;margin-top:0;padding-bottom:.5rem;}
   .proof-names{justify-content:center;}
   .proof-lbl{width:100%;text-align:center;}
   .cnt-grid{grid-template-columns:1fr;}
@@ -561,11 +561,13 @@ footer{background:var(--sky);border-top:1px solid var(--bdg);padding:2.3rem 5vw;
   .ts-grid{grid-template-columns:1fr;max-width:420px;margin:0 auto;}
   .fr{grid-template-columns:1fr;}
   .sponsor-row{grid-template-columns:1fr 1fr;gap:.4rem;}
+  .check-item-note{white-space:normal;}
   .sponsor-row .fi2:last-of-type{grid-column:1/-1;}
   .bo-bdy{flex-direction:column;height:auto;}
   .bo-sd{width:100%;flex-direction:row;flex-wrap:wrap;height:auto;border-right:none;border-bottom:1px solid var(--bdg);}
   .bo-mn{min-height:220px;}
   .px-s{height:360px;}
+  .hero-ov2{height:140px;background:linear-gradient(to top,rgba(255,255,255,.98) 0%,rgba(255,255,255,.5) 45%,transparent 100%);}
   footer{flex-direction:column;text-align:center;}
   .ft-links{justify-content:center;}
   .cf-btns{flex-direction:column;align-items:center;}
@@ -676,6 +678,180 @@ footer{background:var(--sky);border-top:1px solid var(--bdg);padding:2.3rem 5vw;
   background:radial-gradient(ellipse 60% 40% at 50% 50%,rgba(63,179,255,.06),transparent 70%);
   pointer-events:none;
 }
+
+/* ── FORM ACCORDION STEPS ── */
+.facc-step{border:1px solid var(--bdg);border-radius:var(--r);overflow:hidden;margin-bottom:.6rem;}
+.facc-hdr{
+  width:100%;background:none;border:none;text-align:left;
+  padding:.95rem 1.2rem;
+  display:flex;align-items:center;gap:.85rem;
+  cursor:pointer;font-family:var(--sans);
+  transition:background .2s;
+}
+.facc-hdr:hover{background:var(--sky);}
+.facc-step.done .facc-hdr{background:rgba(63,179,255,.04);}
+.facc-num{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--sky2);border:2px solid var(--bd);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:700;color:var(--blue-dark);
+  flex-shrink:0;transition:all .3s;
+}
+.facc-step.done .facc-num{background:var(--blue);border-color:var(--blue);color:#fff;}
+.facc-step.active .facc-num{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.facc-title{font-size:.86rem;font-weight:600;color:var(--ink);}
+.facc-subtitle{font-size:.7rem;color:var(--gray);}
+.facc-hdr > div:not(.facc-num):not(.facc-chevron){
+  flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;
+}
+.facc-chevron{
+  width:22px;height:22px;border-radius:50%;
+  background:var(--sky);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:transform .35s cubic-bezier(.16,1,.3,1);
+}
+.facc-chevron svg{width:10px;height:10px;stroke:var(--gray);fill:none;stroke-width:2.5;stroke-linecap:round;}
+.facc-step.active .facc-hdr > div:not(.facc-num):not(.facc-chevron){
+  flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;
+}
+.facc-chevron{transform:rotate(180deg);background:var(--blue-dark);}
+.facc-step.active .facc-chevron svg{stroke:#fff;}
+.facc-body{
+  max-height:0;overflow:hidden;
+  transition:max-height .5s cubic-bezier(.16,1,.3,1);
+}
+.facc-step.active .facc-body{max-height:6000px;}
+.facc-inner{padding:0 1.4rem 1.4rem;}
+/* Done checkmark */
+.facc-done-icon{display:none;}
+.facc-step.done .facc-done-icon{display:flex;}
+.facc-step.done .facc-num-n{display:none;}
+.facc-step.done .facc-hdr > div:not(.facc-num):not(.facc-chevron){
+  flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;
+}
+.facc-chevron{background:rgba(40,180,120,.1);}
+.facc-step.done .facc-chevron svg{stroke:#28B478;}
+/* Progress bar */
+.facc-progress{
+  display:flex;align-items:center;gap:.5rem;
+  margin-bottom:1.5rem;
+}
+.facc-prog-bar{
+  flex:1;height:4px;background:var(--sky2);border-radius:2px;overflow:hidden;
+}
+.facc-prog-fill{
+  height:100%;background:linear-gradient(90deg,var(--blue),var(--blue-dark));
+  border-radius:2px;transition:width .5s cubic-bezier(.16,1,.3,1);
+  width:0%;
+}
+.facc-prog-label{font-size:.68rem;color:var(--gray);white-space:nowrap;}
+/* Nav buttons inside accordion */
+.facc-nav{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--bdg);
+}
+.facc-btn-prev{
+  background:none;border:1px solid var(--bdg);color:var(--gray);
+  padding:.6rem 1.2rem;border-radius:50px;font-size:.82rem;font-weight:500;
+  cursor:pointer;font-family:var(--sans);transition:all .2s;
+}
+.facc-btn-prev:hover{border-color:var(--bd);color:var(--ink);}
+.facc-btn-next{
+  background:var(--blue-dark);color:#fff;border:none;
+  padding:.65rem 1.5rem;border-radius:50px;font-size:.82rem;font-weight:600;
+  cursor:pointer;font-family:var(--sans);transition:all .2s;
+  display:flex;align-items:center;gap:.4rem;
+}
+.facc-btn-next:hover{background:var(--blue-mid);}
+.facc-btn-next svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;}
+/* Color theme selector */
+.color-themes{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.4rem;}
+.color-theme{
+  display:flex;align-items:center;gap:.5rem;
+  padding:.55rem .9rem;border-radius:50px;
+  border:2px solid var(--bdg);cursor:pointer;
+  font-size:.78rem;font-weight:500;color:var(--ink2);
+  transition:all .2s;background:#fff;
+}
+.color-theme:hover{border-color:var(--bd);}
+.color-theme.selected{border-color:var(--blue);background:var(--sky);color:var(--blue-dark);}
+.color-theme input[type=radio]{display:none;}
+.ct-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;}
+/* Checklist */
+.checklist{display:flex;flex-direction:column;gap:.45rem;margin-top:.4rem;}
+.check-item{
+  display:flex;align-items:center;gap:.7rem;
+  padding:.6rem .9rem;border-radius:var(--rs);
+  border:1px solid var(--bdg);background:var(--sky);
+  transition:all .2s;cursor:pointer;
+  flex-wrap:wrap;
+}
+.check-item:has(input:checked){border-color:var(--blue);background:rgba(63,179,255,.06);}
+.check-item input[type=checkbox]{
+  width:16px;height:16px;margin-top:2px;flex-shrink:0;
+  accent-color:var(--blue-dark);cursor:pointer;
+}
+.check-item-label{flex:1;display:flex;align-items:baseline;gap:.5rem;min-width:0;}
+.check-item-title{font-size:.84rem;font-weight:600;color:var(--ink);white-space:nowrap;flex-shrink:0;}
+.check-item-note{font-size:.7rem;color:var(--gray);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.check-extra{
+  max-height:0;overflow:hidden;
+  transition:max-height .3s;
+  width:100%;flex-basis:100%;
+  padding-left:1.75rem;
+}
+.check-item:has(input:checked) .check-extra{max-height:200px;}
+.check-extra-inner{margin-top:.4rem;padding-bottom:.3rem;}
+/* Video upload area */
+.video-drop{
+  background:var(--sky);border:2px dashed rgba(63,179,255,.3);
+  border-radius:var(--rs);padding:1.4rem;text-align:center;
+  cursor:pointer;position:relative;margin-top:.5rem;transition:all .2s;
+}
+.video-drop:hover{border-color:var(--blue);background:var(--sky2);}
+.video-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.video-preview{
+  margin-top:.8rem;display:none;
+  background:#fff;border-radius:var(--rs);padding:.7rem;
+  border:1px solid var(--bd);font-size:.78rem;color:var(--ink2);
+}
+
+/* ── FEATURES ACCORDION ── */
+.feat-acc{display:flex;flex-direction:column;gap:.5rem;}
+.feat-acc-item{border:1px solid var(--bdg);border-radius:var(--r);overflow:hidden;transition:border-color .25s;}
+.feat-acc-item:hover{border-color:var(--bd);}
+.feat-acc-item.open{border-color:var(--bd);}
+.feat-acc-btn{
+  width:100%;background:none;border:none;text-align:left;
+  padding:1.1rem 1.4rem;
+  display:flex;align-items:center;gap:1rem;
+  cursor:pointer;font-family:var(--sans);
+  transition:background .2s;
+}
+.feat-acc-btn:hover{background:var(--sky);}
+.feat-acc-item.open .feat-acc-btn{background:var(--sky);}
+.feat-acc-icon{
+  width:36px;height:36px;border-radius:9px;
+  background:var(--sky);border:1px solid var(--bd);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:background .25s;
+}
+.feat-acc-item.open .feat-acc-icon{background:var(--blue-dark);}
+.feat-acc-item.open .feat-acc-icon svg{stroke:#fff;}
+.feat-acc-icon svg{width:16px;height:16px;stroke:var(--blue-dark);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.feat-acc-title{font-size:.92rem;font-weight:600;color:var(--ink);flex:1;}
+.feat-acc-tog{
+  width:22px;height:22px;border-radius:50%;
+  background:var(--sky2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:transform .35s cubic-bezier(.16,1,.3,1),background .25s;
+}
+.feat-acc-tog svg{width:10px;height:10px;stroke:var(--gray);fill:none;stroke-width:2.5;stroke-linecap:round;transition:stroke .2s;}
+.feat-acc-item.open .feat-acc-tog{transform:rotate(180deg);background:var(--blue-dark);}
+.feat-acc-item.open .feat-acc-tog svg{stroke:#fff;}
+.feat-acc-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.16,1,.3,1);}
+.feat-acc-item.open .feat-acc-body{max-height:400px;}
+.feat-acc-desc{padding:.2rem 1.4rem 1.2rem 5rem;font-size:.86rem;color:var(--gray);line-height:1.72;font-weight:300;}
 </style>
 </head>
 <body>
@@ -728,10 +904,10 @@ footer{background:var(--sky);border-top:1px solid var(--bdg);padding:2.3rem 5vw;
     <p class="hero-sub">Coloque tudo o que os seus hóspedes precisam saber na palma da mão, desde a chegada ao check-out. Personalizado, elegante e sem precisar de instalar nada.</p>
     <div class="hero-btns">
       <a href="#formulario" class="btn-hw">
-        Quero a minha YAPP
+        Quero aderir
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
-      <a href="#conteudo" class="btn-hs">Como funciona</a>
+      <a href="https://darioersantos.github.io/Yapp/" target="_blank" rel="noopener" class="btn-hs">App de exemplo</a>
     </div>
     <div class="hero-stats">
       <div><div class="hs-n">5 min</div><div class="hs-l">Para configurar</div></div>
@@ -826,17 +1002,108 @@ footer{background:var(--sky);border-top:1px solid var(--bdg);padding:2.3rem 5vw;
       <div><div class="s-tag">Funcionalidades</div><h2 class="s-title">Pensado para anfitriões.<br><span>Adorado pelos hóspedes.</span></h2></div>
       <p class="s-desc">Cada detalhe foi desenhado para simplificar a sua gestão e elevar a experiência de quem fica no seu alojamento.</p>
     </div>
-    <div class="ft-grid reveal">
-      <div class="fc"><div class="fi"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div><div class="ft">PWA — Sem App Store</div><p class="fd">Sem downloads. Os hóspedes acedem por link ou QR Code e instalam no ecrã inicial como app nativa — iOS e Android.</p></div>
-      <div class="fc"><div class="fi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div><div class="ft">Multilíngue</div><p class="fd">Português, inglês e espanhol incluídos. Hóspedes internacionais navegam na sua língua sem qualquer esforço da sua parte.</p></div>
-      <div class="fc"><div class="fi"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ft">Mapas Integrados</div><p class="fd">Um toque e os hóspedes têm navegação direta para o alojamento ou qualquer atração. Integrado com Google Maps.</p></div>
-      <div class="fc"><div class="fi"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="ft">Modo Offline</div><p class="fd">Disponível sem internet após o primeiro acesso. Essencial para o Gerês, Douro, Alentejo e outras zonas rurais.</p></div>
-      <div class="fc"><div class="fi"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div class="ft">Subscrição de Email</div><p class="fd">Os hóspedes subscrevem no guia. Construa uma base de contactos para fidelizar e comunicar disponibilidades futuras.</p></div>
-      <div class="fc"><div class="fi"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="ft">Patrocínios Locais</div><p class="fd">Rentabilize o guia com publicidade de restaurantes e atividades locais. Transforme visitas em receita adicional.</p></div>
-      <div class="fc"><div class="fi"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="ft">Livro de Comentários</div><p class="fd">Os hóspedes deixam mensagens diretamente no guia. Feedback genuíno que valoriza o alojamento a longo prazo.</p></div>
-      <div class="fc"><div class="fi"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82a19.79 19.79 0 01-3.07-8.67A2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.52-1.52a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div><div class="ft">Contactos de Emergência</div><p class="fd">Hospital, farmácia, bombeiros, polícia, táxi. Um toque e o hóspede tem o número certo, sem pesquisar.</p></div>
-      <div class="fc"><div class="fi"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><div class="ft">Design Exclusivo</div><p class="fd">Cores, logótipo e identidade visual do seu alojamento. Cada YAPP é única e cria uma experiência memorável.</p></div>
-    </div>
+    <div class="feat-acc reveal">
+
+  <div class="feat-acc-item">
+    <button type="button" class="feat-acc-btn" onclick="toggleFeat(this)">
+      <div class="feat-acc-icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+      <div class="feat-acc-title">PWA — Sem App Store</div>
+      <div class="feat-acc-tog"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="feat-acc-body"><div class="feat-acc-desc">Sem downloads nem instalações. Os hóspedes acedem por link ou QR Code e podem guardar no ecrã inicial como app nativa, em iOS e Android.</div></div>
+  </div>
+
+  <div class="feat-acc-item">
+    <button type="button" class="feat-acc-btn" onclick="toggleFeat(this)">
+      <div class="feat-acc-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
+      <div class="feat-acc-title">Multilíngue</div>
+      <div class="feat-acc-tog"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="feat-acc-body"><div class="feat-acc-desc">Português, inglês e espanhol incluídos. Os hóspedes internacionais navegam na sua língua sem qualquer esforço da sua parte.</div></div>
+  </div>
+
+  <div class="feat-acc-item">
+    <button type="button" class="feat-acc-btn" onclick="toggleFeat(this)">
+      <div class="feat-acc-icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+      <div class="feat-acc-title">Mapas Integrados</div>
+      <div class="feat-acc-tog"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="feat-acc-body"><div class="feat-acc-desc">Um toque e os hóspedes têm navegação direta para o alojamento ou qualquer atração. Integrado com Google Maps para máxima compatibilidade.</div></div>
+  </div>
+
+  <div class="feat-acc-item">
+    <button type="button" class="feat-acc-btn" onclick="toggleFeat(this)">
+      <div class="feat-acc-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <div class="feat-acc-title">Modo Offline</div>
+      <div class="feat-acc-tog"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="feat-acc-body"><div class="feat-acc-desc">Disponível sem internet após o primeiro acesso. Essencial para o Gerês, Douro, Alentejo e outras zonas rurais com cobertura limitada.</div></div>
+  </div>
+
+  <div class="feat-acc-item">
+    <button type="button" class="feat-acc-btn" onclick="toggleFeat(this)">
+      <div class="feat-acc-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <div class="feat-acc-title">Calendário e Gestão de Hóspedes</div>
+      <div class="feat-acc-tog"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="feat-acc-body"><div class="feat-acc-desc">Calendário de reservas integrado, registo de hóspedes, histórico de estadias e notas por visita. Toda a gestão do alojamento num só painel.</div></div>
+  </div>
+
+  <div class="feat-acc-item">
+    <button type="button" class="feat-acc-btn" onclick="toggleFeat(this)">
+      <div class="feat-acc-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+      <div class="feat-acc-title">Finanças e Faturação</div>
+      <div class="feat-acc-tog"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="feat-acc-body"><div class="feat-acc-desc">Acompanhe receitas, pagamentos e renovações diretamente no backoffice. Relatórios mensais e anuais da atividade do seu alojamento.</div></div>
+  </div>
+
+  <div class="feat-acc-item">
+    <button type="button" class="feat-acc-btn" onclick="toggleFeat(this)">
+      <div class="feat-acc-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+      <div class="feat-acc-title">Subscrição de Email</div>
+      <div class="feat-acc-tog"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="feat-acc-body"><div class="feat-acc-desc">Os hóspedes subscrevem a newsletter diretamente no guia. Construa uma base de contactos para fidelizar clientes e comunicar disponibilidades futuras.</div></div>
+  </div>
+
+  <div class="feat-acc-item">
+    <button type="button" class="feat-acc-btn" onclick="toggleFeat(this)">
+      <div class="feat-acc-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="feat-acc-title">Patrocínios Locais</div>
+      <div class="feat-acc-tog"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="feat-acc-body"><div class="feat-acc-desc">Rentabilize o guia com publicidade de restaurantes e atividades locais. Transforme o tráfego de hóspedes em receita adicional para o seu alojamento.</div></div>
+  </div>
+
+  <div class="feat-acc-item">
+    <button type="button" class="feat-acc-btn" onclick="toggleFeat(this)">
+      <div class="feat-acc-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+      <div class="feat-acc-title">Livro de Comentários</div>
+      <div class="feat-acc-tog"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="feat-acc-body"><div class="feat-acc-desc">Os hóspedes deixam mensagens e avaliações diretamente no guia. Feedback genuíno que valoriza o alojamento a longo prazo.</div></div>
+  </div>
+
+  <div class="feat-acc-item">
+    <button type="button" class="feat-acc-btn" onclick="toggleFeat(this)">
+      <div class="feat-acc-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82a19.79 19.79 0 01-3.07-8.67A2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.52-1.52a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+      <div class="feat-acc-title">Contactos de Emergência</div>
+      <div class="feat-acc-tog"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="feat-acc-body"><div class="feat-acc-desc">Hospital, farmácia, bombeiros, polícia e táxi local. Um toque e o hóspede tem o contacto certo, sem precisar de pesquisar em caso de urgência.</div></div>
+  </div>
+
+  <div class="feat-acc-item">
+    <button type="button" class="feat-acc-btn" onclick="toggleFeat(this)">
+      <div class="feat-acc-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+      <div class="feat-acc-title">Design Exclusivo</div>
+      <div class="feat-acc-tog"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="feat-acc-body"><div class="feat-acc-desc">Cores, logótipo e identidade visual do seu alojamento. Cada YAPP é única e cria uma experiência memorável para os hóspedes.</div></div>
+  </div>
+
+</div></div>
   </div>
 </section>
 
@@ -853,6 +1120,9 @@ footer{background:var(--sky);border-top:1px solid var(--bdg);padding:2.3rem 5vw;
         <p class="s-desc">Aceda ao painel de gestão de qualquer dispositivo. Edite conteúdos, acompanhe estatísticas e gira os emails — sem conhecimentos técnicos.</p>
         <div class="bo-list">
           <div class="bo-i"><div class="bo-ii"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><div><div class="bo-it">Edição em tempo real</div><div class="bo-id">Altere qualquer conteúdo e os hóspedes veem imediatamente, sem depender de ninguém.</div></div></div>
+          <div class="bo-i"><div class="bo-ii"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div><div class="bo-it">Calendário e reservas</div><div class="bo-id">Visão completa das reservas, check-ins e check-outs. Gira a ocupação do alojamento num só lugar.</div></div></div>
+          <div class="bo-i"><div class="bo-ii"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div><div><div class="bo-it">Gestão de hóspedes</div><div class="bo-id">Registo de hóspedes, histórico de estadias, notas e preferências. Conheça melhor quem fica no seu alojamento.</div></div></div>
+          <div class="bo-i"><div class="bo-ii"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><div><div class="bo-it">Finanças e faturação</div><div class="bo-id">Acompanhe receitas, pagamentos recebidos e renovações. Relatórios mensais e anuais da sua atividade.</div></div></div>
           <div class="bo-i"><div class="bo-ii"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div><div class="bo-it">Estatísticas de acessos</div><div class="bo-id">Veja quantas visitas o guia teve, as secções mais consultadas e o crescimento da lista de emails.</div></div></div>
           <div class="bo-i"><div class="bo-ii"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><div class="bo-it">Gestão de emails</div><div class="bo-id">Lista dos hóspedes subscritos, exportável a qualquer momento para campanhas de email.</div></div></div>
           <div class="bo-i"><div class="bo-ii"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><div><div class="bo-it">Atualizações ilimitadas</div><div class="bo-id">Sem limites. Novo restaurante, nova regra, nova atração — atualize sempre que quiser.</div></div></div>
@@ -932,7 +1202,7 @@ footer{background:var(--sky);border-top:1px solid var(--bdg);padding:2.3rem 5vw;
             <li><div class="pc-chk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>Atualizações ilimitadas</li>
             <li><div class="pc-chk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>Suporte diário — geral@yapp.pt</li>
           </ul>
-          <a href="#formulario" class="pc-cta" id="priceCta">Quero a YAPP</a>
+          <a href="#formulario" class="pc-cta" id="priceCta">Quero aderir</a>
         </div>
       </div>
       <p class="pr-note"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Tem mais do que uma habitação? O preço é de €299 por habitação. Contacte-nos para condições especiais de portfólio.</p>
@@ -991,127 +1261,262 @@ footer{background:var(--sky);border-top:1px solid var(--bdg);padding:2.3rem 5vw;
 
     <!-- Accordion wrapper -->
     <div class="form-accordion" id="formAccordion">
-      <form class="yform" action="https://formsubmit.co/geral@yapp.pt" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="_subject" value="Nova adesão YAPP">
-        <input type="hidden" name="_captcha" value="false">
-          <input type="hidden" name="_cc" value="darioersantos@gmail.com">
-        <input type="hidden" name="_template" value="table">
+      <form class="yform" id="mainForm" action="https://formsubmit.co/geral@yapp.pt" method="POST" enctype="multipart/form-data">
+  <input type="hidden" name="_subject" value="Nova adesão YAPP">
+  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_cc" value="darioersantos@gmail.com">
+  <input type="hidden" name="_template" value="table">
 
-        <div class="yf-t">Formulário de Adesão</div>
-        <div class="yf-s">Preencha com o máximo detalhe possível para garantirmos a melhor YAPP para o seu alojamento.</div>
+  <div class="yf-t">Formulário de Adesão</div>
+  <div class="yf-s">Preencha passo a passo. Os seus dados são enviados diretamente para a nossa equipa.</div>
 
-        <!-- 1. PROPRIETÁRIO -->
-        <div class="yf-sec">Dados do Proprietário</div>
-        <div class="fr"><div class="fg"><label class="fl">Nome completo *</label><input class="fi2" type="text" name="nome" placeholder="João Silva" required></div><div class="fg"><label class="fl">Email *</label><input class="fi2" type="email" name="email" placeholder="joao@email.com" required></div></div>
-        <div class="fr"><div class="fg"><label class="fl">Telemóvel *</label><input class="fi2" type="tel" name="tel" placeholder="+351 912 345 678" required></div><div class="fg"><label class="fl">Como conheceu o YAPP?</label><select class="fsl" name="origem"><option value="">Selecione</option><option>Redes Sociais</option><option>Recomendação</option><option>Google</option><option>Outro</option></select></div></div>
+  <!-- PROGRESS -->
+  <div class="facc-progress">
+    <div class="facc-prog-bar"><div class="facc-prog-fill" id="faccProgress"></div></div>
+    <div class="facc-prog-label" id="faccProgressLabel">0 de 9</div>
+  </div>
 
-        <!-- 2. ALOJAMENTO -->
-        <div class="yf-sec">Informações do Alojamento</div>
-        <div class="fr"><div class="fg"><label class="fl">Nome do alojamento *</label><input class="fi2" type="text" name="alojamento" placeholder="Casa da Serra" required></div><div class="fg"><label class="fl">Tipo de alojamento</label><select class="fsl" name="tipo"><option value="">Selecione</option><option>Apartamento</option><option>Moradia</option><option>Quinta / Casa Rural</option><option>Glamping</option><option>Outro</option></select></div></div>
-        <div class="fr"><div class="fg"><label class="fl">Localização *</label><input class="fi2" type="text" name="local" placeholder="Peneda-Gerês, Portugal" required></div><div class="fg"><label class="fl">Número de quartos</label><input class="fi2" type="number" name="n_quartos" placeholder="1" min="1"></div></div>
-        <div class="fr full"><div class="fg"><label class="fl">Descrição do alojamento</label><textarea class="ft2" name="descricao" placeholder="O espaço, o ambiente, a localização, o que o torna especial..."></textarea></div></div>
+  <!-- ══ PASSO 1: PROPRIETÁRIO ══ -->
+  <div class="facc-step active" data-step="1" id="step1">
+    <button type="button" class="facc-hdr" onclick="toggleStep(1)">
+      <div class="facc-num"><span class="facc-num-n">1</span><span class="facc-done-icon">✓</span></div>
+      <div><div class="facc-title">Dados do Proprietário</div><div class="facc-subtitle">Nome, email e telemóvel</div></div>
+      <div class="facc-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="facc-body"><div class="facc-inner">
+      <div class="fr"><div class="fg"><label class="fl">Nome completo *</label><input class="fi2" type="text" name="nome" placeholder="João Silva" required></div><div class="fg"><label class="fl">Email *</label><input class="fi2" type="email" name="email" placeholder="joao@email.com" required></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Telemóvel *</label><input class="fi2" type="tel" name="tel" placeholder="+351 912 345 678" required></div><div class="fg"><label class="fl">Como conheceu o YAPP?</label><select class="fsl" name="origem"><option value="">Selecione</option><option>Redes Sociais</option><option>Recomendação</option><option>Google</option><option>Outro</option></select></div></div>
+      <div class="facc-nav"><div></div><button type="button" class="facc-btn-next" onclick="nextStep(1)">Seguinte <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button></div>
+    </div></div>
+  </div>
 
-        <!-- 3. SPLASH / VÍDEO -->
-        <div class="yf-sec">Página de Entrada (Splash)</div>
-        <div class="fr full"><div class="fg"><label class="fl">Link do vídeo de apresentação (YouTube ou Vimeo)</label><input class="fi2" type="url" name="video_splash" placeholder="https://www.youtube.com/watch?v=..."></div></div>
-        <div class="fdrop"><input type="file" name="foto_splash" accept="image/*" id="splashFile"><div class="fdi"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="fdt" id="splashLabel">Imagem da página de entrada (splash screen)</div><div class="fds">PNG ou JPG — recomendado 1920×1080px. Se enviou vídeo, esta imagem será usada como fallback.</div></div>
+  <!-- ══ PASSO 2: ALOJAMENTO ══ -->
+  <div class="facc-step" data-step="2" id="step2">
+    <button type="button" class="facc-hdr" onclick="toggleStep(2)">
+      <div class="facc-num"><span class="facc-num-n">2</span><span class="facc-done-icon">✓</span></div>
+      <div><div class="facc-title">Informações do Alojamento</div><div class="facc-subtitle">Nome, tipo, morada e descrição</div></div>
+      <div class="facc-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="facc-body"><div class="facc-inner">
+      <div class="fr"><div class="fg"><label class="fl">Nome do alojamento *</label><input class="fi2" type="text" name="alojamento" placeholder="Casa da Serra" required></div><div class="fg"><label class="fl">Tipo de alojamento</label><select class="fsl" name="tipo"><option value="">Selecione</option><option>Apartamento</option><option>Moradia</option><option>Quinta / Casa Rural</option><option>Glamping / Bungalow</option><option>Hotel / Guesthouse</option><option>Outro</option></select></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Morada completa *</label><input class="fi2" type="text" name="morada" placeholder="Rua das Pedras, 12, 4840-123 Gerês, Portugal" required></div><div class="fg"><label class="fl">Número de quartos</label><input class="fi2" type="number" name="n_quartos" placeholder="3" min="1"></div></div>
+      <div class="fg"><label class="fl">Descrição do alojamento</label><textarea class="ft2" name="descricao" placeholder="Descreva o espaço, o ambiente, a localização, o que torna o seu alojamento especial, a história por trás dele..." style="min-height:160px;resize:vertical;"></textarea></div>
+      <div class="fg"><label class="fl">Mensagem de boas-vindas para os hóspedes</label><textarea class="ft2" name="boas_vindas" placeholder="Ex: Bem-vindos à Casa da Serra! Esperamos que a vossa estadia seja inesquecível..." style="min-height:110px;resize:vertical;"></textarea></div>
+      <div class="facc-nav"><button type="button" class="facc-btn-prev" onclick="prevStep(2)">← Anterior</button><button type="button" class="facc-btn-next" onclick="nextStep(2)">Seguinte <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button></div>
+    </div></div>
+  </div>
 
-        <!-- 4. CONTEÚDO -->
-        <div class="yf-sec">Conteúdo para o Guia</div>
-        <div class="fr full"><div class="fg"><label class="fl">Password do Wi-Fi</label><input class="fi2" type="text" name="wifi" placeholder="Nome da rede: ___ / Password: ___"></div></div>
-        <div class="fr full"><div class="fg"><label class="fl">Regras da casa e instruções importantes</label><textarea class="ft2" name="regras" placeholder="Horário de check-in/out, silêncio, piscina, lixo, estacionamento, animais..."></textarea></div></div>
-        <div class="fr full"><div class="fg"><label class="fl">Instruções de check-out</label><textarea class="ft2" name="checkout" placeholder="O que o hóspede deve fazer antes de sair..."></textarea></div></div>
-        <div class="fr full"><div class="fg"><label class="fl">Inventário de utensílios disponíveis</label><textarea class="ft2" name="inventario" placeholder="Equipamentos, eletrodomésticos, utensílios de cozinha, roupa de cama..."></textarea></div></div>
+  <!-- ══ PASSO 3: CASA & REGRAS ══ -->
+  <div class="facc-step" data-step="3" id="step3">
+    <button type="button" class="facc-hdr" onclick="toggleStep(3)">
+      <div class="facc-num"><span class="facc-num-n">3</span><span class="facc-done-icon">✓</span></div>
+      <div><div class="facc-title">Casa, Regras e Inventário</div><div class="facc-subtitle">Wi-Fi, instruções, cozinha e outros utensílios</div></div>
+      <div class="facc-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="facc-body"><div class="facc-inner">
+      <div class="fr"><div class="fg"><label class="fl">Nome da rede Wi-Fi</label><input class="fi2" type="text" name="wifi_nome" placeholder="CasaSerra_2024"></div><div class="fg"><label class="fl">Password do Wi-Fi</label><input class="fi2" type="text" name="wifi_password" placeholder="minhapassword123"></div></div>
+      <div class="fr full"><div class="fg"><label class="fl">Regras da casa</label><textarea class="ft2" name="regras" placeholder="Silêncio após as 23h, proibido fumar, check-in às 15h, check-out às 11h, animais de estimação..."></textarea></div></div>
+      <div class="fr full"><div class="fg"><label class="fl">Instruções de check-out</label><textarea class="ft2" name="checkout" placeholder="Deixar chaves na caixa da entrada, fechar todas as janelas, lixo no contentor exterior..."></textarea></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:.5rem;">
+        <div class="fg"><label class="fl">Inventário — Cozinha</label><textarea class="ft2" name="inventario_cozinha" placeholder="Microondas, forno, frigorífico, máquina de café, panelas, pratos, talheres, copos..." style="min-height:110px;resize:vertical;"></textarea></div>
+        <div class="fg"><label class="fl">Inventário — Outros Espaços</label><textarea class="ft2" name="inventario_outros" placeholder="Roupa de cama, toalhas, secador de cabelo, ferro, máquina de lavar, TV, lareira..." style="min-height:110px;resize:vertical;"></textarea></div>
+      </div>
+      <div class="facc-nav"><button type="button" class="facc-btn-prev" onclick="prevStep(3)">← Anterior</button><button type="button" class="facc-btn-next" onclick="nextStep(3)">Seguinte <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button></div>
+    </div></div>
+  </div>
 
-        <!-- 5. RECOMENDAÇÕES -->
-        <!-- MENSAGEM DE BOAS-VINDAS -->
-        <div class="yf-sec">Mensagem de Boas-Vindas</div>
-        <div class="fr full"><div class="fg">
-          <label class="fl">Mensagem personalizada para os seus hóspedes</label>
-          <textarea class="ft2" name="boas_vindas" placeholder="Ex: Bem-vindos à Casa da Serra! Esperamos que a vossa estadia seja inesquecível. Estamos sempre disponíveis para ajudar..." style="min-height:100px;"></textarea>
-        </div></div>
+  <!-- ══ PASSO 4: SERVIÇOS & EXTRAS ══ -->
+  <div class="facc-step" data-step="4" id="step4">
+    <button type="button" class="facc-hdr" onclick="toggleStep(4)">
+      <div class="facc-num"><span class="facc-num-n">4</span><span class="facc-done-icon">✓</span></div>
+      <div><div class="facc-title">Serviços e Extras</div><div class="facc-subtitle">Serviços adicionais que oferece aos hóspedes</div></div>
+      <div class="facc-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="facc-body"><div class="facc-inner">
+      <p style="font-size:.78rem;color:var(--gray);margin-bottom:1.2rem;line-height:1.55;">Selecione os serviços disponíveis e adicione preços ou informações relevantes.</p>
+      <div class="checklist">
+        <label class="check-item"><input type="checkbox" name="srv_limpeza" value="sim">
+          <div class="check-item-label"><div class="check-item-title">Serviço de limpeza extra</div><div class="check-item-note">Limpeza adicional durante a estadia</div></div>
+          <div class="check-extra"><div class="check-extra-inner"><input class="fi2" type="text" name="srv_limpeza_info" placeholder="Preço, dias disponíveis, como solicitar..."></div></div>
+        </label>
+        <label class="check-item"><input type="checkbox" name="srv_bicicletas" value="sim">
+          <div class="check-item-label"><div class="check-item-title">Aluguer de bicicletas</div><div class="check-item-note">Bicicletas disponíveis no alojamento</div></div>
+          <div class="check-extra"><div class="check-extra-inner"><input class="fi2" type="text" name="srv_bicicletas_info" placeholder="Preço por dia, tipo e número disponível..."></div></div>
+        </label>
+        <label class="check-item"><input type="checkbox" name="srv_transfer" value="sim">
+          <div class="check-item-label"><div class="check-item-title">Transfer / Transporte</div><div class="check-item-note">Aeroporto, estação ou outras deslocações</div></div>
+          <div class="check-extra"><div class="check-extra-inner"><input class="fi2" type="text" name="srv_transfer_info" placeholder="Preço, áreas cobertas, como reservar..."></div></div>
+        </label>
+        <label class="check-item"><input type="checkbox" name="srv_cesta" value="sim">
+          <div class="check-item-label"><div class="check-item-title">Cesta de boas-vindas</div><div class="check-item-note">Produtos locais, fruta, vinhos ou snacks</div></div>
+          <div class="check-extra"><div class="check-extra-inner"><input class="fi2" type="text" name="srv_cesta_info" placeholder="O que inclui, preço, como solicitar..."></div></div>
+        </label>
+        <label class="check-item"><input type="checkbox" name="srv_atividades" value="sim">
+          <div class="check-item-label"><div class="check-item-title">Atividades organizadas</div><div class="check-item-note">Caminhadas, passeios, workshops, tours</div></div>
+          <div class="check-extra"><div class="check-extra-inner"><input class="fi2" type="text" name="srv_atividades_info" placeholder="Atividades disponíveis, preços, parceiro operador..."></div></div>
+        </label>
+        <label class="check-item"><input type="checkbox" name="srv_bebe" value="sim">
+          <div class="check-item-label"><div class="check-item-title">Equipamento para bebés</div><div class="check-item-note">Berço, cadeira alta, banheira de bebé</div></div>
+          <div class="check-extra"><div class="check-extra-inner"><input class="fi2" type="text" name="srv_bebe_info" placeholder="O que tem disponível, como solicitar..."></div></div>
+        </label>
+        <label class="check-item"><input type="checkbox" name="srv_animais" value="sim">
+          <div class="check-item-label"><div class="check-item-title">Aceita animais de estimação</div><div class="check-item-note">Política de animais</div></div>
+          <div class="check-extra"><div class="check-extra-inner"><input class="fi2" type="text" name="srv_animais_info" placeholder="Quais os permitidos, custo adicional, regras..."></div></div>
+        </label>
+      </div>
+      <div class="facc-nav"><button type="button" class="facc-btn-prev" onclick="prevStep(4)">← Anterior</button><button type="button" class="facc-btn-next" onclick="nextStep(4)">Seguinte <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button></div>
+    </div></div>
+  </div>
 
-        <!-- RECOMENDAÇÕES LOCAIS -->
-        <div class="yf-sec">Restaurantes Recomendados</div>
-        <p style="font-size:.78rem;color:var(--gray);margin-bottom:1rem;line-height:1.55;">Adicione os restaurantes que recomenda aos seus hóspedes. Pode adicionar vários.</p>
-        <div id="restList" style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:.75rem;">
-          <div class="rec-row" data-type="rest">
-            <div class="fr"><div class="fg"><label class="fl">Nome do restaurante</label><input class="fi2" type="text" name="rest_nome_1" placeholder="Taberna do Rio"></div><div class="fg"><label class="fl">Tipo de cozinha</label><input class="fi2" type="text" name="rest_tipo_1" placeholder="Cozinha regional, grelhados..."></div></div>
-            <div class="fr"><div class="fg"><label class="fl">Localização / Morada</label><input class="fi2" type="text" name="rest_local_1" placeholder="Rua Principal, 12, Gerês"></div><div class="fg"><label class="fl">Contacto (opcional)</label><input class="fi2" type="tel" name="rest_tel_1" placeholder="+351 253 000 000"></div></div>
-            <div class="fr"><div class="fg"><label class="fl">Preço médio por pessoa</label><input class="fi2" type="text" name="rest_preco_1" placeholder="€10 a €20"></div><div class="fg"><label class="fl">Website / Instagram (opcional)</label><input class="fi2" type="text" name="rest_web_1" placeholder="instagram.com/..."></div></div>
-            <button type="button" class="btn-rm-row" onclick="removeRow(this)">Remover</button>
-          </div>
+  <!-- ══ PASSO 5: RESTAURANTES & ATRAÇÕES ══ -->
+  <div class="facc-step" data-step="5" id="step5">
+    <button type="button" class="facc-hdr" onclick="toggleStep(5)">
+      <div class="facc-num"><span class="facc-num-n">5</span><span class="facc-done-icon">✓</span></div>
+      <div><div class="facc-title">Restaurantes, Atrações e Comércio</div><div class="facc-subtitle">As suas recomendações locais</div></div>
+      <div class="facc-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="facc-body"><div class="facc-inner">
+      <div class="yf-sec" style="margin-top:0;">Restaurantes Recomendados</div>
+      <div id="restList" style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:.75rem;">
+        <div class="rec-row">
+          <div class="fr"><div class="fg"><label class="fl">Nome</label><input class="fi2" type="text" name="rest_nome_1" placeholder="Taberna do Rio"></div><div class="fg"><label class="fl">Tipo de cozinha</label><input class="fi2" type="text" name="rest_tipo_1" placeholder="Regional, grelhados..."></div></div>
+          <div class="fr"><div class="fg"><label class="fl">Localização</label><input class="fi2" type="text" name="rest_local_1" placeholder="Rua Principal, 12, Gerês"></div><div class="fg"><label class="fl">Preço médio</label><input class="fi2" type="text" name="rest_preco_1" placeholder="€10 a €20 por pessoa"></div></div>
+          <div class="fr"><div class="fg"><label class="fl">Contacto</label><input class="fi2" type="tel" name="rest_tel_1" placeholder="+351 253 000 000"></div><div class="fg"><label class="fl">Website / Instagram</label><input class="fi2" type="text" name="rest_web_1" placeholder="instagram.com/..."></div></div>
+          <button type="button" class="btn-rm-row" onclick="removeRow(this)">Remover</button>
         </div>
-        <button type="button" class="btn-add-row" onclick="addRow('rest','restList','Restaurante')">+ Adicionar restaurante</button>
+      </div>
+      <button type="button" class="btn-add-row" onclick="addRow('rest','restList','Restaurante')">+ Adicionar restaurante</button>
 
-        <div class="yf-sec">Atrações e Pontos de Interesse</div>
-        <p style="font-size:.78rem;color:var(--gray);margin-bottom:1rem;line-height:1.55;">Miradouros, praias, cascatas, trilhos, monumentos, parques naturais e outros pontos de interesse próximos.</p>
-        <div id="atracList" style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:.75rem;">
-          <div class="rec-row" data-type="atrac">
-            <div class="fr"><div class="fg"><label class="fl">Nome do local</label><input class="fi2" type="text" name="atrac_nome_1" placeholder="Cascata do Arado"></div><div class="fg"><label class="fl">Categoria</label><select class="fsl" name="atrac_cat_1"><option value="">Selecione</option><option>Cascata</option><option>Praia / Rio</option><option>Miradouro</option><option>Trilho</option><option>Monumento</option><option>Parque Natural</option><option>Museu</option><option>Outro</option></select></div></div>
-            <div class="fr"><div class="fg"><label class="fl">Distância aproximada</label><input class="fi2" type="text" name="atrac_dist_1" placeholder="4,2 km do alojamento"></div><div class="fg"><label class="fl">Link Google Maps (opcional)</label><input class="fi2" type="url" name="atrac_map_1" placeholder="https://maps.google.com/..."></div></div>
-            <div class="fr full"><div class="fg"><label class="fl">Descrição breve</label><textarea class="ft2" name="atrac_desc_1" placeholder="Uma das cascatas mais bonitas do Parque Nacional..." style="min-height:60px;"></textarea></div></div>
-            <button type="button" class="btn-rm-row" onclick="removeRow(this)">Remover</button>
-          </div>
+      <div class="yf-sec">Atrações e Pontos de Interesse</div>
+      <div id="atracList" style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:.75rem;">
+        <div class="rec-row">
+          <div class="fr"><div class="fg"><label class="fl">Nome do local</label><input class="fi2" type="text" name="atrac_nome_1" placeholder="Cascata do Arado"></div><div class="fg"><label class="fl">Categoria</label><select class="fsl" name="atrac_cat_1"><option value="">Selecione</option><option>Cascata</option><option>Praia / Rio</option><option>Miradouro</option><option>Trilho</option><option>Monumento</option><option>Parque Natural</option><option>Museu</option><option>Outro</option></select></div></div>
+          <div class="fr"><div class="fg"><label class="fl">Distância aproximada</label><input class="fi2" type="text" name="atrac_dist_1" placeholder="4,2 km do alojamento"></div><div class="fg"><label class="fl">Link Google Maps</label><input class="fi2" type="url" name="atrac_map_1" placeholder="https://maps.google.com/..."></div></div>
+          <div class="fr full"><div class="fg"><label class="fl">Descrição breve</label><textarea class="ft2" name="atrac_desc_1" placeholder="Uma das cascatas mais bonitas..." style="min-height:60px;"></textarea></div></div>
+          <button type="button" class="btn-rm-row" onclick="removeRow(this)">Remover</button>
         </div>
-        <button type="button" class="btn-add-row" onclick="addRow('atrac','atracList','Atração')">+ Adicionar atração</button>
+      </div>
+      <button type="button" class="btn-add-row" onclick="addRow('atrac','atracList','Atração')">+ Adicionar atração</button>
 
-        <div class="yf-sec">Comércio e Serviços Úteis</div>
-        <p style="font-size:.78rem;color:var(--gray);margin-bottom:1rem;line-height:1.55;">Supermercados, farmácias, padarias, postos de combustível, bancos, ATM e outros serviços essenciais.</p>
-        <div id="comercList" style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:.75rem;">
-          <div class="rec-row" data-type="comerc">
-            <div class="fr"><div class="fg"><label class="fl">Nome do estabelecimento</label><input class="fi2" type="text" name="comerc_nome_1" placeholder="Supermercado Pingo Doce"></div><div class="fg"><label class="fl">Tipo</label><select class="fsl" name="comerc_tipo_1"><option value="">Selecione</option><option>Supermercado</option><option>Farmácia</option><option>Padaria</option><option>Combustível</option><option>ATM / Banco</option><option>Médico / Clínica</option><option>Lavandaria</option><option>Outro</option></select></div></div>
-            <div class="fr"><div class="fg"><label class="fl">Morada / Localização</label><input class="fi2" type="text" name="comerc_local_1" placeholder="Rua das Flores, Gerês"></div><div class="fg"><label class="fl">Horário (opcional)</label><input class="fi2" type="text" name="comerc_hora_1" placeholder="Seg-Sex 9h-19h"></div></div>
-            <button type="button" class="btn-rm-row" onclick="removeRow(this)">Remover</button>
-          </div>
+      <div class="yf-sec">Comércio e Serviços Úteis</div>
+      <div id="comercList" style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:.75rem;">
+        <div class="rec-row">
+          <div class="fr"><div class="fg"><label class="fl">Nome</label><input class="fi2" type="text" name="comerc_nome_1" placeholder="Supermercado Pingo Doce"></div><div class="fg"><label class="fl">Tipo</label><select class="fsl" name="comerc_tipo_1"><option value="">Selecione</option><option>Supermercado</option><option>Farmácia</option><option>Padaria</option><option>Combustível</option><option>ATM / Banco</option><option>Médico / Clínica</option><option>Lavandaria</option><option>Outro</option></select></div></div>
+          <div class="fr"><div class="fg"><label class="fl">Morada</label><input class="fi2" type="text" name="comerc_local_1" placeholder="Rua das Flores, Gerês"></div><div class="fg"><label class="fl">Horário</label><input class="fi2" type="text" name="comerc_hora_1" placeholder="Seg-Sex 9h-19h"></div></div>
+          <button type="button" class="btn-rm-row" onclick="removeRow(this)">Remover</button>
         </div>
-        <button type="button" class="btn-add-row" onclick="addRow('comerc','comercList','Comércio')">+ Adicionar comércio/serviço</button>
+      </div>
+      <button type="button" class="btn-add-row" onclick="addRow('comerc','comercList','Comércio')">+ Adicionar comércio/serviço</button>
 
-        <!-- 6. CONTACTOS -->
-        <div class="yf-sec">Contactos</div>
-        <div class="fr full"><div class="fg"><label class="fl">Contacto direto do proprietário (para os hóspedes)</label><input class="fi2" type="text" name="contacto_prop" placeholder="Telemóvel ou WhatsApp"></div></div>
-        <div class="fr full"><div class="fg"><label class="fl">Contactos de emergência</label><textarea class="ft2" name="emergencias" placeholder="Hospital, Centro de Saúde, Bombeiros, GNR, Farmácia, Táxi..."></textarea></div></div>
+      <div class="facc-nav"><button type="button" class="facc-btn-prev" onclick="prevStep(5)">← Anterior</button><button type="button" class="facc-btn-next" onclick="nextStep(5)">Seguinte <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button></div>
+    </div></div>
+  </div>
 
-        <!-- 7. REDES SOCIAIS -->
-        <div class="yf-sec">Redes Sociais e Links</div>
-        <div class="fr"><div class="fg"><label class="fl">Instagram</label><input class="fi2" type="text" name="instagram" placeholder="@casadaserra"></div><div class="fg"><label class="fl">Facebook</label><input class="fi2" type="text" name="facebook" placeholder="facebook.com/casadaserra"></div></div>
-        <div class="fr"><div class="fg"><label class="fl">Airbnb / Booking (link)</label><input class="fi2" type="text" name="booking" placeholder="https://airbnb.pt/..."></div><div class="fg"><label class="fl">Website próprio</label><input class="fi2" type="text" name="website" placeholder="https://casadaserra.pt"></div></div>
-
-        <!-- 8. PATROCÍNIOS -->
-        <div class="yf-sec">Patrocínios e Parcerias Locais</div>
-        <p style="font-size:.8rem;color:var(--gray);margin-bottom:1rem;line-height:1.55;">Adicione os negócios locais que deseja promover no seu guia — restaurantes, atividades, lojas ou serviços. Pode adicionar múltiplos patrocinadores.</p>
-        <div class="sponsor-list" id="sponsorList">
-          <div class="sponsor-row">
-            <input class="fi2" type="text" name="sponsor_nome_1" placeholder="Nome do negócio">
-            <input class="fi2" type="text" name="sponsor_tipo_1" placeholder="Tipo (restaurante, actividade...)">
-            <input class="fi2" type="url" name="sponsor_link_1" placeholder="Website ou Instagram (opcional)">
-            <button type="button" class="btn-rm-sponsor" onclick="removeSponsor(this)" title="Remover">×</button>
-          </div>
+  <!-- ══ PASSO 6: REDES SOCIAIS & PATROCÍNIOS ══ -->
+  <div class="facc-step" data-step="6" id="step6">
+    <button type="button" class="facc-hdr" onclick="toggleStep(6)">
+      <div class="facc-num"><span class="facc-num-n">6</span><span class="facc-done-icon">✓</span></div>
+      <div><div class="facc-title">Redes Sociais e Patrocínios</div><div class="facc-subtitle">Links do alojamento e parceiros locais</div></div>
+      <div class="facc-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="facc-body"><div class="facc-inner">
+      <div class="fr"><div class="fg"><label class="fl">Instagram</label><input class="fi2" type="text" name="instagram" placeholder="@casadaserra"></div><div class="fg"><label class="fl">Facebook</label><input class="fi2" type="text" name="facebook" placeholder="facebook.com/casadaserra"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Airbnb / Booking (link)</label><input class="fi2" type="text" name="booking" placeholder="https://airbnb.pt/..."></div><div class="fg"><label class="fl">Website próprio</label><input class="fi2" type="text" name="website" placeholder="https://casadaserra.pt"></div></div>
+      <div class="yf-sec">Patrocínios e Parcerias Locais</div>
+      <p style="font-size:.78rem;color:var(--gray);margin-bottom:1rem;line-height:1.55;">Negócios locais que deseja destacar na app. Pode rentabilizar este espaço.</p>
+      <div class="sponsor-list" id="sponsorList" style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:.75rem;">
+        <div class="sponsor-row" style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:.5rem;align-items:center;">
+          <input class="fi2" type="text" name="sponsor_nome_1" placeholder="Nome do negócio">
+          <input class="fi2" type="text" name="sponsor_tipo_1" placeholder="Tipo (restaurante...)">
+          <input class="fi2" type="url" name="sponsor_link_1" placeholder="Website ou Instagram">
+          <button type="button" class="btn-rm-sponsor" onclick="removeSponsor(this)" title="Remover">×</button>
         </div>
-        <button type="button" class="btn-add-sponsor" onclick="addSponsor()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Adicionar patrocinador
-        </button>
+      </div>
+      <button type="button" class="btn-add-sponsor" onclick="addSponsor()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Adicionar patrocinador
+      </button>
+      <div class="facc-nav"><button type="button" class="facc-btn-prev" onclick="prevStep(6)">← Anterior</button><button type="button" class="facc-btn-next" onclick="nextStep(6)">Seguinte <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button></div>
+    </div></div>
+  </div>
 
-        <!-- 9. IDIOMAS / DESIGN -->
-        <div class="yf-sec">Idiomas e Design</div>
-        <div class="fr"><div class="fg"><label class="fl">Idiomas pretendidos</label><select class="fsl" name="idiomas"><option value="">Selecione</option><option>Português</option><option>Português e Inglês</option><option>PT, EN e Espanhol</option><option>Outro</option></select></div><div class="fg"><label class="fl">Cores preferidas (opcional)</label><input class="fi2" type="text" name="cores" placeholder="Ex: azul e branco..."></div></div>
+  <!-- ══ PASSO 7: CONTACTOS ══ -->
+  <div class="facc-step" data-step="7" id="step7">
+    <button type="button" class="facc-hdr" onclick="toggleStep(7)">
+      <div class="facc-num"><span class="facc-num-n">7</span><span class="facc-done-icon">✓</span></div>
+      <div><div class="facc-title">Contactos e Emergência</div><div class="facc-subtitle">Contacto do proprietário e serviços de urgência</div></div>
+      <div class="facc-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="facc-body"><div class="facc-inner">
+      <div class="fr full"><div class="fg"><label class="fl">Contacto direto do proprietário (para hóspedes)</label><input class="fi2" type="text" name="contacto_prop" placeholder="Telemóvel ou WhatsApp visível na app"></div></div>
+      <div class="fr full"><div class="fg"><label class="fl">Contactos de emergência</label><textarea class="ft2" name="emergencias" placeholder="Hospital / Centro de Saúde mais próximo, Bombeiros (117), GNR (112), Farmácia, Táxi local... nome, morada e telefone."></textarea></div></div>
+      <div class="facc-nav"><button type="button" class="facc-btn-prev" onclick="prevStep(7)">← Anterior</button><button type="button" class="facc-btn-next" onclick="nextStep(7)">Seguinte <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button></div>
+    </div></div>
+  </div>
 
-        <!-- 10. FOTOS / LOGO -->
-        <div class="yf-sec">Fotos e Logótipo</div>
-        <div class="fdrop"><input type="file" name="fotos" accept="image/*" multiple id="fotosFile"><div class="fdi"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="fdt" id="fotosLabel">Fotos do alojamento</div><div class="fds">Exteriores, interiores, zona envolvente (PNG, JPG)</div></div>
-        <div class="fdrop"><input type="file" name="logotipo" accept="image/*" id="logoFile"><div class="fdi"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div><div class="fdt" id="logoLabel">Logótipo do alojamento (se tiver)</div><div class="fds">PNG com fundo transparente, se possível</div></div>
+  <!-- ══ PASSO 8: PÁGINA DE ENTRADA (agora no lugar certo) ══ -->
+  <div class="facc-step" data-step="8" id="step8">
+    <button type="button" class="facc-hdr" onclick="toggleStep(8)">
+      <div class="facc-num"><span class="facc-num-n">8</span><span class="facc-done-icon">✓</span></div>
+      <div><div class="facc-title">Página de Entrada (Splash)</div><div class="facc-subtitle">Vídeo ou imagem de apresentação do alojamento</div></div>
+      <div class="facc-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="facc-body"><div class="facc-inner">
+      <p style="font-size:.8rem;color:var(--gray);margin-bottom:1rem;line-height:1.55;">A página de entrada é a primeira coisa que o hóspede vê ao abrir a YAPP. Use um vídeo curto do alojamento ou uma imagem de impacto.</p>
+      <div class="fg"><label class="fl">Vídeo de apresentação (upload direto)</label>
+        <div class="video-drop" id="videoDropArea">
+          <input type="file" name="video_splash" accept="video/mp4,video/mov,video/quicktime,video/webm" id="videoFile" onchange="handleVideoUpload(this)">
+          <div class="fdi"><svg viewBox="0 0 24 24" style="width:18px;height:18px;"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+          <div class="fdt" id="videoLabel">Clique para carregar vídeo do alojamento</div>
+          <div class="fds">MP4, MOV ou WebM · máx. 100MB · recomendado até 10 segundos</div>
+        </div>
+        <div class="video-preview" id="videoPreview"></div>
+      </div>
+      <div class="fdrop" style="margin-top:.8rem;"><input type="file" name="foto_splash" accept="image/*" id="splashFile" onchange="handleFileLabel(this,'splashLabel')"><div class="fdi"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="fdt" id="splashLabel">Imagem de fundo da entrada</div><div class="fds">PNG ou JPG · 1920×1080px recomendado · utilizada caso não coloque vídeo, ou como imagem de fundo ao vídeo</div></div>
+      <div class="facc-nav"><button type="button" class="facc-btn-prev" onclick="prevStep(8)">← Anterior</button><button type="button" class="facc-btn-next" onclick="nextStep(8)">Seguinte <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button></div>
+    </div></div>
+  </div>
 
-        <!-- 11. OBSERVAÇÕES -->
-        <div class="yf-sec">Observações</div>
-        <div class="fr full"><div class="fg"><label class="fl">Notas adicionais ou pedidos especiais</label><textarea class="ft2" name="obs" placeholder="Algo especial sobre o alojamento? Secções adicionais?"></textarea></div></div>
+  <!-- ══ PASSO 9: FOTOS, DESIGN & FINALIZAR ══ -->
+  <div class="facc-step" data-step="9" id="step9">
+    <button type="button" class="facc-hdr" onclick="toggleStep(9)">
+      <div class="facc-num"><span class="facc-num-n">9</span><span class="facc-done-icon">✓</span></div>
+      <div><div class="facc-title">Fotos, Design e Finalizar</div><div class="facc-subtitle">Fotos por divisão, logótipo, cores e idioma</div></div>
+      <div class="facc-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </button>
+    <div class="facc-body"><div class="facc-inner">
+      <p style="font-size:.8rem;color:var(--gray);margin-bottom:1.2rem;line-height:1.55;">As fotos aparecem na app como cartões de cada divisão. Envie fotos de boa qualidade de cada área do alojamento.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1rem;">
+        <div class="fdrop"><input type="file" name="foto_exterior" accept="image/*" multiple onchange="handleFileLabel(this,'lbl_ext')"><div class="fdi"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="fdt" id="lbl_ext" style="font-size:.78rem;">Exterior / Fachada</div></div>
+        <div class="fdrop"><input type="file" name="foto_sala" accept="image/*" multiple onchange="handleFileLabel(this,'lbl_sala')"><div class="fdi"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="fdt" id="lbl_sala" style="font-size:.78rem;">Sala de Estar</div></div>
+        <div class="fdrop"><input type="file" name="foto_quartos" accept="image/*" multiple onchange="handleFileLabel(this,'lbl_qrts')"><div class="fdi"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="fdt" id="lbl_qrts" style="font-size:.78rem;">Quartos</div></div>
+        <div class="fdrop"><input type="file" name="foto_cozinha" accept="image/*" multiple onchange="handleFileLabel(this,'lbl_coz')"><div class="fdi"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="fdt" id="lbl_coz" style="font-size:.78rem;">Cozinha</div></div>
+        <div class="fdrop"><input type="file" name="foto_wc" accept="image/*" multiple onchange="handleFileLabel(this,'lbl_wc')"><div class="fdi"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="fdt" id="lbl_wc" style="font-size:.78rem;">Casa de Banho</div></div>
+        <div class="fdrop"><input type="file" name="foto_envolvente" accept="image/*" multiple onchange="handleFileLabel(this,'lbl_env')"><div class="fdi"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="fdt" id="lbl_env" style="font-size:.78rem;">Zona Envolvente / Vista</div></div>
+        <div class="fdrop" style="grid-column:1/-1;"><input type="file" name="logotipo" accept="image/*" id="logoFile" onchange="handleFileLabel(this,'lbl_logo')"><div class="fdi"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div><div class="fdt" id="lbl_logo" style="font-size:.78rem;">Logótipo do Alojamento (PNG com fundo transparente, se possível)</div></div>
+      </div>
+      <div class="yf-sec">Tema de Cores</div>
+      <div class="color-themes">
+        <label class="color-theme" id="ct_verde" onclick="selectTheme('verde')"><input type="radio" name="tema_cor" value="verde"><div class="ct-dot" style="background:linear-gradient(135deg,#2D7A3A,#4CAF50);"></div>Verde — Natureza</label>
+        <label class="color-theme" id="ct_azul" onclick="selectTheme('azul')"><input type="radio" name="tema_cor" value="azul"><div class="ct-dot" style="background:linear-gradient(135deg,#0A6EBD,#3FB3FF);"></div>Azul — Praia</label>
+        <label class="color-theme" id="ct_cinzento" onclick="selectTheme('cinzento')"><input type="radio" name="tema_cor" value="cinzento"><div class="ct-dot" style="background:linear-gradient(135deg,#4A5568,#A0AEC0);"></div>Cinzento — Urbano</label>
+        <label class="color-theme" id="ct_outro" onclick="selectTheme('outro')"><input type="radio" name="tema_cor" value="outro"><div class="ct-dot" style="background:linear-gradient(135deg,#C06090,#7B5EA7);"></div>Outro</label>
+      </div>
+      <input class="fi2" type="text" name="cores_custom" placeholder="Descreva as cores pretendidas..." style="margin-top:.6rem;display:none;" id="coresCustomInput">
+      <div class="yf-sec" style="margin-top:1.2rem;">Idioma</div>
+      <div class="fr"><div class="fg"><label class="fl">Idiomas pretendidos</label><select class="fsl" name="idiomas"><option value="">Selecione</option><option>Português</option><option>Português e Inglês</option><option>PT, EN e Espanhol</option><option>Outro</option></select></div></div>
+      <div class="yf-sec">Observações Finais</div>
+      <div class="fg"><label class="fl">Notas adicionais ou pedidos especiais</label><textarea class="ft2" name="obs" placeholder="Algo especial sobre o alojamento? Secções adicionais que gostaria de ter?"></textarea></div>
+      <div class="fnote" style="margin-top:1.2rem;">Após submeter, a nossa equipa contactá-lo-á em <strong>menos de 24 horas</strong>. YAPP pronta em <strong>48-72 horas úteis</strong>. Dúvidas: <strong>geral@yapp.pt</strong></div>
+      <div class="facc-nav"><button type="button" class="facc-btn-prev" onclick="prevStep(9)">← Anterior</button></div>
+      <button type="submit" class="fsub" style="margin-top:1.2rem;">
+        Enviar e montar a minha YAPP
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div></div>
+  </div>
 
-        <div class="fnote">Após submeter, a nossa equipa contactá-lo-á em <strong>menos de 24 horas</strong>. YAPP pronta em <strong>48-72 horas úteis</strong>. Dúvidas: <strong>geral@yapp.pt</strong></div>
-        <button type="submit" class="fsub">
-          Enviar e montar a minha YAPP
-          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
-      </form>
+</form>
     </div><!-- /form-accordion -->
   </div>
 </section>
@@ -1224,6 +1629,17 @@ document.querySelectorAll('.fq-btn').forEach(btn=>{btn.addEventListener('click',
 
 // ── SMOOTH SCROLL
 document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}});});
+
+
+// ── FEATURES ACCORDION
+function toggleFeat(btn) {
+  const item = btn.closest('.feat-acc-item');
+  const isOpen = item.classList.contains('open');
+  // close all
+  document.querySelectorAll('.feat-acc-item').forEach(i => i.classList.remove('open'));
+  // open this if it was closed
+  if (!isOpen) item.classList.add('open');
+}
 
 // ── FORM ACCORDION TOGGLE
 const formBtn=document.getElementById('formToggleBtn');
@@ -1353,6 +1769,102 @@ function initiateStripePayment() {
 </button>
 
 <script>
+
+// ── FEATURES ACCORDION
+function toggleFeat(btn) {
+  const item = btn.closest('.feat-acc-item');
+  const isOpen = item.classList.contains('open');
+  // close all
+  document.querySelectorAll('.feat-acc-item').forEach(i => i.classList.remove('open'));
+  // open this if it was closed
+  if (!isOpen) item.classList.add('open');
+}
+
+// ── FORM ACCORDION
+const TOTAL_STEPS = 9;
+let currentStep = 1;
+
+function toggleStep(n) {
+  const step = document.getElementById('step' + n);
+  if (step.classList.contains('active')) {
+    step.classList.remove('active');
+  } else {
+    // close all, open this one
+    document.querySelectorAll('.facc-step').forEach(s => s.classList.remove('active'));
+    step.classList.add('active');
+    currentStep = n;
+    updateProgress();
+    setTimeout(() => { const y = step.getBoundingClientRect().top + window.scrollY - 84; window.scrollTo({top:y, behavior:'smooth'}); }, 80);
+  }
+}
+
+function nextStep(n) {
+  const step = document.getElementById('step' + n);
+  step.classList.remove('active');
+  step.classList.add('done');
+  const next = document.getElementById('step' + (n + 1));
+  if (next) {
+    next.classList.add('active');
+    currentStep = n + 1;
+    updateProgress();
+    setTimeout(() => { const y = next.getBoundingClientRect().top + window.scrollY - 84; window.scrollTo({top:y, behavior:'smooth'}); }, 80);
+  }
+}
+
+function prevStep(n) {
+  const step = document.getElementById('step' + n);
+  step.classList.remove('active');
+  const prev = document.getElementById('step' + (n - 1));
+  if (prev) {
+    prev.classList.remove('done');
+    prev.classList.add('active');
+    currentStep = n - 1;
+    updateProgress();
+    setTimeout(() => { const y = prev.getBoundingClientRect().top + window.scrollY - 84; window.scrollTo({top:y, behavior:'smooth'}); }, 80);
+  }
+}
+
+function updateProgress() {
+  const done = document.querySelectorAll('.facc-step.done').length;
+  const pct = Math.round((done / TOTAL_STEPS) * 100);
+  document.getElementById('faccProgress').style.width = pct + '%';
+  document.getElementById('faccProgressLabel').textContent = done + ' de ' + TOTAL_STEPS + ' passos';
+}
+
+// ── COLOR THEME SELECTOR
+function selectTheme(val) {
+  document.querySelectorAll('.color-theme').forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById('ct_' + val);
+  if (el) el.classList.add('selected');
+  const customInput = document.getElementById('coresCustomInput');
+  customInput.style.display = val === 'outro' ? 'block' : 'none';
+  // set radio value
+  const radio = el ? el.querySelector('input[type=radio]') : null;
+  if (radio) radio.checked = true;
+}
+
+// ── VIDEO UPLOAD HANDLER
+function handleVideoUpload(inp) {
+  const preview = document.getElementById('videoPreview');
+  const label = document.getElementById('videoLabel');
+  if (inp.files && inp.files[0]) {
+    const file = inp.files[0];
+    const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+    label.textContent = file.name + ' (' + sizeMB + ' MB)';
+    inp.parentElement.style.borderColor = 'var(--blue)';
+    preview.style.display = 'block';
+    preview.innerHTML = '<strong style="color:var(--ink);">✓ Vídeo selecionado:</strong> ' + file.name + ' · ' + sizeMB + ' MB<br><span style="color:var(--gray);font-size:.7rem;">Será enviado juntamente com o formulário</span>';
+  }
+}
+
+function handleFileLabel(inp, lblId) {
+  const lbl = document.getElementById(lblId);
+  if (inp.files && inp.files.length > 0 && lbl) {
+    lbl.textContent = inp.files.length === 1 ? inp.files[0].name : inp.files.length + ' ficheiros selecionados';
+    inp.parentElement.style.borderColor = 'var(--blue)';
+  }
+}
+
 // ── REPEATABLE FORM ROWS
 const rowCounters = {rest:1, atrac:1, comerc:1};
 
