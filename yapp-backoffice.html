@@ -631,6 +631,18 @@ Lareira interior
 Máquina de café
 Máq. de lavar roupa</textarea>
       </div>
+      <div class="card">
+        <div class="ctitle">Informações úteis — itens editáveis</div>
+        <p style="font-size:.78rem;color:var(--txl);margin-bottom:.75rem;">Estes textos aparecem no accordion "Informações úteis" da app.</p>
+        <div class="g2">
+          <div class="fld"><label>Estacionamento</label><textarea class="inp ta" id="info-estac">Dois lugares cobertos no lado esquerdo do portão.</textarea></div>
+          <div class="fld"><label>Água potável</label><textarea class="inp ta" id="info-agua">A água da torneira é potável e tratada.</textarea></div>
+          <div class="fld"><label>Alarme</label><textarea class="inp ta" id="info-alarme">Código no envelope junto às chaves. Activar ao sair.</textarea></div>
+          <div class="fld"><label>Cofre</label><textarea class="inp ta" id="info-cofre">Disponível no quarto principal. Código definido por si à chegada.</textarea></div>
+          <div class="fld"><label>Corrente elétrica</label><textarea class="inp ta" id="info-corrente">Tomadas tipo F (220V). Quadro elétrico no corredor da entrada.</textarea></div>
+          <div class="fld"><label>Drones</label><textarea class="inp ta" id="info-drones">Uso de drones permitido no exterior com respeito pela privacidade dos vizinhos.</textarea></div>
+        </div>
+      </div>
       <button class="savebtn" onclick="saveSection('casa-geral')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-geral">Guardado!</span></button>
     </div>
 
@@ -703,8 +715,8 @@ Máq. de lavar roupa</textarea>
       </div>
       <div class="card"><div class="ctitle">Textos da piscina</div>
         <div class="g2">
-          <div class="fld"><label>Horário</label><textarea class="inp ta" id="pisc-h">Disponível das 09h às 21h. Fora deste horário, respeitar o silêncio dos vizinhos.</textarea></div>
-          <div class="fld"><label>Regras</label><textarea class="inp ta" id="pisc-r">Duche obrigatório antes de entrar. Crianças sempre acompanhadas.</textarea></div>
+          <div class="fld"><label>Alerta crianças (aparece em destaque)</label><textarea class="inp ta" id="pisc-criancas">Mantenha as crianças sempre sob vigilância!</textarea></div>
+          <div class="fld"><label>Informação (profundidade, etc)</label><textarea class="inp ta" id="pisc-info">Profundidade 1,50m</textarea></div>
           <div class="fld"><label>Equipamento</label><textarea class="inp ta" id="pisc-e">Espreguiçadeiras e guarda-sol disponíveis. Toalhas no armário do corredor.</textarea></div>
         </div>
       </div>
@@ -751,6 +763,7 @@ Máq. de lavar roupa</textarea>
           <div class="fld"><label>Churrasqueira — Preparação</label><textarea class="inp ta" id="chur-p">Carvão e acendalha no armário exterior.</textarea></div>
           <div class="fld"><label>Churrasqueira — Utilização</label><textarea class="inp ta" id="chur-u">Grelha na prateleira inferior. Pinça e espátula no gancho à direita.</textarea></div>
           <div class="fld"><label>Churrasqueira — Limpeza</label><textarea class="inp ta" id="chur-l">Aguardar arrefecimento. Cinzas no balde metálico.</textarea></div>
+          <div class="fld"><label>Churrasqueira — Utensílios (separados por vírgula)</label><input class="inp" id="chur-utens" value="Pinça,Garfo,Faca,Pratos,Extintor"/></div>
         </div>
       </div>
       <button class="savebtn" onclick="saveSection('casa-cozinha')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-cozinha">Guardado!</span></button>
@@ -771,8 +784,10 @@ Máq. de lavar roupa</textarea>
       </div>
       <div class="card"><div class="ctitle">Textos</div>
         <div class="g2">
-          <div class="fld"><label>Smart TV</label><textarea class="inp ta" id="sala-tv">NOS TV, Netflix, Amazon Prime, Disney+ e Canal+. Credenciais no dossier.</textarea></div>
+          <div class="fld"><label>Smart TV — Plataformas streaming</label><textarea class="inp ta" id="sala-tv">NOS TV, Netflix, Amazon Prime, Disney+ e Canal+. Credenciais no dossier.</textarea></div>
           <div class="fld"><label>Lareira</label><textarea class="inp ta" id="sala-lar">Lenha no cesto junto à lareira. Não deixar sem vigilância.</textarea></div>
+          <div class="fld"><label>Ar condicionado</label><textarea class="inp ta" id="sala-ac">Disponível na sala. Comando no apoio de braço do sofá. Temperatura recomendada: 22°C.</textarea></div>
+          <div class="fld"><label>Sofá-cama</label><textarea class="inp ta" id="sala-sofa">O sofá converte-se em cama de casal. Roupa de cama no armário do corredor.</textarea></div>
         </div>
       </div>
       <button class="savebtn" onclick="saveSection('casa-sala')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-sala">Guardado!</span></button>
@@ -2028,15 +2043,19 @@ function fillCasa(c) {
   // Texts
   s('c-bv', c.boas_vindas);
   s('sala-tv', c.sala_tv); s('sala-lar', c.sala_lareira);
+  s('sala-ac', c.sala_ac); s('sala-sofa', c.sala_sofa);
   s('coz-el', c.cozinha_eletros); s('coz-cafe', c.cozinha_cafe); s('coz-det', c.cozinha_det);
   s('chur-p', c.churrasco_prep); s('chur-u', c.churrasco_uso); s('chur-l', c.churrasco_limp);
-  s('pisc-h', c.piscina_horario); s('pisc-r', c.piscina_regras); s('pisc-e', c.piscina_equip);
+  s('chur-utens', c.churrasco_utens);
+  s('pisc-criancas', c.piscina_criancas); s('pisc-info', c.piscina_info); s('pisc-e', c.piscina_equip);
   s('ext-j', c.exterior_jardim); s('ext-e', c.exterior_equip); s('ext-n', c.exterior_notas);
   s('wc-produtos', c.wc_produtos); s('wc-lavar', c.wc_lavar||'');
   s('reg-s', c.reg_silencio); s('reg-a', c.reg_animais); s('reg-e', c.reg_estac); s('reg-t', c.reg_tabaco);
   s('fus-l', c.fus_loc); s('fus-c', c.fus_como);
   s('rec-v', c.rec_verde); s('rec-a', c.rec_azul); s('rec-am', c.rec_amarelo); s('rec-p', c.rec_preto);
   s('checklist', c.checklist_saida);
+  s('info-estac', c.info_estac); s('info-agua', c.info_agua); s('info-alarme', c.info_alarme);
+  s('info-cofre', c.info_cofre); s('info-corrente', c.info_corrente); s('info-drones', c.info_drones);
   // preview images
   ['wc','qts','sala','coz','chur','pisc','ext','info'].forEach(function(k) {
     var inp = document.getElementById('img-' + k);
@@ -2089,7 +2108,13 @@ function saveSection(sec) {
     'casa-geral': { action:'saveCasa',
       info_img:v('img-info'),
       boas_vindas:v('c-bv'),
-      comodidades:v('c-comod')
+      comodidades:v('c-comod'),
+      info_estac:v('info-estac'),
+      info_agua:v('info-agua'),
+      info_alarme:v('info-alarme'),
+      info_cofre:v('info-cofre'),
+      info_corrente:v('info-corrente'),
+      info_drones:v('info-drones')
     },
     'casa-quartos': { action:'saveCasa',
       quartos_img:v('img-qts'),
@@ -2100,8 +2125,8 @@ function saveSection(sec) {
     'casa-piscina': { action:'saveCasa',
       piscina_img:v('img-pisc'),
       exterior_img:v('img-ext'),
-      piscina_horario:v('pisc-h'),
-      piscina_regras:v('pisc-r'),
+      piscina_criancas:v('pisc-criancas'),
+      piscina_info:v('pisc-info'),
       piscina_equip:v('pisc-e'),
       exterior_jardim:v('ext-j'),
       exterior_equip:v('ext-e'),
@@ -2115,12 +2140,15 @@ function saveSection(sec) {
       cozinha_det:v('coz-det'),
       churrasco_prep:v('chur-p'),
       churrasco_uso:v('chur-u'),
-      churrasco_limp:v('chur-l')
+      churrasco_limp:v('chur-l'),
+      churrasco_utens:v('chur-utens')
     },
     'casa-sala': { action:'saveCasa',
       sala_img:v('img-sala'),
       sala_tv:v('sala-tv'),
-      sala_lareira:v('sala-lar')
+      sala_lareira:v('sala-lar'),
+      sala_ac:v('sala-ac'),
+      sala_sofa:v('sala-sofa')
     },
     'casa-regras': { action:'saveCasa',
       reg_silencio:v('reg-s'),
