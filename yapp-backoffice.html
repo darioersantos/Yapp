@@ -1724,6 +1724,7 @@ function renderReceitas() {
           + '<div style="width:3px;height:40px;background:' + col + ';border-radius:2px;flex-shrink:0;"></div>'
           + '<div><div style="font-size:.85rem;font-weight:600;">' + esc(r.guest || '—') + '</div>'
           + '<div style="font-size:.72rem;color:var(--txl);">' + r.ci + ' → ' + r.co + ' · ' + (r.nights||'?') + ' noites</div>'
+          + (r.notes ? '<div style="font-size:.72rem;color:var(--txl);font-style:italic;">📝 ' + esc(r.notes) + '</div>' : '')
           + (r.user ? '<div style="font-size:.72rem;color:var(--txl);">User: <strong>' + r.user + '</strong> · Pass: <strong>' + r.pass + '</strong></div>' : '')
           + '</div></div>'
           + '<div style="display:flex;align-items:center;gap:.4rem;">' + pill
@@ -1746,7 +1747,8 @@ function renderReceitas() {
           + '<div style="display:flex;align-items:center;gap:8px;">'
           + '<div style="width:3px;height:36px;background:' + col + ';border-radius:2px;"></div>'
           + '<div><div style="font-size:.85rem;font-weight:600;">' + esc(r.guest || '—') + '</div>'
-          + '<div style="font-size:.72rem;color:var(--txl);">' + r.ci + ' → ' + r.co + ' · ' + (r.nights||'?') + ' noites · ' + (r.plat||'') + '</div></div>'
+          + '<div style="font-size:.72rem;color:var(--txl);">' + r.ci + ' → ' + r.co + ' · ' + (r.nights||'?') + ' noites · ' + (r.plat||'') + '</div>'
+          + (r.notes ? '<div style="font-size:.72rem;color:var(--txl);font-style:italic;">📝 ' + esc(r.notes) + '</div>' : '') + '</div>'
           + '</div>'
           + '<div style="display:flex;align-items:center;gap:.5rem;">' + pill
           + '<div style="font-size:.95rem;font-weight:700;color:var(--g);">€' + ((r.valor||0).toLocaleString('pt-PT')) + '</div>'
