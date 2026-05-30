@@ -493,7 +493,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
   <div class="login-box">
     <div class="login-field">
       <label class="login-label">Utilizador</label>
-      <input class="login-input" id="login-user" type="text" placeholder="ex: admin" autocomplete="username" autocapitalize="none" spellcheck="false"/>
+      <input class="login-input" id="login-user" type="text" placeholder="o seu username" autocomplete="username" autocapitalize="none" spellcheck="false"/>
     </div>
     <div class="login-field">
       <label class="login-label">Código de acesso</label>
@@ -2225,48 +2225,30 @@ function openWifiQR(idx) {
 
 
 
-// ── ADMIN PANEL ──────────────────────────────────────────────────
+// ── ADMIN PANEL — iframe integrado ───────────────────────────────
 function openAdminPanel() {
   var panel = document.getElementById('admin-panel');
-  if (panel) { panel.style.display = 'flex'; panel.classList.add('open'); }
-  // Load stats from API
-  if (API_URL) {
-    var cbN = '__admStat_' + Date.now();
-    window[cbN] = function(d) {
-      window[cbN] = null;
-      if (!d || d.status !== 'ok') return;
-      var sc = document.getElementById(cbN); if (sc) sc.parentNode.removeChild(sc);
-      var today = new Date();
-      var active = d.guests ? Object.values(d.guests).filter(function(g){
-        return new Date(g.checkout + 'T23:59:59') >= today;
-      }).length : 0;
-      var sh = document.getElementById('adm-stat-hosp'); if (sh) sh.querySelector('div').textContent = active;
-      var sf = document.getElementById('adm-stat-fb');   if (sf) sf.querySelector('div').textContent = (d.feedbacks||[]).length;
-      var sn = document.getElementById('adm-stat-nl');   if (sn) sn.querySelector('div').textContent = (d.newsletter||[]).length;
-      // Update property name
-      if (d.config && d.config.propriedade_nome) {
-        var pn = document.getElementById('admin-prop-name');
-        if (pn) pn.textContent = d.config.propriedade_nome;
-      }
-    };
-    var sc = document.createElement('script');
-    sc.id = cbN;
-    sc.src = API_URL + '?action=all&callback=' + cbN;
-    document.head.appendChild(sc);
+  if (!panel) return;
+  panel.style.display = 'flex';
+  // Auto-login: definir token de auth do backoffice no localStorage partilhado
+  try { localStorage.setItem('yapp_bo_auth', '1'); } catch(e) {}
+  // Carregar backoffice no iframe
+  var iframe = document.getElementById('admin-iframe');
+  var loading = document.getElementById('admin-loading');
+  if (iframe && !iframe.src) {
+    if (loading) loading.style.display = 'block';
+    iframe.onload = function() { if (loading) loading.style.display = 'none'; };
+    iframe.src = BACKOFFICE_URL;
   }
 }
 
 function closeAdminPanel() {
   var panel = document.getElementById('admin-panel');
-  if (panel) { panel.style.display = 'none'; panel.classList.remove('open'); }
-  // Return to splash
+  if (panel) panel.style.display = 'none';
+  // Limpar sessão admin e voltar ao splash
+  clearSession();
   document.getElementById('login-screen').style.display = 'none';
   showSplash();
-}
-
-function openBackofficeSection(sec) {
-  var url = (document.getElementById('adm-full-link').href || 'https://darioersantos.github.io/Yapp/yapp-backoffice');
-  window.open(url + '#' + sec, '_blank');
 }
 
 // Prevent pinch zoom only (multi-touch)
@@ -2971,91 +2953,23 @@ function pedidoBicicletas() {
 </div>
 
 
-<!-- ADMIN PANEL OVERLAY -->
-<div id="admin-panel" style="display:none;position:fixed;inset:0;z-index:8000;background:#0a1a3a;flex-direction:column;">
-  <div style="background:linear-gradient(135deg,#1a4a8a,#2d6cc0);padding:1.5rem 1.2rem 1rem;display:flex;align-items:center;justify-content:space-between;">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <svg width="28" height="22" viewBox="0 0 230 175" fill="none"><circle cx="75" cy="80" r="55" fill="#4da6ff"/><circle cx="125" cy="58" r="44" fill="#4da6ff"/><circle cx="170" cy="80" r="40" fill="#4da6ff"/><rect x="20" y="88" width="190" height="72" rx="8" fill="#4da6ff"/></svg>
-      <div>
-        <div style="color:#fff;font-weight:700;font-size:1rem;">YAPP Admin</div>
-        <div id="admin-prop-name" style="color:rgba(255,255,255,0.6);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;">Casa do Gerês</div>
-      </div>
+<!-- ADMIN PANEL OVERLAY — iframe do backoffice completo -->
+<div id="admin-panel" style="display:none;position:fixed;inset:0;z-index:8000;flex-direction:column;background:#0a1a3a;">
+  <!-- Top bar -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;background:#1a3a6e;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <svg width="22" height="17" viewBox="0 0 230 175" fill="none"><circle cx="75" cy="80" r="55" fill="#4da6ff"/><circle cx="125" cy="58" r="44" fill="#4da6ff"/><circle cx="170" cy="80" r="40" fill="#4da6ff"/><rect x="20" y="88" width="190" height="72" rx="8" fill="#4da6ff"/></svg>
+      <span style="color:#fff;font-size:.88rem;font-weight:600;">Backoffice</span>
     </div>
-    <button onclick="closeAdminPanel()" style="background:rgba(255,255,255,0.12);border:none;color:#fff;border-radius:8px;padding:8px 12px;font-size:.78rem;cursor:pointer;font-family:inherit;">Sair</button>
+    <button onclick="closeAdminPanel()" style="background:rgba(255,255,255,0.12);border:none;color:#fff;border-radius:7px;padding:6px 14px;font-size:.78rem;cursor:pointer;font-family:inherit;">✕ Sair</button>
   </div>
-
-  <!-- Quick stats -->
-  <div style="display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,0.08);">
-    <div id="adm-stat-hosp" style="flex:1;padding:.85rem;text-align:center;border-right:1px solid rgba(255,255,255,0.08);">
-      <div style="color:#4da6ff;font-size:1.4rem;font-weight:700;">—</div>
-      <div style="color:rgba(255,255,255,0.5);font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;">Hóspedes</div>
-    </div>
-    <div id="adm-stat-fb" style="flex:1;padding:.85rem;text-align:center;border-right:1px solid rgba(255,255,255,0.08);">
-      <div style="color:#4da6ff;font-size:1.4rem;font-weight:700;">—</div>
-      <div style="color:rgba(255,255,255,0.5);font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;">Feedbacks</div>
-    </div>
-    <div id="adm-stat-nl" style="flex:1;padding:.85rem;text-align:center;">
-      <div style="color:#4da6ff;font-size:1.4rem;font-weight:700;">—</div>
-      <div style="color:rgba(255,255,255,0.5);font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;">Newsletter</div>
-    </div>
-  </div>
-
-  <!-- Menu items -->
-  <div style="flex:1;overflow-y:auto;padding:.8rem .8rem 0;">
-    <div style="color:rgba(255,255,255,0.35);font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.5rem .4rem .25rem;">Gestão</div>
-    <a href="javascript:void(0)" onclick="openBackofficeSection('receitas')" class="adm-item">
-      <div class="adm-icon" style="background:rgba(59,125,216,0.25);">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#4da6ff" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      </div>
-      <div class="adm-txt"><strong>Reservas</strong><span>Gerir reservas e acessos</span></div>
-      <div class="adm-arrow">›</div>
-    </a>
-    <a href="javascript:void(0)" onclick="openBackofficeSection('ocupacao')" class="adm-item">
-      <div class="adm-icon" style="background:rgba(59,125,216,0.25);">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#4da6ff" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-      </div>
-      <div class="adm-txt"><strong>Calendário</strong><span>Ocupação e disponibilidade</span></div>
-      <div class="adm-arrow">›</div>
-    </a>
-    <a href="javascript:void(0)" onclick="openBackofficeSection('financeiro')" class="adm-item">
-      <div class="adm-icon" style="background:rgba(59,125,216,0.25);">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#4da6ff" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-      </div>
-      <div class="adm-txt"><strong>Receitas</strong><span>Controlo financeiro</span></div>
-      <div class="adm-arrow">›</div>
-    </a>
-    <div style="color:rgba(255,255,255,0.35);font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .4rem .25rem;">Configurações</div>
-    <a href="javascript:void(0)" onclick="openBackofficeSection('notificacoes')" class="adm-item">
-      <div class="adm-icon" style="background:rgba(220,38,38,0.2);">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#f87171" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
-      </div>
-      <div class="adm-txt"><strong>Notificações</strong><span>Enviar mensagens aos hóspedes</span></div>
-      <div class="adm-arrow">›</div>
-    </a>
-    <a href="javascript:void(0)" onclick="openBackofficeSection('feedbacks')" class="adm-item">
-      <div class="adm-icon" style="background:rgba(245,158,11,0.2);">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      </div>
-      <div class="adm-txt"><strong>Feedbacks</strong><span>Avaliações dos hóspedes</span></div>
-      <div class="adm-arrow">›</div>
-    </a>
-    <a href="javascript:void(0)" onclick="openBackofficeSection('config')" class="adm-item">
-      <div class="adm-icon" style="background:rgba(16,185,129,0.2);">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#34d399" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2"/></svg>
-      </div>
-      <div class="adm-txt"><strong>Configurações</strong><span>Propriedade, temas e conteúdo</span></div>
-      <div class="adm-arrow">›</div>
-    </a>
-  </div>
-
-  <!-- Open full backoffice button -->
-  <div style="padding:.8rem;border-top:1px solid rgba(255,255,255,0.08);">
-    <a id="adm-full-link" href="https://darioersantos.github.io/Yapp/yapp-backoffice" target="_blank"
-       style="display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);border-radius:10px;padding:.75rem;text-decoration:none;font-size:.82rem;">
-      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-      Abrir backoffice completo
-    </a>
+  <!-- Backoffice iframe -->
+  <iframe id="admin-iframe" src="" style="flex:1;border:none;width:100%;background:#fff;"
+          allow="clipboard-write" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads"></iframe>
+  <div id="admin-loading" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:rgba(255,255,255,0.6);pointer-events:none;">
+    <div style="font-size:.88rem;">A carregar backoffice...</div>
   </div>
 </div>
+
 </body>
 </html>
