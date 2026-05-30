@@ -300,6 +300,23 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 <!-- APP -->
 <div id="app">
 
+<!-- CUSTOM DATE PICKER OVERLAY -->
+<div id="datepicker-overlay" style="display:none;position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,0.4);" onclick="closeDatePicker()">
+  <div id="datepicker-modal" onclick="event.stopPropagation()" style="position:absolute;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.2);padding:1.2rem;width:340px;max-width:94vw;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <button onclick="dpPrev()" style="background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--txl);padding:4px 8px;">‹</button>
+      <div id="dp-month-label" style="font-size:.95rem;font-weight:700;color:var(--tx);"></div>
+      <button onclick="dpNext()" style="background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--txl);padding:4px 8px;">›</button>
+    </div>
+    <div id="dp-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;"></div>
+    <div style="display:flex;justify-content:flex-end;margin-top:.8rem;">
+      <button onclick="closeDatePicker()" style="background:none;border:none;color:var(--txl);font-size:.82rem;cursor:pointer;padding:4px 8px;font-family:inherit;">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+
+
   <div id="offline-banner">📵 Sem ligação à internet — as alterações não serão guardadas</div>
 
   <!-- TOP BAR (mobile only) -->
@@ -526,10 +543,9 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
         <input class="inp" id="c-aviso-txt" placeholder="ex: Estrada em obras — acesso pela entrada lateral"/>
       </div>
       <div class="card">
-        <div class="ctitle">Código de desconto (aparece no último dia da estadia)</div>
+        <div class="ctitle">Redes sociais & Avaliações</div>
         <div class="g2">
-          <div class="fld"><label>Código</label><input class="inp" id="c-codesc" placeholder="VOLTAR2025"/></div>
-          <div class="fld"><label>Redes sociais — Instagram</label><input class="inp" id="c-ig" placeholder="https://instagram.com/..."/></div>
+          <div class="fld"><label>Instagram</label><input class="inp" id="c-ig" placeholder="https://instagram.com/..."/></div>
           <div class="fld"><label>Facebook</label><input class="inp" id="c-fb" placeholder="https://facebook.com/..."/></div>
           <div class="fld"><label>Google Reviews URL</label><input class="inp" id="c-grev" placeholder="https://g.page/r/..."/></div>
         </div>
@@ -891,16 +907,7 @@ Entregar as chaves ao proprietário</textarea>
           <div class="fld"><label>Morada completa (para 112)</label><input class="inp" id="em-morada" value="Rua da Serra, Casa do Gerês, Gerês, Braga"/></div>
         </div>
       </div>
-      <div class="card"><div class="ctitle">Farmácias</div>
-        <div class="g2">
-          <div class="fld"><label>Farmácia 1 — nome</label><input class="inp" id="f1-nome" value="Farmácia Gerês"/></div>
-          <div class="fld"><label>Farmácia 1 — morada</label><input class="inp" id="f1-end" value="Rua Central, 12 · Gerês"/></div>
-          <div class="fld"><label>Farmácia 1 — URL mapa</label><input class="inp" id="f1-url" value="https://www.google.com/maps/search/Farmácia+Gerês"/></div>
-          <div class="fld"><label>Farmácia 2 — nome</label><input class="inp" id="f2-nome" value="Farmácia Caldas do Gerês"/></div>
-          <div class="fld"><label>Farmácia 2 — morada</label><input class="inp" id="f2-end" value="Av. Manuel Francisco Costa · Caldas"/></div>
-          <div class="fld"><label>Farmácia 2 — URL mapa</label><input class="inp" id="f2-url" value="https://www.google.com/maps/search/Farmácia+Caldas"/></div>
-        </div>
-      </div>
+
       <button class="savebtn" onclick="saveSection('contacto')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-contacto">Guardado!</span></button>
     </div>
 
@@ -1076,8 +1083,16 @@ Entregar as chaves ao proprietário</textarea>
         <div class="g2">
           <div class="fld"><label>Nome do hóspede</label><input class="inp" id="rec-guest" placeholder="Ex: Família Santos"/></div>
           <div class="fld"><label>Email do hóspede</label><input class="inp" type="email" id="rec-email" placeholder="email@exemplo.com"/></div>
-          <div class="fld"><label>Check-in</label><input class="inp" type="date" id="rec-checkin" style="font-size:1rem;padding:.75rem;cursor:pointer;min-height:48px;"/></div>
-          <div class="fld"><label>Check-out</label><input class="inp" type="date" id="rec-checkout" style="font-size:1rem;padding:.75rem;cursor:pointer;min-height:48px;"/></div>
+          <div class="fld"><label>Check-in</label>
+            <div class="date-picker-wrap" onclick="openDatePicker('rec-checkin')">
+              <input class="inp" type="text" id="rec-checkin" placeholder="DD/MM/AAAA" readonly style="font-size:1rem;padding:.75rem;cursor:pointer;caret-color:transparent;background:#fff url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23888%22 stroke-width=%222%22><rect x=%223%22 y=%224%22 width=%2218%22 height=%2218%22 rx=%222%22/><line x1=%2216%22 y1=%222%22 x2=%2216%22 y2=%226%22/><line x1=%228%22 y1=%222%22 x2=%228%22 y2=%226%22/><line x1=%223%22 y1=%2210%22 x2=%2221%22 y2=%2210%22/></svg>') no-repeat right .75rem center/18px;"/>
+            </div>
+          </div>
+          <div class="fld"><label>Check-out</label>
+            <div class="date-picker-wrap" onclick="openDatePicker('rec-checkout')">
+              <input class="inp" type="text" id="rec-checkout" placeholder="DD/MM/AAAA" readonly style="font-size:1rem;padding:.75rem;cursor:pointer;caret-color:transparent;background:#fff url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23888%22 stroke-width=%222%22><rect x=%223%22 y=%224%22 width=%2218%22 height=%2218%22 rx=%222%22/><line x1=%2216%22 y1=%222%22 x2=%2216%22 y2=%226%22/><line x1=%228%22 y1=%222%22 x2=%228%22 y2=%226%22/><line x1=%223%22 y1=%2210%22 x2=%2221%22 y2=%2210%22/></svg>') no-repeat right .75rem center/18px;"/>
+            </div>
+          </div>
           <div class="fld"><label>Valor total (€)</label><input class="inp" type="number" id="rec-valor" placeholder="0"/></div>
           <div class="fld"><label>Plataforma</label>
             <select class="inp" id="rec-plat">
@@ -1207,7 +1222,7 @@ Entregar as chaves ao proprietário</textarea>
           <svg class="tut-chevron" id="chev-hospedes" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div class="tut-body" id="body-hospedes" style="display:none;">
-          <div class="tut-step"><div class="tut-num">1</div><div class="tut-text"><strong>Vai a Hóspedes</strong> no menu lateral. Clica em <strong>"Adicionar hóspede"</strong> e preenche: username (ex: familia_silva), password, nome e data de check-out.</div></div>
+          <div class="tut-step"><div class="tut-num">1</div><div class="tut-text"><strong>Os utilizadores da app são criados automaticamente</strong> quando adicionas uma reserva em <strong>Gestão → Reservas</strong>. O username é gerado a partir do apelido do hóspede e a password tem 4 dígitos.</div></div>
           <div class="tut-step"><div class="tut-num">2</div><div class="tut-text"><strong>Partilha o acesso</strong> com o hóspede: envia o link da app + o username e password que criaste. O hóspede entra e vê toda a informação da casa.</div></div>
           <div class="tut-step"><div class="tut-num">3</div><div class="tut-text"><strong>Após o check-out</strong>, o acesso expira automaticamente pela data definida. Podes também clicar em "Eliminar" para remover o acesso imediatamente.</div></div>
           <div class="tut-step"><div class="tut-num">4</div><div class="tut-text"><strong>Usa os filtros</strong> (Ativos / Check-in hoje / Expirados) para ver rapidamente quem está a usar a app neste momento.</div></div>
@@ -1231,7 +1246,10 @@ Entregar as chaves ao proprietário</textarea>
           <div class="tut-step"><div class="tut-num">1</div><div class="tut-text"><strong>Navega pela secção</strong> que queres editar (ex: Quartos, Piscina, Cozinha). Altera os textos diretamente nos campos.</div></div>
           <div class="tut-step"><div class="tut-num">2</div><div class="tut-text"><strong>Para alterar fotos</strong>, cola o link da imagem no campo "URL da imagem". Ver tutorial de fotos acima para saber como obter o link.</div></div>
           <div class="tut-step"><div class="tut-num">3</div><div class="tut-text"><strong>Clica em Guardar</strong> no fundo de cada secção. As alterações ficam disponíveis na app dos hóspedes em segundos.</div></div>
-          <div class="tut-tip"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> A barra azul que aparece no topo da secção avisa-te quando há alterações por guardar.</div>
+          <div class="tut-step"><div class="tut-num">4</div><div class="tut-text"><strong>Gestão → Reservas:</strong> para adicionar uma reserva com check-in, check-out e valor. O acesso à app é criado automaticamente e guardado no Google Sheets.</div></div>
+          <div class="tut-step"><div class="tut-num">5</div><div class="tut-text"><strong>Gestão → Receitas:</strong> para ver os dados financeiros — receita mensal, gráfico de barras e detalhe por reserva.</div></div>
+          <div class="tut-step"><div class="tut-num">6</div><div class="tut-text"><strong>Gestão → Calendário:</strong> mostra os dias ocupados a azul, check-in/out a laranja e dias bloqueados a vermelho (duplo clique para bloquear/desbloquear).</div></div>
+          <div class="tut-tip"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Se saíres sem guardar, o browser avisa-te antes de fechar a página.</div>
         </div>
       </div>
 
@@ -1479,6 +1497,114 @@ function addReserva() {
   };
 }
 
+// ── CUSTOM DATE PICKER ─────────────────────────────
+var _dpField = null;
+var _dpYear  = new Date().getFullYear();
+var _dpMonth = new Date().getMonth();
+var _dpOccupied = {}; // date strings that are occupied
+
+function openDatePicker(fieldId) {
+  _dpField = fieldId;
+  // Build occupied map from existing reservations (excluding current edit)
+  _dpOccupied = {};
+  _reservas.forEach(function(r) {
+    if (!r.ci || !r.co) return;
+    var d = new Date(r.ci + 'T00:00:00');
+    var end = new Date(r.co + 'T00:00:00');
+    while (d <= end) {
+      _dpOccupied[d.toISOString().slice(0,10)] = r.guest || '?';
+      d.setDate(d.getDate() + 1);
+    }
+  });
+  // Position modal near the field
+  var wrap = document.querySelector('[onclick*="' + fieldId + '"]');
+  var overlay = document.getElementById('datepicker-overlay');
+  var modal   = document.getElementById('datepicker-modal');
+  if (wrap && modal) {
+    var rect = wrap.getBoundingClientRect();
+    var top  = rect.bottom + 8;
+    var left = rect.left;
+    if (top + 320 > window.innerHeight) top = rect.top - 320;
+    if (left + 340 > window.innerWidth) left = window.innerWidth - 350;
+    modal.style.top  = Math.max(8, top) + 'px';
+    modal.style.left = Math.max(8, left) + 'px';
+  }
+  // Set month to current value if already set
+  var cur = v(fieldId);
+  if (cur && cur.match(/^\d{4}-\d{2}-\d{2}/)) {
+    var d2 = new Date(cur + 'T00:00:00');
+    _dpYear = d2.getFullYear(); _dpMonth = d2.getMonth();
+  } else {
+    _dpYear = new Date().getFullYear(); _dpMonth = new Date().getMonth();
+  }
+  renderDPGrid();
+  overlay.style.display = 'block';
+}
+
+function closeDatePicker() {
+  document.getElementById('datepicker-overlay').style.display = 'none';
+  _dpField = null;
+}
+
+function dpPrev() { _dpMonth--; if (_dpMonth < 0) { _dpMonth = 11; _dpYear--; } renderDPGrid(); }
+function dpNext() { _dpMonth++; if (_dpMonth > 11) { _dpMonth = 0; _dpYear++; } renderDPGrid(); }
+
+function renderDPGrid() {
+  var months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  document.getElementById('dp-month-label').textContent = months[_dpMonth] + ' ' + _dpYear;
+  var daysInMonth = new Date(_dpYear, _dpMonth + 1, 0).getDate();
+  var firstDay    = (new Date(_dpYear, _dpMonth, 1).getDay() + 6) % 7;
+  var today       = new Date(); today.setHours(0,0,0,0);
+  var selVal      = _dpField ? v(_dpField) : '';
+  var dayNames    = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  var html = dayNames.map(function(d){ return '<div style="text-align:center;font-size:.65rem;font-weight:700;color:var(--txl);padding:4px 0;">' + d + '</div>'; }).join('');
+  for (var i = 0; i < firstDay; i++) html += '<div></div>';
+  for (var day = 1; day <= daysInMonth; day++) {
+    var iso  = _dpYear + '-' + String(_dpMonth+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+    var isOcc = !!_dpOccupied[iso];
+    var isSel = (selVal === iso);
+    var isToday = (new Date(_dpYear, _dpMonth, day).getTime() === today.getTime());
+    var bg = isSel ? 'var(--g)' : isOcc ? '#e53935' : isToday ? 'rgba(59,125,216,0.12)' : '#f5f7fa';
+    var fg = (isSel || isOcc) ? '#fff' : 'var(--tx)';
+    var cur = isOcc ? ' title="' + _dpOccupied[iso] + '" style="cursor:not-allowed;"' : ' onclick="dpSelect(\'' + iso + '\')"  style="cursor:pointer;"';
+    html += '<div' + cur + ' style="text-align:center;padding:8px 2px;border-radius:8px;font-size:.85rem;font-weight:' + (isSel?'700':'400') + ';background:' + bg + ';color:' + fg + ';' + (isOcc ? 'cursor:not-allowed;' : 'cursor:pointer;') + '">' + day + '</div>';
+  }
+  document.getElementById('dp-grid').innerHTML = html;
+}
+
+function dpSelect(iso) {
+  if (_dpOccupied[iso]) { toast('Data já ocupada — ' + _dpOccupied[iso]); return; }
+  if (_dpField) {
+    var el = document.getElementById(_dpField);
+    if (el) {
+      el.value = iso;
+      // Update preview credentials when name changes
+      var guestInput = document.getElementById('rec-guest');
+      if (guestInput && guestInput.value.trim().length > 1) {
+        // trigger credentials preview if not yet shown
+      }
+    }
+  }
+  closeDatePicker();
+  // Auto-open checkout picker after checkin is selected
+  if (_dpField === 'rec-checkin') {
+    setTimeout(function() { openDatePicker('rec-checkout'); }, 200);
+  }
+}
+
+// ── OVERLAP DETECTION ────────────────────────────────
+function hasOverlap(ci, co, excludeId) {
+  var newCi = new Date(ci + 'T00:00:00');
+  var newCo = new Date(co + 'T00:00:00');
+  return _reservas.some(function(r) {
+    if (excludeId && r.id === excludeId) return false;
+    if (!r.ci || !r.co) return false;
+    var rCi = new Date(r.ci + 'T00:00:00');
+    var rCo = new Date(r.co + 'T00:00:00');
+    return newCi <= rCo && newCo >= rCi;
+  });
+}
+
 function saveReserva() {
   var ci    = v('rec-checkin');
   var co    = v('rec-checkout');
@@ -1489,6 +1615,11 @@ function saveReserva() {
   var estado= v('rec-estado');
   var notas = v('rec-notas').trim();
   if (!ci || !co || !guest) { toast('Preenche nome, check-in e check-out.'); return; }
+  if (new Date(co) < new Date(ci)) { toast('Check-out não pode ser antes do check-in.'); return; }
+  if (hasOverlap(ci, co)) {
+    toast('⚠️ Datas sobrepostas com uma reserva existente. Verifica o calendário.');
+    return;
+  }
   var userEl = document.getElementById('prev-username');
   var passEl = document.getElementById('prev-password');
   var user   = (userEl && userEl.dataset.val) ? userEl.dataset.val : _genUser(guest);
@@ -1497,20 +1628,25 @@ function saveReserva() {
   _reservas.push({ id:Date.now(), ci:ci, co:co, guest:guest, email:email, valor:valor, plat:plat, estado:estado, nights:nights, notes:notas, user:user, pass:pass });
   _reservas.sort(function(a,b){ return new Date(b.ci) - new Date(a.ci); });
   localStorage.setItem(REC_KEY, JSON.stringify(_reservas));
-  showLoading('A criar acesso à app...');
+  // Save locally first (always works, even offline)
+  document.getElementById('rec-form-card').style.display = 'none';
+  showOk('ok-reserva');
+  renderReceitas();
+  renderCalendar();
+  toast('✓ Reserva criada! A sincronizar...');
+  ['rec-guest','rec-email','rec-checkin','rec-checkout','rec-valor','rec-notas'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('rec-credentials-preview').style.display = 'none';
+  // Sync to Google Sheets (login + reservation)
+  showLoading('A sincronizar...');
   apiWrite({ action:'addGuest', user:user, pass:pass, checkin:ci, checkout:co, name:guest, email:email, notes:notas }, function() {
-    hideLoading();
-    DB.guests.push({ user:user, pass:pass, checkin:ci, checkout:co, name:guest, email:email, active:true });
-    renderGuests();
-    document.getElementById('rec-form-card').style.display = 'none';
-    showOk('ok-reserva');
-    renderReceitas();
-    renderCalendar();
-    toast('✓ Reserva criada! Acesso enviado por email no check-in.');
-    ['rec-guest','rec-email','rec-checkin','rec-checkout','rec-valor','rec-notas'].forEach(function(id){
-      var el = document.getElementById(id); if (el) el.value = '';
+    apiWrite({ action:'saveReserva', ci:ci, co:co, guest:guest, email:email, valor:valor, plat:plat, estado:estado, nights:nights, user:user, pass:pass, notes:notas }, function() {
+      hideLoading();
+      DB.guests.push({ user:user, pass:pass, checkin:ci, checkout:co, name:guest, email:email, active:true });
+      renderGuests();
+      toast('✓ Reserva e acesso criados e guardados!');
     });
-    document.getElementById('rec-credentials-preview').style.display = 'none';
   });
 }
 
@@ -1620,6 +1756,23 @@ function renderReceitas() {
   }
 }
 
+
+
+// ── UNSAVED CHANGES WARNING ─────────────────────────────────
+var _hasUnsaved = false;
+document.addEventListener('input', function(e) {
+  var sec = e.target.closest('.sec');
+  if (sec) _hasUnsaved = true;
+});
+window.addEventListener('beforeunload', function(e) {
+  if (_hasUnsaved) {
+    var msg = 'Tens alterações por guardar. Tens a certeza que queres sair?';
+    e.returnValue = msg;
+    return msg;
+  }
+});
+// Reset unsaved flag after any save
+function onSaveSuccess() { _hasUnsaved = false; }
 
 // ── TUTORIAL ──────────────────────────────────────
 function toggleTut(id) {
@@ -1768,6 +1921,10 @@ function loadAll() {
       return;
     }
     setStatus('Sincronizado ✓', '#5a8a3c');
+    // Fetch newsletter separately (not in getAll)
+    jsonpCall({ action: 'newsletter' }, function(err, nd) {
+      if (!err && nd && nd.data && nd.data.length) { DB.newsletter = nd.data; renderNewsletter(); }
+    }, 10000);
     if (d.config) { DB.config = d.config; fillConfig(d.config); fillNotifTemplates(d.config); }
     if (d.casa)   fillCasa(d.casa);
     if (d.patrocinadores && d.patrocinadores.length) {
@@ -1788,7 +1945,7 @@ function loadAll() {
       renderCalendar();
     }
     if (d.feedbacks)   { DB.feedbacks   = d.feedbacks;   renderFeedbacks(); }
-    if (d.newsletter)  { DB.newsletter  = d.newsletter;  renderNewsletter(); }
+    if (d.newsletter && d.newsletter.length) { DB.newsletter = d.newsletter; renderNewsletter(); }
     if (d.attractions) {
       DB.atracoes = d.attractions; renderPlaces('atracoes');
       document.getElementById('save-atracoes-btn').style.display = 'inline-flex';
@@ -1894,11 +2051,10 @@ function saveConfig() {
     mensagem_boas_vindas:v('c-bv'),
     aviso_ativo:v('c-aviso-ativo'),
     aviso_texto:v('c-aviso-txt'),
-    codigo_desconto:v('c-codesc'),
-    instagram_url:v('c-ig'),
+        instagram_url:v('c-ig'),
     facebook_url:v('c-fb'),
     google_reviews_url:v('c-grev')
-  }, function() { hideLoading(); showOk('ok-config'); toast('✓ Config guardada!');
+  }, function() { hideLoading(); showOk('ok-config'); toast('✓ Config guardada!'); onSaveSuccess();
     var b = document.getElementById('unsaved-config'); if (b) b.classList.remove('show');
   });
 }
@@ -1978,10 +2134,10 @@ function saveSection(sec) {
       farm2_nome:v('f2-nome'),
       farm2_end:v('f2-end'),
       farm2_url:v('f2-url'),
-      codigo_desconto:v('c-codesc')
     },
     'contacto': { action:'saveContacto',
       proprietario_nome:v('ct-nome'),
+      prop_nome:v('ct-nome'),
       proprietario_whatsapp:v('ct-wa'),
       proprietario_telefone:v('ct-tel'),
       proprietario_email:v('ct-email'),
