@@ -1783,7 +1783,9 @@ function renderReceitas() {
 
 
 // ── DYNAMIC SECTION EDITOR ────────────────────────────────────
-var _dynData = {}; // { sectionKey: [{title, text}] }function dynLoad(key, jsonStr) {
+var _dynData = {}; // { sectionKey: [{title, text}] }
+
+function dynLoad(key, jsonStr) {
   try { _dynData[key] = JSON.parse(jsonStr || '[]'); } catch(e) { _dynData[key] = []; }
   if (!_dynData[key].length) _dynData[key] = [{title:'',text:''}];
   dynRender(key);
@@ -1798,13 +1800,13 @@ function dynRender(key) {
     html += '<div class="dyn-card-wrap">'
       + '<div class="dyn-card-header">'
       + '<input class="dyn-title-inp" id="dyn-' + key + '-t-' + i + '" value="' + esc(card.title||'') + '" placeholder="Título do item"/>'
-      + '<button class="dyn-del-btn" onclick="dynDel('' + key + '',' + i + ')">×</button>'
+      + '<button class="dyn-del-btn" onclick="dynDel(\'' + key + '\',' + i + ')">×</button>'
       + '</div>'
       + '<textarea class="dyn-text-area" id="dyn-' + key + '-c-' + i + '">' + esc(card.text||'') + '</textarea>'
       + '</div>';
   });
   html += '</div>'
-    + '<button class="dyn-add-btn" onclick="dynAdd('' + key + '')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar item</button>';
+    + '<button class="dyn-add-btn" onclick="dynAdd(\'' + key + '\')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar item</button>';
   container.innerHTML = html;
 }
 
@@ -2236,7 +2238,7 @@ function saveSection(sec) {
       farm1_url:v('f1-url'),
       farm2_nome:v('f2-nome'),
       farm2_end:v('f2-end'),
-      farm2_url:v('f2-url'),
+      farm2_url:v('f2-url')
     },
     'contacto': { action:'saveContacto',
       proprietario_nome:v('ct-nome'),
