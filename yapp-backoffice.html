@@ -1783,11 +1783,7 @@ function renderReceitas() {
 
 
 // ── DYNAMIC SECTION EDITOR ────────────────────────────────────
-var _dynData = {}; // { sectionKey: [{title, text}] }
-
-function esc(s) { var d=document.createElement('div');d.textContent=String(s||'');return d.innerHTML; }
-
-function dynLoad(key, jsonStr) {
+var _dynData = {}; // { sectionKey: [{title, text}] }function dynLoad(key, jsonStr) {
   try { _dynData[key] = JSON.parse(jsonStr || '[]'); } catch(e) { _dynData[key] = []; }
   if (!_dynData[key].length) _dynData[key] = [{title:'',text:''}];
   dynRender(key);
