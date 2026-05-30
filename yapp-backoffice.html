@@ -334,7 +334,11 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
     </div>
   </div>
 
-  <!-- DRAWER OVERLAY -->
+  <!-- BOTÃO VOLTAR À APP (aparece quando vem da app via admin login) -->
+  <div id="return-app-bar" style="display:none;background:#1a4a8a;color:#fff;padding:.5rem 1rem;font-size:.8rem;align-items:center;justify-content:space-between;">
+    <span style="opacity:.8;">A gerir via app</span>
+    <button onclick="voltarApp()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;border-radius:6px;padding:4px 12px;font-size:.75rem;cursor:pointer;font-family:inherit;">← Voltar à app</button>
+  </div>
   <div id="drawer-overlay" onclick="closeDrawer()"></div>
 
   <div class="sidebar" id="drawer">
@@ -1783,6 +1787,12 @@ function toggleTut(id) {
   if (chev) chev.classList.toggle('open', !isOpen);
 }
 
+function voltarApp() {
+  var url = localStorage.getItem('yapp_return_url') || 'https://darioersantos.github.io/Yapp/';
+  localStorage.removeItem('yapp_return_url');
+  window.location.href = url;
+}
+
 // ── AUTH ────────────────────────────────────────
 function togglePass() {
   var inp = document.getElementById('lpass');
@@ -1803,6 +1813,11 @@ function doLogin() {
 function doLogout() { localStorage.removeItem(BO_KEY); location.reload(); }
 window.addEventListener('DOMContentLoaded', function() {
   document.getElementById('lpass').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
+  // Mostrar barra "Voltar à app" se veio da app do hóspede
+  if (localStorage.getItem('yapp_return_url')) {
+    var bar = document.getElementById('return-app-bar');
+    if (bar) bar.style.display = 'flex';
+  }
   if (localStorage.getItem(BO_KEY)) {
     document.getElementById('login').classList.add('off');
     document.getElementById('app').style.display = 'block';
