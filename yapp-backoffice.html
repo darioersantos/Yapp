@@ -284,6 +284,9 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 .dyn-chip{display:flex;align-items:center;gap:4px;background:#e8f0fb;border-radius:20px;padding:3px 10px;font-size:.78rem;}
 .dyn-chip input{background:none;border:none;font-size:.78rem;color:var(--tx);font-family:inherit;width:80px;outline:none;}
 .dyn-chip-del{background:none;border:none;color:#888;cursor:pointer;padding:0;font-size:.85rem;line-height:1;}
+.dyn-drag-handle{font-size:1.1rem;color:var(--txl);cursor:grab;padding:0 4px;user-select:none;flex-shrink:0;}
+.dyn-drag-handle:active{cursor:grabbing;}
+.dyn-card-wrap[draggable="true"]:hover{border-color:var(--g);}
 
 </style>
 </head>
@@ -791,6 +794,9 @@ Máq. de lavar roupa</textarea>
           <img id="prev-sala" class="photo-prev wide" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&auto=format&fit=crop&q=75"/>
           <div style="flex:1;"><input class="photo-url" id="img-sala" value="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-sala','img-sala')"/></div>
         </div>
+      </div>
+      <div class="card"><div class="ctitle">TV & Streaming — plataformas (separadas por vírgula)</div>
+        <input class="inp" id="sala-stream" placeholder="NOS TV, Netflix, Amazon Prime, Disney+, Canal+"/>
       </div>
       <div class="card">
         <div class="ctitle">Itens — edita título e texto, adiciona ou remove</div>
@@ -1379,7 +1385,7 @@ Entregar as chaves ao proprietário</textarea>
 <div id="toast"></div>
 
 <script>
-var BO_PASS = 'yapp2025';
+var BO_PASS = 'yapp2026';
 var BO_KEY  = 'yapp_bo_auth';
 var LS_KEY  = 'yapp_bo_local';
 var API     = 'https://script.google.com/macros/s/AKfycbxqy-PfUD4XS0dCbe8vGUNDbJ5P8GUHlIbEz4I1hnAwjG-EZAZb_YyG_lUNx3AKd1yMJg/exec';
@@ -1795,10 +1801,12 @@ function dynRender(key) {
   var container = document.getElementById('dyn-' + key);
   if (!container) return;
   var cards = _dynData[key] || [];
-  var html = '<div class="dyn-editor">';
+  var html = '<div class="dyn-editor" id="dyn-list-' + key + '">';
   cards.forEach(function(card, i) {
-    html += '<div class="dyn-card-wrap">'
+    html += '<div class="dyn-card-wrap" draggable="true" data-key="' + key + '" data-idx="' + i + '"'
+      + ' ondragstart="dynDragStart(event)" ondragover="dynDragOver(event)" ondrop="dynDrop(event,\'' + key + '\')" ondragend="dynDragEnd(event)">'
       + '<div class="dyn-card-header">'
+      + '<span class="dyn-drag-handle" title="Arrastar para reordenar">⠿</span>'
       + '<input class="dyn-title-inp" id="dyn-' + key + '-t-' + i + '" value="' + esc(card.title||'') + '" placeholder="Título do item"/>'
       + '<button class="dyn-del-btn" onclick="dynDel(\'' + key + '\',' + i + ')">×</button>'
       + '</div>'
@@ -1808,6 +1816,43 @@ function dynRender(key) {
   html += '</div>'
     + '<button class="dyn-add-btn" onclick="dynAdd(\'' + key + '\')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar item</button>';
   container.innerHTML = html;
+}
+
+var _dragSrcIdx = null;
+var _dragKey    = null;
+
+function dynDragStart(e) {
+  var el = e.currentTarget;
+  _dragSrcIdx = parseInt(el.dataset.idx);
+  _dragKey    = el.dataset.key;
+  e.dataTransfer.effectAllowed = 'move';
+  el.style.opacity = '0.4';
+}
+function dynDragEnd(e) { e.currentTarget.style.opacity = '1'; }
+function dynDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; return false; }
+function dynDrop(e, key) {
+  e.stopPropagation();
+  var el = e.currentTarget;
+  var destIdx = parseInt(el.dataset.idx);
+  if (_dragSrcIdx === null || _dragSrcIdx === destIdx || _dragKey !== key) return false;
+  // Sync current DOM values before reordering
+  dynSyncDOM(key);
+  // Reorder
+  var arr = _dynData[key];
+  var moved = arr.splice(_dragSrcIdx, 1)[0];
+  arr.splice(destIdx, 0, moved);
+  _dragSrcIdx = null;
+  dynRender(key);
+  return false;
+}
+
+function dynSyncDOM(key) {
+  (_dynData[key] || []).forEach(function(card, i) {
+    var tEl = document.getElementById('dyn-' + key + '-t-' + i);
+    var cEl = document.getElementById('dyn-' + key + '-c-' + i);
+    if (tEl) card.title = tEl.value;
+    if (cEl) card.text  = cEl.value;
+  });
 }
 
 function dynAdd(key) {
@@ -1828,6 +1873,7 @@ function dynDel(key, idx) {
 }
 
 function dynGet(key) {
+  dynSyncDOM(key);
   // Read current values from DOM
   var cards = (_dynData[key] || []).map(function(card, i) {
     var tEl = document.getElementById('dyn-' + key + '-t-' + i);
@@ -2107,6 +2153,7 @@ function fillCasa(c) {
   s('img-wc', c.wc_img); s('img-info', c.info_img);
   // Texts
   s('c-bv', c.boas_vindas);
+  s('sala-stream', c.streaming_plataformas);
   // Dynamic editors — load JSON data
   var dynDefaults = {
     sala: '[{"title":"Smart TV","text":"NOS TV, Netflix, Amazon Prime, Disney+ e Canal+. Credenciais no dossier."},{"title":"Lareira","text":"Lenha no cesto junto à lareira. Não deixar sem vigilância."},{"title":"Ar condicionado","text":"Disponível na sala. Temperatura recomendada: 22°C."},{"title":"Sofá-cama","text":"O sofá converte-se em cama de casal. Roupa de cama no armário do corredor."}]',
@@ -2211,7 +2258,8 @@ function saveSection(sec) {
     },
     'casa-sala': { action:'saveCasa',
       sala_img:v('img-sala'),
-      sala_json:dynGet('sala')
+      sala_json:dynGet('sala'),
+      streaming_plataformas:v('sala-stream')
     },
     'casa-regras': { action:'saveCasa',
       reg_silencio:v('reg-s'),
