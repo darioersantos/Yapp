@@ -77,7 +77,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 .sbout{background:none;border:none;color:rgba(255,255,255,0.4);font-family:'DM Sans',sans-serif;font-size:.82rem;cursor:pointer;display:flex;align-items:center;gap:8px;padding:.5rem 0;}
 
 /* ── MAIN CONTENT ─────────────────────────────── */
-.main{margin-left:0;padding:72px 1rem 2rem;min-height:100vh;background:#e8f0fb;}
+.main{margin-left:0;padding:62px 1rem 2rem;min-height:100vh;background:#e8f0fb;}
 /* conteúdo centrado com max-width para não esticar */
 .content-wrap{max-width:780px;margin:0 auto;}
 .ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.4rem;flex-wrap:wrap;gap:.75rem;}
@@ -2132,31 +2132,8 @@ function fmtDate(iso) {
 // ── SERVICES DYNAMIC EDITOR ──────────────────────────────────────
 var _svcData = []; // [{title, subtitle, items:[{name,detail}]}]
 var SVC_DEFAULTS = [
-  {title:'Regras da casa',subtitle:'Silêncio, lixo, animais',items:[
-    {name:'Silêncio',detail:'Respeitar silêncio entre as 22h00 e as 08h00'},
-    {name:'Animais',detail:'Permitidos. Não devem entrar na piscina'},
-    {name:'Estacionamento',detail:'Dois lugares cobertos no lado esquerdo do portão'},
-    {name:'Tabaco',detail:'Proibido fumar dentro da casa. Área exterior permitida'}
-  ]},
-  {title:'Check-list de saída',subtitle:'Antes de partir',items:[
-    {name:'Fechar janelas e portas',detail:'Verificar todos os quartos e sala'},
-    {name:'Desligar ar condicionado',detail:'E aquecimento em todos os compartimentos'},
-    {name:'Desligar luzes',detail:'Em todos os compartimentos'},
-    {name:'Frigorífico',detail:'Retirar todos os alimentos'},
-    {name:'Toalhas usadas',detail:'Colocar no chão da casa de banho'},
-    {name:'Portão do jardim',detail:'Trancar sempre que sair'},
-    {name:'Entregar as chaves',detail:'Ao proprietário antes de partir'}
-  ]},
-  {title:'Caixa de fusíveis',subtitle:'Se a luz cair',items:[
-    {name:'Localização',detail:'Corredor da entrada, armário branco à direita'},
-    {name:'O que fazer',detail:'1. Desligue os aparelhos. 2. Levante o disjuntor falhado. 3. Se repetir, contacte o proprietário'}
-  ]},
-  {title:'Reciclagem',subtitle:'Contentores e recolha',items:[
-    {name:'Verde (vidro)',detail:'Garrafas, frascos, potes de vidro'},
-    {name:'Azul (papel)',detail:'Jornais, revistas, caixas de cartão'},
-    {name:'Amarelo (plástico)',detail:'Garrafas PET, embalagens, latas'},
-    {name:'Preto (indiferenciado)',detail:'Resíduos não recicláveis. Recolha terças e sextas'}
-  ]},
+  // Regras, Reciclagem, Caixa fusíveis → moved to Info Úteis
+
   {title:'Compras locais',subtitle:'Mercado, padaria, talho',items:[
     {name:'Supermercado Gerês',detail:'9h–20h · 0,8 km'},
     {name:'Padaria Central',detail:'7h30–13h · 0,5 km'},
@@ -2577,7 +2554,7 @@ function fillCasa(c) {
     coz:  '[{"title":"Café","text":"Cápsulas Nespresso no armário superior esquerdo."},{"title":"Detergentes","text":"Armário debaixo do lava-loiça. Pastilhas incluídas."}]',
     chur: '[{"title":"Preparação","text":"Carvão e acendalha no armário exterior. Utilizar no local designado no jardim."},{"title":"Utilização","text":"Grelha na prateleira inferior. Pinça e espátula no gancho à direita."},{"title":"Limpeza","text":"Aguardar arrefecimento. Cinzas no balde metálico."}]',
     pisc: '[{"title":"⚠️ Atenção","text":"Mantenha as crianças sempre sob vigilância!"},{"title":"Informação","text":"Profundidade 1,50m"},{"title":"Equipamento","text":"Espreguiçadeiras e guarda-sol disponíveis. Toalhas no armário do corredor."}]',
-    info: '[{"title":"Estacionamento","text":"Dois lugares cobertos no lado esquerdo do portão."},{"title":"Água potável","text":"A água da torneira é potável e tratada."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior."}]',
+    info: '[{"title":"Estacionamento","text":"Dois lugares cobertos no lado esquerdo do portão."},{"title":"Regras da casa","text":"Silêncio entre as 22h e as 08h. Animais permitidos, não entram na piscina. Proibido fumar dentro da casa."},{"title":"Reciclagem","text":"Verde=vidro, Azul=papel, Amarelo=plástico, Preto=indiferenciado. Contentores no exterior."},{"title":"Quadro elétrico","text":"Corredor da entrada, armário branco à direita. Se a luz cair: desligue os aparelhos e levante o disjuntor."},{"title":"Água potável","text":"A água da torneira é potável e tratada."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior."}]',
     ext:  '[{"title":"Jardim & terraço","text":"Jardim com relva natural e terraço coberto com vista para a serra."},{"title":"Equipamento exterior","text":"Mesa de jardim para 6 pessoas, churrasqueira e zona de lazer."},{"title":"Notas","text":"Portão do jardim trancar sempre que sair."}]'
   };
   ['sala','wc','coz','chur','pisc','info','ext'].forEach(function(key) {
