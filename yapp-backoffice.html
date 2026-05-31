@@ -1423,18 +1423,18 @@ function toggleBlock(year, month, day) {
 }
 
 function renderCalendar() {
-  var year = _calYear, month = _calMonth;
-  var months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  var lbl = document.getElementById('cal-month-label');
+  var year  = _calYear, month = _calMonth;
+  var months= ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  var lbl   = document.getElementById('cal-month-label');
   if (lbl) lbl.textContent = months[month] + ' ' + year;
 
   var daysInMonth = new Date(year, month + 1, 0).getDate();
-  var firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
-  var occupied = {}, checkinDays = {}, checkoutDays = {};
+  var firstDay    = (new Date(year, month, 1).getDay() + 6) % 7;
+  var today       = new Date(); today.setHours(0,0,0,0);
+  var occupied    = {}, checkinDays = {}, checkoutDays = {};
 
-  // Use var expression instead of declaration to avoid Safari issues
   var markRange = function(ciStr, coStr, label) {
-    if (!ciStr || !coStr) return;
+    if (!ciStr || !coStr || ciStr === '2099-12-31') return;
     var ci = new Date(ciStr + 'T00:00:00');
     var co = new Date(coStr + 'T00:00:00');
     if (isNaN(ci.getTime()) || isNaN(co.getTime())) return;
@@ -1442,30 +1442,36 @@ function renderCalendar() {
     while (d <= co) {
       if (d.getFullYear() === year && d.getMonth() === month) {
         var day = d.getDate();
-        occupied[day] = label || '—';
-        if (d.getTime() === ci.getTime()) checkinDays[day] = true;
+        occupied[day]    = label || '—';
+        if (d.getTime() === ci.getTime()) checkinDays[day]  = true;
         if (d.getTime() === co.getTime()) checkoutDays[day] = true;
       }
       d.setDate(d.getDate() + 1);
     }
   };
 
+  // Source 1: _reservas (localStorage)
   (_reservas || []).forEach(function(r) {
     if (r.ci && r.co) markRange(r.ci, r.co, r.guest || '—');
   });
 
-  (DB.guests || []).forEach(function(g) {
-    if (g.user === 'admin' || g.user === 'demo') return;
+  // Source 2: DB.guests (Google Sheets — object, not array)
+  var guestObj = DB.guests || {};
+  Object.keys(guestObj).forEach(function(user) {
+    if (user === 'admin' || user === 'demo') return;
+    var g = guestObj[user];
     if (!g.checkin || !g.checkout || g.checkout === '2099-12-31') return;
-    markRange(g.checkin, g.checkout, g.name || g.user || '—');
+    markRange(g.checkin, g.checkout, g.name || user || '—');
   });
 
+  // Render grid
   var grid = document.getElementById('cal-grid');
   if (!grid) return;
-  var days = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
-  var html = days.map(function(d){ return '<div style="text-align:center;font-size:.65rem;font-weight:700;color:var(--txl);padding:4px 0;text-transform:uppercase;letter-spacing:.05em;">' + d + '</div>'; }).join('');
+  var dayNames = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  var html = dayNames.map(function(d) {
+    return '<div style="text-align:center;font-size:.65rem;font-weight:700;color:var(--txl);padding:4px 0;text-transform:uppercase;letter-spacing:.05em;">' + d + '</div>';
+  }).join('');
   for (var i = 0; i < firstDay; i++) html += '<div></div>';
-
   for (var day = 1; day <= daysInMonth; day++) {
     var isOcc     = !!occupied[day];
     var isCi      = !!checkinDays[day];
@@ -1477,58 +1483,50 @@ function renderCalendar() {
     var fg  = (isBlocked || isOcc) ? '#fff' : 'var(--txm)';
     var ttl = isBlocked ? 'Bloqueado' : (occupied[day] || 'Duplo clique para bloquear');
     var bdr = isToday ? '2px solid var(--g)' : '1px solid transparent';
-    html += '<div title="' + ttl + '" ondblclick="toggleBlock(' + year + ',' + month + ',' + day + ')" style="text-align:center;padding:6px 2px;border-radius:6px;font-size:.78rem;font-weight:' + ((isOcc||isBlocked)?'600':'400') + ';background:' + bg + ';color:' + fg + ';border:' + bdr + ';cursor:pointer;">' + day + '</div>';
+    html += '<div title="' + ttl + '" ondblclick="toggleBlock(' + year + ',' + month + ',' + day + ')" '
+      + 'style="text-align:center;padding:6px 2px;border-radius:6px;font-size:.78rem;font-weight:' + ((isOcc||isBlocked)?'600':'400')
+      + ';background:' + bg + ';color:' + fg + ';border:' + bdr + ';cursor:pointer;">' + day + '</div>';
   }
   grid.innerHTML = html;
 
+  // Stats
   var noites = Object.keys(occupied).length;
   var sn = document.getElementById('cal-stat-noites'); if (sn) sn.textContent = noites;
-  var sp = document.getElementById('cal-stat-pct');    if (sp) sp.textContent = Math.round(noites/daysInMonth*100) + '%';
+  var sp = document.getElementById('cal-stat-pct');    if (sp) sp.textContent = Math.round(noites / daysInMonth * 100) + '%';
   var sh = document.getElementById('cal-stat-hospedes'); if (sh) sh.textContent = new Set(Object.values(occupied)).size;
 
-  var listH = '';
-  var seenUsers = {};
-
-  // From _reservas
+  // Guest list this month
+  var listH = '', seen = {};
   (_reservas || []).forEach(function(r) {
     if (!r.ci || !r.co) return;
-    var ci = new Date(r.ci + 'T00:00:00');
-    var co = new Date(r.co + 'T00:00:00');
-    var inMonth = (ci.getFullYear()===year&&ci.getMonth()===month) ||
-                  (co.getFullYear()===year&&co.getMonth()===month) ||
-                  (ci<=new Date(year,month,1) && co>=new Date(year,month,daysInMonth));
-    if (!inMonth) return;
-    seenUsers[r.user || r.guest] = true;
+    var ci = new Date(r.ci + 'T00:00:00'), co = new Date(r.co + 'T00:00:00');
+    var inM = (ci.getFullYear()===year&&ci.getMonth()===month) ||
+              (co.getFullYear()===year&&co.getMonth()===month) ||
+              (ci<=new Date(year,month,1)&&co>=new Date(year,month,daysInMonth));
+    if (!inM) return;
+    seen[r.user || r.guest] = true;
     var pill = r.estado==='pago' ? '<span class="pill p-ok">Pago</span>' : '<span class="pill p-pend">Pendente</span>';
     listH += '<div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--bd);font-size:.82rem;gap:.5rem;flex-wrap:wrap;">'
-      + '<div><strong>' + esc(r.guest||'—') + '</strong><span style="color:var(--txl);font-size:.75rem;margin-left:6px;">' + r.ci + ' → ' + r.co + ' · ' + (r.nights||'?') + ' noites · ' + (r.plat||'') + '</span></div>'
+      + '<div><strong>' + esc(r.guest||'—') + '</strong><span style="color:var(--txl);font-size:.75rem;margin-left:6px;">'
+      + r.ci + ' → ' + r.co + ' · ' + (r.nights||'?') + ' noites · ' + (r.plat||'') + '</span></div>'
       + '<div style="display:flex;gap:.4rem;align-items:center;">' + pill + '<strong style="color:var(--g);">€' + (r.valor||0) + '</strong></div>'
       + '</div>';
   });
-
-  // From DB.guests (not in _reservas already)
-  (DB.guests || []).forEach(function(g) {
-    if (g.user === 'admin' || g.user === 'demo') return;
-    if (!g.checkin || !g.checkout || g.checkout === '2099-12-31') return;
-    if (seenUsers[g.user]) return;
-    var ci = new Date(g.checkin + 'T00:00:00');
-    var co = new Date(g.checkout + 'T00:00:00');
-    var inMonth = (ci.getFullYear()===year&&ci.getMonth()===month) ||
-                  (co.getFullYear()===year&&co.getMonth()===month) ||
-                  (ci<=new Date(year,month,1) && co>=new Date(year,month,daysInMonth));
-    if (!inMonth) return;
-    var nights = Math.round((co - ci) / 86400000);
+  Object.keys(guestObj).forEach(function(user) {
+    if (user==='admin'||user==='demo'||seen[user]) return;
+    var g = guestObj[user];
+    if (!g.checkin||!g.checkout||g.checkout==='2099-12-31') return;
+    var ci=new Date(g.checkin+'T00:00:00'),co=new Date(g.checkout+'T00:00:00');
+    var inM=(ci.getFullYear()===year&&ci.getMonth()===month)||(co.getFullYear()===year&&co.getMonth()===month)||
+            (ci<=new Date(year,month,1)&&co>=new Date(year,month,daysInMonth));
+    if (!inM) return;
     listH += '<div style="padding:.6rem 0;border-bottom:1px solid var(--bd);font-size:.82rem;">'
-      + '<strong>' + esc(g.name || g.user) + '</strong>'
-      + '<span style="color:var(--txl);font-size:.75rem;margin-left:6px;">' + g.checkin + ' → ' + g.checkout + ' · ' + nights + ' noites</span>'
-      + '</div>';
+      + '<strong>' + esc(g.name||user) + '</strong>'
+      + '<span style="color:var(--txl);font-size:.75rem;margin-left:6px;">' + g.checkin + ' → ' + g.checkout + '</span></div>';
   });
-
   var gl = document.getElementById('cal-guests-list');
   if (gl) gl.innerHTML = listH || '<div style="font-size:.82rem;color:var(--txl);">Nenhuma reserva neste mês.</div>';
 }
-
-
 function calPrev() { _calMonth--; if (_calMonth < 0) { _calMonth = 11; _calYear--; } renderCalendar(); }
 function calNext() { _calMonth++; if (_calMonth > 11) { _calMonth = 0; _calYear++; } renderCalendar(); }
 
@@ -2262,7 +2260,7 @@ function fillConfig(c) {
   s('ct-nome','proprietario_nome'); s('ct-wa','proprietario_whatsapp'); s('ct-tel','proprietario_telefone'); s('ct-email','proprietario_email');
   var av = document.getElementById('c-aviso-ativo');
   if (av && c['aviso_ativo'] !== undefined) av.value = String(c['aviso_ativo']);
-  if (c['propriedade_nome']) document.querySelector('.sb-sub').textContent = c['propriedade_nome'];
+  if (c['propriedade_nome']) { try { document.querySelector('.sb-sub').textContent = c['propriedade_nome']; document.querySelector('.lsub').textContent = c['propriedade_nome'].toUpperCase(); } catch(e){} }
   if (c['tema']) selectTema(c['tema']);
 }
 
