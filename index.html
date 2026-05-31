@@ -1181,6 +1181,14 @@ var GUESTS = {
 var API_URL = 'https://script.google.com/macros/s/AKfycbxqy-PfUD4XS0dCbe8vGUNDbJ5P8GUHlIbEz4I1hnAwjG-EZAZb_YyG_lUNx3AKd1yMJg/exec';
 var BACKOFFICE_URL = 'https://darioersantos.github.io/Yapp/yapp-backoffice';
 
+
+// ── Date display helper (dd-mm-aaaa) ─────────────────────────────
+function fmtDate(iso) {
+  if (!iso || iso === '2099-12-31') return '—';
+  var p = String(iso).split('-');
+  if (p.length !== 3) return iso;
+  return p[2] + '-' + p[1] + '-' + p[0];
+}
 var SESSION_KEY = 'yapp_cdg_v2';
 
 /* ═══ SESSÃO ════════════════════════════════════ */
