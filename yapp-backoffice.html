@@ -1110,7 +1110,14 @@ Entregar as chaves ao proprietário</textarea>
 
       <!-- Reservations list -->
       <div class="card">
-        <div class="ctitle">Reservas registadas</div>
+        <div class="ctitle" style="display:flex;justify-content:space-between;align-items:center;">
+          Reservas registadas
+          <div style="display:flex;gap:.4rem;">
+            <button class="actbtn" id="btn-filter-all" onclick="filterReservas('all')" style="background:var(--g);color:#fff;font-size:.72rem;">Todas</button>
+            <button class="actbtn" id="btn-filter-active" onclick="filterReservas('active')" style="font-size:.72rem;">Activas</button>
+            <button class="actbtn" id="btn-filter-past" onclick="filterReservas('past')" style="font-size:.72rem;">Histórico</button>
+          </div>
+        </div>
         <div id="rec-list"><div style="font-size:.82rem;color:var(--txl);">Nenhuma reserva registada.</div></div>
       </div>
 
@@ -1416,8 +1423,6 @@ function toggleBlock(year, month, day) {
 }
 
 function renderCalendar() {
-  if (!_reservas) loadReservas();
-
   var year = _calYear, month = _calMonth;
   var months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   var lbl = document.getElementById('cal-month-label');
@@ -1427,7 +1432,6 @@ function renderCalendar() {
   var firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
   var occupied = {}, checkinDays = {}, checkoutDays = {};
 
-  // Helper: mark days for a date range
   function markRange(ciStr, coStr, label) {
     if (!ciStr || !coStr) return;
     var ci = new Date(ciStr + 'T00:00:00');
@@ -1445,19 +1449,14 @@ function renderCalendar() {
     }
   }
 
-  // ── Source 1: _reservas (localStorage — reservations added via form) ──
   (_reservas || []).forEach(function(r) {
     if (r.ci && r.co) markRange(r.ci, r.co, r.guest || '—');
   });
 
-  // ── Source 2: DB.guests (Google Sheets — all guests including old ones) ──
   (DB.guests || []).forEach(function(g) {
     if (g.user === 'admin' || g.user === 'demo') return;
-    var ci = g.checkin || '';
-    var co = g.checkout || '';
-    if (!co || co === '2099-12-31') return;
-    // Only mark if not already covered by _reservas
-    if (ci && co) markRange(ci, co, g.name || g.user || '—');
+    if (!g.checkin || !g.checkout || g.checkout === '2099-12-31') return;
+    markRange(g.checkin, g.checkout, g.name || g.user || '—');
   });
 
   var grid = document.getElementById('cal-grid');
@@ -1537,8 +1536,42 @@ var _reservas = [];
 var REC_KEY = 'yapp_reservas';
 
 function loadReservas() {
+  // 1. Load from localStorage first (fast)
   try { _reservas = JSON.parse(localStorage.getItem(REC_KEY) || '[]'); } catch(e) { _reservas = []; }
-  renderReceitas();
+
+  // 2. Fetch from Google Sheets and merge (complete history)
+  if (API_URL) {
+    jsonpCall({ action: 'getReservas' }, function(err, d) {
+      if (err || !d || d.status !== 'ok' || !d.data) return;
+      var sheetsData = d.data || [];
+      // Merge: Sheets is the source of truth for history
+      // Add Sheets entries that aren't in localStorage (by ci+guest key)
+      var localKeys = {};
+      _reservas.forEach(function(r) { localKeys[(r.ci||'') + '|' + (r.guest||'')] = true; });
+      sheetsData.forEach(function(r) {
+        var key = (r.ci||'') + '|' + (r.guest||'');
+        if (!localKeys[key]) {
+          // Convert from Sheets format to local format
+          _reservas.push({
+            id: Date.now() + Math.random(),
+            ci: r.ci, co: r.co, guest: r.guest,
+            email: r.email || '', valor: r.valor || 0,
+            plat: r.plat || '', estado: r.estado || 'pago',
+            nights: r.nights || 0, notes: r.notes || '',
+            user: r.user || '', pass: r.pass || ''
+          });
+          localKeys[key] = true;
+        }
+      });
+      // Sort by check-in date descending
+      _reservas.sort(function(a,b) { return (b.ci||'').localeCompare(a.ci||''); });
+      localStorage.setItem(REC_KEY, JSON.stringify(_reservas));
+      renderReceitas();
+      // Re-render calendar only if it's currently visible
+      var calSec = document.getElementById('sec-ocupacao');
+      if (calSec && calSec.classList.contains('on')) renderCalendar();
+    }, 8000);
+  }
 }
 
 function _genUser(name) {
@@ -1677,6 +1710,17 @@ function hasOverlap(ci, co, excludeId) {
   });
 }
 
+var _recFilter = 'all';
+function filterReservas(f) {
+  _recFilter = f;
+  ['all','active','past'].forEach(function(x) {
+    var btn = document.getElementById('btn-filter-' + x);
+    if (btn) btn.style.background = (x === f) ? 'var(--g)' : '';
+    if (btn) btn.style.color = (x === f) ? '#fff' : '';
+  });
+  renderReceitas();
+}
+
 function saveReserva() {
   var ci    = v('rec-checkin');
   var co    = v('rec-checkout');
@@ -1782,25 +1826,36 @@ function renderReceitas() {
   // Cores por plataforma
   var plColors = { 'Airbnb':'#ff5a5f','Booking.com':'#003580','Direto':'var(--g)','Outro':'#888' };
 
-  // Reservas section: nome + datas + credenciais + eliminar
+  // Reservas section: nome + datas + credenciais + eliminar + filtro
   var recList = document.getElementById('rec-list');
   if (recList) {
-    if (!_reservas.length) {
-      recList.innerHTML = '<div style="font-size:.82rem;color:var(--txl);">Nenhuma reserva registada.</div>';
+    var today = new Date().toISOString().slice(0,10);
+    var filtered = _reservas.filter(function(r) {
+      if (_recFilter === 'active') return r.co >= today;
+      if (_recFilter === 'past')   return r.co < today;
+      return true; // 'all'
+    });
+    if (!filtered.length) {
+      recList.innerHTML = '<div style="font-size:.82rem;color:var(--txl);">Nenhuma reserva' + (_recFilter !== 'all' ? ' nesta categoria' : '') + '.</div>';
     } else {
-      recList.innerHTML = _reservas.map(function(r) {
+      recList.innerHTML = filtered.map(function(r) {
         var col = plColors[r.plat] || '#888';
+        var isPast = r.co < today;
         var pill = r.estado === 'pago' ? '<span class="pill p-ok">Pago</span>' : '<span class="pill p-pend">Pendente</span>';
-        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:.65rem 0;border-bottom:1px solid var(--bd);gap:.5rem;flex-wrap:wrap;">'
-          + '<div style="display:flex;align-items:center;gap:8px;">'
-          + '<div style="width:3px;height:40px;background:' + col + ';border-radius:2px;flex-shrink:0;"></div>'
-          + '<div><div style="font-size:.85rem;font-weight:600;">' + esc(r.guest || '—') + '</div>'
-          + '<div style="font-size:.72rem;color:var(--txl);">' + r.ci + ' → ' + r.co + ' · ' + (r.nights||'?') + ' noites</div>'
+        var pastBadge = isPast ? '<span style="font-size:.68rem;background:#f0f0f0;color:#999;border-radius:4px;padding:1px 6px;margin-left:4px;">Passada</span>' : '';
+        return '<div style="display:flex;align-items:flex-start;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--bd);gap:.5rem;flex-wrap:wrap;opacity:' + (isPast?'0.7':'1') + ';">'
+          + '<div style="display:flex;align-items:flex-start;gap:8px;">'
+          + '<div style="width:3px;min-height:50px;background:' + col + ';border-radius:2px;flex-shrink:0;margin-top:2px;"></div>'
+          + '<div>'
+          + '<div style="font-size:.88rem;font-weight:700;">' + esc(r.guest || '—') + pastBadge + '</div>'
+          + '<div style="font-size:.73rem;color:var(--txl);margin-top:1px;">' + (r.ci||'') + ' → ' + (r.co||'') + ' · ' + (r.nights||'?') + ' noites · ' + (r.plat||'—') + '</div>'
+          + (r.email ? '<div style="font-size:.73rem;color:var(--txl);">✉ ' + esc(r.email) + '</div>' : '')
           + (r.notes ? '<div style="font-size:.72rem;color:var(--txl);font-style:italic;">📝 ' + esc(r.notes) + '</div>' : '')
           + (r.user ? '<div style="font-size:.72rem;color:var(--txl);">User: <strong>' + r.user + '</strong> · Pass: <strong>' + r.pass + '</strong></div>' : '')
           + '</div></div>'
-          + '<div style="display:flex;align-items:center;gap:.4rem;">' + pill
-          + '<button class="actbtn del" onclick="deleteReserva(' + r.id + ')">×</button>'
+          + '<div style="display:flex;align-items:center;gap:.4rem;flex-shrink:0;">' + pill
+          + (r.valor ? '<strong style="color:var(--g);font-size:.88rem;">€' + r.valor + '</strong>' : '')
+          + '<button class="actbtn del" onclick="deleteReserva(' + r.id + ')" title="Eliminar">×</button>'
           + '</div></div>';
       }).join('');
     }
