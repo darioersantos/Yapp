@@ -2826,6 +2826,7 @@ function saveQuartos() {
     params['q' + j + '_titulo'] = '';
     params['q' + j + '_desc']   = '';
   }
+  params['quartos_count'] = _quartoCount;
   apiWrite(params, function() {
     hideLoading(); showOk('ok-casa-quartos'); toast('✓ Quartos guardados!');
   });
