@@ -2801,15 +2801,31 @@ function addQuarto() {
     + '<div class="fld"><label>Título</label><input class="inp" id="qt-' + n + '" placeholder="ex: Quarto ' + n + '"/></div>'
     + '<div class="fld"><label>Descrição</label><textarea class="inp ta" id="qd-' + n + '" placeholder="Descrição..."></textarea></div>';
   document.getElementById('quartos-editor').appendChild(div);
+  div.scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
 function removeQuarto(n) {
+  if (_quartoCount <= 1) { toast('Deve ter pelo menos 1 quarto.'); return; }
+  // Remove the card from DOM
   var card = document.getElementById('quarto-card-' + n);
-  if (card) {
-    card.querySelector('[id^="qt-"]').value = '';
-    card.querySelector('[id^="qd-"]').value = '';
-    card.style.display = 'none';
-    toast('Quarto ' + n + ' removido. Guarda para aplicar.');
-  }
+  if (!card) return;
+  card.parentNode.removeChild(card);
+  // Renumber remaining quartos sequentially
+  var editor = document.getElementById('quartos-editor');
+  var cards = editor.querySelectorAll('.card');
+  _quartoCount = cards.length;
+  cards.forEach(function(c, idx) {
+    var newN = idx + 1;
+    c.id = 'quarto-card-' + newN;
+    var title = c.querySelector('.ctitle');
+    if (title) title.childNodes[0].textContent = 'Quarto ' + newN + ' ';
+    var btn = c.querySelector('button');
+    if (btn) btn.setAttribute('onclick', 'removeQuarto(' + newN + ')');
+    var inp = c.querySelector('input');
+    if (inp) inp.id = 'qt-' + newN;
+    var ta = c.querySelector('textarea');
+    if (ta) ta.id = 'qd-' + newN;
+  });
+  toast('Quarto ' + n + ' removido e renumerado.');
 }
 function saveQuartos() {
   saveLocal();
