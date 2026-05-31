@@ -2375,17 +2375,18 @@ function closeDrawer() {
 
 // ── NAVIGATION ──────────────────────────────────
 function go(sec, el) {
+  // Scroll to top BEFORE switching sections
+  try { document.documentElement.scrollTop = 0; document.body.scrollTop = 0; window.scrollTo(0,0); } catch(e){}
   document.querySelectorAll('.sec').forEach(function(s) { s.classList.remove('on'); });
   document.querySelectorAll('.sbi').forEach(function(n) { n.classList.remove('on'); });
-  document.getElementById('sec-' + sec).classList.add('on');
+  var secEl = document.getElementById('sec-' + sec);
+  if (secEl) secEl.classList.add('on');
   if (el) el.classList.add('on');
   closeDrawer();
-  // Scroll to top — both window and any scroll containers
-  window.scrollTo({ top: 0, behavior: 'instant' });
-  document.body.scrollTop = 0;
-  document.documentElement.scrollTop = 0;
-  var main = document.querySelector('.main');
-  if (main) main.scrollTop = 0;
+  // Scroll to top again after repaint to catch any layout shifts
+  requestAnimationFrame(function() {
+    try { document.documentElement.scrollTop = 0; document.body.scrollTop = 0; window.scrollTo(0,0); } catch(e){}
+  });
   if (sec === 'ocupacao') renderCalendar();
   if (sec === 'receitas') { loadReservas(); renderReceitas(); }
   if (sec === 'financeiro') { loadReservas(); renderReceitas(); }
