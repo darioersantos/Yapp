@@ -1639,7 +1639,11 @@ function _isoLocal(d) {
 function openDatePicker(fieldId) {
   _dpField = fieldId;
   _dpOccupied = {};
+
+  // Mark occupied dates from reservations
+  var editId = document.getElementById('rec-form-card') && document.getElementById('rec-form-card').dataset.editId;
   _reservas.forEach(function(r) {
+    if (editId && r.id == editId) return; // skip reservation being edited
     if (!r.ci || !r.co) return;
     var d   = new Date(r.ci + 'T00:00:00');
     var end = new Date(r.co + 'T00:00:00');
@@ -1647,6 +1651,11 @@ function openDatePicker(fieldId) {
       _dpOccupied[_isoLocal(d)] = r.guest || '?';
       d.setDate(d.getDate() + 1);
     }
+  });
+
+  // Also mark manually blocked days
+  Object.keys(_blockedDays || {}).forEach(function(iso) {
+    if (_blockedDays[iso]) _dpOccupied[iso] = 'Bloqueado';
   });
   var wrap = document.querySelector('[onclick*="' + fieldId + '"]');
   var overlay = document.getElementById('datepicker-overlay');
