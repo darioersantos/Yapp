@@ -1978,10 +1978,6 @@ function applyData(d, fromCache) {
     d.casa = d.casa || {};
     d.casa.propriedade_nome = d.config.propriedade_nome;
   }
-  if (d.config && d.config.boas_vindas && !(d.casa && d.casa.boas_vindas)) {
-    d.casa = d.casa || {};
-    d.casa.boas_vindas = d.config.boas_vindas;
-  }
   applyConfig(d.config || {}, !fromCache);
   applyCasa(d.casa || {});
   applyServicos(d.servicos || {});
