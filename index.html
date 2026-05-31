@@ -1973,10 +1973,14 @@ var CACHE_KEY = 'yapp_data_cache';
 
 function applyData(d, fromCache) {
   if (!d || d.status !== 'ok') return;
-  // Pass propriedade_nome from config into casa so data-api elements update
+  // Pass propriedade_nome and boas_vindas from config into casa if missing
   if (d.config && d.config.propriedade_nome) {
     d.casa = d.casa || {};
     d.casa.propriedade_nome = d.config.propriedade_nome;
+  }
+  if (d.config && d.config.boas_vindas && !(d.casa && d.casa.boas_vindas)) {
+    d.casa = d.casa || {};
+    d.casa.boas_vindas = d.config.boas_vindas;
   }
   applyConfig(d.config || {}, !fromCache);
   applyCasa(d.casa || {});
