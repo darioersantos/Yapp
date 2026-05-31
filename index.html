@@ -1065,75 +1065,8 @@ body.aviso-active #notif-banner{top:2.2rem;}
 <div class="modal-overlay" id="m-qr" onclick="closeQR()"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Ler QR Code</div><p style="font-size:0.82rem;color:var(--text-light);margin-bottom:1rem;line-height:1.5;">Aponta a câmara para o QR code na entrada da Casa do Gerês.</p><div id="qr-video-wrap"><video id="qr-video" playsinline autoplay muted></video><div class="qr-frame"></div></div><div id="qr-result">A iniciar câmara...</div><button class="form-btn" style="margin-top:0.75rem;" onclick="closeQR()">Fechar câmara</button></div></div>
 
 <div class="modal-overlay" id="m-info" data-api-modal="m-info" onclick="cm('m-info')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle" data-modal="m-info"></div><div class="modal-title" data-api="info_titulo">Informações úteis</div><div id="boas-vindas-dynamic" style="font-size:0.88rem;color:var(--text-mid);line-height:1.8;"><p style="font-size:0.95rem;color:var(--text-mid);line-height:1.8;">Bem-vindo à Casa do Gerês.</p><p style="margin-top:0.75rem;">Queremos que a sua visita seja verdadeiramente inesquecível, envolvendo todos os seus sentidos.</p><p style="margin-top:0.75rem;">Em nome da família Pereira, desejamos-lhe uma excelente estadia!</p></div>
-<!-- Acordeão informações extra -->
-<div id="m-info-accordion" style="margin-top:1rem;">
-  <div class="acc-item" id="info-estac" style="border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;">
-    <div class="acc-header" onclick="toggleAcc('info-estac')" style="padding:.75rem 1rem;">
-      <div class="acc-header-text"><div class="acc-header-label">Estacionamento</div></div>
-      <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-    <div class="acc-body"><div class="acc-inner" style="padding:.75rem 1rem;"><p style="font-size:0.82rem;color:var(--text-mid);line-height:1.6;">O empreendimento possui estacionamento privado e gratuito, dotado de cancela automática, através da utilização do comando que lhe será fornecido no momento do check-in.<br/><br/>Para sua segurança mantenha sempre o portão fechado.</p></div></div>
-  </div>
-  <div class="acc-item" id="info-agua" style="border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;">
-    <div class="acc-header" onclick="toggleAcc('info-agua')" style="padding:.75rem 1rem;">
-      <div class="acc-header-text"><div class="acc-header-label">Água potável</div></div>
-      <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-    <div class="acc-body"><div class="acc-inner" style="padding:.75rem 1rem;"><p style="font-size:0.82rem;color:var(--text-mid);line-height:1.6;">A água da torneira é potável, contudo recomendamos o consumo de água engarrafada.</p></div></div>
-  </div>
-  <div class="acc-item" id="info-alarme" style="border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;">
-    <div class="acc-header" onclick="toggleAcc('info-alarme')" style="padding:.75rem 1rem;">
-      <div class="acc-header-text"><div class="acc-header-label">Alarme</div></div>
-      <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-    <div class="acc-body"><div class="acc-inner" style="padding:.75rem 1rem;"><p style="font-size:0.82rem;color:var(--text-mid);line-height:1.6;">Consulte o Plano de Emergência afixado na entrada da casa.</p></div></div>
-  </div>
-  <div class="acc-item" id="info-cofre" style="border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;">
-    <div class="acc-header" onclick="toggleAcc('info-cofre')" style="padding:.75rem 1rem;">
-      <div class="acc-header-text"><div class="acc-header-label">Cofre</div></div>
-      <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-    <div class="acc-body"><div class="acc-inner" style="padding:.75rem 1rem;"><p style="font-size:0.82rem;color:var(--text-mid);line-height:1.6;">A casa dispõe de um cofre. Não nos responsabilizamos por quaisquer perdas de objetos ou valores deixados na casa.</p></div></div>
-  </div>
-  <div class="acc-item" id="info-corrente" style="border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;">
-    <div class="acc-header" onclick="toggleAcc('info-corrente')" style="padding:.75rem 1rem;">
-      <div class="acc-header-text"><div class="acc-header-label">Corrente elétrica</div></div>
-      <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-    <div class="acc-body"><div class="acc-inner" style="padding:.75rem 1rem;"><p style="font-size:0.82rem;color:var(--text-mid);line-height:1.6;">220V</p></div></div>
-  </div>
-  <div class="acc-item" id="info-drones" style="border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;">
-    <div class="acc-header" onclick="toggleAcc('info-drones')" style="padding:.75rem 1rem;">
-      <div class="acc-header-text"><div class="acc-header-label">Drones</div></div>
-      <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-    <div class="acc-body"><div class="acc-inner" style="padding:.75rem 1rem;"><p style="font-size:0.82rem;color:var(--text-mid);line-height:1.6;">É expressamente proibida a utilização de Drones sobre a Propriedade.</p></div></div>
-  </div>
-</div>
-<!-- Itens fixos — fora do contentor dinâmico para não serem substituídos -->
-<div id="m-info-static">
-  <div class="acc-item" id="info-regras" style="border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;">
-    <div class="acc-header" onclick="toggleAcc('info-regras')" style="padding:.75rem 1rem;">
-      <div class="acc-header-text"><div class="acc-header-label">Regras da casa</div></div>
-      <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-    <div class="acc-body"><div class="acc-inner" style="padding:.75rem 1rem;"><p style="font-size:0.82rem;color:var(--text-mid);line-height:1.6;">Silêncio entre as 22h e as 08h. Animais permitidos, não entram na piscina. Proibido fumar dentro da casa.</p></div></div>
-  </div>
-  <div class="acc-item" id="info-reciclagem" style="border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;">
-    <div class="acc-header" onclick="toggleAcc('info-reciclagem')" style="padding:.75rem 1rem;">
-      <div class="acc-header-text"><div class="acc-header-label">Reciclagem</div></div>
-      <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-    <div class="acc-body"><div class="acc-inner" style="padding:.75rem 1rem;"><p style="font-size:0.82rem;color:var(--text-mid);line-height:1.6;">Verde=vidro · Azul=papel · Amarelo=plástico · Preto=indiferenciado. Contentores no exterior da propriedade.</p></div></div>
-  </div>
-  <div class="acc-item" id="info-quadro" style="border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;">
-    <div class="acc-header" onclick="toggleAcc('info-quadro')" style="padding:.75rem 1rem;">
-      <div class="acc-header-text"><div class="acc-header-label">Quadro elétrico</div></div>
-      <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-    <div class="acc-body"><div class="acc-inner" style="padding:.75rem 1rem;"><p style="font-size:0.82rem;color:var(--text-mid);line-height:1.6;">Corredor da entrada, armário branco à direita. Se a luz cair: desligue os aparelhos e levante o disjuntor falhado.</p></div></div>
-  </div>
-</div>
+<!-- Acordeão informações úteis — preenchido dinamicamente via info_json -->
+<div id="m-info-accordion" style="margin-top:1rem;"></div>
 </div></div></div>
 
 <div class="modal-overlay" id="m-piscina" onclick="cm('m-piscina')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle" data-modal="m-piscina"></div><img class="modal-img" src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600&auto=format&fit=crop&q=75" alt="Piscina"/><div class="modal-title" data-api="piscina_titulo">Piscina</div><div class="form-stack" id="pisc-dynamic"><div class="card" style="background:rgba(192,57,43,0.06);border-color:rgba(192,57,43,0.2);"><div style="font-size:0.85rem;font-weight:600;color:#c0392b;margin-bottom:5px;">⚠️ Atenção</div><p style="font-size:0.85rem;color:var(--text-mid);line-height:1.6;font-weight:500;" data-api="piscina_criancas">Mantenha as crianças sempre sob vigilância!</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Informação</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Profundidade 1,50m</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;" data-api="piscina_equip_label">Equipamento</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;" data-api="piscina_equip">Espreguiçadeiras e guarda-sol disponíveis junto à piscina. Toalhas no armário do corredor.</p></div></div></div></div>
@@ -2427,13 +2360,7 @@ function applyCasa(c) {
     }
   });
 
-  // Garantir que informações úteis accordion também actualiza via data-api
-  var infoKeys = ['info_estac','info_agua','info_alarme','info_cofre','info_corrente','info_drones'];
-  infoKeys.forEach(function(key) {
-    if (!c[key]) return;
-    var accBody = document.getElementById(key.replace('_','-'));
-    if (accBody) { var p = accBody.querySelector('.acc-inner p'); if (p) p.textContent = c[key]; }
-  });
+
 
   // Images
   function si(sel, val) { var el = document.querySelector(sel); if (el && val) el.src = val; }
@@ -2453,21 +2380,7 @@ function applyCasa(c) {
     if (vid) vid.setAttribute('poster', c.splash_img);
   }
 
-  // Informações úteis accordion — actualizar texto de cada item
-  var infoFields = {
-    'info_estac': 'info-estac', 'info_agua': 'info-agua',
-    'info_alarme': 'info-alarme', 'info_cofre': 'info-cofre',
-    'info_corrente': 'info-corrente', 'info_drones': 'info-drones'
-  };
-  Object.keys(infoFields).forEach(function(key) {
-    if (c[key]) {
-      var acc = document.getElementById(infoFields[key]);
-      if (acc) {
-        var p = acc.querySelector('.acc-inner p');
-        if (p) p.textContent = c[key];
-      }
-    }
-  });
+
 
 
   // ── Render dynamic JSON sections ──────────────────────────────
@@ -2507,7 +2420,8 @@ function applyCasa(c) {
   if (c.pisc_json)  renderDynSection('pisc-dynamic', c.pisc_json, true);
   if (c.ext_json)   renderDynSection('ext-dynamic', c.ext_json, false);
   if (c.servicos_json) renderServicos(c.servicos_json);
-  if (c.info_json)  renderInfoDyn(c.info_json);
+  var infoJsonDefault = '[{"title":"Estacionamento","text":"O empreendimento possui estacionamento privado e gratuito, dotado de cancela automática, através da utilização do comando que lhe será fornecido no momento do check-in."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Água potável","text":"A água da torneira é potável e tratada, contudo recomenda-se o uso de água engarrafada para consumo."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior."},{"title":"Regras da casa","text":"Silêncio entre as 22h e as 08h. Animais permitidos, não entram na piscina. Proibido fumar dentro da casa."},{"title":"Reciclagem","text":"Verde=vidro · Azul=papel · Amarelo=plástico · Preto=indiferenciado. Contentores no exterior da propriedade."},{"title":"Quadro elétrico","text":"Corredor da entrada, armário branco à direita. Se a luz cair: desligue os aparelhos e levante o disjuntor falhado."}]';
+  renderInfoDyn(c.info_json || infoJsonDefault);
 
   // Churrasqueira utensílios (comma-separated → chips)
   if (c.churrasco_utens) {
