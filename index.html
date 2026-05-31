@@ -1435,6 +1435,12 @@ function doLogin() {
     return;
   }
   var g = GUESTS[user];
+  // Block inactive guests (e.g. checkout passed)
+  if (g.active === false) {
+    var errI = document.getElementById('login-error');
+    if (errI) errI.textContent = 'Acesso expirado.';
+    return;
+  }
   if (g.pass && g.pass !== pass) {
     var err2 = document.getElementById('login-error');
     if (err2) err2.textContent = 'Código de acesso incorrecto.';
