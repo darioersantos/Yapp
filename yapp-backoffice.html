@@ -388,6 +388,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
       <div class="sbi" onclick="go('notificacoes',this)"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>Notificações</div>
 
       <div class="sbsec">Propriedade</div>
+      <div class="sbi" onclick="go('info-uteis',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Informações úteis</div>
       <div class="sbi" onclick="go('config',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Info & Splash</div>
       <div class="sbi" onclick="go('wifi',this)"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>Wi-Fi</div>
       <div class="sbi" onclick="go('casa-regras',this)"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Regras & Check-out</div>
@@ -626,7 +627,20 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 
     </div><!-- /cw -->
 
-        <div id="sec-casa-geral" class="sec">
+        <!-- INFORMAÇÕES ÚTEIS -->
+    <div id="sec-info-uteis" class="sec">
+    <div class="content-wrap">
+      <div class="ph"><div><div class="ptitle">Informações úteis</div><div class="psub">Itens do accordion na app — edita, adiciona, remove e reordena</div></div></div>
+      <div class="card">
+        <div class="ctitle">Itens — arrasta ⠿ para reordenar</div>
+        <p style="font-size:.78rem;color:var(--txl);margin-bottom:.75rem;">Cada item aparece no accordion "Informações úteis". Podes editar o título, o texto, adicionar novos ou eliminar.</p>
+        <div id="dyn-info"></div>
+      </div>
+      <button class="savebtn" onclick="saveSection('info-uteis')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-info-uteis">Guardado!</span></button>
+    </div>
+    </div>
+
+    <div id="sec-casa-geral" class="sec">
     <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Info geral da casa</div></div></div>
       <div class="card">
@@ -652,11 +666,7 @@ Lareira interior
 Máquina de café
 Máq. de lavar roupa</textarea>
       </div>
-      <div class="card">
-        <div class="ctitle">Informações úteis — edita, adiciona ou remove itens</div>
-        <p style="font-size:.78rem;color:var(--txl);margin-bottom:.6rem;">Estes itens aparecem no accordion "Informações úteis" da app.</p>
-        <div id="dyn-info"></div>
-      </div>
+<!-- info moved to sec-info-uteis -->
       <button class="savebtn" onclick="saveSection('casa-geral')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-geral">Guardado!</span></button>
     </div>
 
@@ -1820,27 +1830,64 @@ function dynRender(key) {
 
 var _dragSrcIdx = null;
 var _dragKey    = null;
+var _dragEl     = null;
 
 function dynDragStart(e) {
-  var el = e.currentTarget;
-  _dragSrcIdx = parseInt(el.dataset.idx);
-  _dragKey    = el.dataset.key;
+  _dragEl     = e.currentTarget;
+  _dragSrcIdx = parseInt(_dragEl.dataset.idx);
+  _dragKey    = _dragEl.dataset.key;
   e.dataTransfer.effectAllowed = 'move';
-  el.style.opacity = '0.4';
+  e.dataTransfer.setData('text/plain', _dragSrcIdx);
+  setTimeout(function() { if (_dragEl) _dragEl.style.opacity = '0.4'; }, 0);
 }
-function dynDragEnd(e) { e.currentTarget.style.opacity = '1'; }
-function dynDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; return false; }
-function dynDrop(e, key) {
+function dynDragEnd(e) {
+  if (_dragEl) _dragEl.style.opacity = '1';
+  document.querySelectorAll('.dyn-card-wrap').forEach(function(el) {
+    el.style.borderTop = '';
+    el.style.borderBottom = '';
+  });
+  _dragEl = null;
+}
+function dynDragOver(e) {
+  e.preventDefault();
   e.stopPropagation();
-  var el = e.currentTarget;
-  var destIdx = parseInt(el.dataset.idx);
-  if (_dragSrcIdx === null || _dragSrcIdx === destIdx || _dragKey !== key) return false;
+  e.dataTransfer.dropEffect = 'move';
+  var target = e.currentTarget;
+  document.querySelectorAll('.dyn-card-wrap').forEach(function(el) {
+    el.style.borderTop = '';
+    el.style.borderBottom = '';
+  });
+  var rect = target.getBoundingClientRect();
+  var mid  = rect.top + rect.height / 2;
+  if (e.clientY < mid) {
+    target.style.borderTop = '2px solid var(--g)';
+  } else {
+    target.style.borderBottom = '2px solid var(--g)';
+  }
+  return false;
+}
+function dynDrop(e, key) {
+  e.preventDefault();
+  e.stopPropagation();
+  var target  = e.currentTarget;
+  var destIdx = parseInt(target.dataset.idx);
+  document.querySelectorAll('.dyn-card-wrap').forEach(function(el) {
+    el.style.borderTop = '';
+    el.style.borderBottom = '';
+  });
+  if (_dragSrcIdx === null || _dragKey !== key) return false;
   // Sync current DOM values before reordering
   dynSyncDOM(key);
-  // Reorder
+  if (_dragSrcIdx === destIdx) return false;
+  // Determine drop position (before or after target)
+  var rect = target.getBoundingClientRect();
+  var mid  = rect.top + rect.height / 2;
+  var insertBefore = e.clientY < mid;
   var arr = _dynData[key];
   var moved = arr.splice(_dragSrcIdx, 1)[0];
-  arr.splice(destIdx, 0, moved);
+  var newIdx = destIdx > _dragSrcIdx ? destIdx - 1 : destIdx;
+  if (!insertBefore && newIdx < arr.length) newIdx++;
+  arr.splice(newIdx, 0, moved);
   _dragSrcIdx = null;
   dynRender(key);
   return false;
@@ -2005,6 +2052,7 @@ function go(sec, el) {
   if (sec === 'ocupacao') renderCalendar();
   if (sec === 'receitas') { loadReservas(); renderReceitas(); }
   if (sec === 'financeiro') { loadReservas(); renderReceitas(); }
+  if (sec === 'info-uteis') { dynLoad('info', (_dynData.info ? JSON.stringify(_dynData.info) : null) || localStorage.getItem('dyn_info') || null); }
 }
 
 // ── LOAD ALL FROM API ────────────────────────────
@@ -2228,11 +2276,11 @@ function saveSection(sec) {
   saveLocal();
   // Mapa completo: secção → { action, campos }
   var maps = {
+    'info-uteis': { action:'saveCasa', info_json:dynGet('info') },
     'casa-geral': { action:'saveCasa',
       info_img:v('img-info'),
       boas_vindas:v('c-bv'),
-      comodidades:v('c-comod'),
-      info_json:dynGet('info')
+      comodidades:v('c-comod')
     },
     'casa-quartos': { action:'saveCasa',
       quartos_img:v('img-qts'),
