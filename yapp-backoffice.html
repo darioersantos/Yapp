@@ -307,7 +307,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
       <svg width="148" height="106" viewBox="0 5 220 158" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="65" cy="95" r="62" fill="#4da6ff"/><circle cx="115" cy="60" r="50" fill="#4da6ff"/><circle cx="170" cy="75" r="45" fill="#4da6ff"/><circle cx="155" cy="108" r="42" fill="#4da6ff"/></svg>
     </div>
     <div class="ll">YAPP Backoffice</div>
-    <div class="lsub">Casa do Gerês</div>
+    <div class="lsub" id="login-prop-name" style="visibility:hidden;">YAPP</div>
     <label class="llbl">Password de acesso</label>
     <div style="position:relative;margin-bottom:.9rem;">
       <input class="li" id="lpass" type="password" placeholder="••••••••" style="margin-bottom:0;padding-right:3rem;"/>
@@ -1515,7 +1515,9 @@ function renderCalendar() {
       + '</div>';
   });
   Object.keys(guestObj).forEach(function(user) {
-    if (user==='admin'||user==='demo'||seen[user]) return;
+    var g2 = guestObj[user];
+    if (user==='admin'||user==='demo') return;
+    if (seen[user] || seen[g2.name] || seen[g2.name && g2.name.toLowerCase()]) return;
     var g = guestObj[user];
     if (!g.checkin||!g.checkout||g.checkout==='2099-12-31') return;
     var ci=new Date(g.checkin+'T00:00:00'),co=new Date(g.checkout+'T00:00:00');
@@ -1766,6 +1768,15 @@ function saveReserva() {
       }
       return r;
     });
+    // Also update DB.guests so calendar shows correct dates
+    if (DB.guests) {
+      DB.guests = DB.guests.map(function(g) {
+        if (g.user === user || g.name === guest) {
+          return Object.assign({}, g, { checkin:ci, checkout:co });
+        }
+        return g;
+      });
+    }
     // Update in Sheets (guest checkout/checkin update)
     apiWrite({ action:'addGuest', user:user, pass:pass, checkin:ci, checkout:co, name:guest, email:email, notes:notas }, function(){});
     apiWrite({ action:'saveReserva', ci:ci, co:co, guest:guest, email:email, valor:valor, plat:plat, estado:estado, nights:nights, user:user, pass:pass, notes:notas }, function(){});
@@ -2194,6 +2205,19 @@ function doLogin() {
 function doLogout() { localStorage.removeItem(BO_KEY); location.reload(); }
 window.addEventListener('DOMContentLoaded', function() {
   document.getElementById('lpass').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
+
+  // Fetch property name to show on login screen (even before auth)
+  if (API_URL) {
+    jsonpCall({ action: 'config' }, function(err, d) {
+      if (err || !d) return;
+      var nome = (d.data && d.data.propriedade_nome) || '';
+      if (!nome && d.propriedade_nome) nome = d.propriedade_nome;
+      if (nome) {
+        var lp = document.getElementById('login-prop-name');
+        if (lp) { lp.textContent = nome.toUpperCase(); lp.style.visibility = 'visible'; }
+      }
+    }, 6000);
+  }
   // Mostrar barra "Voltar à app" se veio da app do hóspede
   if (localStorage.getItem('yapp_return_url')) {
     var bar = document.getElementById('return-app-bar');
@@ -2378,7 +2402,14 @@ function fillConfig(c) {
   s('ct-nome','proprietario_nome'); s('ct-wa','proprietario_whatsapp'); s('ct-tel','proprietario_telefone'); s('ct-email','proprietario_email');
   var av = document.getElementById('c-aviso-ativo');
   if (av && c['aviso_ativo'] !== undefined) av.value = String(c['aviso_ativo']);
-  if (c['propriedade_nome']) { try { document.querySelector('.sb-sub').textContent = c['propriedade_nome']; document.querySelector('.lsub').textContent = c['propriedade_nome'].toUpperCase(); } catch(e){} }
+  if (c['propriedade_nome']) {
+    try {
+      var n = c['propriedade_nome'].toUpperCase();
+      document.querySelector('.sb-sub').textContent = c['propriedade_nome'];
+      var lp = document.getElementById('login-prop-name');
+      if (lp) { lp.textContent = n; lp.style.visibility = 'visible'; }
+    } catch(e) {}
+  }
   if (c['tema']) selectTema(c['tema']);
 }
 
