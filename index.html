@@ -2469,7 +2469,7 @@ function applyCasa(c) {
         for (var i = 1; i <= 10; i++) {
           var t = c['q'+i+'_titulo'], d = c['q'+i+'_desc'];
           if (!t && !d) break;
-          if (t || d) html2 += '<div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">' + (t||'Quarto '+i) + '</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">' + (d||'') + '</p></div>';
+          html2 += '<div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">' + (t||'Quarto '+i) + '</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">' + (d||'') + '</p></div>';
         }
         if (html2) container2.innerHTML = html2;
       }
@@ -2481,7 +2481,7 @@ function applyCasa(c) {
       var html3 = '';
       for (var j = 1; j <= 10; j++) {
         var qt = c['q'+j+'_titulo'], qd = c['q'+j+'_desc'];
-        if (!qt && !qd) { if (j > 3) break; continue; }
+        if (!qt && !qd) break; // para no primeiro quarto vazio
         html3 += '<div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">' + (qt||'Quarto '+j) + '</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">' + (qd||'') + '</p></div>';
       }
       if (html3) container3.innerHTML = html3;
