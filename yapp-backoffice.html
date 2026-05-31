@@ -1703,11 +1703,9 @@ function dpSelect(iso) {
 
 // ── OVERLAP DETECTION ────────────────────────────────
 function hasOverlap(ci, co, excludeId) {
-  // Usa comparação de strings ISO (YYYY-MM-DD) para evitar problemas de timezone
   return _reservas.some(function(r) {
-    if (excludeId && r.id === excludeId) return false;
+    if (excludeId && r.id == excludeId) return false; // == para comparar número com string
     if (!r.ci || !r.co) return false;
-    // Overlap se: novo check-in <= checkout existente E novo checkout >= checkin existente
     return ci <= r.co && co >= r.ci;
   });
 }
