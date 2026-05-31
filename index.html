@@ -1077,7 +1077,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
 
 <div class="modal-overlay" id="m-info" data-api-modal="m-info" onclick="cm('m-info')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle" data-modal="m-info"></div><div class="modal-title" data-api="info_titulo">Informações úteis</div><div id="boas-vindas-dynamic" style="font-size:0.88rem;color:var(--text-mid);line-height:1.8;"><p style="font-size:0.95rem;color:var(--text-mid);line-height:1.8;">Bem-vindo à Casa do Gerês.</p><p style="margin-top:0.75rem;">Queremos que a sua visita seja verdadeiramente inesquecível, envolvendo todos os seus sentidos.</p><p style="margin-top:0.75rem;">Em nome da família Pereira, desejamos-lhe uma excelente estadia!</p></div>
 <!-- Acordeão informações extra -->
-<div style="margin-top:1rem;">
+<div id="m-info-accordion" style="margin-top:1rem;">
   <div class="acc-item" id="info-estac" style="border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;">
     <div class="acc-header" onclick="toggleAcc('info-estac')" style="padding:.75rem 1rem;">
       <div class="acc-header-text"><div class="acc-header-label">Estacionamento</div></div>
@@ -2235,14 +2235,17 @@ function renderInfoDyn(jsonStr) {
   var cards;
   try { cards = JSON.parse(jsonStr); } catch(e) { return; }
   if (!cards || !cards.length) return;
+  var style = 'border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;';
   acc.innerHTML = cards.map(function(card, i) {
     var id = 'info-dyn-' + i;
-    return '<div class="acc-item" id="' + id + '">'
-      + '<div class="acc-header" onclick="toggleAcc(\'' + id + '\')">'
-      + '<span>' + (card.title || '') + '</span>'
-      + '<svg class="acc-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>'
+    return '<div class="acc-item" id="' + id + '" style="' + style + '">'
+      + '<div class="acc-header" onclick="toggleAcc(\'' + id + '\')" style="padding:.75rem 1rem;">'
+      + '<div class="acc-header-text"><div class="acc-header-label">' + (card.title || '') + '</div></div>'
+      + '<svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>'
       + '</div>'
-      + '<div class="acc-inner" style="display:none;"><p style="font-size:0.85rem;color:var(--text-mid);line-height:1.6;">' + (card.text || '') + '</p></div>'
+      + '<div class="acc-body"><div class="acc-inner" style="padding:.6rem 1rem .85rem;">'
+      + '<p style="font-size:.85rem;color:var(--text-mid);line-height:1.65;">' + (card.text || '') + '</p>'
+      + '</div></div>'
       + '</div>';
   }).join('');
 }
@@ -2410,7 +2413,7 @@ function applyCasa(c) {
   if (c.wc_json)    renderDynSection('wc-dynamic', c.wc_json, false);
   if (c.coz_json)   renderDynSection('coz-dynamic', c.coz_json, false);
   if (c.chur_json)  renderDynSection('chur-dynamic', c.chur_json, false);
-  if (c.pisc_json)  renderDynSection('pisc-dynamic', c.pisc_json, true); // first card = red alert
+  if (c.pisc_json)  renderDynSection('pisc-dynamic', c.pisc_json, true);
   if (c.info_json)  renderInfoDyn(c.info_json);
 
   // Churrasqueira utensílios (comma-separated → chips)
