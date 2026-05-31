@@ -743,7 +743,7 @@ Máq. de lavar roupa</textarea>
           <div class="fld"><label>Foto exterior</label>
             <div class="photo-row" style="flex-direction:column;gap:.4rem;">
               <img id="prev-ext" class="photo-prev wide" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&auto=format&fit=crop&q=75"/>
-              <input class="photo-url" id="img-ext" value="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-ext','img-ext')"/>
+              <input class="photo-url" id="img-ext" value="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-ext','img-ext')"/>
             </div>
           </div>
         </div>
@@ -2218,8 +2218,10 @@ function svcSyncDOM() {
     (cat.items || []).forEach(function(item, ii) {
       var nEl = document.getElementById('svc-in-' + ci + '-' + ii);
       var dEl = document.getElementById('svc-id-' + ci + '-' + ii);
-      if (nEl) item.name   = nEl.value.trim();
-      if (dEl) item.detail = dEl.value.trim();
+      var mEl = document.getElementById('svc-im-' + ci + '-' + ii);
+      if (nEl) item.name    = nEl.value.trim();
+      if (dEl) item.detail  = dEl.value.trim();
+      if (mEl) item.map_url = mEl.value.trim();
     });
   });
 }
@@ -2401,7 +2403,12 @@ function go(sec, el) {
   document.getElementById('sec-' + sec).classList.add('on');
   if (el) el.classList.add('on');
   closeDrawer();
-  window.scrollTo(0, 0);
+  // Scroll to top — both window and any scroll containers
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+  var main = document.querySelector('.main');
+  if (main) main.scrollTop = 0;
   if (sec === 'ocupacao') renderCalendar();
   if (sec === 'receitas') { loadReservas(); renderReceitas(); }
   if (sec === 'financeiro') { loadReservas(); renderReceitas(); }
@@ -2517,7 +2524,7 @@ function fillConfig(c) {
   s('c-nome','propriedade_nome'); s('c-sub','propriedade_subtitulo'); s('c-desc','propriedade_descricao');
   s('c-ci','checkin_hora'); s('c-co','checkout_hora'); s('c-cap','capacidade'); s('c-qts','quartos');
   s('c-pisc','horario_piscina'); s('c-stream','streaming_plataformas');
-  s('c-lat','lat'); s('c-lng','lng'); s('c-bv','mensagem_boas_vindas');
+  s('c-lat','lat'); s('c-lng','lng'); s('c-bv', c.boas_vindas || c.mensagem_boas_vindas || '');
   s('c-aviso-txt','aviso_texto'); s('c-codesc','codigo_desconto');
   s('c-ig','instagram_url'); s('c-fb','facebook_url'); s('c-grev','google_reviews_url');
   s('w-ssid1','wifi_ssid'); s('w-pass1','wifi_pass'); s('w-ssid2','wifi_ssid2'); s('w-pass2','wifi_pass2');
@@ -2614,7 +2621,7 @@ function saveConfig() {
     streaming_plataformas:v('c-stream'),
     lat:v('c-lat'),
     lng:v('c-lng'),
-    mensagem_boas_vindas:v('c-bv'),
+    mensagem_boas_vindas:v('c-bv'), boas_vindas:v('c-bv'),
     aviso_ativo:v('c-aviso-ativo'),
     aviso_texto:v('c-aviso-txt'),
         instagram_url:v('c-ig'),
