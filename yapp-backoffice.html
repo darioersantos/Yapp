@@ -1537,39 +1537,55 @@ var _reservas = [];
 var REC_KEY = 'yapp_reservas';
 
 function loadReservas() {
-  // 1. Load from localStorage first (fast, synchronous)
   try { _reservas = JSON.parse(localStorage.getItem(REC_KEY) || '[]'); } catch(e) { _reservas = []; }
-  renderReceitas(); // render immediately with local data
+  // Remove duplicates already in localStorage (by user or by ci+guest)
+  var seen = {}, seenU = {};
+  _reservas = _reservas.filter(function(r) {
+    var k = (r.ci||'') + '|' + (r.guest||'').toLowerCase();
+    if (seenU[r.user] || seen[k]) return false;
+    seen[k] = true; if (r.user) seenU[r.user] = true;
+    return true;
+  });
+  renderReceitas();
 
-  // 2. Fetch from Google Sheets and merge (complete history)
   if (API_URL) {
     jsonpCall({ action: 'getReservas' }, function(err, d) {
       if (err || !d || d.status !== 'ok' || !d.data) return;
-      var sheetsData = d.data || [];
-      // Merge: Sheets is the source of truth for history
-      // Add Sheets entries that aren't in localStorage (by ci+guest key)
-      var localKeys = {};
-      _reservas.forEach(function(r) { localKeys[(r.ci||'') + '|' + (r.guest||'')] = true; });
-      sheetsData.forEach(function(r) {
-        var key = (r.ci||'') + '|' + (r.guest||'');
-        if (!localKeys[key]) {
-          // Convert from Sheets format to local format
-          _reservas.push({
-            id: Date.now() + Math.random(),
-            ci: r.ci, co: r.co, guest: r.guest,
-            email: r.email || '', valor: r.valor || 0,
-            plat: r.plat || '', estado: r.estado || 'pago',
-            nights: r.nights || 0, notes: r.notes || '',
-            user: r.user || '', pass: r.pass || ''
-          });
-          localKeys[key] = true;
-        }
+
+      // Normalize date to ISO yyyy-mm-dd regardless of Sheets format
+      var norm = function(s) {
+        if (!s) return '';
+        if (/^\d{4}-\d{2}-\d{2}$/.test(String(s))) return String(s);
+        var dt = new Date(s);
+        return isNaN(dt.getTime()) ? String(s) : dt.toISOString().slice(0, 10);
+      };
+
+      // Build lookup by guest+ci key AND by username
+      var localKeys = {}, localUsers = {};
+      _reservas.forEach(function(r) {
+        localKeys[(norm(r.ci)) + '|' + (r.guest||'').toLowerCase()] = true;
+        if (r.user) localUsers[r.user] = true;
       });
-      // Sort by check-in date descending
+
+      (d.data || []).forEach(function(r) {
+        var ci = norm(r.ci), co = norm(r.co);
+        var key = ci + '|' + (r.guest||'').toLowerCase();
+        // Skip if already in localStorage by key or by username
+        if (localKeys[key] || (r.user && localUsers[r.user])) return;
+        _reservas.push({
+          id: Date.now() + Math.random(),
+          ci: ci, co: co,
+          guest: r.guest, email: r.email || '',
+          valor: r.valor || 0, plat: r.plat || '',
+          estado: r.estado || 'pago',
+          nights: r.nights || Math.round((new Date(co) - new Date(ci)) / 86400000),
+          notes: r.notes || '', user: r.user || '', pass: r.pass || ''
+        });
+      });
+
       _reservas.sort(function(a,b) { return (b.ci||'').localeCompare(a.ci||''); });
       localStorage.setItem(REC_KEY, JSON.stringify(_reservas));
       renderReceitas();
-      // Re-render calendar only if it's currently visible
       var calSec = document.getElementById('sec-ocupacao');
       if (calSec && calSec.classList.contains('on')) renderCalendar();
     }, 8000);
