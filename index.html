@@ -2277,7 +2277,7 @@ function renderServicos(jsonStr) {
   var html = '';
   cats.forEach(function(cat, ci) {
     var id = 'svc-dyn-cat-' + ci;
-    html += '<div class="svc-item" onclick="toggleSvcCat('' + id + '')">'
+    html += '<div class="svc-item" onclick="toggleSvcCat(\'' + id + '\')">'
       + '<div class="svc-item-inner">'
       + '<div class="svc-thumb" style="background:rgba(90,138,60,0.1);font-size:1.2rem;display:flex;align-items:center;justify-content:center;">🔧</div>'
       + '<div class="svc-item-text"><div class="svc-item-label">' + (cat.title||'') + '</div><div class="svc-item-sub">' + (cat.subtitle||'') + '</div></div>'
