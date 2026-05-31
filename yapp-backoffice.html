@@ -1510,7 +1510,7 @@ function renderCalendar() {
     var pill = r.estado==='pago' ? '<span class="pill p-ok">Pago</span>' : '<span class="pill p-pend">Pendente</span>';
     listH += '<div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--bd);font-size:.82rem;gap:.5rem;flex-wrap:wrap;">'
       + '<div><strong>' + esc(r.guest||'—') + '</strong><span style="color:var(--txl);font-size:.75rem;margin-left:6px;">'
-      + r.ci + ' → ' + r.co + ' · ' + (r.nights||'?') + ' noites · ' + (r.plat||'') + '</span></div>'
+      + fmtDate(r.ci) + ' → ' + fmtDate(r.co) + ' · ' + (r.nights||'?') + ' noites · ' + (r.plat||'') + '</span></div>'
       + '<div style="display:flex;gap:.4rem;align-items:center;">' + pill + '<strong style="color:var(--g);">€' + (r.valor||0) + '</strong></div>'
       + '</div>';
   });
@@ -1524,7 +1524,7 @@ function renderCalendar() {
     if (!inM) return;
     listH += '<div style="padding:.6rem 0;border-bottom:1px solid var(--bd);font-size:.82rem;">'
       + '<strong>' + esc(g.name||user) + '</strong>'
-      + '<span style="color:var(--txl);font-size:.75rem;margin-left:6px;">' + g.checkin + ' → ' + g.checkout + '</span></div>';
+      + '<span style="color:var(--txl);font-size:.75rem;margin-left:6px;">' + fmtDate(g.checkin) + ' → ' + fmtDate(g.checkout) + '</span></div>';
   });
   var gl = document.getElementById('cal-guests-list');
   if (gl) gl.innerHTML = listH || '<div style="font-size:.82rem;color:var(--txl);">Nenhuma reserva neste mês.</div>';
@@ -1797,10 +1797,15 @@ function editReserva(id) {
 
 function deleteReserva(id) {
   if (!confirm('Eliminar esta reserva?')) return;
-  _reservas = _reservas.filter(function(r){ return r.id !== id; });
+  var r = _reservas.find(function(x){ return x.id == id; });
+  _reservas = _reservas.filter(function(x){ return x.id != id; });
   localStorage.setItem(REC_KEY, JSON.stringify(_reservas));
   renderReceitas();
   renderCalendar();
+  // Also delete from Google Sheets Reservas sheet
+  if (r && r.user) {
+    jsonpCall({ action: 'deleteReservaSheet', user: r.user, ci: r.ci || '' }, function(){}, 10000);
+  }
 }
 
 
@@ -1925,8 +1930,8 @@ function renderReceitas() {
           + '<div style="height:1px;background:#f0f3f8;margin:0 1rem;"></div>'
           + '<div style="display:flex;justify-content:space-between;align-items:center;padding:.55rem 1rem .7rem;gap:.5rem;flex-wrap:wrap;">'
           + '<div style="display:flex;gap:1.2rem;font-size:.75rem;color:#5a6a7a;">'
-          + '<span title="Check-in">→ ' + (r.ci||'—') + '</span>'
-          + '<span title="Check-out">← ' + (r.co||'—') + '</span>'
+          + '<span title="Check-in">→ ' + fmtDate(r.ci||'') + '</span>'
+          + '<span title="Check-out">← ' + fmtDate(r.co||'') + '</span>'
           + (r.valor ? '<span title="Valor">€ <strong style="color:#2a6e3a;">' + r.valor + '</strong></span>' : '')
           + '</div>'
           + '<div style="display:flex;gap:.3rem;align-items:center;">'
@@ -1952,7 +1957,7 @@ function renderReceitas() {
           + '<div style="display:flex;align-items:center;gap:8px;">'
           + '<div style="width:3px;height:36px;background:' + col + ';border-radius:2px;"></div>'
           + '<div><div style="font-size:.85rem;font-weight:600;">' + esc(r.guest || '—') + '</div>'
-          + '<div style="font-size:.72rem;color:var(--txl);">' + r.ci + ' → ' + r.co + ' · ' + (r.nights||'?') + ' noites · ' + (r.plat||'') + '</div>'
+          + '<div style="font-size:.72rem;color:var(--txl);">' + fmtDate(r.ci) + ' → ' + fmtDate(r.co) + ' · ' + (r.nights||'?') + ' noites · ' + (r.plat||'') + '</div>'
           + (r.notes ? '<div style="font-size:.72rem;color:var(--txl);font-style:italic;">📝 ' + esc(r.notes) + '</div>' : '') + '</div>'
           + '</div>'
           + '<div style="display:flex;align-items:center;gap:.5rem;">' + pill
@@ -2102,6 +2107,14 @@ function dynGet(key) {
 }
 
 
+
+// ── Date formatting helper ────────────────────────────────────
+function fmtDate(iso) {
+  if (!iso || iso === '2099-12-31') return '—';
+  var p = iso.split('-');
+  if (p.length !== 3) return iso;
+  return p[2] + '-' + p[1] + '-' + p[0];
+}
 // ── UNSAVED CHANGES WARNING ─────────────────────────────────
 var _hasUnsaved = false;
 document.addEventListener('input', function(e) {
@@ -2690,7 +2703,7 @@ function renderGuestsFiltered(list) {
     h += '<tr><td><strong>' + esc(g.user) + '</strong></td>'
       + '<td style="font-family:monospace;font-size:.8rem;">' + esc(g.pass) + '</td>'
       + '<td>' + esc(g.name || '—') + '</td>'
-      + '<td>' + (g.checkout === '2099-12-31' ? 'Permanente' : g.checkout) + '</td>'
+      + '<td>' + (g.checkout === '2099-12-31' ? 'Permanente' : fmtDate(g.checkout)) + '</td>'
       + '<td><span class="days-badge">' + daysLabel + '</span></td>'
       + '<td>' + pill + '</td>'
       + '<td style="display:flex;gap:4px;flex-wrap:wrap;">'
