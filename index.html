@@ -1019,7 +1019,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
         <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&auto=format&fit=crop&q=75" alt="Ofertas" style="width:100%;height:140px;object-fit:cover;display:block;"/>
         <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(45,74,30,0.3),rgba(45,74,30,0.85));display:flex;flex-direction:column;justify-content:flex-end;padding:1.2rem;color:#fff;">
           <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;opacity:0.8;margin-bottom:3px;">Ofertas exclusivas</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;">Receba promoções da Casa do Gerês</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;" id="newsletter-title">Receba promoções da Casa do Gerês</div>
         </div>
       </div>
       <div class="card" style="margin-bottom:0.75rem;">
@@ -1555,7 +1555,7 @@ function showBoasVindasPopup() {
     var cached = localStorage.getItem('yapp_data_cache');
     if (cached) {
       var d = JSON.parse(cached);
-      var bv = (d.casa && d.casa.boas_vindas) ? d.casa.boas_vindas : '';
+      var bv = (d.casa && d.casa.boas_vindas) ? d.casa.boas_vindas : ((d.config && d.config.boas_vindas) ? d.config.boas_vindas : '');
       if (bv && texto) texto.innerHTML = bv.replace(/\n/g, '<br/>');
     }
   } catch(e) {}
@@ -2061,6 +2061,8 @@ function applyConfig(c, checkNotif) {
     document.querySelectorAll('.logo-name,[data-api="propriedade_nome"]').forEach(function(el){
       el.textContent = c.propriedade_nome;
     });
+    var nlTitle = document.getElementById('newsletter-title');
+    if (nlTitle) nlTitle.textContent = 'Receba promoções d' + (c.propriedade_nome.toLowerCase().startsWith('a') ? 'a ' : 'o ') + c.propriedade_nome;
   }
   // Check-in/out
   var cells = document.querySelectorAll('.info-cell-val');
@@ -2285,10 +2287,14 @@ function renderServicos(jsonStr) {
       + '</div>'
       + '<div id="' + id + '" class="svc-detail" style="display:none;">';
     (cat.items || []).forEach(function(item) {
-      html += '<div class="contact-link" style="cursor:default;pointer-events:none;">'
-        + '<div class="contact-icon" style="background:rgba(90,138,60,0.08);font-size:1rem;width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">·</div>'
-        + '<div><div class="contact-label">' + (item.name||'') + '</div><div class="contact-sub">' + (item.detail||'') + '</div></div>'
-        + '</div>';
+      html += '<div class="contact-link" style="cursor:' + (item.map_url ? 'pointer' : 'default') + ';"'
+        + (item.map_url ? ' onclick="window.open(\'' + item.map_url + '\',\'_blank\')"' : '')
+        + '>'
+        + '<div class="contact-icon" style="background:rgba(90,138,60,0.08);font-size:1rem;width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
+        + (item.map_url ? '📍' : '·') + '</div>'
+        + '<div><div class="contact-label">' + (item.name||'') + '</div>'
+        + '<div class="contact-sub">' + (item.detail||'') + (item.map_url ? ' · <span style="color:var(--forest);">Ver no mapa</span>' : '') + '</div>'
+        + '</div></div>';
     });
     html += '</div></div>';
   });
