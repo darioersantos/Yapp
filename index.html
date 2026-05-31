@@ -8,9 +8,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" id="apple-status-bar" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Casa do Gerês"/>
+<link rel="icon" href="favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="favicon.png" type="image/png" sizes="32x32"/>
+<link rel="apple-touch-icon" href="favicon-180.png"/>
 <link rel="manifest" href="manifest.json"/>
-<link rel="icon" type="image/png" href="apple-touch-icon.png"/>
-<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+
+
 <title>Casa do Gerês · Guia do Hóspede</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Playfair+Display:ital,wght@0,600;1,400&family=Nunito:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -109,7 +112,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 .expired-sub{font-size:0.88rem;color:rgba(255,255,255,0.5);line-height:1.6;max-width:280px;}
 
 /* SPLASH */
-#splash{position:relative;height:100vh;height:100svh;height:-webkit-fill-available;min-height:580px;overflow:hidden;}
+#splash{position:relative;height:100vh;height:100svh;height:-webkit-fill-available;min-height:580px;overflow:hidden;background:linear-gradient(160deg,#1a3a20 0%,#2d6e3e 60%,#3d8a50 100%);}
 .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,25,8,0.1) 0%,rgba(15,25,8,0.05) 35%,rgba(15,25,8,0.55) 65%,rgba(15,25,8,0.95) 100%);}
 .hero-top{position:absolute;top:0;left:0;right:0;z-index:3;padding:1.4rem 1.5rem;display:flex;justify-content:space-between;align-items:center;}
@@ -495,6 +498,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
     </div>
     <button class="login-btn" onclick="doLogin()">Entrar</button>
     <div class="login-error" id="login-error"></div>
+    <div style="font-size:.75rem;color:rgba(255,255,255,0.5);text-align:center;margin-top:.5rem;line-height:1.6;padding:0 .5rem;">Esqueceu o username ou a senha?<br>Verifique o email que lhe enviámos no dia do check-in.</div>
   </div>
   <p style="font-size:0.72rem;color:rgba(255,255,255,0.25);margin-top:2rem;text-align:center;">App personalizada para cada alojamento · <a href="mailto:geral@yapp.pt" style="color:rgba(168,201,122,0.6);text-decoration:none;">geral@yapp.pt</a></p>
   <div style="display:flex;align-items:center;gap:12px;margin-top:1.2rem;">
@@ -524,7 +528,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
 
 <!-- SPLASH -->
 <div id="splash" style="display:none;">
-  <video class="hero-video" id="hero-vid" autoplay muted loop playsinline style="opacity:0;transition:opacity 0.5s;" oncanplay="this.style.opacity='1'">
+  <video class="hero-video" id="hero-vid" autoplay muted loop playsinline preload="auto" style="opacity:0;transition:opacity 1s;" oncanplay="this.style.opacity='1'" onerror="this.style.display='none'">
     <source src="hero.mp4" type="video/mp4"/>
   </video>
   <div class="hero-overlay"></div>
@@ -1022,6 +1026,10 @@ body.aviso-active #notif-banner{top:2.2rem;}
           <input class="form-input" type="email" placeholder="O seu email" id="nl-email"/>
           <button class="form-btn" onclick="subscribeNewsletter()">Subscrever newsletter</button>
         </div>
+      </div>
+      <!-- Logout button with safe area for Safari bottom bar -->
+      <div style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom, 20px));margin-top:.5rem;">
+        <button onclick="if(confirm('Terminar sessão?')){ clearSession(); location.reload(); }" style="width:100%;background:transparent;border:1px solid rgba(192,57,43,0.3);color:#c0392b;border-radius:50px;padding:11px;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;">Terminar sessão</button>
       </div>
       <a href="https://yapp.pt" target="_blank" class="yapp-footer" style="display:block;text-decoration:none;">
         <svg width="90" height="66" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto 6px;">
