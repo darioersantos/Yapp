@@ -2627,7 +2627,10 @@ function saveConfig() {
         instagram_url:v('c-ig'),
     facebook_url:v('c-fb'),
     google_reviews_url:v('c-grev')
-  }, function() { hideLoading(); showOk('ok-config'); toast('✓ Config guardada!'); onSaveSuccess();
+  }, function() {
+    // Also save boas_vindas to Casa sheet so the guest app reads it
+    apiWrite({ action:'saveCasa', boas_vindas:v('c-bv') }, function() {});
+    hideLoading(); showOk('ok-config'); toast('✓ Config guardada!'); onSaveSuccess();
     var b = document.getElementById('unsaved-config'); if (b) b.classList.remove('show');
   });
 }
