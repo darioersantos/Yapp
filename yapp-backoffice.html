@@ -2,6 +2,8 @@
 <html lang="pt">
 <head>
 <meta charset="UTF-8"/>
+<link rel="icon" href="favicon.svg" type="image/svg+xml"/>
+<link rel="apple-touch-icon" href="favicon-180.png"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
 <title>YAPP Backoffice · Casa do Gerês</title>
 <link rel="manifest" href="manifest-backoffice.json"/>
@@ -9,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="YAPP Admin"/>
-<link rel="icon" type="image/svg+xml" href="apple-touch-icon-bo.png"/>
+
 <link rel="apple-touch-icon" href="apple-touch-icon-bo.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=DM+Sans:wght@300;400;500&family=Playfair+Display:wght@600&display=swap" rel="stylesheet"/>
 <style>
@@ -1722,6 +1724,7 @@ function filterReservas(f) {
 }
 
 function saveReserva() {
+  var editId = document.getElementById('rec-form-card') && document.getElementById('rec-form-card').dataset.editId;
   var ci    = v('rec-checkin');
   var co    = v('rec-checkout');
   var guest = v('rec-guest').trim();
@@ -1755,6 +1758,8 @@ function saveReserva() {
   });
   document.getElementById('rec-credentials-preview').style.display = 'none';
   // Sync to Google Sheets (login + reservation)
+  // Clear edit state
+  if (document.getElementById("rec-form-card")) delete document.getElementById("rec-form-card").dataset.editId;
   showLoading('A sincronizar...');
   apiWrite({ action:'addGuest', user:user, pass:pass, checkin:ci, checkout:co, name:guest, email:email, notes:notas }, function() {
     apiWrite({ action:'saveReserva', ci:ci, co:co, guest:guest, email:email, valor:valor, plat:plat, estado:estado, nights:nights, user:user, pass:pass, notes:notas }, function() {
@@ -1764,6 +1769,30 @@ function saveReserva() {
       toast('✓ Reserva e acesso criados e guardados!');
     });
   });
+}
+
+function editReserva(id) {
+  var r = _reservas.find(function(x){ return x.id == id; });
+  if (!r) return;
+  // Populate the edit form
+  document.getElementById('rec-guest').value  = r.guest  || '';
+  document.getElementById('rec-email').value  = r.email  || '';
+  document.getElementById('rec-checkin').value  = r.ci   || '';
+  document.getElementById('rec-checkout').value = r.co   || '';
+  document.getElementById('rec-valor').value  = r.valor  || '';
+  document.getElementById('rec-plat').value   = r.plat   || 'Airbnb';
+  document.getElementById('rec-estado').value = r.estado || 'pago';
+  document.getElementById('rec-notas').value  = r.notes  || '';
+  // Store editing id
+  document.getElementById('rec-form-card').dataset.editId = id;
+  document.getElementById('rec-form-card').style.display = 'block';
+  // Show credentials of existing reservation
+  var ue = document.getElementById('prev-username');
+  var pe = document.getElementById('prev-password');
+  if (ue) { ue.textContent = r.user || ''; ue.dataset.val = r.user || ''; }
+  if (pe) { pe.textContent = r.pass || ''; pe.dataset.val = r.pass || ''; }
+  document.getElementById('rec-credentials-preview').style.display = r.user ? 'block' : 'none';
+  document.getElementById('rec-form-card').scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
 
 function deleteReserva(id) {
@@ -1826,38 +1855,87 @@ function renderReceitas() {
   // Cores por plataforma
   var plColors = { 'Airbnb':'#ff5a5f','Booking.com':'#003580','Direto':'var(--g)','Outro':'#888' };
 
-  // Reservas section: nome + datas + credenciais + eliminar + filtro
+  // Reservas section: combina _reservas + DB.guests sem reserva
   var recList = document.getElementById('rec-list');
   if (recList) {
     var today = new Date().toISOString().slice(0,10);
-    var filtered = _reservas.filter(function(r) {
-      if (_recFilter === 'active') return r.co >= today;
-      if (_recFilter === 'past')   return r.co < today;
-      return true; // 'all'
+
+    // Merge: _reservas + DB.guests que não estão em _reservas
+    var reservaUsers = {};
+    _reservas.forEach(function(r) { if (r.user) reservaUsers[r.user] = true; });
+    var combined = _reservas.slice(); // cópia
+    (DB.guests || []).forEach(function(g) {
+      if (g.user === 'admin' || g.user === 'demo') return;
+      if (reservaUsers[g.user]) return; // já na lista
+      // Adicionar como entrada de hóspede sem dados financeiros
+      combined.push({
+        id: 'g_' + g.user,
+        ci: g.checkin || '', co: g.checkout || '',
+        guest: g.name || g.user, email: g.email || '',
+        user: g.user, pass: g.pass,
+        notas: '', valor: 0, plat: '—', estado: g.active ? 'pago' : 'pendente',
+        nights: g.checkin && g.checkout && g.checkout !== '2099-12-31'
+          ? Math.round((new Date(g.checkout+'T00:00:00') - new Date(g.checkin+'T00:00:00')) / 86400000) : '?',
+        fromGuests: true
+      });
     });
+
+    var filtered = combined.filter(function(r) {
+      var co = r.co || r.checkout || '';
+      if (_recFilter === 'active') return !co || co === '2099-12-31' || co >= today;
+      if (_recFilter === 'past')   return co && co !== '2099-12-31' && co < today;
+      return true;
+    });
+    // Sort: active first, then by check-in date desc
+    filtered.sort(function(a,b) {
+      var ca = a.co || '', cb = b.co || '';
+      var aActive = !ca || ca >= today, bActive = !cb || cb >= today;
+      if (aActive !== bActive) return aActive ? -1 : 1;
+      return (b.ci||'').localeCompare(a.ci||'');
+    });
+
     if (!filtered.length) {
-      recList.innerHTML = '<div style="font-size:.82rem;color:var(--txl);">Nenhuma reserva' + (_recFilter !== 'all' ? ' nesta categoria' : '') + '.</div>';
+      recList.innerHTML = '<div style="font-size:.82rem;color:var(--txl);padding:.5rem 0;">Nenhuma reserva' + (_recFilter !== 'all' ? ' nesta categoria' : '') + '.</div>';
     } else {
-      recList.innerHTML = filtered.map(function(r) {
+      recList.innerHTML = '<div style="margin-top:.5rem;">' + filtered.map(function(r) {
         var col = plColors[r.plat] || '#888';
-        var isPast = r.co < today;
-        var pill = r.estado === 'pago' ? '<span class="pill p-ok">Pago</span>' : '<span class="pill p-pend">Pendente</span>';
+        var isPast = r.co && r.co !== '2099-12-31' && r.co < today;
+        var pill = (r.estado === 'pago' || r.fromGuests) ? '<span class="pill p-ok">Ativo</span>' : '<span class="pill p-pend">Pendente</span>';
         var pastBadge = isPast ? '<span style="font-size:.68rem;background:#f0f0f0;color:#999;border-radius:4px;padding:1px 6px;margin-left:4px;">Passada</span>' : '';
-        return '<div style="display:flex;align-items:flex-start;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--bd);gap:.5rem;flex-wrap:wrap;opacity:' + (isPast?'0.7':'1') + ';">'
-          + '<div style="display:flex;align-items:flex-start;gap:8px;">'
-          + '<div style="width:3px;min-height:50px;background:' + col + ';border-radius:2px;flex-shrink:0;margin-top:2px;"></div>'
-          + '<div>'
-          + '<div style="font-size:.88rem;font-weight:700;">' + esc(r.guest || '—') + pastBadge + '</div>'
-          + '<div style="font-size:.73rem;color:var(--txl);margin-top:1px;">' + (r.ci||'') + ' → ' + (r.co||'') + ' · ' + (r.nights||'?') + ' noites · ' + (r.plat||'—') + '</div>'
-          + (r.email ? '<div style="font-size:.73rem;color:var(--txl);">✉ ' + esc(r.email) + '</div>' : '')
-          + (r.notes ? '<div style="font-size:.72rem;color:var(--txl);font-style:italic;">📝 ' + esc(r.notes) + '</div>' : '')
-          + (r.user ? '<div style="font-size:.72rem;color:var(--txl);">User: <strong>' + r.user + '</strong> · Pass: <strong>' + r.pass + '</strong></div>' : '')
-          + '</div></div>'
-          + '<div style="display:flex;align-items:center;gap:.4rem;flex-shrink:0;">' + pill
-          + (r.valor ? '<strong style="color:var(--g);font-size:.88rem;">€' + r.valor + '</strong>' : '')
-          + '<button class="actbtn del" onclick="deleteReserva(' + r.id + ')" title="Eliminar">×</button>'
-          + '</div></div>';
-      }).join('');
+        var editBtn = !r.fromGuests
+          ? '<button class="actbtn" onclick="editReserva(' + r.id + ')" style="font-size:.75rem;">✏️ Editar</button> '
+          : '';
+        var delBtn = r.fromGuests
+          ? '<button class="actbtn del" onclick="deleteGuest(\'' + r.user + '\')">×</button>'
+          : '<button class="actbtn del" onclick="deleteReserva(' + r.id + ')">×</button>';
+        return '<div style="background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.07);margin-bottom:.75rem;overflow:hidden;">'
+          + '<div style="display:flex;align-items:center;gap:12px;padding:.9rem 1rem .6rem;">'
+          + '<div style="width:42px;height:42px;border-radius:50%;background:' + col + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
+          + '<span style="color:#fff;font-size:1rem;font-weight:700;">' + esc((r.guest||'?')[0].toUpperCase()) + '</span>'
+          + '</div>'
+          + '<div style="flex:1;min-width:0;">'
+          + '<div style="font-size:.92rem;font-weight:700;color:#1a2a3a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(r.guest||'—') + pastBadge + '</div>'
+          + (r.email ? '<div style="font-size:.72rem;color:#8a9ab0;">✉ ' + esc(r.email) + '</div>' : '<div style="font-size:.72rem;color:#8a9ab0;">' + (r.plat||'—') + '</div>')
+          + '</div>'
+          + '<div style="text-align:right;flex-shrink:0;">'
+          + '<div style="font-size:.75rem;color:#8a9ab0;display:flex;align-items:center;gap:4px;justify-content:flex-end;">🌙 ' + (r.nights||'?') + ' noites</div>'
+          + pill
+          + '</div>'
+          + '</div>'
+          + '<div style="height:1px;background:#f0f3f8;margin:0 1rem;"></div>'
+          + '<div style="display:flex;justify-content:space-between;align-items:center;padding:.55rem 1rem .7rem;gap:.5rem;flex-wrap:wrap;">'
+          + '<div style="display:flex;gap:1.2rem;font-size:.75rem;color:#5a6a7a;">'
+          + '<span title="Check-in">→ ' + (r.ci||'—') + '</span>'
+          + '<span title="Check-out">← ' + (r.co||'—') + '</span>'
+          + (r.valor ? '<span title="Valor">€ <strong style="color:#2a6e3a;">' + r.valor + '</strong></span>' : '')
+          + '</div>'
+          + '<div style="display:flex;gap:.3rem;align-items:center;">'
+          + editBtn + delBtn
+          + '</div>'
+          + '</div>'
+          + (r.user ? '<div style="background:#f7f9fc;padding:.4rem 1rem;font-size:.7rem;color:#8a9ab0;border-top:1px solid #f0f3f8;">User: <strong style="color:#3a5a7a;">' + r.user + '</strong> · Pass: <strong style="color:#3a5a7a;">' + r.pass + '</strong>' + (r.notes ? ' · 📝 ' + esc(r.notes) : '') + '</div>' : '')
+          + '</div>';
+      }).join('') + '</div>';
     }
   }
 
@@ -2214,7 +2292,7 @@ function loadAll() {
     if (d.guests) {
       DB.guests = Object.keys(d.guests).map(function(k) {
         var g = d.guests[k];
-        return { user:k, pass:g.pass, checkin:g.checkin||'', checkout:g.checkout, name:g.name||'', email:g.email||'', active:true };
+        return { user:k, pass:g.pass, checkin:g.checkin||'', checkout:g.checkout, name:g.name||'', email:g.email||'', active:g.active!==false };
       });
       renderGuests();
     }
@@ -2616,8 +2694,8 @@ function renderGuestsFiltered(list) {
       + '<td><span class="days-badge">' + daysLabel + '</span></td>'
       + '<td>' + pill + '</td>'
       + '<td style="display:flex;gap:4px;flex-wrap:wrap;">'
-      + '<button class="actbtn" onclick="editPass(' + idx + ')">Editar</button>'
-      + (g.user !== 'admin' ? '<button class="actbtn del" onclick="deleteGuest(' + idx + ')">Eliminar</button>' : '')
+      + '<button class="actbtn" onclick="editPass(\'' + g.user + '\')">Editar</button>'
+      + (g.user !== 'admin' ? '<button class="actbtn del" onclick="deleteGuest(\'' + g.user + '\')">Eliminar</button>' : '')
       + '</td></tr>';
   });
   if (!list.length) h += '<tr><td colspan="7" style="font-size:.82rem;color:var(--txl);padding:1rem;">Sem hóspedes nesta categoria.</td></tr>';
@@ -2626,8 +2704,9 @@ function renderGuestsFiltered(list) {
   if (el) el.innerHTML = h;
 }
 
-function editPass(i) {
-  var g = DB.guests[i];
+function editPass(user) {
+  var g = DB.guests.find(function(x){ return x.user === user; });
+  if (!g) return;
   var np = prompt('Nova password para "' + g.user + '" (atual: ' + g.pass + '):', g.pass);
   if (np !== null && np.trim()) {
     showLoading('A atualizar...');
@@ -2637,18 +2716,17 @@ function editPass(i) {
   }
 }
 
-function deleteGuest(i) {
-  var g = DB.guests[i];
-  if (!confirm('Eliminar "' + g.user + '"? Esta ação não pode ser desfeita.')) return;
+function deleteGuest(user) {
+  if (!confirm('Eliminar "' + user + '"? Esta ação não pode ser desfeita.')) return;
   showLoading('A eliminar...');
-  jsonpCall({ action: 'deleteGuest', user: g.user }, function(err, d) {
+  jsonpCall({ action: 'deleteGuest', user: user }, function(err, d) {
     hideLoading();
     if (err === 'timeout' || (d && d.status === 'ok')) {
-      DB.guests.splice(i, 1);
+      DB.guests = DB.guests.filter(function(g){ return g.user !== user; });
       renderGuests();
       toast('✓ Hóspede eliminado!');
     } else {
-      toast('⚠️ Erro ao eliminar — verifica o Apps Script.');
+      toast('⚠️ Erro ao eliminar: ' + (d && d.message ? d.message : 'verifica o Apps Script.'));
       console.warn('deleteGuest error:', err, d);
     }
   }, 15000);
