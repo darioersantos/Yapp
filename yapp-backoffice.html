@@ -403,7 +403,6 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
       <div class="sbi" onclick="go('info-uteis',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Informações úteis</div>
       <div class="sbi" onclick="go('config',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Info & Splash</div>
       <div class="sbi" onclick="go('wifi',this)"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>Wi-Fi</div>
-      <div class="sbi" onclick="go('casa-regras',this)"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Regras & Check-out</div>
       <div class="sbi" onclick="go('servicos',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Serviços</div>
 
       <div class="sbsec">Divisões</div>
@@ -828,46 +827,7 @@ Máq. de lavar roupa</textarea>
 
     </div><!-- /cw -->
 
-        <div id="sec-casa-regras" class="sec">
-    <div class="content-wrap">
-      <div class="ph"><div><div class="ptitle">Regras & Check-out</div></div></div>
-      <div class="card"><div class="ctitle">Regras da casa</div>
-        <div class="g2">
-          <div class="fld"><label>Silêncio</label><textarea class="inp ta" id="reg-s">Respeitar silêncio entre as 22h00 e as 08h00.</textarea></div>
-          <div class="fld"><label>Animais</label><textarea class="inp ta" id="reg-a">Permitidos. Não devem entrar na piscina.</textarea></div>
-          <div class="fld"><label>Estacionamento</label><textarea class="inp ta" id="reg-e">Dois lugares cobertos no lado esquerdo do portão.</textarea></div>
-          <div class="fld"><label>Tabaco</label><textarea class="inp ta" id="reg-t">Proibido fumar dentro da casa. Área exterior permitida.</textarea></div>
-        </div>
-      </div>
-      <div class="card"><div class="ctitle">Checklist de saída (um item por linha)</div>
-        <textarea class="inp ta-lg" id="checklist">Fechar todas as janelas e portas
-Desligar ar condicionado e aquecimento
-Desligar luzes em todos os compartimentos
-Retirar todos os pertences pessoais
-Colocar toalhas usadas no chão da casa de banho
-Verificar frigorífico e tirar alimentos
-Fechar torneiras
-Separar lixo e colocar nos contentores
-Trancar o portão do jardim
-Entregar as chaves ao proprietário</textarea>
-      </div>
-      <div class="card"><div class="ctitle">Caixa de fusíveis</div>
-        <div class="g2">
-          <div class="fld"><label>Localização</label><textarea class="inp ta" id="fus-l">Corredor da entrada, armário branco à direita.</textarea></div>
-          <div class="fld"><label>O que fazer</label><textarea class="inp ta" id="fus-c">1. Desligue os aparelhos. 2. Levante o disjuntor falhado. 3. Se repetir, contacte o Carlos.</textarea></div>
-        </div>
-      </div>
-      <div class="card"><div class="ctitle">Reciclagem</div>
-        <div class="g2">
-          <div class="fld"><label>Verde (vidro)</label><input class="inp" id="rec-v" value="Garrafas, frascos, potes de vidro"/></div>
-          <div class="fld"><label>Azul (papel)</label><input class="inp" id="rec-a" value="Jornais, revistas, caixas de cartão"/></div>
-          <div class="fld"><label>Amarelo (plástico)</label><input class="inp" id="rec-am" value="Garrafas PET, embalagens, latas"/></div>
-          <div class="fld"><label>Preto (indiferenciado)</label><input class="inp" id="rec-p" value="Resíduos não recicláveis. Recolha terças e sextas."/></div>
-        </div>
-      </div>
-      <button class="savebtn" onclick="saveSection('casa-regras')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-regras">Guardado!</span></button>
-    </div>
-
+<!-- Regras moved to Serviços section -->
     <!-- SERVIÇOS -->
 
     </div><!-- /cw -->
@@ -2173,9 +2133,29 @@ function fmtDate(iso) {
 var _svcData = []; // [{title, subtitle, items:[{name,detail}]}]
 var SVC_DEFAULTS = [
   {title:'Regras da casa',subtitle:'Silêncio, lixo, animais',items:[
-    {name:'Silêncio',detail:'Respeitar silêncio entre 22h00 e as 08h00'},
+    {name:'Silêncio',detail:'Respeitar silêncio entre as 22h00 e as 08h00'},
     {name:'Animais',detail:'Permitidos. Não devem entrar na piscina'},
-    {name:'Tabaco',detail:'Proibido fumar dentro da casa'}
+    {name:'Estacionamento',detail:'Dois lugares cobertos no lado esquerdo do portão'},
+    {name:'Tabaco',detail:'Proibido fumar dentro da casa. Área exterior permitida'}
+  ]},
+  {title:'Check-list de saída',subtitle:'Antes de partir',items:[
+    {name:'Fechar janelas e portas',detail:'Verificar todos os quartos e sala'},
+    {name:'Desligar ar condicionado',detail:'E aquecimento em todos os compartimentos'},
+    {name:'Desligar luzes',detail:'Em todos os compartimentos'},
+    {name:'Frigorífico',detail:'Retirar todos os alimentos'},
+    {name:'Toalhas usadas',detail:'Colocar no chão da casa de banho'},
+    {name:'Portão do jardim',detail:'Trancar sempre que sair'},
+    {name:'Entregar as chaves',detail:'Ao proprietário antes de partir'}
+  ]},
+  {title:'Caixa de fusíveis',subtitle:'Se a luz cair',items:[
+    {name:'Localização',detail:'Corredor da entrada, armário branco à direita'},
+    {name:'O que fazer',detail:'1. Desligue os aparelhos. 2. Levante o disjuntor falhado. 3. Se repetir, contacte o proprietário'}
+  ]},
+  {title:'Reciclagem',subtitle:'Contentores e recolha',items:[
+    {name:'Verde (vidro)',detail:'Garrafas, frascos, potes de vidro'},
+    {name:'Azul (papel)',detail:'Jornais, revistas, caixas de cartão'},
+    {name:'Amarelo (plástico)',detail:'Garrafas PET, embalagens, latas'},
+    {name:'Preto (indiferenciado)',detail:'Resíduos não recicláveis. Recolha terças e sextas'}
   ]},
   {title:'Compras locais',subtitle:'Mercado, padaria, talho',items:[
     {name:'Supermercado Gerês',detail:'9h–20h · 0,8 km'},
@@ -2192,9 +2172,6 @@ var SVC_DEFAULTS = [
   {title:'Aluguer de bicicletas',subtitle:'A partir de €10/dia',items:[
     {name:'Montanha',detail:'€12/dia · 21 velocidades'},
     {name:'E-Bike',detail:'€20/dia · 80 km bateria'}
-  ]},
-  {title:'Reciclagem',subtitle:'Contentores e recolha',items:[
-    {name:'Contentores no exterior',detail:'Ecoponto 200m à direita da entrada'}
   ]}
 ];
 
