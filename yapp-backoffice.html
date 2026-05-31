@@ -742,12 +742,9 @@ Máq. de lavar roupa</textarea>
         <p style="font-size:.75rem;color:var(--txl);margin-bottom:.6rem;">O primeiro item aparece em destaque vermelho (alerta crianças).</p>
         <div id="dyn-pisc"></div>
       </div>
-      <div class="card"><div class="ctitle">Textos do espaço exterior</div>
-        <div class="g2">
-          <div class="fld"><label>Jardim & terraço</label><textarea class="inp ta" id="ext-j">Jardim com relva natural e terraço coberto com vista para a serra.</textarea></div>
-          <div class="fld"><label>Equipamento</label><textarea class="inp ta" id="ext-e">Mesa de jardim para 6 pessoas, churrasqueira e zona de lazer.</textarea></div>
-          <div class="fld"><label>Notas</label><textarea class="inp ta" id="ext-n">Portão do jardim trancar sempre que sair.</textarea></div>
-        </div>
+      <div class="card">
+        <div class="ctitle">Espaço exterior — edita, adiciona ou remove</div>
+        <div id="dyn-ext"></div>
       </div>
       <button class="savebtn" onclick="saveSection('casa-piscina')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-piscina">Guardado!</span></button>
     </div>
@@ -2209,9 +2206,10 @@ function fillCasa(c) {
     coz:  '[{"title":"Café","text":"Cápsulas Nespresso no armário superior esquerdo."},{"title":"Detergentes","text":"Armário debaixo do lava-loiça. Pastilhas incluídas."}]',
     chur: '[{"title":"Preparação","text":"Carvão e acendalha no armário exterior. Utilizar no local designado no jardim."},{"title":"Utilização","text":"Grelha na prateleira inferior. Pinça e espátula no gancho à direita."},{"title":"Limpeza","text":"Aguardar arrefecimento. Cinzas no balde metálico."}]',
     pisc: '[{"title":"⚠️ Atenção","text":"Mantenha as crianças sempre sob vigilância!"},{"title":"Informação","text":"Profundidade 1,50m"},{"title":"Equipamento","text":"Espreguiçadeiras e guarda-sol disponíveis. Toalhas no armário do corredor."}]',
-    info: '[{"title":"Estacionamento","text":"Dois lugares cobertos no lado esquerdo do portão."},{"title":"Água potável","text":"A água da torneira é potável e tratada."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior com respeito pela privacidade dos vizinhos."}]'
+    info: '[{"title":"Estacionamento","text":"Dois lugares cobertos no lado esquerdo do portão."},{"title":"Água potável","text":"A água da torneira é potável e tratada."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior."}]',
+    ext:  '[{"title":"Jardim & terraço","text":"Jardim com relva natural e terraço coberto com vista para a serra."},{"title":"Equipamento exterior","text":"Mesa de jardim para 6 pessoas, churrasqueira e zona de lazer."},{"title":"Notas","text":"Portão do jardim trancar sempre que sair."}]'
   };
-  ['sala','wc','coz','chur','pisc','info'].forEach(function(key) {
+  ['sala','wc','coz','chur','pisc','info','ext'].forEach(function(key) {
     dynLoad(key, c[key + '_json'] || dynDefaults[key] || '[]');
   });
   s('chur-utens', c.churrasco_utens);
@@ -2292,9 +2290,7 @@ function saveSection(sec) {
       piscina_img:v('img-pisc'),
       exterior_img:v('img-ext'),
       pisc_json:dynGet('pisc'),
-      exterior_jardim:v('ext-j'),
-      exterior_equip:v('ext-e'),
-      exterior_notas:v('ext-n')
+      ext_json:dynGet('ext')
     },
     'casa-cozinha': { action:'saveCasa',
       cozinha_img:v('img-coz'),
