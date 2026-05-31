@@ -1735,8 +1735,8 @@ function saveReserva() {
   var notas = v('rec-notas').trim();
   if (!ci || !co || !guest) { toast('Preenche nome, check-in e check-out.'); return; }
   if (new Date(co) < new Date(ci)) { toast('Check-out não pode ser antes do check-in.'); return; }
-  if (hasOverlap(ci, co)) {
-    toast('⚠️ Datas sobrepostas com uma reserva existente. Verifica o calendário.');
+  if (hasOverlap(ci, co, editId || null)) {
+    toast('⚠️ Datas sobrepostas com outra reserva existente. Verifica o calendário.');
     return;
   }
   var userEl = document.getElementById('prev-username');
@@ -1744,15 +1744,27 @@ function saveReserva() {
   var user   = (userEl && userEl.dataset.val) ? userEl.dataset.val : _genUser(guest);
   var pass   = (passEl && passEl.dataset.val) ? passEl.dataset.val : _genPass();
   var nights = Math.round((new Date(co) - new Date(ci)) / 86400000);
-  _reservas.push({ id:Date.now(), ci:ci, co:co, guest:guest, email:email, valor:valor, plat:plat, estado:estado, nights:nights, notes:notas, user:user, pass:pass });
+  if (editId) {
+    // Update existing reservation
+    _reservas = _reservas.map(function(r) {
+      if (r.id == editId) {
+        return { id:r.id, ci:ci, co:co, guest:guest, email:email, valor:valor, plat:plat, estado:estado, nights:nights, notes:notas, user:r.user||user, pass:r.pass||pass };
+      }
+      return r;
+    });
+    // Update in Sheets (guest checkout/checkin update)
+    apiWrite({ action:'addGuest', user:user, pass:pass, checkin:ci, checkout:co, name:guest, email:email, notes:notas }, function(){});
+    apiWrite({ action:'saveReserva', ci:ci, co:co, guest:guest, email:email, valor:valor, plat:plat, estado:estado, nights:nights, user:user, pass:pass, notes:notas }, function(){});
+  } else {
+    _reservas.push({ id:Date.now(), ci:ci, co:co, guest:guest, email:email, valor:valor, plat:plat, estado:estado, nights:nights, notes:notas, user:user, pass:pass });
+  }
   _reservas.sort(function(a,b){ return new Date(b.ci) - new Date(a.ci); });
   localStorage.setItem(REC_KEY, JSON.stringify(_reservas));
-  // Save locally first (always works, even offline)
   document.getElementById('rec-form-card').style.display = 'none';
   showOk('ok-reserva');
   renderReceitas();
   renderCalendar();
-  toast('✓ Reserva criada! A sincronizar...');
+  toast(editId ? '✓ Reserva actualizada!' : '✓ Reserva criada! A sincronizar...');
   ['rec-guest','rec-email','rec-checkin','rec-checkout','rec-valor','rec-notas'].forEach(function(id){
     var el = document.getElementById(id); if (el) el.value = '';
   });
@@ -1760,6 +1772,7 @@ function saveReserva() {
   // Sync to Google Sheets (login + reservation)
   // Clear edit state
   if (document.getElementById("rec-form-card")) delete document.getElementById("rec-form-card").dataset.editId;
+  if (editId) { hideLoading(); renderGuests(); return; }
   showLoading('A sincronizar...');
   apiWrite({ action:'addGuest', user:user, pass:pass, checkin:ci, checkout:co, name:guest, email:email, notes:notas }, function() {
     apiWrite({ action:'saveReserva', ci:ci, co:co, guest:guest, email:email, valor:valor, plat:plat, estado:estado, nights:nights, user:user, pass:pass, notes:notas }, function() {
@@ -2953,7 +2966,7 @@ function updateDashboard() {
       if (badge) { badge.textContent = hospedesHoje.length + ' hoje'; }
       hoje.innerHTML = hospedesHoje.map(function(g) {
         var tipo = g.checkout === todayStr ? '🚪 Check-out' : '🏠 Check-in';
-        return '<div class="today-guest"><div><div class="today-guest-name">' + esc(g.user) + (g.name ? ' · ' + esc(g.name) : '') + '</div><div class="today-guest-info">' + tipo + ' · ' + g.checkout + '</div></div></div>';
+        return '<div class="today-guest"><div><div class="today-guest-name">' + esc(g.user) + (g.name ? ' · ' + esc(g.name) : '') + '</div><div class="today-guest-info">' + tipo + ' · ' + fmtDate(g.checkout) + '</div></div></div>';
       }).join('');
     } else {
       hojewrap.style.display = 'none';
