@@ -1432,11 +1432,12 @@ function renderCalendar() {
   var firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
   var occupied = {}, checkinDays = {}, checkoutDays = {};
 
-  function markRange(ciStr, coStr, label) {
+  // Use var expression instead of declaration to avoid Safari issues
+  var markRange = function(ciStr, coStr, label) {
     if (!ciStr || !coStr) return;
     var ci = new Date(ciStr + 'T00:00:00');
     var co = new Date(coStr + 'T00:00:00');
-    if (isNaN(ci) || isNaN(co)) return;
+    if (isNaN(ci.getTime()) || isNaN(co.getTime())) return;
     var d = new Date(ci);
     while (d <= co) {
       if (d.getFullYear() === year && d.getMonth() === month) {
@@ -1447,7 +1448,7 @@ function renderCalendar() {
       }
       d.setDate(d.getDate() + 1);
     }
-  }
+  };
 
   (_reservas || []).forEach(function(r) {
     if (r.ci && r.co) markRange(r.ci, r.co, r.guest || '—');
@@ -1536,8 +1537,9 @@ var _reservas = [];
 var REC_KEY = 'yapp_reservas';
 
 function loadReservas() {
-  // 1. Load from localStorage first (fast)
+  // 1. Load from localStorage first (fast, synchronous)
   try { _reservas = JSON.parse(localStorage.getItem(REC_KEY) || '[]'); } catch(e) { _reservas = []; }
+  renderReceitas(); // render immediately with local data
 
   // 2. Fetch from Google Sheets and merge (complete history)
   if (API_URL) {
