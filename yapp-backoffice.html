@@ -87,8 +87,8 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 
 /* ── SECTIONS ─────────────────────────────────── */
 .sec{display:none;}
-.sec.on{display:block;animation:fadein .3s ease both;}
-@keyframes fadein{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.sec.on{display:block;}
+@keyframes fadein{from{opacity:0;}to{opacity:1;}}
 
 /* ── CARDS ─────────────────────────────────────── */
 .card{background:#fff;border-radius:var(--r);border:1px solid var(--bd);padding:1.2rem 1.3rem;margin-bottom:.9rem;}
@@ -2295,8 +2295,17 @@ function doLogin() {
   if (val === BO_PASS) {
     document.getElementById('lerr').textContent = '';
     localStorage.setItem(BO_KEY, '1');
+    // Blur password field to prevent iOS scroll-to-focus bug
+    document.getElementById('lpass').blur();
+    document.activeElement && document.activeElement.blur();
     document.getElementById('login').classList.add('off');
     document.getElementById('app').style.display = 'block';
+    // Force scroll to top after layout settles
+    requestAnimationFrame(function() {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    });
     loadAll();
   } else {
     document.getElementById('lerr').textContent = 'Password incorreta.';
@@ -2326,6 +2335,7 @@ window.addEventListener('DOMContentLoaded', function() {
   if (localStorage.getItem(BO_KEY)) {
     document.getElementById('login').classList.add('off');
     document.getElementById('app').style.display = 'block';
+    requestAnimationFrame(function() { window.scrollTo(0,0); document.documentElement.scrollTop=0; document.body.scrollTop=0; });
     loadAll();
   }
   // Restore local fields — nunca restaurar o campo password
