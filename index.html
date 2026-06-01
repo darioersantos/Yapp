@@ -1418,7 +1418,7 @@ function doLogin() {
     if (err3) err3.textContent = 'Acesso expirado.';
     return;
   }
-  saveSession(user, g.checkout, g.checkin || '');
+  saveSession(user, g.checkout, g.checkin || '', g.name || '');
   hideLogin();
   goToApp();
 }
@@ -1441,7 +1441,7 @@ function goToApp() {
   // Show guest name below logout button
   var s = getSession();
   var nameEl = document.getElementById('session-guest-name');
-  if (nameEl && s) nameEl.textContent = s.name || s.user || '';
+  if (nameEl && s && s.name) nameEl.textContent = s.name;
 
   // Apply saved theme immediately before API responds
   var _st = localStorage.getItem('yapp_tema') || 'natureza';
@@ -1953,7 +1953,9 @@ function applyData(d, fromCache) {
     var s = getSession();
     if (s && d.guests[s.user]) {
       var g = d.guests[s.user];
-      saveSession(s.user, g.checkout || s.checkout, g.checkin || s.checkin || '');
+      saveSession(s.user, g.checkout || s.checkout, g.checkin || s.checkin || '', g.name || s.name || '');
+      var nameEl2 = document.getElementById('session-guest-name');
+      if (nameEl2 && g.name) nameEl2.textContent = g.name;
     }
   }
   if (d.feedbacks && d.feedbacks.length) {
