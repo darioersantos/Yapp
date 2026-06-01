@@ -2358,6 +2358,7 @@ function loadAll() {
       setStatus('Sem ligação à internet', '#c0392b');
       return;
     }
+    try {
     setStatus('Sincronizado ✓', '#5a8a3c');
     // Fetch newsletter separately (not in getAll)
     jsonpCall({ action: 'newsletter' }, function(err, nd) {
@@ -2395,6 +2396,10 @@ function loadAll() {
     updateDashboard();
     loadReservas();
     renderCalendar();
+    } catch(fillErr) {
+      console.error('fillAll error:', fillErr);
+      setStatus('Erro ao processar dados: ' + fillErr.message, '#c0392b');
+    }
   });
 }
 
