@@ -559,6 +559,28 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
         </div>
       </div>
       <div class="card">
+        <div class="ctitle">Vídeo da splash (fundo do ecrã de entrada)</div>
+        <div class="photo-row">
+          <video id="prev-splash-vid" class="photo-prev wide" muted loop playsinline style="object-fit:cover;background:#000;">
+            <source id="prev-splash-vid-src" src="" type="video/mp4"/>
+          </video>
+          <div style="flex:1;">
+            <input class="photo-url" id="c-splash-vid" placeholder="URL do vídeo .mp4 (Google Drive, Dropbox, etc.)" oninput="(function(v){var s=document.getElementById('prev-splash-vid-src');if(s){s.src=v;document.getElementById('prev-splash-vid').load();document.getElementById('prev-splash-vid').play();}})(this.value)"/>
+            <div class="photo-hint">URL directo do ficheiro .mp4. Para Google Drive: partilha como "qualquer pessoa com o link" e usa o link directo.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Imagem de fundo da splash (fallback se sem vídeo)</div>
+        <div class="photo-row">
+          <img id="prev-splash-img" class="photo-prev wide" src=""/>
+          <div style="flex:1;">
+            <input class="photo-url" id="c-splash-img" placeholder="URL da imagem de fundo" oninput="pi('prev-splash-img','c-splash-img')"/>
+            <div class="photo-hint">Usada como poster do vídeo e fallback em dispositivos sem suporte a vídeo.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
         <div class="ctitle">Mensagem de boas-vindas</div>
         <textarea class="inp ta-lg" id="c-bv" placeholder="Bem-vindo à Casa do Gerês..."></textarea>
       </div>
@@ -639,6 +661,16 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
     <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Informações úteis</div><div class="psub">Itens do accordion na app — edita, adiciona, remove e reordena</div></div></div>
       <div class="card">
+        <div class="ctitle">Foto do card "Informações úteis"</div>
+        <div class="photo-row">
+          <img id="prev-info" class="photo-prev wide" src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400&auto=format&fit=crop&q=75"/>
+          <div style="flex:1;">
+            <input class="photo-url" id="img-info" value="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-info','img-info')"/>
+            <div class="photo-hint">URL da imagem. Pode ser Unsplash, Google Drive ou outro.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
         <div class="ctitle">Itens — arrasta ⠿ para reordenar</div>
         <p style="font-size:.78rem;color:var(--txl);margin-bottom:.75rem;">Cada item aparece no accordion "Informações úteis". Podes editar o título, o texto, adicionar novos ou eliminar.</p>
         <div id="dyn-info"></div>
@@ -663,16 +695,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
     <div id="sec-casa-geral" class="sec">
     <div class="content-wrap">
       <div class="ph"><div><div class="ptitle">Info geral da casa</div></div></div>
-      <div class="card">
-        <div class="ctitle">Imagem do card "Informações úteis"</div>
-        <div class="photo-row">
-          <img id="prev-info" class="photo-prev wide" src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400&auto=format&fit=crop&q=75"/>
-          <div style="flex:1;">
-            <input class="photo-url" id="img-info" value="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-info','img-info')"/>
-            <div class="photo-hint">URL Unsplash ou outro. Exemplo: https://images.unsplash.com/photo-...?w=800&auto=format&fit=crop&q=75</div>
-          </div>
-        </div>
-      </div>
+<!-- img-info moved to sec-info-uteis -->
       <div class="card">
         <div class="ctitle">Comodidades (uma por linha)</div>
         <textarea class="inp ta-lg" id="c-comod">Cozinha completa
@@ -818,8 +841,8 @@ Máq. de lavar roupa</textarea>
       <div class="ph"><div><div class="ptitle">Sala de estar & TV</div></div></div>
       <div class="card"><div class="ctitle">Foto</div>
         <div class="photo-row">
-          <img id="prev-sala" class="photo-prev wide" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&auto=format&fit=crop&q=75"/>
-          <div style="flex:1;"><input class="photo-url" id="img-sala" value="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-sala','img-sala')"/></div>
+          <img id="prev-sala" class="photo-prev wide" src="https://images.unsplash.com/photo-1593784991095-a205069470b6?w=400&auto=format&fit=crop&q=75"/>
+          <div style="flex:1;"><input class="photo-url" id="img-sala" value="https://images.unsplash.com/photo-1593784991095-a205069470b6?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-sala','img-sala')"/></div>
         </div>
       </div>
       <div class="card"><div class="ctitle">TV & Streaming — plataformas (separadas por vírgula)</div>
@@ -2009,6 +2032,7 @@ function dynRender(key) {
       + '<button class="dyn-del-btn" onclick="dynDel(\'' + key + '\',' + i + ')">×</button>'
       + '</div>'
       + '<textarea class="dyn-text-area" id="dyn-' + key + '-c-' + i + '"' + (key === 'chk' ? ' style="display:none;"' : '') + '>' + esc(card.text||'') + '</textarea>'
+      + (key === 'svc' ? '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;"><img id="dyn-' + key + '-img-prev-' + i + '" src="' + esc(card.img||'') + '" style="width:48px;height:36px;object-fit:cover;border-radius:5px;border:1px solid var(--bd);background:#f5f5f5;flex-shrink:0;" onerror="this.style.display=\'none\'"/><input class="inp" id="dyn-' + key + '-img-' + i + '" value="' + esc(card.img||'') + '" placeholder="URL da imagem (opcional)" style="font-size:.75rem;" oninput="(function(v,id){var p=document.getElementById(id);if(p){p.src=v;p.style.display=v?\'block\':\'none\';}})(this.value,\'dyn-' + key + '-img-prev-' + i + '\')"/></div>' : '')'
       + '</div>';
   });
   html += '</div>'
@@ -2113,9 +2137,11 @@ function dynGet(key) {
   var cards = (_dynData[key] || []).map(function(card, i) {
     var tEl = document.getElementById('dyn-' + key + '-t-' + i);
     var cEl = document.getElementById('dyn-' + key + '-c-' + i);
+    var iEl = document.getElementById('dyn-' + key + '-img-' + i);
     return {
       title: tEl ? tEl.value.trim() : (card.title||''),
-      text:  cEl ? cEl.value.trim() : (card.text||'')
+      text:  cEl ? cEl.value.trim() : (card.text||''),
+      img:   iEl ? iEl.value.trim() : (card.img||'')
     };
   }).filter(function(c) { return c.title || c.text; });
   return JSON.stringify(cards);
@@ -2387,7 +2413,7 @@ function fillConfig(c) {
   s('c-nome','propriedade_nome'); s('c-sub','propriedade_subtitulo'); s('c-desc','propriedade_descricao');
   s('c-ci','checkin_hora'); s('c-co','checkout_hora'); s('c-cap','capacidade'); s('c-qts','quartos');
   s('c-stream','streaming_plataformas');
-  s('c-lat','lat'); s('c-lng','lng');
+  s('c-lat','lat'); s('c-lng','lng'); s('c-splash-vid','splash_vid'); s('c-splash-img','splash_img');
   s('c-aviso-txt','aviso_texto'); s('c-codesc','codigo_desconto');
   s('c-ig','instagram_url'); s('c-fb','facebook_url'); s('c-grev','google_reviews_url');
   s('w-ssid1','wifi_ssid'); s('w-pass1','wifi_pass'); s('w-ssid2','wifi_ssid2'); s('w-pass2','wifi_pass2');
@@ -2493,6 +2519,8 @@ function saveConfig() {
     capacidade:v('c-cap'),
     quartos:v('c-qts'),
     streaming_plataformas:v('c-stream'),
+    splash_vid:v('c-splash-vid'),
+    splash_img:v('c-splash-img'),
     lat:v('c-lat'),
     lng:v('c-lng'),
     aviso_ativo:v('c-aviso-ativo'),
@@ -2518,7 +2546,7 @@ function saveSection(sec) {
   saveLocal();
   // Mapa completo: secção → { action, campos }
   var maps = {
-    'info-uteis': { action:'saveCasa', info_json:dynGet('info'), chk_json:dynGet('chk'), checklist_saida:(function(){ try{ return JSON.parse(dynGet('chk')).map(function(i){return i.title;}).filter(Boolean).join('\n'); }catch(e){return '';} })() },
+    'info-uteis': { action:'saveCasa', info_json:dynGet('info'), info_img:v('img-info'), chk_json:dynGet('chk'), checklist_saida:(function(){ try{ return JSON.parse(dynGet('chk')).map(function(i){return i.title;}).filter(Boolean).join('\n'); }catch(e){return '';} })() },
     'casa-geral': { action:'saveCasa',
       info_img:v('img-info'),
       boas_vindas:v('c-bv'),
@@ -2737,7 +2765,7 @@ function filterGuests(mode, el) {
 }
 
 function renderGuestsFiltered(list) {
-  var h = '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Username</th><th>Password</th><th>Nome</th><th>Check-out</th><th>Dias</th><th>Estado</th><th>Ações</th></tr></thead><tbody>';
+  var h = '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Username</th><th>Password</th><th>Nome</th><th>Check-in</th><th>Check-out</th><th>Dias</th><th>Estado</th><th>Ações</th></tr></thead><tbody>';
   var today = new Date();
   list.forEach(function(g) {
     var exp = new Date(g.checkout + 'T23:59:59') < today;
@@ -2750,6 +2778,7 @@ function renderGuestsFiltered(list) {
     h += '<tr><td><strong>' + esc(g.user) + '</strong></td>'
       + '<td style="font-family:monospace;font-size:.8rem;">' + esc(g.pass) + '</td>'
       + '<td>' + esc(g.name || '—') + '</td>'
+      + '<td>' + (g.checkin ? fmtDate(g.checkin) : '—') + '</td>'\
       + '<td>' + (g.checkout === '2099-12-31' ? 'Permanente' : fmtDate(g.checkout)) + '</td>'
       + '<td><span class="days-badge">' + daysLabel + '</span></td>'
       + '<td>' + pill + '</td>'
