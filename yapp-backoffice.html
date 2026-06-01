@@ -73,7 +73,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 .sbi:hover{background:var(--sb-hover);color:#fff;}
 .sbi.on{background:var(--sb-active);color:#fff;border-left-color:var(--sb-accent);}
 .sbi svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;flex-shrink:0;}
-.sbfoot{padding:1rem 1.2rem;border-top:1px solid rgba(255,255,255,0.08);}
+.sbfoot{padding:1rem 1.2rem calc(1rem + env(safe-area-inset-bottom, 16px)) 1.2rem;border-top:1px solid rgba(255,255,255,0.08);}
 .sbout{background:none;border:none;color:rgba(255,255,255,0.4);font-family:'DM Sans',sans-serif;font-size:.82rem;cursor:pointer;display:flex;align-items:center;gap:8px;padding:.5rem 0;}
 
 /* ── MAIN CONTENT ─────────────────────────────── */
@@ -308,12 +308,10 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
     </div>
     <div class="ll">YAPP Backoffice</div>
     <div class="lsub" id="login-prop-name" style="visibility:hidden;">YAPP</div>
-    <label class="llbl">Password de acesso</label>
-    <div style="position:relative;margin-bottom:.9rem;">
-      <input class="li" id="lpass" type="password" placeholder="••••••••" style="margin-bottom:0;padding-right:3rem;"/>
-      <button onclick="togglePass()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:rgba(255,255,255,0.4);">
-        <svg id="eye-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-      </button>
+    <!-- DEMO STAMP -->
+    <div style="background:rgba(77,166,255,0.1);border:1.5px solid rgba(77,166,255,0.3);border-radius:12px;padding:.9rem 1.2rem;width:100%;max-width:340px;margin-bottom:1.2rem;text-align:center;">
+      <div style="font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#4da6ff;margin-bottom:.3rem;">Versão demonstração</div>
+      <div style="font-size:.82rem;color:rgba(255,255,255,.7);line-height:1.5;">Clique em <strong style="color:#4da6ff;">Entrar</strong> para explorar o backoffice completo</div>
     </div>
     <button class="lbtn" onclick="doLogin()">Entrar no backoffice</button>
     <div class="lerr" id="lerr"></div>
@@ -2200,16 +2198,11 @@ function togglePass() {
   inp.type = inp.type === 'password' ? 'text' : 'password';
 }
 function doLogin() {
-  var val = document.getElementById('lpass').value;
-  if (val === BO_PASS) {
-    document.getElementById('lerr').textContent = '';
-    localStorage.setItem(BO_KEY, '1');
-    document.getElementById('login').classList.add('off');
-    document.getElementById('app').style.display = 'block';
-    loadAll();
-  } else {
-    document.getElementById('lerr').textContent = 'Password incorreta.';
-  }
+  document.getElementById('lerr').textContent = '';
+  localStorage.setItem(BO_KEY, '1');
+  document.getElementById('login').classList.add('off');
+  document.getElementById('app').style.display = 'block';
+  loadAll();
 }
 function doLogout() { localStorage.removeItem(BO_KEY); location.reload(); }
 window.addEventListener('DOMContentLoaded', function() {
@@ -3370,16 +3363,30 @@ function hideLoading() { document.getElementById('loading').classList.remove('sh
     dragEl = null;
   });
 
-  // Touch drag
+  // Touch drag — requer long press (500ms) para activar
   var touchEl = null;
+  var touchTimer = null;
+  var touchLocked = false;
+
   nav.addEventListener('touchstart', function(e) {
     var el = e.target.closest('.sbi[data-sec]');
     if (!el) return;
-    touchEl = el;
-    el.classList.add('dragging');
+    touchTimer = setTimeout(function() {
+      touchEl = el;
+      touchLocked = true;
+      el.classList.add('dragging');
+      // Vibrar se disponível
+      if (navigator.vibrate) navigator.vibrate(40);
+    }, 500);
   }, {passive:true});
 
   nav.addEventListener('touchmove', function(e) {
+    if (!touchLocked) {
+      // Não está em modo drag — cancelar timer e deixar scroll
+      clearTimeout(touchTimer);
+      touchTimer = null;
+      return;
+    }
     if (!touchEl) return;
     e.preventDefault();
     var t = e.touches[0];
@@ -3394,10 +3401,21 @@ function hideLoading() { document.getElementById('loading').classList.remove('sh
   }, {passive:false});
 
   nav.addEventListener('touchend', function() {
-    if (!touchEl) return;
+    clearTimeout(touchTimer);
+    touchTimer = null;
+    if (!touchEl) { touchLocked = false; return; }
     clearStates();
     saveOrder();
     touchEl = null;
+    touchLocked = false;
+  });
+
+  nav.addEventListener('touchcancel', function() {
+    clearTimeout(touchTimer);
+    touchTimer = null;
+    touchEl = null;
+    touchLocked = false;
+    clearStates();
   });
 })();
 </script>
