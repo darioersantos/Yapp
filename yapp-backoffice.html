@@ -3040,7 +3040,7 @@ function updateDashboard() {
       if (badge) { badge.textContent = hospedesHoje.length + ' hoje'; }
       hoje.innerHTML = hospedesHoje.map(function(g) {
         var tipo = g.checkout === todayStr ? '🚪 Check-out' : '🏠 Check-in';
-        return '<div class="today-guest"><div><div class="today-guest-name">' + esc(g.user) + (g.name ? ' · ' + esc(g.name) : '') + '</div><div class="today-guest-info">' + tipo + ' · ' + fmtDate(g.checkout) + '</div></div></div>';
+        return '<div class="today-guest"><div><div class="today-guest-name">' + esc(g.name || g.user) + '</div><div class="today-guest-info">' + tipo + ' · ' + fmtDate(g.checkin) + ' → ' + fmtDate(g.checkout) + '</div></div></div>';
       }).join('');
     } else {
       hojewrap.style.display = 'none';
