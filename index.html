@@ -1371,6 +1371,7 @@ window.addEventListener('DOMContentLoaded', function() {
   // (não espera pela API — garante que o modal tem sempre conteúdo)
   (function() {
     var infoJsonDefault = '[{"title":"Regras da casa","text":"Silêncio: Respeitar silêncio entre as 22h00 e as 08h00. Piscina encerra às 21h00.\nAnimais: Animais permitidos. Não devem entrar na piscina.\nTabaco: Proibido fumar dentro da casa. Área exterior permitida."},{"title":"Reciclagem","text":"🔵 Azul: Jornais, revistas, caixas de cartão\n🟡 Amarelo: Garrafas PET, embalagens, latas\n⚫ Preto: Resíduos não recicláveis. Recolha terças e sextas."},{"title":"Quadro elétrico","text":"1. Desligue os aparelhos.\n2. Levante o disjuntor falhado.\n3. Se repetir, contacte o Carlos."},{"title":"Estacionamento","text":"Dois lugares cobertos no lado esquerdo do portão."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Água potável","text":"A água da torneira é potável e tratada, contudo recomenda-se o uso de água engarrafada para consumo."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior."}]';
+    // Usar localStorage só como fallback offline — API tem sempre prioridade
     var saved = localStorage.getItem('yapp_info_json');
     renderInfoDyn(saved || infoJsonDefault);
   })();
@@ -2319,11 +2320,11 @@ function renderInfoDyn(jsonStr) {
   try { cards = JSON.parse(jsonStr); } catch(e) { cards = null; }
   // Se vazio ou inválido, tenta o cache do localStorage (guardado pelo backoffice)
   if (!cards || !cards.length) {
-    try { cards = JSON.parse(localStorage.getItem('yapp_info_json') || ''); } catch(e) { cards = null; }
+    // Don't override jsonStr with localStorage here — caller already handles priority
   }
   if (!cards || !cards.length) return;
   // Guarda no cache local para próxima sessão
-  try { localStorage.setItem('yapp_info_json', JSON.stringify(cards)); } catch(e) {}
+  // localStorage update handled by caller
   var style = 'border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;';
   acc.innerHTML = cards.map(function(card, i) {
     var id = 'info-dyn-' + i;
@@ -2501,9 +2502,11 @@ function applyCasa(c) {
   if (svcJson) renderServicos(svcJson);
   var infoJsonDefault = '[{"title":"Regras da casa","text":"Silêncio: Respeitar silêncio entre as 22h00 e as 08h00. Piscina encerra às 21h00.\nAnimais: Animais permitidos. Não devem entrar na piscina.\nTabaco: Proibido fumar dentro da casa. Área exterior permitida."},{"title":"Reciclagem","text":"🔵 Azul: Jornais, revistas, caixas de cartão\n🟡 Amarelo: Garrafas PET, embalagens, latas\n⚫ Preto: Resíduos não recicláveis. Recolha terças e sextas."},{"title":"Quadro elétrico","text":"1. Desligue os aparelhos.\n2. Levante o disjuntor falhado.\n3. Se repetir, contacte o Carlos."},{"title":"Estacionamento","text":"Dois lugares cobertos no lado esquerdo do portão."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Água potável","text":"A água da torneira é potável e tratada, contudo recomenda-se o uso de água engarrafada para consumo."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior."}]';
   // Cadeia de fallback: Sheets → localStorage (guardado pelo backoffice) → default hardcoded
-  var infoJson = c.info_json
-    || localStorage.getItem('yapp_info_json')
-    || infoJsonDefault;
+  // API tem sempre prioridade — guardar no localStorage para uso offline
+  var infoJson = c.info_json || infoJsonDefault;
+  if (c.info_json) {
+    try { localStorage.setItem('yapp_info_json', c.info_json); } catch(e) {}
+  }
   renderInfoDyn(infoJson);
 
   // Churrasqueira utensílios (comma-separated → chips)
