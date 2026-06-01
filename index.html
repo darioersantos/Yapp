@@ -604,32 +604,32 @@ body.aviso-active #notif-banner{top:2.2rem;}
         <div class="svc-card-body"><div class="svc-card-label">Informações úteis</div><div class="svc-card-sub">Bem-vindos, leia antes de explorar</div></div>
       </div>
       <!-- 2 colunas — drag para reordenar -->
-      <div class="services-grid" id="services-drag-grid" style="margin-bottom:0.75rem;">
-        <div class="svc-card" data-card-id="quartos" onclick="showModal('m-quartos')">
+      <div class="services-grid" style="margin-bottom:0.75rem;">
+        <div class="svc-card" onclick="showModal('m-quartos')">
           <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&auto=format&fit=crop&q=75" alt="Quartos"/>
           <div class="svc-card-body"><div class="svc-card-label">Quartos</div><div class="svc-card-sub" id="quartos-count-sub">3 quartos</div></div>
         </div>
-        <div class="svc-card" data-card-id="sala" onclick="showModal('m-sala')">
+        <div class="svc-card" onclick="showModal('m-sala')">
           <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&auto=format&fit=crop&q=75" alt="Sala"/>
           <div class="svc-card-body"><div class="svc-card-label">Sala de estar</div><div class="svc-card-sub">TV &amp; lareira</div></div>
         </div>
-        <div class="svc-card" data-card-id="cozinha" onclick="showModal('m-cozinha')">
+        <div class="svc-card" onclick="showModal('m-cozinha')">
           <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=400&auto=format&fit=crop&q=75" alt="Cozinha"/>
           <div class="svc-card-body"><div class="svc-card-label">Cozinha</div><div class="svc-card-sub">Utensílios &amp; eletros</div></div>
         </div>
-        <div class="svc-card" data-card-id="wc" onclick="showModal('m-wc')">
+        <div class="svc-card" onclick="showModal('m-wc')">
           <img src="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=400&auto=format&fit=crop&q=75" alt="WC"/>
           <div class="svc-card-body"><div class="svc-card-label">WC</div><div class="svc-card-sub">WC + máquina de lavar</div></div>
         </div>
-        <div class="svc-card" data-card-id="piscina" onclick="showModal('m-piscina')">
+        <div class="svc-card" onclick="showModal('m-piscina')">
           <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=400&auto=format&fit=crop&q=75" alt="Piscina"/>
           <div class="svc-card-body"><div class="svc-card-label">Piscina</div><div class="svc-card-sub">Regras &amp; equipamento</div></div>
         </div>
-        <div class="svc-card" data-card-id="churrasco" onclick="showModal('m-churrasco')">
+        <div class="svc-card" onclick="showModal('m-churrasco')">
           <img src="churrasco-real.jpg" alt="Churrasqueira"/>
           <div class="svc-card-body"><div class="svc-card-label">Churrasqueira</div><div class="svc-card-sub">Como utilizar</div></div>
         </div>
-        <div class="svc-card svc-card-full" data-card-id="exterior" onclick="showModal('m-exterior')" style="grid-column:1/-1;">
+        <div class="svc-card svc-card-full" onclick="showModal('m-exterior')" style="grid-column:1/-1;">
           <img id="exterior-card-img" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop&q=75" alt="Espaço exterior" style="height:110px;"/>
           <div class="svc-card-body"><div class="svc-card-label">Espaço exterior</div><div class="svc-card-sub">Jardim, terraço e vistas</div></div>
         </div>
@@ -3047,157 +3047,4 @@ function pedidoBicicletas() {
 <!-- ADMIN PANEL: redireciona para o backoffice com auto-login -->
 <!-- (iframe bloqueado pelo GitHub Pages — usamos redirect) -->
 
-<script>
-/* ── DRAG-TO-REORDER — cards da página inicial ─────────────────── */
-var _dragInit = false;
-function initDrag() {
-  if (_dragInit) return;
-  _dragInit = true;
-  var STORE_KEY = 'yapp_card_order';
-  var grid = document.getElementById('services-drag-grid');
-  if (!grid) return;
-
-  // Injectar CSS
-  var st = document.createElement('style');
-  st.textContent =
-    '.svc-card{position:relative;}' +
-    '.drag-handle{position:absolute;top:0;left:0;width:28px;height:100%;' +
-    'display:none;flex-direction:column;align-items:center;justify-content:center;' +
-    'cursor:grab;z-index:10;background:rgba(255,255,255,0.9);' +
-    'border-radius:var(--radius-sm) 0 0 var(--radius-sm);' +
-    'touch-action:none;-webkit-user-select:none;user-select:none;gap:3px;}' +
-    '.drag-handle span{display:block;width:10px;height:2px;background:rgba(0,0,0,0.35);border-radius:2px;}' +
-    '.drag-mode .drag-handle{display:flex;}' +
-    '.drag-ghost{opacity:0.3;}' +
-    '.drag-over-top{border-top:3px solid var(--forest)!important;}' +
-    '.drag-over-bot{border-bottom:3px solid var(--forest)!important;}';
-  document.head.appendChild(st);
-
-  // Botão Ordenar — injectado no DOM
-  var btn = document.createElement('button');
-  btn.id = 'drag-mode-btn';
-  btn.setAttribute('style',
-    'position:fixed;bottom:80px;right:14px;z-index:9999;' +
-    'background:var(--forest,#3a6b2a);color:#fff;border:none;border-radius:50px;' +
-    'padding:9px 16px;font-family:"DM Sans",sans-serif;font-size:.78rem;' +
-    'font-weight:600;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.3);' +
-    'display:flex;align-items:center;gap:6px;');
-  btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="16" x2="21" y2="16"/></svg><span>Ordenar</span>';
-  document.body.appendChild(btn);
-
-  var dragMode = false;
-  function toggleDragMode() {
-    dragMode = !dragMode;
-    grid.classList.toggle('drag-mode', dragMode);
-    btn.querySelector('span').textContent = dragMode ? 'Concluído ✓' : 'Ordenar';
-    btn.style.background = dragMode ? '#c0392b' : 'var(--forest,#3a6b2a)';
-  }
-  btn.addEventListener('click', function(e) { e.stopPropagation(); toggleDragMode(); });
-
-  // Handles
-  function addHandles() {
-    grid.querySelectorAll('.svc-card').forEach(function(c) {
-      if (c.querySelector('.drag-handle')) return;
-      var h = document.createElement('div');
-      h.className = 'drag-handle';
-      h.innerHTML = '<span></span><span></span><span></span><span></span>';
-      c.insertBefore(h, c.firstChild);
-    });
-  }
-  addHandles();
-
-  // Persistência
-  function saveOrder() {
-    var ids = Array.from(grid.querySelectorAll('.svc-card')).map(function(c){ return c.getAttribute('data-card-id'); }).filter(Boolean);
-    try { localStorage.setItem(STORE_KEY, JSON.stringify(ids)); } catch(e){}
-  }
-  function applyOrder() {
-    var saved; try { saved = JSON.parse(localStorage.getItem(STORE_KEY)||'[]'); } catch(e){ return; }
-    if (!saved||!saved.length) return;
-    var map = {}; grid.querySelectorAll('.svc-card').forEach(function(c){ map[c.getAttribute('data-card-id')]=c; });
-    saved.forEach(function(id){ if (map[id]) grid.appendChild(map[id]); });
-  }
-  applyOrder();
-
-  // Touch drag
-  var touchEl = null;
-  grid.addEventListener('touchstart', function(e) {
-    if (!dragMode) return;
-    var h = e.target.closest('.drag-handle');
-    if (!h) return;
-    touchEl = h.closest('.svc-card');
-    touchEl.classList.add('drag-ghost');
-    e.preventDefault();
-  }, {passive:false});
-
-  grid.addEventListener('touchmove', function(e) {
-    if (!dragMode||!touchEl) return;
-    e.preventDefault();
-    var t = e.touches[0];
-    var el = document.elementFromPoint(t.clientX, t.clientY);
-    var target = el ? el.closest('.svc-card') : null;
-    grid.querySelectorAll('.svc-card').forEach(function(c){ c.classList.remove('drag-over-top','drag-over-bot'); });
-    if (!target||target===touchEl) return;
-    var rect = target.getBoundingClientRect();
-    if (t.clientY < rect.top + rect.height/2) {
-      target.classList.add('drag-over-top');
-      grid.insertBefore(touchEl, target);
-    } else {
-      target.classList.add('drag-over-bot');
-      grid.insertBefore(touchEl, target.nextSibling);
-    }
-  }, {passive:false});
-
-  grid.addEventListener('touchend', function() {
-    if (!touchEl) return;
-    touchEl.classList.remove('drag-ghost');
-    grid.querySelectorAll('.svc-card').forEach(function(c){ c.classList.remove('drag-over-top','drag-over-bot'); });
-    saveOrder(); touchEl = null;
-  });
-
-  // Mouse drag (desktop)
-  var dragSrc = null;
-  grid.addEventListener('mousedown', function(e) {
-    if (!dragMode) return;
-    var h = e.target.closest('.drag-handle');
-    if (!h) return;
-    dragSrc = h.closest('.svc-card');
-    dragSrc.setAttribute('draggable','true');
-  });
-  grid.addEventListener('dragstart', function(e) {
-    if (!dragMode||!dragSrc) { e.preventDefault(); return; }
-    e.dataTransfer.effectAllowed='move';
-    setTimeout(function(){ dragSrc.classList.add('drag-ghost'); },0);
-  });
-  grid.addEventListener('dragover', function(e) {
-    if (!dragMode||!dragSrc) return; e.preventDefault();
-    var target = e.target.closest('.svc-card');
-    grid.querySelectorAll('.svc-card').forEach(function(c){ c.classList.remove('drag-over-top','drag-over-bot'); });
-    if (!target||target===dragSrc) return;
-    var rect = target.getBoundingClientRect();
-    if (e.clientY < rect.top+rect.height/2) { target.classList.add('drag-over-top'); grid.insertBefore(dragSrc,target); }
-    else { target.classList.add('drag-over-bot'); grid.insertBefore(dragSrc,target.nextSibling); }
-  });
-  grid.addEventListener('dragend', function() {
-    grid.querySelectorAll('.svc-card').forEach(function(c){ c.classList.remove('drag-ghost','drag-over-top','drag-over-bot'); c.setAttribute('draggable','false'); });
-    saveOrder(); dragSrc = null;
-  });
-}
-
-// Activar quando a app fica pronta
-var _dragCheckInterval = setInterval(function() {
-  if (document.body.classList.contains('app-ready')) {
-    initDrag();
-    // Mostrar/esconder botão conforme a página activa
-    var btn = document.getElementById('drag-mode-btn');
-    if (btn) {
-      var casaPage = document.getElementById('page-casa');
-      btn.style.display = (casaPage && casaPage.classList.contains('active')) ? 'flex' : 'none';
-    }
-  } else {
-    var btn = document.getElementById('drag-mode-btn');
-    if (btn) btn.style.display = 'none';
-  }
-}, 300);
-</script>
 </body>
