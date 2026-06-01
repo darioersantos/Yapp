@@ -153,32 +153,43 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
 .section{padding:1.6rem 1.2rem 1.2rem;}
 .parallax-section{transform:translateY(0);transition:transform 0.1s linear;}
 
-/* ── DESKTOP: layout mobile centrado ────────────────────────────── */
+/* ── DESKTOP layout ────────────────────────────────────────────── */
 @media(min-width:768px){
-  body{ background:#1e2d14; }
-  #splash{ display:none!important; }
-  #login-screen{
-    inset:0 auto 0 calc(50% - 215px);
-    width:430px;
-    transform:none;
-    box-shadow:0 0 60px rgba(0,0,0,.5);
+  body{background:#1e2d14;}
+
+  #splash{
+    position:fixed;top:0;left:0;
+    width:40%;height:100vh;z-index:1;
   }
+  #splash .hero-content{padding:2rem 2.5rem 3rem;}
+  #splash .hero-title{font-size:3.5rem;}
+  #splash .hero-top{padding:2rem 2rem;}
+
   #app{
-    width:430px;
-    margin:0 auto;
+    margin-left:40%;
+    padding-bottom:0;
     min-height:100vh;
     background:var(--cream);
-    box-shadow:0 0 60px rgba(0,0,0,.5);
-    position:relative;
+    position:relative;z-index:2;
+    box-shadow:-6px 0 40px rgba(0,0,0,0.35);
   }
-  .page{ min-height:calc(100vh - 60px); }
-  .section{ padding:1.6rem 1.2rem 1.2rem; }
-  #page-meteo{ padding:0!important; }
-  #meteo-full{ height:calc(100vh - 60px); }
-  #bottom-nav{ width:430px; left:50%; transform:translateX(-50%); right:auto; }
-  #bottom-nav.hidden-nav{ transform:translateX(-50%) translateY(100%); }
-  .modal-overlay{ width:430px; left:50%; transform:translateX(-50%); right:auto; }
-  #drag-mode-btn{ right:calc(50% - 201px); }
+
+  .nav-bar{position:sticky;top:0;border-radius:0;z-index:100;}
+
+  .page{min-height:calc(100vh - 60px);}
+  .section{padding:2rem 2.5rem 1.5rem;max-width:580px;margin:0 auto;}
+
+  #page-meteo{padding:0!important;}
+  #meteo-full{height:calc(100vh - 60px);}
+
+  #atracoes-dynamic,
+  #restaurantes-dynamic{
+    display:grid;grid-template-columns:1fr 1fr;gap:.75rem;
+  }
+  #atracoes-dynamic .img-card,
+  #restaurantes-dynamic .img-card{margin-bottom:0;}
+
+  .services-grid{grid-template-columns:1fr 1fr;}
 }
 .section-tag{font-size:10px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;color:var(--sage);margin-bottom:5px;}
 .section-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--forest);line-height:1.15;}
@@ -1968,6 +1979,7 @@ function applyConfig(c, checkNotif) {
     document.querySelectorAll('.logo-name,[data-api="propriedade_nome"]').forEach(function(el){
       el.textContent = c.propriedade_nome;
     });
+    document.title = c.propriedade_nome + ' · Guia do Hóspede';
     var nlTitle = document.getElementById('newsletter-title');
     if (nlTitle) nlTitle.textContent = 'Receba promoções d' + (c.propriedade_nome.toLowerCase().startsWith('a') ? 'a ' : 'o ') + c.propriedade_nome;
   }
