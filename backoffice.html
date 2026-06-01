@@ -2778,7 +2778,7 @@ function renderGuestsFiltered(list) {
     h += '<tr><td><strong>' + esc(g.user) + '</strong></td>'
       + '<td style="font-family:monospace;font-size:.8rem;">' + esc(g.pass) + '</td>'
       + '<td>' + esc(g.name || '—') + '</td>'
-      + '<td>' + (g.checkin ? fmtDate(g.checkin) : '—') + '</td>'\
+      + '<td>' + (g.checkin ? fmtDate(g.checkin) : '—') + '</td>'
       + '<td>' + (g.checkout === '2099-12-31' ? 'Permanente' : fmtDate(g.checkout)) + '</td>'
       + '<td><span class="days-badge">' + daysLabel + '</span></td>'
       + '<td>' + pill + '</td>'
