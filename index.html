@@ -688,7 +688,6 @@ body.aviso-active #notif-banner{top:2.2rem;}
         <div class="streaming-chips" style="display:flex;flex-wrap:wrap;gap:0.4rem;">
           <span class="chip">NOS TV</span><span class="chip">Netflix</span><span class="chip">Amazon Prime</span><span class="chip">Disney+</span><span class="chip">Canal+</span>
         </div>
-        <p id="sala-tv-desc" style="font-size:0.78rem;color:var(--text-light);margin-top:0.7rem;line-height:1.5;" data-api="sala_tv">Credenciais no dossier junto à televisão.</p>
       </div>
 
       <!-- Sponsors — renderizados dinamicamente -->
@@ -2021,13 +2020,16 @@ function applyConfig(c, checkNotif) {
     _wifiData[1].pass = c.wifi_pass2 || c.wifi_pass;
     // copy-btn onclick preserved (handled by openWifiQR)
   }
-  // Streaming
-  if (c.streaming_plataformas) {
-    var chips = document.querySelector('.streaming-chips');
-    if (chips) {
-      chips.innerHTML = c.streaming_plataformas.split(',').map(function(t){
-        return '<span class="chip">'+t.trim()+'</span>';
-      }).join('');
+  // Streaming — chips from sala_tv (platforms before first dot) or streaming_plataformas
+  var streamSrc = c.sala_tv || c.streaming_plataformas || '';
+  if (streamSrc) {
+    var streamChips = document.querySelector('.streaming-chips');
+    if (streamChips) {
+      var platformPart = streamSrc.indexOf('.') > 0 ? streamSrc.substring(0, streamSrc.indexOf('.')).trim() : streamSrc.trim();
+      streamChips.innerHTML = platformPart.split(',').map(function(t){
+        var name = t.trim().replace(/\s+e\s+(\S)/g, ' $1').trim();
+        return name ? '<span class="chip">'+name+'</span>' : '';
+      }).filter(Boolean).join('');
     }
   }
   // Tema
