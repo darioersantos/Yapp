@@ -2293,7 +2293,25 @@ function go(sec, el) {
   if (sec === 'ocupacao') renderCalendar();
   if (sec === 'receitas') { loadReservas(); renderReceitas(); }
   if (sec === 'financeiro') { loadReservas(); renderReceitas(); }
-  if (sec === 'info-uteis') { dynLoad('info', (_dynData.info ? JSON.stringify(_dynData.info) : null) || localStorage.getItem('dyn_info') || null); }
+  if (sec === 'info-uteis') {
+    var baseJson2 = (_dynData.info ? JSON.stringify(_dynData.info) : null) || localStorage.getItem('dyn_info') || null;
+    var items2; try { items2 = JSON.parse(baseJson2 || '[]'); } catch(e) { items2 = []; }
+    if (_lastConfig) {
+      var r2 = _lastConfig;
+      var fmap = [
+        { title:'Regras da casa', text: (r2.reg_silencio ? 'Silêncio: '+r2.reg_silencio : '') + (r2.reg_animais ? '\nAnimais: '+r2.reg_animais : '') + (r2.reg_tabaco ? '\nTabaco: '+r2.reg_tabaco : '') },
+        { title:'Reciclagem', text: (r2.rec_verde ? '🟢 Verde: '+r2.rec_verde+'\n' : '')+(r2.rec_azul ? '🔵 Azul: '+r2.rec_azul+'\n' : '')+(r2.rec_amarelo ? '🟡 Amarelo: '+r2.rec_amarelo+'\n' : '')+(r2.rec_preto ? '⚫ Preto: '+r2.rec_preto : '') },
+        { title:'Quadro elétrico', text: r2.fus_como || '' }
+      ];
+      fmap.forEach(function(m) {
+        if (!m.text.trim()) return;
+        var found = false;
+        for (var i=0;i<items2.length;i++) { if (items2[i].title===m.title){items2[i].text=m.text;found=true;break;} }
+        if (!found) items2.push({title:m.title,text:m.text});
+      });
+    }
+    dynLoad('info', items2.length ? JSON.stringify(items2) : null);
+  }
 }
 
 // ── LOAD ALL FROM API ────────────────────────────
@@ -2423,8 +2441,10 @@ function fillConfig(c) {
 }
 
 // ── FILL CASA FIELDS FROM API ──────────────────────────────────────
+var _lastConfig = null;
 function fillCasa(c) {
   if (!c) return;
+  _lastConfig = c;
   function s(id, val) { var el=document.getElementById(id); if(el && val!==undefined) el.value=val; }
   // Quartos
   var maxQ = 0;
