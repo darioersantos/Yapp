@@ -153,54 +153,32 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
 .section{padding:1.6rem 1.2rem 1.2rem;}
 .parallax-section{transform:translateY(0);transition:transform 0.1s linear;}
 
-/* ── DESKTOP: forçar layout mobile centrado ─────────────────────── */
-@media(min-width:600px){
-  body{
-    background:#1e2d14;
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
-    min-height:100vh;
-  }
+/* ── DESKTOP: layout mobile centrado ────────────────────────────── */
+@media(min-width:768px){
+  body{ background:#1e2d14; }
+  #splash{ display:none!important; }
   #login-screen{
-    max-width:430px;
-    left:50%;
-    transform:translateX(-50%);
-    border-radius:24px;
-  }
-  #splash{
-    display:none!important;
+    inset:0 auto 0 calc(50% - 215px);
+    width:430px;
+    transform:none;
+    box-shadow:0 0 60px rgba(0,0,0,.5);
   }
   #app{
     width:430px;
-    max-width:430px;
+    margin:0 auto;
     min-height:100vh;
     background:var(--cream);
+    box-shadow:0 0 60px rgba(0,0,0,.5);
     position:relative;
-    box-shadow:0 0 60px rgba(0,0,0,0.5);
-    border-radius:0;
-    flex-shrink:0;
   }
-  .page{min-height:calc(100vh - 60px);}
-  .section{padding:1.6rem 1.2rem 1.2rem;}
-  #page-meteo{padding:0!important;}
-  #meteo-full{height:calc(100vh - 60px);}
-  #notif-banner{max-width:430px;left:50%;transform:translateX(-50%);}
-  #toast{max-width:380px;}
-  #inapp-notif{max-width:400px;left:50%;transform:translateX(-50%);}
-  #bottom-nav{max-width:430px;left:50%;transform:translateX(-50%);right:auto;width:430px;}
-  #bottom-nav.hidden-nav{transform:translateX(-50%) translateY(100%);}
-  #drag-mode-btn{right:calc(50% - 430px/2 + 14px);}
-
-  /* Info 4 colunas */
-  .info-grid{grid-template-columns:repeat(4,1fr);}
-
-  /* Modais só no painel direito */
-  .modal-overlay{left:40%;width:60%;}
-  .modal-sheet{border-radius:20px 20px 0 0;max-height:88vh;max-width:100%;}
-
-  /* Guestbook 2 colunas */
-  #guestbook-list{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+  .page{ min-height:calc(100vh - 60px); }
+  .section{ padding:1.6rem 1.2rem 1.2rem; }
+  #page-meteo{ padding:0!important; }
+  #meteo-full{ height:calc(100vh - 60px); }
+  #bottom-nav{ width:430px; left:50%; transform:translateX(-50%); right:auto; }
+  #bottom-nav.hidden-nav{ transform:translateX(-50%) translateY(100%); }
+  .modal-overlay{ width:430px; left:50%; transform:translateX(-50%); right:auto; }
+  #drag-mode-btn{ right:calc(50% - 201px); }
 }
 .section-tag{font-size:10px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;color:var(--sage);margin-bottom:5px;}
 .section-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--forest);line-height:1.15;}
