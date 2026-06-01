@@ -1356,6 +1356,37 @@ window.addEventListener('DOMContentLoaded', function() {
   // Load live data from Google Sheets if API configured
   if (API_URL) { loadAPIData(); }
 
+  // ── Auto-login via QR Code (parâmetros ?u= e ?p= no URL) ──────────
+  (function() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var qrUser = params.get('u');
+      var qrPass = params.get('p');
+      if (qrUser && qrPass) {
+        // Limpar URL para não expor credenciais
+        window.history.replaceState({}, document.title, window.location.pathname);
+        // Preencher campos e fazer login após API carregar os hóspedes
+        var attemptQR = function() {
+          document.getElementById('login-user').value = qrUser;
+          document.getElementById('login-pass').value = qrPass;
+          doLogin();
+        };
+        // Tentar imediatamente; se GUESTS ainda vazio, aguardar API (max 5s)
+        if (Object.keys(GUESTS).length > 0) {
+          attemptQR();
+        } else {
+          var tries = 0;
+          var t = setInterval(function() {
+            if (Object.keys(GUESTS).length > 0 || tries++ > 20) {
+              clearInterval(t);
+              attemptQR();
+            }
+          }, 250);
+        }
+      }
+    } catch(e) {}
+  })();
+
   var s = getSession();
   if (s) {
     if (isExpired(s.checkout)) {
