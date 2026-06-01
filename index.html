@@ -1153,7 +1153,7 @@ function saveSession(u, co, ci, name) {
 function clearSession() { localStorage.removeItem(SESSION_KEY); }
 function isExpired(co) {
   if (!co || co === '2099-12-31') return false;
-  var grace = new Date(co + 'T23:59:59');
+  var grace = new Date(co + 'T23:00:00'); // acesso até às 23h do dia de checkout
   grace.setDate(grace.getDate() + 5); // 5 dias de graça após checkout
   return new Date() > grace;
 }
@@ -2258,33 +2258,27 @@ function openWifiQR(idx) {
 // ── Render dynamic services from backoffice JSON ─────────────────
 function renderServicos(jsonStr) {
   var container = document.getElementById('svc-dynamic-list');
-  if (!container || !jsonStr) return;
-  var cats;
-  try { cats = JSON.parse(jsonStr); } catch(e) { return; }
-  if (!cats || !cats.length) return;
-  var html = '';
-  cats.forEach(function(cat, ci) {
-    var id = 'svc-dyn-cat-' + ci;
-    html += '<div class="svc-item" onclick="toggleSvcCat(\'' + id + '\')">'
-      + '<div class="svc-item-inner">'
-      + '<div class="svc-thumb" style="background:rgba(90,138,60,0.1);font-size:1.2rem;display:flex;align-items:center;justify-content:center;">🔧</div>'
-      + '<div class="svc-item-text"><div class="svc-item-label">' + (cat.title||'') + '</div><div class="svc-item-sub">' + (cat.subtitle||'') + '</div></div>'
-      + '<svg class="svc-chevron" id="' + id + '-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>'
+  if (!container) return;
+  var items;
+  try { items = JSON.parse(jsonStr || '[]'); } catch(e) { return; }
+  if (!items || !items.length) return;
+  var style = 'border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;';
+  container.innerHTML = items.map(function(item, i) {
+    var id = 'svc-dyn-' + i;
+    var bodyText = (item.text || '').replace(/\n/g, '<br/>');
+    return '<div class="acc-item" id="' + id + '" style="' + style + '">' 
+      + (item.img ? '<img src="' + item.img + '" style="width:100%;height:120px;object-fit:cover;display:block;" alt="' + (item.title||'')+'"/>' : '')
+      + '<div class="acc-header" onclick="toggleAcc(\'' + id + '\')" style="padding:.75rem 1rem;">'
+      + '<div class="acc-header-text">'
+      + '<div class="acc-header-label">' + (item.title || '') + '</div>'
+      + (item.subtitle ? '<div class="acc-header-sub">' + item.subtitle + '</div>' : '')
       + '</div>'
-      + '<div id="' + id + '" class="svc-detail" style="display:none;">';
-    (cat.items || []).forEach(function(item) {
-      html += '<div class="contact-link" style="cursor:' + (item.map_url ? 'pointer' : 'default') + ';"'
-        + (item.map_url ? ' onclick="window.open(\'' + item.map_url + '\',\'_blank\')"' : '')
-        + '>'
-        + '<div class="contact-icon" style="background:rgba(90,138,60,0.08);font-size:1rem;width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
-        + (item.map_url ? '📍' : '·') + '</div>'
-        + '<div><div class="contact-label">' + (item.name||'') + '</div>'
-        + '<div class="contact-sub">' + (item.detail||'') + (item.map_url ? ' · <span style="color:var(--forest);">Ver no mapa</span>' : '') + '</div>'
-        + '</div></div>';
-    });
-    html += '</div></div>';
-  });
-  container.innerHTML = html;
+      + '<svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>'
+      + '</div>'
+      + '<div class="acc-body"><div class="acc-inner" style="padding:.6rem 1rem .85rem;">'
+      + '<p style="font-size:.85rem;color:var(--text-mid);line-height:1.65;">' + bodyText + '</p>'
+      + '</div></div></div>';
+  }).join('');
 }
 
 function toggleSvcCat(id) {
