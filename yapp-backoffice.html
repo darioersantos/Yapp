@@ -1493,6 +1493,12 @@ function calNext() { _calMonth++; if (_calMonth > 11) { _calMonth = 0; _calYear+
 // ── RECEITAS ──────────────────────────────────────
 var _reservas = [];
 var REC_KEY = 'yapp_reservas';
+var REC_VER_KEY = 'yapp_reservas_v';
+// Clear stale localStorage if not yet on current version (forces fresh sync from Sheets)
+if (localStorage.getItem(REC_VER_KEY) !== '2') {
+  localStorage.removeItem(REC_KEY);
+  localStorage.setItem(REC_VER_KEY, '2');
+}
 
 function loadReservas() {
   try { _reservas = JSON.parse(localStorage.getItem(REC_KEY) || '[]'); } catch(e) { _reservas = []; }
@@ -1525,20 +1531,26 @@ function loadReservas() {
         if (r.user) localUsers[r.user] = true;
       });
 
-      (d.data || []).forEach(function(r) {
+      // Replace with fresh data from Sheets — avoid stale localStorage duplicates
+      _reservas = (d.data || []).map(function(r) {
         var ci = norm(r.ci), co = norm(r.co);
-        var key = ci + '|' + (r.guest||'').toLowerCase();
-        // Skip if already in localStorage by key or by username
-        if (localKeys[key] || (r.user && localUsers[r.user])) return;
-        _reservas.push({
-          id: Date.now() + Math.random(),
+        return {
+          id: r.id || (Date.now() + Math.random()),
           ci: ci, co: co,
           guest: r.guest, email: r.email || '',
           valor: r.valor || 0, plat: r.plat || '',
           estado: r.estado || 'pago',
           nights: r.nights || Math.round((new Date(co) - new Date(ci)) / 86400000),
           notes: r.notes || '', user: r.user || '', pass: r.pass || ''
-        });
+        };
+      });
+
+      // Deduplicate by user (keep first occurrence)
+      var seenU2 = {};
+      _reservas = _reservas.filter(function(r) {
+        if (r.user && seenU2[r.user]) return false;
+        if (r.user) seenU2[r.user] = true;
+        return true;
       });
 
       _reservas.sort(function(a,b) { return (b.ci||'').localeCompare(a.ci||''); });
@@ -1868,14 +1880,23 @@ function renderReceitas() {
   if (recList) {
     var today = new Date().toISOString().slice(0,10);
 
-    // Merge: _reservas + DB.guests que não estão em _reservas
+    // Use _reservas as primary source, enrich with DB.guests data if available
+    // Never duplicate — one entry per user
     var reservaUsers = {};
-    _reservas.forEach(function(r) { if (r.user) reservaUsers[r.user] = true; });
-    var combined = _reservas.slice(); // cópia
+    var combined = _reservas.slice().map(function(r) {
+      if (r.user) reservaUsers[r.user] = true;
+      // Enrich with guest name if missing
+      if (r.user && DB.guests) {
+        var g = DB.guests.find(function(g){ return g.user === r.user; });
+        if (g && g.name && !r.guest) r.guest = g.name;
+      }
+      return r;
+    });
+    // Add DB.guests that have NO entry in _reservas at all
     (DB.guests || []).forEach(function(g) {
       if (g.user === 'admin' || g.user === 'demo') return;
-      if (reservaUsers[g.user]) return; // já na lista
-      // Adicionar como entrada de hóspede sem dados financeiros
+      if (reservaUsers[g.user]) return; // already in _reservas
+      if (!g.checkin || g.checkout === '2099-12-31') return;
       combined.push({
         id: 'g_' + g.user,
         ci: g.checkin || '', co: g.checkout || '',
