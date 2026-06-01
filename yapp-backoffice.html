@@ -356,7 +356,8 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
     <div>
       <div class="topbar-title">YAPP Backoffice</div>
     </div>
-    <div class="topbar-sync" style="margin-left:auto;">
+    <div class="topbar-sync" style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+      <a href="https://docs.google.com/spreadsheets/d/1DpPTOUqV58tr5QHLfpG2JRxNZZNoQIE8-4KipCWoknY/edit?usp=drivesdk" target="_blank" title="Abrir Google Sheets" style="display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:7px;padding:4px 9px;color:#fff;text-decoration:none;font-size:.7rem;font-weight:600;letter-spacing:.03em;flex-shrink:0;"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>Engine</a>
       <div class="dot" id="api-dot" style="background:var(--ora);"></div>
       <span id="sync-lbl">...</span>
     </div>
@@ -427,6 +428,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 
     </nav>
     <div class="sbfoot">
+      <a href="https://docs.google.com/spreadsheets/d/1DpPTOUqV58tr5QHLfpG2JRxNZZNoQIE8-4KipCWoknY/edit?usp=drivesdk" target="_blank" style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.5);font-size:.82rem;text-decoration:none;padding:.4rem 0;margin-bottom:.5rem;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>Engine (Sheets)</a>
       <button class="sbout" onclick="doLogout()">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
         Terminar sessão
@@ -1421,35 +1423,38 @@ function renderCalendar() {
   var sh = document.getElementById('cal-stat-hospedes'); if (sh) sh.textContent = new Set(Object.values(occupied)).size;
 
   // Guest list this month
-  var listH = '', seen = {};
+  // Build unified guest list — deduplicate, show only name + dates
+  var listH = '', seenCal = {}, allEntries = [];
   (_reservas || []).forEach(function(r) {
     if (!r.ci || !r.co) return;
-    var ci = new Date(r.ci + 'T00:00:00'), co = new Date(r.co + 'T00:00:00');
-    var inM = (ci.getFullYear()===year&&ci.getMonth()===month) ||
-              (co.getFullYear()===year&&co.getMonth()===month) ||
+    var ci = new Date(r.ci+'T00:00:00'), co = new Date(r.co+'T00:00:00');
+    var inM = (ci.getFullYear()===year&&ci.getMonth()===month)||
+              (co.getFullYear()===year&&co.getMonth()===month)||
               (ci<=new Date(year,month,1)&&co>=new Date(year,month,daysInMonth));
     if (!inM) return;
-    seen[r.user || r.guest] = true;
-    var pill = r.estado==='pago' ? '<span class="pill p-ok">Pago</span>' : '<span class="pill p-pend">Pendente</span>';
-    listH += '<div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--bd);font-size:.82rem;gap:.5rem;flex-wrap:wrap;">'
-      + '<div><strong>' + esc(r.guest||'—') + '</strong><span style="color:var(--txl);font-size:.75rem;margin-left:6px;">'
-      + fmtDate(r.ci) + ' → ' + fmtDate(r.co) + ' · ' + (r.nights||'?') + ' noites · ' + (r.plat||'') + '</span></div>'
-      + '<div style="display:flex;gap:.4rem;align-items:center;">' + pill + '<strong style="color:var(--g);">€' + (r.valor||0) + '</strong></div>'
-      + '</div>';
+    var key = (r.user||r.guest||'').toLowerCase();
+    if (seenCal[key]) return;
+    seenCal[key] = true;
+    allEntries.push({ name: r.guest||'—', ci: r.ci, co: r.co });
   });
   Object.keys(guestObj).forEach(function(user) {
-    var g2 = guestObj[user];
     if (user==='admin'||user==='demo') return;
-    if (seen[user] || seen[g2.name] || seen[g2.name && g2.name.toLowerCase()]) return;
     var g = guestObj[user];
     if (!g.checkin||!g.checkout||g.checkout==='2099-12-31') return;
+    if (seenCal[user.toLowerCase()]||seenCal[(g.name||'').toLowerCase()]) return;
+    seenCal[user.toLowerCase()] = true;
     var ci=new Date(g.checkin+'T00:00:00'),co=new Date(g.checkout+'T00:00:00');
     var inM=(ci.getFullYear()===year&&ci.getMonth()===month)||(co.getFullYear()===year&&co.getMonth()===month)||
             (ci<=new Date(year,month,1)&&co>=new Date(year,month,daysInMonth));
     if (!inM) return;
+    allEntries.push({ name: g.name||user, ci: g.checkin, co: g.checkout });
+  });
+  allEntries.sort(function(a,b){ return (a.ci||'').localeCompare(b.ci||''); });
+  allEntries.forEach(function(e) {
     listH += '<div style="padding:.6rem 0;border-bottom:1px solid var(--bd);font-size:.82rem;">'
-      + '<strong>' + esc(g.name||user) + '</strong>'
-      + '<span style="color:var(--txl);font-size:.75rem;margin-left:6px;">' + fmtDate(g.checkin) + ' → ' + fmtDate(g.checkout) + '</span></div>';
+      + '<strong>' + esc(e.name) + '</strong>'
+      + '<span style="color:var(--txl);font-size:.75rem;margin-left:6px;">' + fmtDate(e.ci) + ' → ' + fmtDate(e.co) + '</span>'
+      + '</div>';
   });
   var gl = document.getElementById('cal-guests-list');
   if (gl) gl.innerHTML = listH || '<div style="font-size:.82rem;color:var(--txl);">Nenhuma reserva neste mês.</div>';
@@ -2429,7 +2434,7 @@ function fillCasa(c) {
   s('img-wc', c.wc_img); s('img-info', c.info_img);
   // Texts
   s('c-bv', c.boas_vindas);
-  s('sala-stream', c.streaming_plataformas);
+  s('sala-stream', c.streaming_plataformas); s('c-stream', c.streaming_plataformas);
   // Dynamic editors — load JSON data
   var dynDefaults = {
     sala: '[{"title":"Smart TV","text":"NOS TV, Netflix, Amazon Prime, Disney+ e Canal+. Credenciais no dossier."},{"title":"Lareira","text":"Lenha no cesto junto à lareira. Não deixar sem vigilância."},{"title":"Ar condicionado","text":"Disponível na sala. Temperatura recomendada: 22°C."},{"title":"Sofá-cama","text":"O sofá converte-se em cama de casal. Roupa de cama no armário do corredor."}]',
