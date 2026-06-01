@@ -77,7 +77,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 .sbout{background:none;border:none;color:rgba(255,255,255,0.4);font-family:'DM Sans',sans-serif;font-size:.82rem;cursor:pointer;display:flex;align-items:center;gap:8px;padding:.5rem 0;}
 
 /* ── MAIN CONTENT ─────────────────────────────── */
-.main{margin-left:0;padding:62px 1rem 2rem;min-height:100vh;background:#e8f0fb;}
+.main{margin-left:0;padding:72px 1rem 2rem;min-height:100vh;background:#e8f0fb;}
 /* conteúdo centrado com max-width para não esticar */
 .content-wrap{max-width:780px;margin:0 auto;}
 .ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.4rem;flex-wrap:wrap;gap:.75rem;}
@@ -87,8 +87,8 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 
 /* ── SECTIONS ─────────────────────────────────── */
 .sec{display:none;}
-.sec.on{display:block;}
-@keyframes fadein{from{opacity:0;}to{opacity:1;}}
+.sec.on{display:block;animation:fadein .3s ease both;}
+@keyframes fadein{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
 /* ── CARDS ─────────────────────────────────────── */
 .card{background:#fff;border-radius:var(--r);border:1px solid var(--bd);padding:1.2rem 1.3rem;margin-bottom:.9rem;}
@@ -134,7 +134,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
   #drawer-overlay{display:none!important;}
   .sb-close{display:none;}
   .ham{display:none;}
-  .main{margin-left:240px;padding:2.5rem 3rem 3rem;}
+  .main{margin-left:240px;padding:1.5rem 2rem 2rem;}
   .g2{grid-template-columns:1fr 1fr;}
   .g3{grid-template-columns:1fr 1fr 1fr;}
   .g4{grid-template-columns:1fr 1fr 1fr 1fr;}
@@ -288,16 +288,6 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 .dyn-chip-del{background:none;border:none;color:#888;cursor:pointer;padding:0;font-size:.85rem;line-height:1;}
 .dyn-drag-handle{font-size:1.1rem;color:var(--txl);cursor:grab;padding:0 4px;user-select:none;flex-shrink:0;}
 .dyn-drag-handle:active{cursor:grabbing;}
-.svc-cat-wrap{background:#fff;border:1px solid var(--bd);border-radius:12px;margin-bottom:.75rem;overflow:hidden;}
-.svc-cat-header{display:flex;align-items:center;gap:.5rem;padding:.75rem .85rem;background:#f7f9ff;border-bottom:1px solid var(--bd);}
-.svc-cat-title{flex:1;background:#fff;border:1px solid var(--bd);border-radius:7px;padding:.45rem .7rem;font-size:.83rem;font-weight:600;font-family:inherit;color:var(--tx);}
-.svc-cat-sub{flex:1;background:#fff;border:1px solid var(--bd);border-radius:7px;padding:.45rem .7rem;font-size:.8rem;font-family:inherit;color:var(--tx);}
-.svc-items{padding:.6rem .85rem .85rem;}
-.svc-item-row{display:flex;gap:.4rem;align-items:center;margin-bottom:.4rem;}
-.svc-item-name{flex:1.2;background:#f7f9ff;border:1px solid var(--bd);border-radius:6px;padding:.4rem .6rem;font-size:.78rem;font-family:inherit;}
-.svc-item-detail{flex:1.8;background:#f7f9ff;border:1px solid var(--bd);border-radius:6px;padding:.4rem .6rem;font-size:.78rem;font-family:inherit;}
-.svc-del-item{background:#fff0f0;border:1px solid #fcc;color:#e55;border-radius:6px;padding:.35rem .55rem;font-size:.8rem;cursor:pointer;flex-shrink:0;}
-.svc-add-item{font-size:.75rem;color:var(--g);background:#f0f9f4;border:1px dashed var(--g);border-radius:6px;padding:.4rem .8rem;cursor:pointer;font-family:inherit;margin-top:.2rem;}
 .dyn-card-wrap[draggable="true"]:hover{border-color:var(--g);}
 
 </style>
@@ -403,6 +393,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
       <div class="sbi" onclick="go('info-uteis',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Informações úteis</div>
       <div class="sbi" onclick="go('config',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Info & Splash</div>
       <div class="sbi" onclick="go('wifi',this)"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>Wi-Fi</div>
+      <div class="sbi" onclick="go('casa-regras',this)"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Regras & Check-out</div>
       <div class="sbi" onclick="go('servicos',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Serviços</div>
 
       <div class="sbsec">Divisões</div>
@@ -743,7 +734,7 @@ Máq. de lavar roupa</textarea>
           <div class="fld"><label>Foto exterior</label>
             <div class="photo-row" style="flex-direction:column;gap:.4rem;">
               <img id="prev-ext" class="photo-prev wide" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&auto=format&fit=crop&q=75"/>
-              <input class="photo-url" id="img-ext" value="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-ext','img-ext')"/>
+              <input class="photo-url" id="img-ext" value="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-ext','img-ext')"/>
             </div>
           </div>
         </div>
@@ -827,20 +818,83 @@ Máq. de lavar roupa</textarea>
 
     </div><!-- /cw -->
 
-<!-- Regras moved to Serviços section -->
+        <div id="sec-casa-regras" class="sec">
+    <div class="content-wrap">
+      <div class="ph"><div><div class="ptitle">Regras & Check-out</div></div></div>
+      <div class="card"><div class="ctitle">Regras da casa</div>
+        <div class="g2">
+          <div class="fld"><label>Silêncio</label><textarea class="inp ta" id="reg-s">Respeitar silêncio entre as 22h00 e as 08h00.</textarea></div>
+          <div class="fld"><label>Animais</label><textarea class="inp ta" id="reg-a">Permitidos. Não devem entrar na piscina.</textarea></div>
+          <div class="fld"><label>Estacionamento</label><textarea class="inp ta" id="reg-e">Dois lugares cobertos no lado esquerdo do portão.</textarea></div>
+          <div class="fld"><label>Tabaco</label><textarea class="inp ta" id="reg-t">Proibido fumar dentro da casa. Área exterior permitida.</textarea></div>
+        </div>
+      </div>
+      <div class="card"><div class="ctitle">Checklist de saída (um item por linha)</div>
+        <textarea class="inp ta-lg" id="checklist">Fechar todas as janelas e portas
+Desligar ar condicionado e aquecimento
+Desligar luzes em todos os compartimentos
+Retirar todos os pertences pessoais
+Colocar toalhas usadas no chão da casa de banho
+Verificar frigorífico e tirar alimentos
+Fechar torneiras
+Separar lixo e colocar nos contentores
+Trancar o portão do jardim
+Entregar as chaves ao proprietário</textarea>
+      </div>
+      <div class="card"><div class="ctitle">Caixa de fusíveis</div>
+        <div class="g2">
+          <div class="fld"><label>Localização</label><textarea class="inp ta" id="fus-l">Corredor da entrada, armário branco à direita.</textarea></div>
+          <div class="fld"><label>O que fazer</label><textarea class="inp ta" id="fus-c">1. Desligue os aparelhos. 2. Levante o disjuntor falhado. 3. Se repetir, contacte o Carlos.</textarea></div>
+        </div>
+      </div>
+      <div class="card"><div class="ctitle">Reciclagem</div>
+        <div class="g2">
+          <div class="fld"><label>Verde (vidro)</label><input class="inp" id="rec-v" value="Garrafas, frascos, potes de vidro"/></div>
+          <div class="fld"><label>Azul (papel)</label><input class="inp" id="rec-a" value="Jornais, revistas, caixas de cartão"/></div>
+          <div class="fld"><label>Amarelo (plástico)</label><input class="inp" id="rec-am" value="Garrafas PET, embalagens, latas"/></div>
+          <div class="fld"><label>Preto (indiferenciado)</label><input class="inp" id="rec-p" value="Resíduos não recicláveis. Recolha terças e sextas."/></div>
+        </div>
+      </div>
+      <button class="savebtn" onclick="saveSection('casa-regras')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-casa-regras">Guardado!</span></button>
+    </div>
+
     <!-- SERVIÇOS -->
 
     </div><!-- /cw -->
 
         <div id="sec-servicos" class="sec">
     <div class="content-wrap">
-      <div class="ph">
-        <div><div class="ptitle">Serviços</div><div class="psub">Edita, adiciona, remove e reordena — reflecte na app</div></div>
-        <button class="addbtn" onclick="svcAddCategory()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nova categoria</button>
+      <div class="ph"><div><div class="ptitle">Serviços</div></div></div>
+      <div class="card"><div class="ctitle">Fotos dos serviços</div>
+        <div class="g2">
+          <div class="fld"><label>Limpeza extra</label>
+            <div class="photo-row" style="flex-direction:column;gap:.4rem;">
+              <img id="prev-limp" class="photo-prev wide" src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&auto=format&fit=crop&q=75"/>
+              <input class="photo-url" id="img-limp" value="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-limp','img-limp')"/>
+            </div>
+          </div>
+          <div class="fld"><label>Aluguer bicicletas</label>
+            <div class="photo-row" style="flex-direction:column;gap:.4rem;">
+              <img id="prev-bici" class="photo-prev wide" src="https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=400&auto=format&fit=crop&q=75"/>
+              <input class="photo-url" id="img-bici" value="https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=400&auto=format&fit=crop&q=75" oninput="pi('prev-bici','img-bici')"/>
+            </div>
+          </div>
+        </div>
       </div>
-      <p style="font-size:.78rem;color:var(--txl);margin-bottom:.75rem;">Cada categoria tem um título, subtítulo e lista de itens. Arrasta ⠿ para reordenar. Cada item tem nome e detalhe (horário, preço, etc.).</p>
-      <div id="svc-editor"></div>
-      <button class="savebtn" onclick="saveSection('servicos-dyn')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar serviços<span class="oktxt" id="ok-servicos-dyn">Guardado!</span></button>
+      <div class="card"><div class="ctitle">Limpeza extra</div>
+        <div class="fld"><label>Texto descritivo</label><textarea class="inp ta" id="sv-limp">Serviço disponível das 10h às 16h. Pedido confirmado por WhatsApp.</textarea></div>
+      </div>
+      <div class="card"><div class="ctitle">Bicicletas — preços</div>
+        <div class="g3">
+          <div class="fld"><label>Montanha</label><input class="inp" id="b-p1" value="€12/dia"/></div>
+          <div class="fld"><label>Estrada</label><input class="inp" id="b-p2" value="€10/dia"/></div>
+          <div class="fld"><label>E-Bike</label><input class="inp" id="b-p3" value="€20/dia"/></div>
+          <div class="fld"><label>Desc. montanha</label><input class="inp" id="b-d1" value="21 velocidades · Capacete incluído"/></div>
+          <div class="fld"><label>Desc. estrada</label><input class="inp" id="b-d2" value="Ciclovia do rio Cávado"/></div>
+          <div class="fld"><label>Desc. e-bike</label><input class="inp" id="b-d3" value="Bateria 80 km · Carregamento incluído"/></div>
+        </div>
+      </div>
+      <button class="savebtn" onclick="saveSection('servicos')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar<span class="oktxt" id="ok-servicos">Guardado!</span></button>
     </div>
 
     <!-- ATRAÇÕES -->
@@ -1120,7 +1174,6 @@ Máq. de lavar roupa</textarea>
       <div class="ph"><div><div class="ptitle">Receitas</div><div class="psub">Controlo financeiro · pagamentos e rendimento</div></div></div>
 
       <div class="stats">
-        <div class="stat"><div class="statv" id="rec-semana">€0</div><div class="statl">Semana anterior</div></div>
         <div class="stat"><div class="statv" id="rec-total">€0</div><div class="statl">Este mês</div></div>
         <div class="stat"><div class="statv" id="rec-ano">€0</div><div class="statl">Este ano</div></div>
         <div class="stat"><div class="statv" id="rec-media">€0</div><div class="statl">Média/noite</div></div>
@@ -1555,20 +1608,8 @@ function _genPass() {
 }
 
 function addReserva() {
-  // Clear all fields for a fresh form
-  ['rec-guest','rec-email','rec-checkin','rec-checkout','rec-valor','rec-notas'].forEach(function(id){
-    var el = document.getElementById(id); if (el) el.value = '';
-  });
-  var plEl = document.getElementById('rec-plat'); if (plEl) plEl.value = 'Airbnb';
-  var stEl = document.getElementById('rec-estado'); if (stEl) stEl.value = 'pago';
-  // Clear edit state
-  var fc = document.getElementById('rec-form-card');
-  if (fc) { delete fc.dataset.editId; }
-  document.getElementById('rec-credentials-preview').style.display = 'none';
-  // Reset credentials
-  var ue = document.getElementById('prev-username'); if (ue) { ue.textContent = ''; ue.dataset.val = ''; }
-  var pe = document.getElementById('prev-password'); if (pe) { pe.textContent = ''; pe.dataset.val = ''; }
   document.getElementById('rec-form-card').style.display = 'block';
+  document.getElementById('rec-credentials-preview').style.display = 'none';
   document.getElementById('rec-form-card').scrollIntoView({ behavior:'smooth', block:'nearest' });
   var guestInput = document.getElementById('rec-guest');
   if (guestInput) guestInput.oninput = function() {
@@ -1820,11 +1861,7 @@ function renderReceitas() {
   var year = now.getFullYear();
   var mon  = now.getMonth();
 
-  var totalMes = 0, totalAno = 0, totalNoites = 0, totalValorNoite = 0, totalSemAnt = 0;
-  // Last week: Mon to Sun of previous week
-  var dayOfWeek = now.getDay() || 7; // 1=Mon..7=Sun
-  var lastMon = new Date(now); lastMon.setDate(now.getDate() - dayOfWeek - 6); lastMon.setHours(0,0,0,0);
-  var lastSun = new Date(lastMon); lastSun.setDate(lastMon.getDate() + 6); lastSun.setHours(23,59,59,999);
+  var totalMes = 0, totalAno = 0, totalNoites = 0, totalValorNoite = 0;
   var monthly  = {}; // key: YYYY-MM → total
 
   _reservas.forEach(function(r) {
@@ -1834,8 +1871,6 @@ function renderReceitas() {
     if (d.getFullYear() === year) totalAno += r.valor;
     if (d.getFullYear() === year && d.getMonth() === mon) totalMes += r.valor;
     if (r.nights > 0) { totalNoites += r.nights; totalValorNoite += r.valor; }
-    var dci = new Date(r.ci + 'T00:00:00');
-    if (dci >= lastMon && dci <= lastSun) totalSemAnt += r.valor;
   });
 
   var media = totalNoites > 0 ? Math.round(totalValorNoite / totalNoites) : 0;
@@ -1844,7 +1879,6 @@ function renderReceitas() {
   el('rec-total', '€' + totalMes.toLocaleString('pt-PT'));
   el('rec-ano',   '€' + totalAno.toLocaleString('pt-PT'));
   el('rec-media', '€' + media);
-  el('rec-semana', '€' + totalSemAnt.toLocaleString('pt-PT'));
 
   // Bar chart — last 6 months
   var chart = document.getElementById('rec-chart');
@@ -2128,131 +2162,6 @@ function fmtDate(iso) {
   if (p.length !== 3) return iso;
   return p[2] + '-' + p[1] + '-' + p[0];
 }
-
-// ── SERVICES DYNAMIC EDITOR ──────────────────────────────────────
-var _svcData = []; // [{title, subtitle, items:[{name,detail}]}]
-var SVC_DEFAULTS = [
-  // Regras, Reciclagem, Caixa fusíveis → moved to Info Úteis
-
-  {title:'Compras locais',subtitle:'Mercado, padaria, talho',items:[
-    {name:'Supermercado Gerês',detail:'9h–20h · 0,8 km'},
-    {name:'Padaria Central',detail:'7h30–13h · 0,5 km'},
-    {name:'Talho local',detail:'8h–13h · 1,2 km'},
-    {name:'Mercado Terras de Bouro',detail:'Quartas-feiras · 8 km'}
-  ]},
-  {title:'Transportes',subtitle:'Autocarro',items:[
-    {name:'Autocarro Gerês–Braga',detail:'07h30 · 12h00 · 17h45 · TUB'}
-  ]},
-  {title:'Limpeza extra',subtitle:'Pedido rápido',items:[
-    {name:'Serviço disponível',detail:'10h–16h · Pedido por WhatsApp'}
-  ]},
-  {title:'Aluguer de bicicletas',subtitle:'A partir de €10/dia',items:[
-    {name:'Montanha',detail:'€12/dia · 21 velocidades'},
-    {name:'E-Bike',detail:'€20/dia · 80 km bateria'}
-  ]}
-];
-
-function svcLoad(jsonStr) {
-  try { _svcData = JSON.parse(jsonStr || ''); } catch(e) { _svcData = []; }
-  if (!_svcData || !_svcData.length) _svcData = JSON.parse(JSON.stringify(SVC_DEFAULTS));
-  svcRender();
-}
-
-function svcRender() {
-  var el = document.getElementById('svc-editor');
-  if (!el) return;
-  var html = '';
-  _svcData.forEach(function(cat, ci) {
-    html += '<div class="svc-cat-wrap" draggable="true" data-svc-ci="' + ci + '"'
-      + ' ondragstart="svcDragStart(event,' + ci + ')" ondragover="svcDragOver(event)" ondrop="svcDrop(event,' + ci + ')" ondragend="svcDragEnd(event)">'
-      + '<div class="svc-cat-header">'
-      + '<span class="dyn-drag-handle" style="font-size:1rem;color:var(--txl);cursor:grab;padding:0 4px;">⠿</span>'
-      + '<input class="svc-cat-title" id="svc-t-' + ci + '" value="' + esc(cat.title||'') + '" placeholder="Título da categoria"/>'
-      + '<input class="svc-cat-sub" id="svc-s-' + ci + '" value="' + esc(cat.subtitle||'') + '" placeholder="Subtítulo"/>'
-      + '<button onclick="svcDelCat(' + ci + ')" class="dyn-del-btn" style="flex-shrink:0;">×</button>'
-      + '</div>'
-      + '<div class="svc-items">'
-      + '<div style="display:grid;grid-template-columns:1fr 1.8fr auto;gap:.3rem;margin-bottom:.3rem;"><span style="font-size:.68rem;color:var(--txl);font-weight:600;padding:.2rem .6rem;">NOME</span><span style="font-size:.68rem;color:var(--txl);font-weight:600;padding:.2rem .6rem;">DETALHE</span><span></span></div>';
-    (cat.items || []).forEach(function(item, ii) {
-      html += '<div class="svc-item-row">'
-        + '<input class="svc-item-name" id="svc-in-' + ci + '-' + ii + '" value="' + esc(item.name||'') + '" placeholder="Nome do item"/>'
-        + '<input class="svc-item-detail" id="svc-id-' + ci + '-' + ii + '" value="' + esc(item.detail||'') + '" placeholder="Horário, preço, info..."/>'
-        + '<button class="svc-del-item" onclick="svcDelItem(' + ci + ',' + ii + ')">×</button>'
-        + '</div>';
-    });
-    html += '<button class="svc-add-item" onclick="svcAddItem(' + ci + ')">+ Adicionar item</button>'
-      + '</div></div>';
-  });
-  el.innerHTML = html;
-}
-
-function svcSyncDOM() {
-  _svcData.forEach(function(cat, ci) {
-    var tEl = document.getElementById('svc-t-' + ci);
-    var sEl = document.getElementById('svc-s-' + ci);
-    if (tEl) cat.title    = tEl.value.trim();
-    if (sEl) cat.subtitle = sEl.value.trim();
-    (cat.items || []).forEach(function(item, ii) {
-      var nEl = document.getElementById('svc-in-' + ci + '-' + ii);
-      var dEl = document.getElementById('svc-id-' + ci + '-' + ii);
-      var mEl = document.getElementById('svc-im-' + ci + '-' + ii);
-      if (nEl) item.name    = nEl.value.trim();
-      if (dEl) item.detail  = dEl.value.trim();
-      if (mEl) item.map_url = mEl.value.trim();
-    });
-  });
-}
-
-function svcGet() { svcSyncDOM(); return JSON.stringify(_svcData); }
-
-function svcAddCategory() {
-  svcSyncDOM();
-  _svcData.push({title:'Nova categoria',subtitle:'',items:[{name:'',detail:''}]});
-  svcRender();
-  var last = _svcData.length - 1;
-  var el = document.getElementById('svc-t-' + last);
-  if (el) { el.focus(); el.select(); el.scrollIntoView({behavior:'smooth',block:'center'}); }
-}
-
-function svcDelCat(ci) {
-  if (_svcData.length <= 1) { toast('Deve ter pelo menos 1 categoria.'); return; }
-  if (!confirm('Eliminar esta categoria e todos os seus itens?')) return;
-  svcSyncDOM();
-  _svcData.splice(ci, 1);
-  svcRender();
-}
-
-function svcAddItem(ci) {
-  svcSyncDOM();
-  if (!_svcData[ci].items) _svcData[ci].items = [];
-  _svcData[ci].items.push({name:'',detail:''});
-  svcRender();
-  var ii = _svcData[ci].items.length - 1;
-  var el = document.getElementById('svc-in-' + ci + '-' + ii);
-  if (el) { el.focus(); el.scrollIntoView({behavior:'smooth',block:'nearest'}); }
-}
-
-function svcDelItem(ci, ii) {
-  svcSyncDOM();
-  _svcData[ci].items.splice(ii, 1);
-  svcRender();
-}
-
-var _svcDragSrc = null;
-function svcDragStart(e, ci) { _svcDragSrc = ci; e.currentTarget.style.opacity = '0.4'; e.dataTransfer.effectAllowed = 'move'; }
-function svcDragEnd(e) { e.currentTarget.style.opacity = '1'; }
-function svcDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; return false; }
-function svcDrop(e, ci) {
-  e.stopPropagation();
-  if (_svcDragSrc === null || _svcDragSrc === ci) return;
-  svcSyncDOM();
-  var moved = _svcData.splice(_svcDragSrc, 1)[0];
-  _svcData.splice(ci, 0, moved);
-  _svcDragSrc = null;
-  svcRender();
-  return false;
-}
-
 // ── UNSAVED CHANGES WARNING ─────────────────────────────────
 var _hasUnsaved = false;
 document.addEventListener('input', function(e) {
@@ -2295,17 +2204,8 @@ function doLogin() {
   if (val === BO_PASS) {
     document.getElementById('lerr').textContent = '';
     localStorage.setItem(BO_KEY, '1');
-    // Blur password field to prevent iOS scroll-to-focus bug
-    document.getElementById('lpass').blur();
-    document.activeElement && document.activeElement.blur();
     document.getElementById('login').classList.add('off');
     document.getElementById('app').style.display = 'block';
-    // Force scroll to top after layout settles
-    requestAnimationFrame(function() {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    });
     loadAll();
   } else {
     document.getElementById('lerr').textContent = 'Password incorreta.';
@@ -2335,7 +2235,6 @@ window.addEventListener('DOMContentLoaded', function() {
   if (localStorage.getItem(BO_KEY)) {
     document.getElementById('login').classList.add('off');
     document.getElementById('app').style.display = 'block';
-    requestAnimationFrame(function() { window.scrollTo(0,0); document.documentElement.scrollTop=0; document.body.scrollTop=0; });
     loadAll();
   }
   // Restore local fields — nunca restaurar o campo password
@@ -2385,23 +2284,16 @@ function closeDrawer() {
 
 // ── NAVIGATION ──────────────────────────────────
 function go(sec, el) {
-  // Scroll to top BEFORE switching sections
-  try { document.documentElement.scrollTop = 0; document.body.scrollTop = 0; window.scrollTo(0,0); } catch(e){}
   document.querySelectorAll('.sec').forEach(function(s) { s.classList.remove('on'); });
   document.querySelectorAll('.sbi').forEach(function(n) { n.classList.remove('on'); });
-  var secEl = document.getElementById('sec-' + sec);
-  if (secEl) secEl.classList.add('on');
+  document.getElementById('sec-' + sec).classList.add('on');
   if (el) el.classList.add('on');
   closeDrawer();
-  // Scroll to top again after repaint to catch any layout shifts
-  requestAnimationFrame(function() {
-    try { document.documentElement.scrollTop = 0; document.body.scrollTop = 0; window.scrollTo(0,0); } catch(e){}
-  });
+  window.scrollTo(0, 0);
   if (sec === 'ocupacao') renderCalendar();
   if (sec === 'receitas') { loadReservas(); renderReceitas(); }
   if (sec === 'financeiro') { loadReservas(); renderReceitas(); }
   if (sec === 'info-uteis') { dynLoad('info', (_dynData.info ? JSON.stringify(_dynData.info) : null) || localStorage.getItem('dyn_info') || null); }
-  if (sec === 'servicos') { svcLoad(DB.servicos && DB.servicos.servicos_json || null); }
 }
 
 // ── LOAD ALL FROM API ────────────────────────────
@@ -2463,7 +2355,7 @@ function loadAll() {
       if (!err && nd && nd.data && nd.data.length) { DB.newsletter = nd.data; renderNewsletter(); }
     }, 10000);
     if (d.config) { DB.config = d.config; fillConfig(d.config); fillNotifTemplates(d.config); }
-    if (d.casa)   { fillCasa(d.casa); DB.servicos = d.casa; } // casa data includes servicos_json
+    if (d.casa)   fillCasa(d.casa);
     if (d.patrocinadores && d.patrocinadores.length) {
       _pats = d.patrocinadores.map(function(p) {
         return { nome:p.nome||'', badge:p.badge||'', cta:p.cta||'', url:p.url||'#', img:p.img||'' };
@@ -2512,7 +2404,7 @@ function fillConfig(c) {
   s('c-nome','propriedade_nome'); s('c-sub','propriedade_subtitulo'); s('c-desc','propriedade_descricao');
   s('c-ci','checkin_hora'); s('c-co','checkout_hora'); s('c-cap','capacidade'); s('c-qts','quartos');
   s('c-pisc','horario_piscina'); s('c-stream','streaming_plataformas');
-  s('c-lat','lat'); s('c-lng','lng');
+  s('c-lat','lat'); s('c-lng','lng'); s('c-bv','mensagem_boas_vindas');
   s('c-aviso-txt','aviso_texto'); s('c-codesc','codigo_desconto');
   s('c-ig','instagram_url'); s('c-fb','facebook_url'); s('c-grev','google_reviews_url');
   s('w-ssid1','wifi_ssid'); s('w-pass1','wifi_pass'); s('w-ssid2','wifi_ssid2'); s('w-pass2','wifi_pass2');
@@ -2565,7 +2457,7 @@ function fillCasa(c) {
     coz:  '[{"title":"Café","text":"Cápsulas Nespresso no armário superior esquerdo."},{"title":"Detergentes","text":"Armário debaixo do lava-loiça. Pastilhas incluídas."}]',
     chur: '[{"title":"Preparação","text":"Carvão e acendalha no armário exterior. Utilizar no local designado no jardim."},{"title":"Utilização","text":"Grelha na prateleira inferior. Pinça e espátula no gancho à direita."},{"title":"Limpeza","text":"Aguardar arrefecimento. Cinzas no balde metálico."}]',
     pisc: '[{"title":"⚠️ Atenção","text":"Mantenha as crianças sempre sob vigilância!"},{"title":"Informação","text":"Profundidade 1,50m"},{"title":"Equipamento","text":"Espreguiçadeiras e guarda-sol disponíveis. Toalhas no armário do corredor."}]',
-    info: '[{"title":"Estacionamento","text":"Dois lugares cobertos no lado esquerdo do portão."},{"title":"Regras da casa","text":"Silêncio entre as 22h e as 08h. Animais permitidos, não entram na piscina. Proibido fumar dentro da casa."},{"title":"Reciclagem","text":"Verde=vidro, Azul=papel, Amarelo=plástico, Preto=indiferenciado. Contentores no exterior."},{"title":"Quadro elétrico","text":"Corredor da entrada, armário branco à direita. Se a luz cair: desligue os aparelhos e levante o disjuntor."},{"title":"Água potável","text":"A água da torneira é potável e tratada."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior."}]',
+    info: '[{"title":"Estacionamento","text":"Dois lugares cobertos no lado esquerdo do portão."},{"title":"Água potável","text":"A água da torneira é potável e tratada."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior."},{"title":"Regras da casa","text":"Silêncio entre as 22h e as 08h. Animais permitidos, não entram na piscina. Proibido fumar dentro da casa."},{"title":"Reciclagem","text":"Verde=vidro · Azul=papel · Amarelo=plástico · Preto=indiferenciado. Contentores no exterior da propriedade."},{"title":"Quadro elétrico","text":"Corredor da entrada, armário branco à direita. Se a luz cair: desligue os aparelhos e levante o disjuntor falhado."}]',
     ext:  '[{"title":"Jardim & terraço","text":"Jardim com relva natural e terraço coberto com vista para a serra."},{"title":"Equipamento exterior","text":"Mesa de jardim para 6 pessoas, churrasqueira e zona de lazer."},{"title":"Notas","text":"Portão do jardim trancar sempre que sair."}]'
   };
   ['sala','wc','coz','chur','pisc','info','ext'].forEach(function(key) {
@@ -2615,8 +2507,7 @@ function saveConfig() {
         instagram_url:v('c-ig'),
     facebook_url:v('c-fb'),
     google_reviews_url:v('c-grev')
-  }, function() {
-    hideLoading(); showOk('ok-config'); toast('✓ Config guardada!'); onSaveSuccess();
+  }, function() { hideLoading(); showOk('ok-config'); toast('✓ Config guardada!'); onSaveSuccess();
     var b = document.getElementById('unsaved-config'); if (b) b.classList.remove('show');
   });
 }
@@ -2635,7 +2526,6 @@ function saveSection(sec) {
   // Mapa completo: secção → { action, campos }
   var maps = {
     'info-uteis': { action:'saveCasa', info_json:dynGet('info') },
-    'servicos-dyn': { action:'saveServicos', servicos_json:svcGet() },
     'casa-geral': { action:'saveCasa',
       info_img:v('img-info'),
       boas_vindas:v('c-bv'),
