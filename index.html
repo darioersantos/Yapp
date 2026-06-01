@@ -11,10 +11,10 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml"/>
 <link rel="icon" href="favicon.png" type="image/png" sizes="32x32"/>
 <link rel="apple-touch-icon" href="favicon-180.png"/>
-<link rel="manifest" href="manifest.json"/>
+<link rel="manifest" href="manifest.json?v=2"/>
 
 
-<title>Casa do Gerês · Guia do Hóspede</title>
+<title>Guia do Hóspede</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Playfair+Display:ital,wght@0,600;1,400&family=Nunito:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -473,12 +473,23 @@ body.aviso-active #notif-banner{top:2.2rem;}
 
 </head>
 <body>
+<script>
+(function(){
+  try {
+    var n = localStorage.getItem('yapp_prop_nome');
+    if (n) {
+      document.querySelectorAll('.prop-name-all,.login-logo').forEach(function(el){ el.textContent = n; });
+      document.title = n + ' · Guia do Hóspede';
+    }
+  } catch(e){}
+})();
+</script>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-leaf" style="top:-40px;right:-40px;">🌿</div>
   <div class="login-leaf" style="bottom:-60px;left:-50px;transform:rotate(140deg);">🌿</div>
-  <div class="login-logo">Casa do Gerês</div>
+  <div class="login-logo prop-name-all"></div>
   <div class="login-sub">Guia do Hóspede</div>
 
   <!-- DEMO STAMP -->
@@ -1993,10 +2004,11 @@ function applyConfig(c, checkNotif) {
   s('.hero-btn-txt', c.hero_btn);
   // Actualizar nome da propriedade em todos os contextos
   if (c.propriedade_nome) {
-    document.querySelectorAll('.logo-name,[data-api="propriedade_nome"]').forEach(function(el){
+    document.querySelectorAll('.logo-name,[data-api="propriedade_nome"],.prop-name-all').forEach(function(el){
       el.textContent = c.propriedade_nome;
     });
     document.title = c.propriedade_nome + ' · Guia do Hóspede';
+    try { localStorage.setItem('yapp_prop_nome', c.propriedade_nome); } catch(e){}
     var nlTitle = document.getElementById('newsletter-title');
     if (nlTitle) nlTitle.textContent = 'Receba promoções d' + (c.propriedade_nome.toLowerCase().startsWith('a') ? 'a ' : 'o ') + c.propriedade_nome;
   }
