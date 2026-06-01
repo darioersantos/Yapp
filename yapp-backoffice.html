@@ -1501,14 +1501,17 @@ function loadReservas() {
       // Replace with fresh data from Sheets — avoid stale localStorage duplicates
       _reservas = (d.data || []).map(function(r) {
         var ci = norm(r.ci), co = norm(r.co);
+        // valor: try multiple field names, handle string with comma/dot
+        var rawVal = r.valor !== undefined ? r.valor : (r.value !== undefined ? r.value : (r.receita !== undefined ? r.receita : (r.preco !== undefined ? r.preco : 0)));
+        var parsedVal = parseFloat(String(rawVal).replace(',','.')) || 0;
         return {
           id: r.id || (Date.now() + Math.random()),
           ci: ci, co: co,
-          guest: r.guest, email: r.email || '',
-          valor: r.valor || 0, plat: r.plat || '',
-          estado: r.estado || 'pago',
-          nights: r.nights || Math.round((new Date(co) - new Date(ci)) / 86400000),
-          notes: r.notes || '', user: r.user || '', pass: r.pass || ''
+          guest: r.guest || r.nome || r.name || '', email: r.email || '',
+          valor: parsedVal, plat: r.plat || r.plataforma || '',
+          estado: r.estado || r.status || 'pago',
+          nights: r.nights || r.noites || Math.round((new Date(co) - new Date(ci)) / 86400000),
+          notes: r.notes || r.notas || '', user: r.user || r.username || '', pass: r.pass || r.password || ''
         };
       });
 
@@ -1902,8 +1905,8 @@ function renderReceitas() {
       recList.innerHTML = '<div style="font-size:.82rem;color:var(--txl);padding:.5rem 0;">Nenhuma reserva' + (_recFilter !== 'all' ? ' nesta categoria' : '') + '.</div>';
     } else {
       recList.innerHTML = '<div style="margin-top:.5rem;">' + filtered.map(function(r) {
-        var col = plColors[r.plat] || '#888';
         var isPast = r.co && r.co !== '2099-12-31' && r.co < today;
+        var col = isPast ? '#c0392b' : '#27ae60';
         var pill = (r.estado === 'pago' || r.fromGuests) ? '<span class="pill p-ok">Ativo</span>' : '<span class="pill p-pend">Pendente</span>';
         var pastBadge = isPast ? '<span style="font-size:.68rem;background:#f0f0f0;color:#999;border-radius:4px;padding:1px 6px;margin-left:4px;">Passada</span>' : '';
         var editBtn = !r.fromGuests
