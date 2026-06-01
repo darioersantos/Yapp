@@ -2301,18 +2301,29 @@ function renderInfoDyn(jsonStr) {
   var acc = document.getElementById('m-info-accordion');
   if (!acc) return;
   var cards;
-  try { cards = JSON.parse(jsonStr); } catch(e) { return; }
+  try { cards = JSON.parse(jsonStr); } catch(e) { cards = null; }
+  // Se vazio ou inválido, tenta o cache do localStorage (guardado pelo backoffice)
+  if (!cards || !cards.length) {
+    try { cards = JSON.parse(localStorage.getItem('yapp_info_json') || ''); } catch(e) { cards = null; }
+  }
   if (!cards || !cards.length) return;
+  // Guarda no cache local para próxima sessão
+  try { localStorage.setItem('yapp_info_json', JSON.stringify(cards)); } catch(e) {}
   var style = 'border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;';
   acc.innerHTML = cards.map(function(card, i) {
     var id = 'info-dyn-' + i;
+    // Suporta texto com newlines como linhas separadas
+    var textHtml = String(card.text || '').split('\n').filter(Boolean).map(function(line) {
+      return '<p style="font-size:.85rem;color:var(--text-mid);line-height:1.65;margin-bottom:.3rem;">' + line + '</p>';
+    }).join('');
+    if (!textHtml) textHtml = '<p style="font-size:.85rem;color:var(--text-mid);line-height:1.65;">' + (card.text || '') + '</p>';
     return '<div class="acc-item" id="' + id + '" style="' + style + '">'
       + '<div class="acc-header" onclick="toggleAcc(\'' + id + '\')" style="padding:.75rem 1rem;">'
       + '<div class="acc-header-text"><div class="acc-header-label">' + (card.title || '') + '</div></div>'
       + '<svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>'
       + '</div>'
       + '<div class="acc-body"><div class="acc-inner" style="padding:.6rem 1rem .85rem;">'
-      + '<p style="font-size:.85rem;color:var(--text-mid);line-height:1.65;">' + (card.text || '') + '</p>'
+      + textHtml
       + '</div></div>'
       + '</div>';
   }).join('');
@@ -2470,9 +2481,15 @@ function applyCasa(c) {
   if (c.chur_json)  renderDynSection('chur-dynamic', c.chur_json, false);
   if (c.pisc_json)  renderDynSection('pisc-dynamic', c.pisc_json, true);
   if (c.ext_json)   renderDynSection('ext-dynamic', c.ext_json, false);
-  if (c.servicos_json) renderServicos(c.servicos_json);
+  // Serviços: Sheets → localStorage (guardado pelo backoffice) → sem renderização extra
+  var svcJson = c.servicos_json || c.svc_json || localStorage.getItem('yapp_svc_json');
+  if (svcJson) renderServicos(svcJson);
   var infoJsonDefault = '[{"title":"Estacionamento","text":"O empreendimento possui estacionamento privado e gratuito, dotado de cancela automática, através da utilização do comando que lhe será fornecido no momento do check-in."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Água potável","text":"A água da torneira é potável e tratada, contudo recomenda-se o uso de água engarrafada para consumo."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior."},{"title":"Regras da casa","text":"Silêncio entre as 22h e as 08h. Animais permitidos, não entram na piscina. Proibido fumar dentro da casa."},{"title":"Reciclagem","text":"Verde=vidro · Azul=papel · Amarelo=plástico · Preto=indiferenciado. Contentores no exterior da propriedade."},{"title":"Quadro elétrico","text":"Corredor da entrada, armário branco à direita. Se a luz cair: desligue os aparelhos e levante o disjuntor falhado."}]';
-  renderInfoDyn(c.info_json || infoJsonDefault);
+  // Cadeia de fallback: Sheets → localStorage (guardado pelo backoffice) → default hardcoded
+  var infoJson = c.info_json
+    || localStorage.getItem('yapp_info_json')
+    || infoJsonDefault;
+  renderInfoDyn(infoJson);
 
   // Churrasqueira utensílios (comma-separated → chips)
   if (c.churrasco_utens) {
