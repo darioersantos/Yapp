@@ -157,6 +157,7 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
 @media(min-width:768px){
   body{background:#1e2d14;}
 
+  /* Splash fixa à esquerda */
   #splash{
     position:fixed;top:0;left:0;
     width:40%;height:100vh;z-index:1;
@@ -165,6 +166,7 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
   #splash .hero-title{font-size:3.5rem;}
   #splash .hero-top{padding:2rem 2rem;}
 
+  /* App (páginas) painel direito com scroll */
   #app{
     margin-left:40%;
     padding-bottom:0;
@@ -174,14 +176,18 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
     box-shadow:-6px 0 40px rgba(0,0,0,0.35);
   }
 
+  /* Nav bar sticky no painel direito */
   .nav-bar{position:sticky;top:0;border-radius:0;z-index:100;}
 
+  /* Conteúdo centrado e com padding */
   .page{min-height:calc(100vh - 60px);}
   .section{padding:2rem 2.5rem 1.5rem;max-width:580px;margin:0 auto;}
 
+  /* Meteorologia */
   #page-meteo{padding:0!important;}
   #meteo-full{height:calc(100vh - 60px);}
 
+  /* Img cards 2 colunas */
   #atracoes-dynamic,
   #restaurantes-dynamic{
     display:grid;grid-template-columns:1fr 1fr;gap:.75rem;
@@ -189,7 +195,18 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
   #atracoes-dynamic .img-card,
   #restaurantes-dynamic .img-card{margin-bottom:0;}
 
+  /* Serviços grid */
   .services-grid{grid-template-columns:1fr 1fr;}
+
+  /* Info 4 colunas */
+  .info-grid{grid-template-columns:repeat(4,1fr);}
+
+  /* Modais só no painel direito */
+  .modal-overlay{left:40%;width:60%;}
+  .modal-sheet{border-radius:20px 20px 0 0;max-height:88vh;max-width:100%;}
+
+  /* Guestbook 2 colunas */
+  #guestbook-list{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
 }
 .section-tag{font-size:10px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;color:var(--sage);margin-bottom:5px;}
 .section-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--forest);line-height:1.15;}
@@ -603,7 +620,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
         <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&auto=format&fit=crop&q=75" alt="Info" style="height:110px;"/>
         <div class="svc-card-body"><div class="svc-card-label">Informações úteis</div><div class="svc-card-sub">Bem-vindos, leia antes de explorar</div></div>
       </div>
-      <!-- 2 colunas — drag para reordenar -->
+      <!-- 2 colunas -->
       <div class="services-grid" style="margin-bottom:0.75rem;">
         <div class="svc-card" onclick="showModal('m-quartos')">
           <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&auto=format&fit=crop&q=75" alt="Quartos"/>
@@ -611,11 +628,11 @@ body.aviso-active #notif-banner{top:2.2rem;}
         </div>
         <div class="svc-card" onclick="showModal('m-sala')">
           <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&auto=format&fit=crop&q=75" alt="Sala"/>
-          <div class="svc-card-body"><div class="svc-card-label">Sala de estar</div><div class="svc-card-sub">TV &amp; lareira</div></div>
+          <div class="svc-card-body"><div class="svc-card-label">Sala de estar</div><div class="svc-card-sub">TV & lareira</div></div>
         </div>
         <div class="svc-card" onclick="showModal('m-cozinha')">
           <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=400&auto=format&fit=crop&q=75" alt="Cozinha"/>
-          <div class="svc-card-body"><div class="svc-card-label">Cozinha</div><div class="svc-card-sub">Utensílios &amp; eletros</div></div>
+          <div class="svc-card-body"><div class="svc-card-label">Cozinha</div><div class="svc-card-sub">Utensílios & eletros</div></div>
         </div>
         <div class="svc-card" onclick="showModal('m-wc')">
           <img src="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=400&auto=format&fit=crop&q=75" alt="WC"/>
@@ -623,7 +640,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
         </div>
         <div class="svc-card" onclick="showModal('m-piscina')">
           <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=400&auto=format&fit=crop&q=75" alt="Piscina"/>
-          <div class="svc-card-body"><div class="svc-card-label">Piscina</div><div class="svc-card-sub">Regras &amp; equipamento</div></div>
+          <div class="svc-card-body"><div class="svc-card-label">Piscina</div><div class="svc-card-sub">Regras & equipamento</div></div>
         </div>
         <div class="svc-card" onclick="showModal('m-churrasco')">
           <img src="churrasco-real.jpg" alt="Churrasqueira"/>
@@ -671,6 +688,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
         <div class="streaming-chips" style="display:flex;flex-wrap:wrap;gap:0.4rem;">
           <span class="chip">NOS TV</span><span class="chip">Netflix</span><span class="chip">Amazon Prime</span><span class="chip">Disney+</span><span class="chip">Canal+</span>
         </div>
+        <p id="sala-tv-desc" style="font-size:0.78rem;color:var(--text-light);margin-top:0.7rem;line-height:1.5;" data-api="sala_tv">Credenciais no dossier junto à televisão.</p>
       </div>
 
       <!-- Sponsors — renderizados dinamicamente -->
@@ -991,7 +1009,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
         </div>
       </div>
       <!-- Logout button with safe area for Safari bottom bar -->
-      <div style="padding-bottom:calc(5rem + env(safe-area-inset-bottom, 24px));margin-top:.5rem;">
+      <div style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom, 20px));margin-top:.5rem;">
         <button onclick="if(confirm('Terminar sessão?')){ clearSession(); location.reload(); }" style="width:100%;background:transparent;border:1px solid rgba(192,57,43,0.3);color:#c0392b;border-radius:50px;padding:11px;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;">Terminar sessão</button>
       </div>
       <a href="https://yapp.pt" target="_blank" class="yapp-footer" style="display:block;text-decoration:none;">
@@ -2004,16 +2022,13 @@ function applyConfig(c, checkNotif) {
     _wifiData[1].pass = c.wifi_pass2 || c.wifi_pass;
     // copy-btn onclick preserved (handled by openWifiQR)
   }
-  // Streaming — chips from sala_tv (platforms before first dot) or streaming_plataformas
-  var streamSrc = c.sala_tv || c.streaming_plataformas || '';
-  if (streamSrc) {
-    var streamChips = document.querySelector('.streaming-chips');
-    if (streamChips) {
-      var platformPart = streamSrc.indexOf('.') > 0 ? streamSrc.substring(0, streamSrc.indexOf('.')).trim() : streamSrc.trim();
-      streamChips.innerHTML = platformPart.split(',').map(function(t){
-        var name = t.trim().replace(/\s+e\s+(\S)/g, ' $1').trim();
-        return name ? '<span class="chip">'+name+'</span>' : '';
-      }).filter(Boolean).join('');
+  // Streaming
+  if (c.streaming_plataformas) {
+    var chips = document.querySelector('.streaming-chips');
+    if (chips) {
+      chips.innerHTML = c.streaming_plataformas.split(',').map(function(t){
+        return '<span class="chip">'+t.trim()+'</span>';
+      }).join('');
     }
   }
   // Tema
@@ -2406,30 +2421,8 @@ function applyCasa(c) {
   if (c.pisc_json)  renderDynSection('pisc-dynamic', c.pisc_json, true);
   if (c.ext_json)   renderDynSection('ext-dynamic', c.ext_json, false);
   if (c.servicos_json) renderServicos(c.servicos_json);
-  // Build info accordion: start from info_json, then enrich/add items from individual API fields
   var infoJsonDefault = '[{"title":"Estacionamento","text":"O empreendimento possui estacionamento privado e gratuito, dotado de cancela automática, através da utilização do comando que lhe será fornecido no momento do check-in."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Água potável","text":"A água da torneira é potável e tratada, contudo recomenda-se o uso de água engarrafada para consumo."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior."},{"title":"Regras da casa","text":"Silêncio entre as 22h e as 08h. Animais permitidos, não entram na piscina. Proibido fumar dentro da casa."},{"title":"Reciclagem","text":"Verde=vidro · Azul=papel · Amarelo=plástico · Preto=indiferenciado. Contentores no exterior da propriedade."},{"title":"Quadro elétrico","text":"Corredor da entrada, armário branco à direita. Se a luz cair: desligue os aparelhos e levante o disjuntor falhado."}]';
-  var infoItems;
-  try { infoItems = JSON.parse(c.info_json || infoJsonDefault); } catch(e) { infoItems = JSON.parse(infoJsonDefault); }
-  // Map of individual API fields → accordion title
-  var infoFieldMap = [
-    { key:'reg_silencio', title:'Regras da casa',
-      build: function(v){ return 'Silêncio: ' + v + (c.reg_animais ? '\nAnimais: ' + c.reg_animais : '') + (c.reg_tabaco ? '\nTabaco: ' + c.reg_tabaco : ''); } },
-    { key:'rec_verde', title:'Reciclagem',
-      build: function(){ return (c.rec_verde ? '🟢 Verde (vidro): ' + c.rec_verde + '\n' : '') + (c.rec_azul ? '🔵 Azul (papel): ' + c.rec_azul + '\n' : '') + (c.rec_amarelo ? '🟡 Amarelo (plástico): ' + c.rec_amarelo + '\n' : '') + (c.rec_preto ? '⚫ Preto (indiferenciado): ' + c.rec_preto : ''); } },
-    { key:'fus_como', title:'Quadro elétrico',
-      build: function(v){ return v; } }
-  ];
-  infoFieldMap.forEach(function(m) {
-    if (!c[m.key]) return;
-    var newText = m.build(c[m.key]);
-    if (!newText.trim()) return;
-    var found = false;
-    for (var i = 0; i < infoItems.length; i++) {
-      if (infoItems[i].title === m.title) { infoItems[i].text = newText; found = true; break; }
-    }
-    if (!found) infoItems.push({ title: m.title, text: newText });
-  });
-  renderInfoDyn(JSON.stringify(infoItems));
+  renderInfoDyn(c.info_json || infoJsonDefault);
 
   // Churrasqueira utensílios (comma-separated → chips)
   if (c.churrasco_utens) {
@@ -2642,7 +2635,7 @@ function subscribeNewsletter() {
     var _cb2 = '__yappNl' + Date.now();
     window[_cb2] = function(){ window[_cb2]=null; };
     var _sc2 = document.createElement('script');
-    _sc2.src = API_URL + '?action=saveNewsletter&name=' + encodeURIComponent(nome) + '&email=' + encodeURIComponent(email) + '&callback=' + _cb2;
+    _sc2.src = API_URL + '?action=saveNewsletter&name=' + encodeURIComponent(nome) + '&email=' + encodeURIComponent(email) + '&sendConfirm=true&callback=' + _cb2;
     document.head.appendChild(_sc2);
     // Notify owner via WhatsApp
     sendWANotification('Newsletter: ' + nome + ' (' + email + ')');
@@ -3048,3 +3041,4 @@ function pedidoBicicletas() {
 <!-- (iframe bloqueado pelo GitHub Pages — usamos redirect) -->
 
 </body>
+</html>
