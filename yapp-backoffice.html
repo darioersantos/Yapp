@@ -290,6 +290,13 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
 .dyn-drag-handle:active{cursor:grabbing;}
 .dyn-card-wrap[draggable="true"]:hover{border-color:var(--g);}
 
+/* ── RESERVA MODAL ───────────────────────────────────────────────── */
+#rec-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:5000;display:none;align-items:center;justify-content:center;padding:1rem;}
+#rec-modal-overlay.open{display:flex;}
+#rec-modal{background:#fff;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.2);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:1.5rem 1.6rem;}
+#rec-modal-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--g);margin-bottom:1.2rem;display:flex;align-items:center;justify-content:space-between;}
+#rec-modal-title button{background:none;border:none;cursor:pointer;color:var(--txl);font-size:1.4rem;line-height:1;padding:2px 6px;}
+#rec-modal-title button:hover{color:var(--tx);}
 </style>
 </head>
 <body>
@@ -1071,8 +1078,8 @@ Máq. de lavar roupa</textarea>
         <div class="ctitle" style="display:flex;justify-content:space-between;align-items:center;">
           Reservas registadas
           <div style="display:flex;gap:.4rem;">
-            <button class="actbtn" id="btn-filter-all" onclick="filterReservas('all')" style="background:var(--g);color:#fff;font-size:.72rem;">Todas</button>
-            <button class="actbtn" id="btn-filter-active" onclick="filterReservas('active')" style="font-size:.72rem;">Activas</button>
+            <button class="actbtn" id="btn-filter-all" onclick="filterReservas('all')" style="font-size:.72rem;">Todas</button>
+            <button class="actbtn" id="btn-filter-active" onclick="filterReservas('active')" style="background:var(--g);color:#fff;font-size:.72rem;">Activas</button>
             <button class="actbtn" id="btn-filter-past" onclick="filterReservas('past')" style="font-size:.72rem;">Histórico</button>
           </div>
         </div>
@@ -1080,47 +1087,7 @@ Máq. de lavar roupa</textarea>
       </div>
 
       <!-- Add reservation form -->
-      <div class="card" id="rec-form-card" style="display:none;">
-        <div class="ctitle">Nova reserva</div>
-        <div class="g2">
-          <div class="fld"><label>Nome do hóspede</label><input class="inp" id="rec-guest" placeholder="Ex: Família Santos"/></div>
-          <div class="fld"><label>Email do hóspede</label><input class="inp" type="email" id="rec-email" placeholder="email@exemplo.com"/></div>
-          <div class="fld"><label>Check-in</label>
-            <div class="date-picker-wrap" onclick="openDatePicker('rec-checkin')">
-              <input class="inp" type="text" id="rec-checkin" placeholder="DD/MM/AAAA" readonly style="font-size:1rem;padding:.75rem;cursor:pointer;caret-color:transparent;background:#fff url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23888%22 stroke-width=%222%22><rect x=%223%22 y=%224%22 width=%2218%22 height=%2218%22 rx=%222%22/><line x1=%2216%22 y1=%222%22 x2=%2216%22 y2=%226%22/><line x1=%228%22 y1=%222%22 x2=%228%22 y2=%226%22/><line x1=%223%22 y1=%2210%22 x2=%2221%22 y2=%2210%22/></svg>') no-repeat right .75rem center/18px;"/>
-            </div>
-          </div>
-          <div class="fld"><label>Check-out</label>
-            <div class="date-picker-wrap" onclick="openDatePicker('rec-checkout')">
-              <input class="inp" type="text" id="rec-checkout" placeholder="DD/MM/AAAA" readonly style="font-size:1rem;padding:.75rem;cursor:pointer;caret-color:transparent;background:#fff url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23888%22 stroke-width=%222%22><rect x=%223%22 y=%224%22 width=%2218%22 height=%2218%22 rx=%222%22/><line x1=%2216%22 y1=%222%22 x2=%2216%22 y2=%226%22/><line x1=%228%22 y1=%222%22 x2=%228%22 y2=%226%22/><line x1=%223%22 y1=%2210%22 x2=%2221%22 y2=%2210%22/></svg>') no-repeat right .75rem center/18px;"/>
-            </div>
-          </div>
-          <div class="fld"><label>Valor total (€)</label><input class="inp" type="number" id="rec-valor" placeholder="0"/></div>
-          <div class="fld"><label>Plataforma</label>
-            <select class="inp" id="rec-plat">
-              <option>Airbnb</option><option>Booking.com</option><option>Direto</option><option>Outro</option>
-            </select>
-          </div>
-          <div class="fld"><label>Estado</label>
-            <select class="inp" id="rec-estado">
-              <option value="pago">Pago</option><option value="pendente">Pendente</option>
-            </select>
-          </div>
-          <div class="fld"><label>Notas</label><input class="inp" id="rec-notas" placeholder="Opcional"/></div>
-        </div>
-        <div id="rec-credentials-preview" style="display:none;background:rgba(26,74,138,0.07);border:1px solid rgba(26,74,138,0.2);border-radius:8px;padding:.85rem 1rem;margin:.6rem 0;font-size:.82rem;">
-          <div style="font-weight:600;color:var(--g);margin-bottom:.4rem;">✓ Acesso gerado automaticamente</div>
-          <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
-            <div>Username: <strong id="prev-username" style="font-family:monospace;font-size:1rem;"></strong></div>
-            <div>Password: <strong id="prev-password" style="font-family:monospace;font-size:1rem;"></strong></div>
-          </div>
-          <div style="font-size:.75rem;color:var(--txl);margin-top:.4rem;">Enviado por email no dia do check-in</div>
-        </div>
-        <div style="display:flex;gap:.5rem;margin-top:.5rem;">
-          <button class="savebtn" onclick="saveReserva()" style="flex:1;"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar reserva<span class="oktxt" id="ok-reserva">Guardado!</span></button>
-          <button class="actbtn" onclick="document.getElementById('rec-form-card').style.display='none'">Cancelar</button>
-        </div>
-      </div>
+
     </div>
     </div>
 
@@ -1575,10 +1542,16 @@ function _genPass() {
   return String(Math.floor(1000 + Math.random() * 9000));
 }
 
+function openRecModal() { document.getElementById('rec-modal-overlay').classList.add('open'); }
+function closeRecModal() {
+  document.getElementById('rec-modal-overlay').classList.remove('open');
+  if (document.getElementById('rec-form-card')) delete document.getElementById('rec-modal').dataset.editId;
+}
 function addReserva() {
-  document.getElementById('rec-form-card').style.display = 'block';
+  document.getElementById('rec-modal-heading').textContent = 'Nova reserva';
+  openRecModal();
   document.getElementById('rec-credentials-preview').style.display = 'none';
-  document.getElementById('rec-form-card').scrollIntoView({ behavior:'smooth', block:'nearest' });
+
   var guestInput = document.getElementById('rec-guest');
   if (guestInput) guestInput.oninput = function() {
     if (this.value.trim().length > 1) {
@@ -1609,7 +1582,7 @@ function openDatePicker(fieldId) {
   _dpOccupied = {};
 
   // Mark occupied dates from reservations
-  var editId = document.getElementById('rec-form-card') && document.getElementById('rec-form-card').dataset.editId;
+  var editId = document.getElementById('rec-modal') && document.getElementById('rec-modal').dataset.editId;
   _reservas.forEach(function(r) {
     if (editId && r.id == editId) return; // skip reservation being edited
     if (!r.ci || !r.co) return;
@@ -1705,7 +1678,7 @@ function hasOverlap(ci, co, excludeId) {
   });
 }
 
-var _recFilter = 'all';
+var _recFilter = 'active';
 function filterReservas(f) {
   _recFilter = f;
   ['all','active','past'].forEach(function(x) {
@@ -1717,7 +1690,7 @@ function filterReservas(f) {
 }
 
 function saveReserva() {
-  var editId = document.getElementById('rec-form-card') && document.getElementById('rec-form-card').dataset.editId;
+  var editId = document.getElementById('rec-modal') && document.getElementById('rec-modal').dataset.editId;
   var ci    = v('rec-checkin');
   var co    = v('rec-checkout');
   var guest = v('rec-guest').trim();
@@ -1762,7 +1735,7 @@ function saveReserva() {
   }
   _reservas.sort(function(a,b){ return new Date(b.ci) - new Date(a.ci); });
   localStorage.setItem(REC_KEY, JSON.stringify(_reservas));
-  document.getElementById('rec-form-card').style.display = 'none';
+  closeRecModal();
   showOk('ok-reserva');
   renderReceitas();
   renderCalendar();
@@ -1799,15 +1772,16 @@ function editReserva(id) {
   document.getElementById('rec-estado').value = r.estado || 'pago';
   document.getElementById('rec-notas').value  = r.notes  || '';
   // Store editing id
-  document.getElementById('rec-form-card').dataset.editId = id;
-  document.getElementById('rec-form-card').style.display = 'block';
+  document.getElementById('rec-modal').dataset.editId = id;
+  document.getElementById('rec-modal-heading').textContent = 'Editar reserva';
+  openRecModal();
   // Show credentials of existing reservation
   var ue = document.getElementById('prev-username');
   var pe = document.getElementById('prev-password');
   if (ue) { ue.textContent = r.user || ''; ue.dataset.val = r.user || ''; }
   if (pe) { pe.textContent = r.pass || ''; pe.dataset.val = r.pass || ''; }
   document.getElementById('rec-credentials-preview').style.display = r.user ? 'block' : 'none';
-  document.getElementById('rec-form-card').scrollIntoView({ behavior:'smooth', block:'nearest' });
+
 }
 
 function deleteReserva(id) {
@@ -1915,12 +1889,13 @@ function renderReceitas() {
       if (_recFilter === 'past')   return co && co !== '2099-12-31' && co < today;
       return true;
     });
-    // Sort: active first, then by check-in date desc
+    // Sort: upcoming check-ins ascending (nearest today first), past descending
     filtered.sort(function(a,b) {
-      var ca = a.co || '', cb = b.co || '';
-      var aActive = !ca || ca >= today, bActive = !cb || cb >= today;
-      if (aActive !== bActive) return aActive ? -1 : 1;
-      return (b.ci||'').localeCompare(a.ci||'');
+      var ai = a.ci || '', bi = b.ci || '';
+      var aUp = ai >= today, bUp = bi >= today;
+      if (aUp !== bUp) return aUp ? -1 : 1;
+      if (aUp) return ai.localeCompare(bi);
+      return bi.localeCompare(ai);
     });
 
     if (!filtered.length) {
@@ -1940,7 +1915,7 @@ function renderReceitas() {
         return '<div style="background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.07);margin-bottom:.75rem;overflow:hidden;">'
           + '<div style="display:flex;align-items:center;gap:12px;padding:.9rem 1rem .6rem;">'
           + '<div style="width:42px;height:42px;border-radius:50%;background:' + col + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
-          + '<span style="color:#fff;font-size:1rem;font-weight:700;">' + esc((r.guest||'?')[0].toUpperCase()) + '</span>'
+          + '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></svg>'
           + '</div>'
           + '<div style="flex:1;min-width:0;">'
           + '<div style="font-size:.92rem;font-weight:700;color:#1a2a3a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(r.guest||'—') + pastBadge + '</div>'
@@ -3397,5 +3372,52 @@ function hideLoading() { document.getElementById('loading').classList.remove('sh
   });
 })();
 </script>
+<!-- RESERVA MODAL -->
+<div id="rec-modal-overlay" onclick="if(event.target===this)closeRecModal()">
+  <div id="rec-modal" data-form-id="rec-form-card">
+    <div id="rec-modal-title">
+      <span id="rec-modal-heading">Nova reserva</span>
+      <button onclick="closeRecModal()" title="Fechar">×</button>
+    </div>
+    <div class="g2">
+      <div class="fld"><label>Nome do hóspede</label><input class="inp" id="rec-guest" placeholder="Ex: Família Santos"/></div>
+      <div class="fld"><label>Email do hóspede</label><input class="inp" type="email" id="rec-email" placeholder="email@exemplo.com"/></div>
+      <div class="fld"><label>Check-in</label>
+        <div class="date-picker-wrap" onclick="openDatePicker('rec-checkin')">
+          <input class="inp" type="text" id="rec-checkin" placeholder="DD/MM/AAAA" readonly style="font-size:1rem;padding:.75rem;cursor:pointer;caret-color:transparent;background:#fff url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23888%22 stroke-width=%222%22><rect x=%223%22 y=%224%22 width=%2218%22 height=%2218%22 rx=%222%22/><line x1=%2216%22 y1=%222%22 x2=%2216%22 y2=%226%22/><line x1=%228%22 y1=%222%22 x2=%228%22 y2=%226%22/><line x1=%223%22 y1=%2210%22 x2=%2221%22 y2=%2210%22/></svg>') no-repeat right .75rem center/18px;"/>
+        </div>
+      </div>
+      <div class="fld"><label>Check-out</label>
+        <div class="date-picker-wrap" onclick="openDatePicker('rec-checkout')">
+          <input class="inp" type="text" id="rec-checkout" placeholder="DD/MM/AAAA" readonly style="font-size:1rem;padding:.75rem;cursor:pointer;caret-color:transparent;background:#fff url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23888%22 stroke-width=%222%22><rect x=%223%22 y=%224%22 width=%2218%22 height=%2218%22 rx=%222%22/><line x1=%2216%22 y1=%222%22 x2=%2216%22 y2=%226%22/><line x1=%228%22 y1=%222%22 x2=%228%22 y2=%226%22/><line x1=%223%22 y1=%2210%22 x2=%2221%22 y2=%2210%22/></svg>') no-repeat right .75rem center/18px;"/>
+        </div>
+      </div>
+      <div class="fld"><label>Valor total (€)</label><input class="inp" type="number" id="rec-valor" placeholder="0"/></div>
+      <div class="fld"><label>Plataforma</label>
+        <select class="inp" id="rec-plat">
+          <option>Airbnb</option><option>Booking.com</option><option selected>Direto</option><option>Outro</option>
+        </select>
+      </div>
+      <div class="fld"><label>Estado</label>
+        <select class="inp" id="rec-estado">
+          <option value="pago">Pago</option><option value="pendente">Pendente</option>
+        </select>
+      </div>
+      <div class="fld"><label>Notas</label><input class="inp" id="rec-notas" placeholder="Opcional"/></div>
+    </div>
+    <div id="rec-credentials-preview" style="display:none;background:rgba(26,74,138,0.07);border:1px solid rgba(26,74,138,0.2);border-radius:8px;padding:.85rem 1rem;margin:.6rem 0;font-size:.82rem;">
+      <div style="font-weight:600;color:var(--g);margin-bottom:.4rem;">✓ Acesso gerado automaticamente</div>
+      <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
+        <div>Username: <strong id="prev-username" style="font-family:monospace;font-size:1rem;"></strong></div>
+        <div>Password: <strong id="prev-password" style="font-family:monospace;font-size:1rem;"></strong></div>
+      </div>
+      <div style="font-size:.75rem;color:var(--txl);margin-top:.4rem;">Enviado por email no dia do check-in</div>
+    </div>
+    <div style="display:flex;gap:.5rem;margin-top:1rem;">
+      <button class="savebtn" onclick="saveReserva()" style="flex:1;"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guardar reserva<span class="oktxt" id="ok-reserva">Guardado!</span></button>
+      <button class="actbtn" onclick="closeRecModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
