@@ -153,50 +153,44 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
 .section{padding:1.6rem 1.2rem 1.2rem;}
 .parallax-section{transform:translateY(0);transition:transform 0.1s linear;}
 
-/* ── DESKTOP layout ────────────────────────────────────────────── */
-@media(min-width:768px){
-  body{background:#1e2d14;}
-
-  /* Splash fixa à esquerda */
-  #splash{
-    position:fixed;top:0;left:0;
-    width:40%;height:100vh;z-index:1;
+/* ── DESKTOP: forçar layout mobile centrado ─────────────────────── */
+@media(min-width:600px){
+  body{
+    background:#1e2d14;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    min-height:100vh;
   }
-  #splash .hero-content{padding:2rem 2.5rem 3rem;}
-  #splash .hero-title{font-size:3.5rem;}
-  #splash .hero-top{padding:2rem 2rem;}
-
-  /* App (páginas) painel direito com scroll */
+  #login-screen{
+    max-width:430px;
+    left:50%;
+    transform:translateX(-50%);
+    border-radius:24px;
+  }
+  #splash{
+    display:none!important;
+  }
   #app{
-    margin-left:40%;
-    padding-bottom:0;
+    width:430px;
+    max-width:430px;
     min-height:100vh;
     background:var(--cream);
-    position:relative;z-index:2;
-    box-shadow:-6px 0 40px rgba(0,0,0,0.35);
+    position:relative;
+    box-shadow:0 0 60px rgba(0,0,0,0.5);
+    border-radius:0;
+    flex-shrink:0;
   }
-
-  /* Nav bar sticky no painel direito */
-  .nav-bar{position:sticky;top:0;border-radius:0;z-index:100;}
-
-  /* Conteúdo centrado e com padding */
   .page{min-height:calc(100vh - 60px);}
-  .section{padding:2rem 2.5rem 1.5rem;max-width:580px;margin:0 auto;}
-
-  /* Meteorologia */
+  .section{padding:1.6rem 1.2rem 1.2rem;}
   #page-meteo{padding:0!important;}
   #meteo-full{height:calc(100vh - 60px);}
-
-  /* Img cards 2 colunas */
-  #atracoes-dynamic,
-  #restaurantes-dynamic{
-    display:grid;grid-template-columns:1fr 1fr;gap:.75rem;
-  }
-  #atracoes-dynamic .img-card,
-  #restaurantes-dynamic .img-card{margin-bottom:0;}
-
-  /* Serviços grid */
-  .services-grid{grid-template-columns:1fr 1fr;}
+  #notif-banner{max-width:430px;left:50%;transform:translateX(-50%);}
+  #toast{max-width:380px;}
+  #inapp-notif{max-width:400px;left:50%;transform:translateX(-50%);}
+  #bottom-nav{max-width:430px;left:50%;transform:translateX(-50%);right:auto;width:430px;}
+  #bottom-nav.hidden-nav{transform:translateX(-50%) translateY(100%);}
+  #drag-mode-btn{right:calc(50% - 430px/2 + 14px);}
 
   /* Info 4 colunas */
   .info-grid{grid-template-columns:repeat(4,1fr);}
@@ -1008,7 +1002,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
         </div>
       </div>
       <!-- Logout button with safe area for Safari bottom bar -->
-      <div style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom, 20px));margin-top:.5rem;">
+      <div style="padding-bottom:calc(5rem + env(safe-area-inset-bottom, 24px));margin-top:.5rem;">
         <button onclick="if(confirm('Terminar sessão?')){ clearSession(); location.reload(); }" style="width:100%;background:transparent;border:1px solid rgba(192,57,43,0.3);color:#c0392b;border-radius:50px;padding:11px;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;">Terminar sessão</button>
       </div>
       <a href="https://yapp.pt" target="_blank" class="yapp-footer" style="display:block;text-decoration:none;">
@@ -3064,184 +3058,156 @@ function pedidoBicicletas() {
 <!-- (iframe bloqueado pelo GitHub Pages — usamos redirect) -->
 
 <script>
-/* ── DRAG-TO-REORDER — cards da página inicial ────────────────────
-   Mostra um handle ⠿ no canto esquerdo de cada card ao entrar no
-   modo de ordenação. Toque longo (500ms) ou clique no handle inicia
-   o drag. Ordem guardada em localStorage como array de data-card-id.
-─────────────────────────────────────────────────────────────────── */
-(function() {
+/* ── DRAG-TO-REORDER — cards da página inicial ─────────────────── */
+var _dragInit = false;
+function initDrag() {
+  if (_dragInit) return;
+  _dragInit = true;
   var STORE_KEY = 'yapp_card_order';
   var grid = document.getElementById('services-drag-grid');
   if (!grid) return;
 
-  // ── CSS do handle e estado drag ───────────────────────
-  var style = document.createElement('style');
-  style.textContent = [
-    '.svc-card{position:relative;}',
-    '.drag-handle{position:absolute;top:50%;left:0;transform:translateY(-50%);',
-    'width:24px;height:100%;display:none;align-items:center;justify-content:center;',
-    'cursor:grab;z-index:10;background:rgba(255,255,255,0.85);border-radius:var(--radius-sm) 0 0 var(--radius-sm);',
-    'touch-action:none;-webkit-user-select:none;user-select:none;}',
-    '.drag-handle svg{opacity:0.5;width:14px;height:14px;}',
-    '.drag-mode .drag-handle{display:flex;}',
-    '.drag-mode .svc-card{cursor:default;}',
-    '.drag-ghost{opacity:0.35;pointer-events:none;}',
-    '.drag-over{outline:2px dashed var(--forest);outline-offset:2px;}',
-    '#drag-mode-btn{position:fixed;bottom:80px;right:14px;z-index:300;',
-    'background:var(--forest);color:#fff;border:none;border-radius:50px;',
-    'padding:9px 16px;font-family:"DM Sans",sans-serif;font-size:.78rem;',
-    'font-weight:600;cursor:pointer;display:none;box-shadow:0 3px 10px rgba(0,0,0,.2);',
-    'align-items:center;gap:6px;}',
-    '#drag-mode-btn svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;}'
-  ].join('');
-  document.head.appendChild(style);
+  // Injectar CSS
+  var st = document.createElement('style');
+  st.textContent =
+    '.svc-card{position:relative;}' +
+    '.drag-handle{position:absolute;top:0;left:0;width:28px;height:100%;' +
+    'display:none;flex-direction:column;align-items:center;justify-content:center;' +
+    'cursor:grab;z-index:10;background:rgba(255,255,255,0.9);' +
+    'border-radius:var(--radius-sm) 0 0 var(--radius-sm);' +
+    'touch-action:none;-webkit-user-select:none;user-select:none;gap:3px;}' +
+    '.drag-handle span{display:block;width:10px;height:2px;background:rgba(0,0,0,0.35);border-radius:2px;}' +
+    '.drag-mode .drag-handle{display:flex;}' +
+    '.drag-ghost{opacity:0.3;}' +
+    '.drag-over-top{border-top:3px solid var(--forest)!important;}' +
+    '.drag-over-bot{border-bottom:3px solid var(--forest)!important;}';
+  document.head.appendChild(st);
 
-  // ── Botão para activar modo ordenação ─────────────────
+  // Botão Ordenar — injectado no DOM
   var btn = document.createElement('button');
   btn.id = 'drag-mode-btn';
-  btn.innerHTML = '<svg viewBox="0 0 24 24"><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg><span>Ordenar</span>';
+  btn.setAttribute('style',
+    'position:fixed;bottom:80px;right:14px;z-index:9999;' +
+    'background:var(--forest,#3a6b2a);color:#fff;border:none;border-radius:50px;' +
+    'padding:9px 16px;font-family:"DM Sans",sans-serif;font-size:.78rem;' +
+    'font-weight:600;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.3);' +
+    'display:flex;align-items:center;gap:6px;');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="16" x2="21" y2="16"/></svg><span>Ordenar</span>';
   document.body.appendChild(btn);
 
   var dragMode = false;
   function toggleDragMode() {
     dragMode = !dragMode;
     grid.classList.toggle('drag-mode', dragMode);
-    btn.querySelector('span').textContent = dragMode ? 'Concluído' : 'Ordenar';
-    btn.style.background = dragMode ? '#c0392b' : 'var(--forest)';
+    btn.querySelector('span').textContent = dragMode ? 'Concluído ✓' : 'Ordenar';
+    btn.style.background = dragMode ? '#c0392b' : 'var(--forest,#3a6b2a)';
   }
-  btn.addEventListener('click', toggleDragMode);
+  btn.addEventListener('click', function(e) { e.stopPropagation(); toggleDragMode(); });
 
-  // Mostrar botão quando estamos na página casa e app pronta
-  function checkPage() {
-    var casaPage = document.getElementById('page-casa');
-    var isReady = document.body.classList.contains('app-ready');
-    if (casaPage && isReady) {
-      btn.style.display = casaPage.classList.contains('active') ? 'flex' : 'none';
-    } else {
-      btn.style.display = 'none';
-    }
-  }
-  // Observe page changes
-  setInterval(checkPage, 500);
-
-  // ── Adicionar handles a cada card ─────────────────────
+  // Handles
   function addHandles() {
-    var cards = grid.querySelectorAll('.svc-card');
-    cards.forEach(function(card) {
-      if (card.querySelector('.drag-handle')) return;
-      var handle = document.createElement('div');
-      handle.className = 'drag-handle';
-      handle.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>';
-      handle.setAttribute('draggable', 'false');
-      card.insertBefore(handle, card.firstChild);
+    grid.querySelectorAll('.svc-card').forEach(function(c) {
+      if (c.querySelector('.drag-handle')) return;
+      var h = document.createElement('div');
+      h.className = 'drag-handle';
+      h.innerHTML = '<span></span><span></span><span></span><span></span>';
+      c.insertBefore(h, c.firstChild);
     });
   }
   addHandles();
 
-  // ── Drag state ─────────────────────────────────────────
-  var dragSrc = null;
-
-  function getCards() {
-    return Array.from(grid.querySelectorAll('.svc-card'));
-  }
-
+  // Persistência
   function saveOrder() {
-    var order = getCards().map(function(c) { return c.getAttribute('data-card-id'); }).filter(Boolean);
-    try { localStorage.setItem(STORE_KEY, JSON.stringify(order)); } catch(e) {}
+    var ids = Array.from(grid.querySelectorAll('.svc-card')).map(function(c){ return c.getAttribute('data-card-id'); }).filter(Boolean);
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(ids)); } catch(e){}
   }
-
   function applyOrder() {
-    var saved;
-    try { saved = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch(e) { return; }
-    if (!saved || !saved.length) return;
-    var cards = getCards();
-    var map = {};
-    cards.forEach(function(c) { map[c.getAttribute('data-card-id')] = c; });
-    saved.forEach(function(id) {
-      if (map[id]) grid.appendChild(map[id]);
-    });
-    // append any cards not in saved order
-    cards.forEach(function(c) {
-      if (!saved.includes(c.getAttribute('data-card-id'))) grid.appendChild(c);
-    });
+    var saved; try { saved = JSON.parse(localStorage.getItem(STORE_KEY)||'[]'); } catch(e){ return; }
+    if (!saved||!saved.length) return;
+    var map = {}; grid.querySelectorAll('.svc-card').forEach(function(c){ map[c.getAttribute('data-card-id')]=c; });
+    saved.forEach(function(id){ if (map[id]) grid.appendChild(map[id]); });
   }
   applyOrder();
 
-  // ── Mouse drag ────────────────────────────────────────
-  grid.addEventListener('dragstart', function(e) {
-    if (!dragMode) { e.preventDefault(); return; }
-    dragSrc = e.target.closest('.svc-card');
-    if (!dragSrc) return;
-    e.dataTransfer.effectAllowed = 'move';
-    setTimeout(function() { dragSrc.classList.add('drag-ghost'); }, 0);
-  });
-  grid.addEventListener('dragend', function() {
-    getCards().forEach(function(c) { c.classList.remove('drag-ghost','drag-over'); });
-    saveOrder();
-    dragSrc = null;
-  });
-  grid.addEventListener('dragover', function(e) {
-    if (!dragMode || !dragSrc) return;
-    e.preventDefault();
-    var target = e.target.closest('.svc-card');
-    if (!target || target === dragSrc) return;
-    getCards().forEach(function(c) { c.classList.remove('drag-over'); });
-    target.classList.add('drag-over');
-    var rect = target.getBoundingClientRect();
-    var mid = rect.top + rect.height / 2;
-    if (e.clientY < mid) grid.insertBefore(dragSrc, target);
-    else grid.insertBefore(dragSrc, target.nextSibling);
-  });
-
-  // Make cards draggable when in drag mode
-  grid.addEventListener('mousedown', function(e) {
-    var handle = e.target.closest('.drag-handle');
-    if (handle && dragMode) {
-      var card = handle.closest('.svc-card');
-      if (card) card.setAttribute('draggable', 'true');
-    }
-  });
-  grid.addEventListener('mouseup', function() {
-    getCards().forEach(function(c) { c.setAttribute('draggable', 'false'); });
-  });
-
-  // ── Touch drag ────────────────────────────────────────
-  var touchCard = null, touchStartY = 0, touchStartX = 0;
+  // Touch drag
+  var touchEl = null;
   grid.addEventListener('touchstart', function(e) {
     if (!dragMode) return;
-    var handle = e.target.closest('.drag-handle');
-    if (!handle) return;
-    touchCard = handle.closest('.svc-card');
-    touchStartY = e.touches[0].clientY;
-    touchStartX = e.touches[0].clientX;
-    touchCard.classList.add('drag-ghost');
+    var h = e.target.closest('.drag-handle');
+    if (!h) return;
+    touchEl = h.closest('.svc-card');
+    touchEl.classList.add('drag-ghost');
     e.preventDefault();
-  }, { passive: false });
+  }, {passive:false});
 
   grid.addEventListener('touchmove', function(e) {
-    if (!dragMode || !touchCard) return;
+    if (!dragMode||!touchEl) return;
     e.preventDefault();
     var t = e.touches[0];
     var el = document.elementFromPoint(t.clientX, t.clientY);
     var target = el ? el.closest('.svc-card') : null;
-    if (!target || target === touchCard) return;
-    getCards().forEach(function(c) { c.classList.remove('drag-over'); });
-    target.classList.add('drag-over');
+    grid.querySelectorAll('.svc-card').forEach(function(c){ c.classList.remove('drag-over-top','drag-over-bot'); });
+    if (!target||target===touchEl) return;
     var rect = target.getBoundingClientRect();
-    var mid = rect.top + rect.height / 2;
-    if (t.clientY < mid) grid.insertBefore(touchCard, target);
-    else grid.insertBefore(touchCard, target.nextSibling);
-  }, { passive: false });
+    if (t.clientY < rect.top + rect.height/2) {
+      target.classList.add('drag-over-top');
+      grid.insertBefore(touchEl, target);
+    } else {
+      target.classList.add('drag-over-bot');
+      grid.insertBefore(touchEl, target.nextSibling);
+    }
+  }, {passive:false});
 
   grid.addEventListener('touchend', function() {
-    if (!touchCard) return;
-    touchCard.classList.remove('drag-ghost');
-    getCards().forEach(function(c) { c.classList.remove('drag-over'); });
-    saveOrder();
-    touchCard = null;
+    if (!touchEl) return;
+    touchEl.classList.remove('drag-ghost');
+    grid.querySelectorAll('.svc-card').forEach(function(c){ c.classList.remove('drag-over-top','drag-over-bot'); });
+    saveOrder(); touchEl = null;
   });
 
-})();
+  // Mouse drag (desktop)
+  var dragSrc = null;
+  grid.addEventListener('mousedown', function(e) {
+    if (!dragMode) return;
+    var h = e.target.closest('.drag-handle');
+    if (!h) return;
+    dragSrc = h.closest('.svc-card');
+    dragSrc.setAttribute('draggable','true');
+  });
+  grid.addEventListener('dragstart', function(e) {
+    if (!dragMode||!dragSrc) { e.preventDefault(); return; }
+    e.dataTransfer.effectAllowed='move';
+    setTimeout(function(){ dragSrc.classList.add('drag-ghost'); },0);
+  });
+  grid.addEventListener('dragover', function(e) {
+    if (!dragMode||!dragSrc) return; e.preventDefault();
+    var target = e.target.closest('.svc-card');
+    grid.querySelectorAll('.svc-card').forEach(function(c){ c.classList.remove('drag-over-top','drag-over-bot'); });
+    if (!target||target===dragSrc) return;
+    var rect = target.getBoundingClientRect();
+    if (e.clientY < rect.top+rect.height/2) { target.classList.add('drag-over-top'); grid.insertBefore(dragSrc,target); }
+    else { target.classList.add('drag-over-bot'); grid.insertBefore(dragSrc,target.nextSibling); }
+  });
+  grid.addEventListener('dragend', function() {
+    grid.querySelectorAll('.svc-card').forEach(function(c){ c.classList.remove('drag-ghost','drag-over-top','drag-over-bot'); c.setAttribute('draggable','false'); });
+    saveOrder(); dragSrc = null;
+  });
+}
+
+// Activar quando a app fica pronta
+var _dragCheckInterval = setInterval(function() {
+  if (document.body.classList.contains('app-ready')) {
+    initDrag();
+    // Mostrar/esconder botão conforme a página activa
+    var btn = document.getElementById('drag-mode-btn');
+    if (btn) {
+      var casaPage = document.getElementById('page-casa');
+      btn.style.display = (casaPage && casaPage.classList.contains('active')) ? 'flex' : 'none';
+    }
+  } else {
+    var btn = document.getElementById('drag-mode-btn');
+    if (btn) btn.style.display = 'none';
+  }
+}, 300);
 </script>
 </body>
-</html>
