@@ -1,8 +1,8 @@
 {
   "name": "YAPP Backoffice",
   "short_name": "YAPP Admin",
-  "description": "Painel de administra\u00e7\u00e3o YAPP",
-  "start_url": "./yapp-backoffice.html",
+  "description": "Painel de administração YAPP",
+  "start_url": "./backoffice.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#1a3a0e",
@@ -13,19 +13,13 @@
     {
       "src": "apple-touch-icon-bo.png",
       "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-192-bo.png",
-      "type": "image/png",
-      "sizes": "192x192",
+      "sizes": "180x180",
       "purpose": "any"
     },
     {
-      "src": "icon-180-bo.png",
+      "src": "favicon-bo.png",
       "type": "image/png",
-      "sizes": "180x180",
+      "sizes": "32x32",
       "purpose": "any"
     }
   ]
