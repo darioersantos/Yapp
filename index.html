@@ -1489,10 +1489,9 @@ function showBoasVindasPopup() {
   var s = getSession();
   if (!s || s.user === 'demo') return;
   var todayStr = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-  var key = 'yapp_bv_date_' + s.user;
-  var last = localStorage.getItem(key) || '';
-  if (last === todayStr) return; // já apareceu hoje
-  localStorage.setItem(key, todayStr);
+  var key = 'yapp_bv_seen_' + s.user;
+  if (localStorage.getItem(key)) return; // já viu — nunca mais mostrar
+  localStorage.setItem(key, '1');
   var nome = s.name ? s.name.split(' ')[0] : '';
   var titulo = document.getElementById('popup-bv-titulo');
   var texto  = document.getElementById('popup-bv-texto');
