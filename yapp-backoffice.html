@@ -1479,7 +1479,7 @@ function loadReservas() {
   });
   renderReceitas();
 
-  if (API_URL) {
+  if (API) {
     jsonpCall({ action: 'getReservas' }, function(err, d) {
       if (err || !d || d.status !== 'ok' || !d.data) return;
 
@@ -1500,18 +1500,26 @@ function loadReservas() {
 
       // Replace with fresh data from Sheets — avoid stale localStorage duplicates
       _reservas = (d.data || []).map(function(r) {
-        var ci = norm(r.ci), co = norm(r.co);
-        // valor: try multiple field names, handle string with comma/dot
-        var rawVal = r.valor !== undefined ? r.valor : (r.value !== undefined ? r.value : (r.receita !== undefined ? r.receita : (r.preco !== undefined ? r.preco : 0)));
+        // Sheets column names (Apps Script returns them as-is or lowercased)
+        var ci  = norm(r.ci  || r['Check-in']  || r['check-in']  || r.checkin  || '');
+        var co  = norm(r.co  || r['Check-out'] || r['check-out'] || r.checkout || '');
+        // valor: handle multiple field names and string with comma decimal
+        var rawVal = r.valor !== undefined ? r.valor
+                   : r['Valor'] !== undefined ? r['Valor']
+                   : r.value !== undefined ? r.value : 0;
         var parsedVal = parseFloat(String(rawVal).replace(',','.')) || 0;
         return {
           id: r.id || (Date.now() + Math.random()),
           ci: ci, co: co,
-          guest: r.guest || r.nome || r.name || '', email: r.email || '',
-          valor: parsedVal, plat: r.plat || r.plataforma || '',
-          estado: r.estado || r.status || 'pago',
-          nights: r.nights || r.noites || Math.round((new Date(co) - new Date(ci)) / 86400000),
-          notes: r.notes || r.notas || '', user: r.user || r.username || '', pass: r.pass || r.password || ''
+          guest: r.guest || r['Hóspede'] || r.hospede || r.nome || r.name || '',
+          email: r.email || r['Email'] || '',
+          valor: parsedVal,
+          plat:  r.plat || r['Plataforma'] || r.plataforma || '',
+          estado: r.estado || r['Estado'] || r.status || 'pago',
+          nights: parseInt(r.nights || r['Noites'] || r.noites || 0) || Math.round((new Date(co) - new Date(ci)) / 86400000),
+          notes: r.notes || r['Notas'] || r.notas || '',
+          user:  r.user || r['Username'] || r.username || '',
+          pass:  r.pass || r['Password'] || r.password || ''
         };
       });
 
@@ -2166,7 +2174,7 @@ window.addEventListener('DOMContentLoaded', function() {
   document.getElementById('lpass').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
 
   // Fetch property name to show on login screen (even before auth)
-  if (API_URL) {
+  if (API) {
     jsonpCall({ action: 'config' }, function(err, d) {
       if (err || !d) return;
       var nome = (d.data && d.data.propriedade_nome) || '';
