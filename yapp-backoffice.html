@@ -637,19 +637,12 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
         <div id="dyn-info"></div>
       </div>
       <div class="card">
-        <div class="ctitle">Checklist de saída (um item por linha)</div>
-        <p style="font-size:.78rem;color:var(--txl);margin-bottom:.75rem;">Cada linha é um item que o hóspede marca antes de sair na app.</p>
-        <textarea class="inp ta-lg" id="checklist" style="min-height:180px;">Fechar todas as janelas e portas
-Desligar ar condicionado e aquecimento
-Desligar luzes em todos os compartimentos
-Retirar todos os pertences pessoais
-Colocar toalhas usadas no chão da casa de banho
-Verificar frigorífico e tirar alimentos
-Fechar torneiras
-Separar lixo e colocar nos contentores
-Trancar o portão do jardim
-Entregar as chaves ao proprietário</textarea>
+        <div class="ctitle">Checklist de saída — arrasta ⠿ para reordenar</div>
+        <p style="font-size:.78rem;color:var(--txl);margin-bottom:.75rem;">Cada item é uma tarefa que o hóspede marca antes de sair. O título é o texto da tarefa.</p>
+        <div id="dyn-chk"></div>
       </div>
+      <!-- campo hidden mantido para compatibilidade com sheets -->
+      <input type="hidden" id="checklist" value=""/>
       <!-- campos legacy hidden para compatibilidade com sheets -->
       <input type="hidden" id="reg-s" value=""/><input type="hidden" id="reg-a" value=""/>
       <input type="hidden" id="reg-e" value=""/><input type="hidden" id="reg-t" value=""/>
@@ -2000,10 +1993,10 @@ function dynRender(key) {
       + ' ondragstart="dynDragStart(event)" ondragover="dynDragOver(event)" ondrop="dynDrop(event,\'' + key + '\')" ondragend="dynDragEnd(event)">'
       + '<div class="dyn-card-header">'
       + '<span class="dyn-drag-handle" title="Arrastar para reordenar">⠿</span>'
-      + '<input class="dyn-title-inp" id="dyn-' + key + '-t-' + i + '" value="' + esc(card.title||'') + '" placeholder="Título do item"/>'
+      + '<input class="dyn-title-inp" id="dyn-' + key + '-t-' + i + '" value="' + esc(card.title||'') + '" placeholder="' + (key === 'chk' ? 'Tarefa...' : 'Título do item') + '"/>'
       + '<button class="dyn-del-btn" onclick="dynDel(\'' + key + '\',' + i + ')">×</button>'
       + '</div>'
-      + '<textarea class="dyn-text-area" id="dyn-' + key + '-c-' + i + '">' + esc(card.text||'') + '</textarea>'
+      + '<textarea class="dyn-text-area" id="dyn-' + key + '-c-' + i + '"' + (key === 'chk' ? ' style="display:none;"' : '') + '>' + esc(card.text||'') + '</textarea>'
       + '</div>';
   });
   html += '</div>'
@@ -2252,6 +2245,7 @@ function go(sec, el) {
   if (sec === 'receitas') { loadReservas(); renderReceitas(); }
   if (sec === 'financeiro') { loadReservas(); renderReceitas(); }
   if (sec === 'servicos') { dynLoad('svc', (_dynData.svc ? JSON.stringify(_dynData.svc) : null) || localStorage.getItem('dyn_svc') || null); }
+  if (sec === 'info-uteis') { dynLoad('chk', (_dynData.chk ? JSON.stringify(_dynData.chk) : null) || localStorage.getItem('dyn_chk') || null); }
   if (sec === 'info-uteis') {
     var baseJson2 = (_dynData.info ? JSON.stringify(_dynData.info) : null) || localStorage.getItem('dyn_info') || null;
     var items2; try { items2 = JSON.parse(baseJson2 || '[]'); } catch(e) { items2 = []; }
@@ -2438,9 +2432,10 @@ function fillCasa(c) {
     pisc: '[{"title":"⚠️ Atenção","text":"Mantenha as crianças sempre sob vigilância!"},{"title":"Informação","text":"Profundidade 1,50m"},{"title":"Equipamento","text":"Espreguiçadeiras e guarda-sol disponíveis. Toalhas no armário do corredor."}]',
     info: '[{"title":"Estacionamento","text":"Dois lugares cobertos no lado esquerdo do portão."},{"title":"Água potável","text":"A água da torneira é potável e tratada."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior."},{"title":"Regras da casa","text":"Silêncio entre as 22h e as 08h. Animais permitidos, não entram na piscina. Proibido fumar dentro da casa."},{"title":"Reciclagem","text":"Verde=vidro · Azul=papel · Amarelo=plástico · Preto=indiferenciado. Contentores no exterior da propriedade."},{"title":"Quadro elétrico","text":"Corredor da entrada, armário branco à direita. Se a luz cair: desligue os aparelhos e levante o disjuntor falhado."}]',
     ext:  '[{"title":"Jardim & terraço","text":"Jardim com relva natural e terraço coberto com vista para a serra."},{"title":"Equipamento exterior","text":"Mesa de jardim para 6 pessoas, churrasqueira e zona de lazer."},{"title":"Notas","text":"Portão do jardim trancar sempre que sair."}]',
-    svc:  '[{"title":"Limpeza extra","text":"Serviço disponível das 10h às 16h. Pedido confirmado por WhatsApp."},{"title":"Aluguer de bicicletas","text":"Montanha €12/dia · Estrada €10/dia · E-Bike €20/dia. Reserva por WhatsApp."},{"title":"Compras locais","text":"Supermercado 0,8km · Padaria 0,5km · Talho 1,2km."},{"title":"Transportes","text":"Autocarro Gerês–Braga: 07h30, 12h00, 17h45. Operador TUB."}]'
+    svc:  '[{"title":"Limpeza extra","text":"Serviço disponível das 10h às 16h. Pedido confirmado por WhatsApp."},{"title":"Aluguer de bicicletas","text":"Montanha €12/dia · Estrada €10/dia · E-Bike €20/dia. Reserva por WhatsApp."},{"title":"Compras locais","text":"Supermercado 0,8km · Padaria 0,5km · Talho 1,2km."},{"title":"Transportes","text":"Autocarro Gerês–Braga: 07h30, 12h00, 17h45. Operador TUB."}]',
+    chk:  '[{"title":"Fechar todas as janelas e portas","text":""},{"title":"Desligar ar condicionado e aquecimento","text":""},{"title":"Desligar luzes em todos os compartimentos","text":""},{"title":"Retirar todos os pertences pessoais","text":""},{"title":"Colocar toalhas usadas no chão da casa de banho","text":""},{"title":"Verificar frigorífico e tirar alimentos","text":""},{"title":"Fechar torneiras","text":""},{"title":"Separar lixo e colocar nos contentores","text":""},{"title":"Trancar o portão do jardim","text":""},{"title":"Entregar as chaves ao proprietário","text":""}]'
   };
-  ['sala','wc','coz','chur','pisc','info','ext','svc'].forEach(function(key) {
+  ['sala','wc','coz','chur','pisc','info','ext','svc','chk'].forEach(function(key) {
     dynLoad(key, c[key + '_json'] || dynDefaults[key] || '[]');
   });
   s('chur-utens', c.churrasco_utens);
@@ -2453,11 +2448,19 @@ function fillCasa(c) {
   s('reg-s', c.reg_silencio); s('reg-a', c.reg_animais); s('reg-e', c.reg_estac); s('reg-t', c.reg_tabaco);
   s('fus-l', c.fus_loc); s('fus-c', c.fus_como);
   s('rec-v', c.rec_verde); s('rec-a', c.rec_azul); s('rec-am', c.rec_amarelo); s('rec-p', c.rec_preto);
+  // Load checklist into dyn-chk system
+  if (c.chk_json) {
+    dynLoad('chk', c.chk_json);
+  } else if (c.checklist_saida) {
+    // Convert legacy newline format to dyn items
+    var chkItems = c.checklist_saida.split('\n').filter(function(l){ return l.trim(); }).map(function(l){ return {title:l.trim(), text:''}; });
+    dynLoad('chk', chkItems.length ? JSON.stringify(chkItems) : null);
+  }
   s('checklist', c.checklist_saida);
   s('info-estac', c.info_estac); s('info-agua', c.info_agua); s('info-alarme', c.info_alarme);
   s('info-cofre', c.info_cofre); s('info-corrente', c.info_corrente); s('info-drones', c.info_drones);
   // preview images
-  ['wc','qts','sala','coz','chur','pisc','ext','info','svc'].forEach(function(k) {
+  ['wc','qts','sala','coz','chur','pisc','ext','info','svc','chk'].forEach(function(k) {
     var inp = document.getElementById('img-' + k);
     var prev = document.getElementById('prev-' + k);
     if (inp && prev && inp.value) prev.src = inp.value;
@@ -2505,7 +2508,7 @@ function saveSection(sec) {
   saveLocal();
   // Mapa completo: secção → { action, campos }
   var maps = {
-    'info-uteis': { action:'saveCasa', info_json:dynGet('info'), checklist_saida:v('checklist') },
+    'info-uteis': { action:'saveCasa', info_json:dynGet('info'), chk_json:dynGet('chk'), checklist_saida:(function(){ try{ return JSON.parse(dynGet('chk')).map(function(i){return i.title;}).filter(Boolean).join('\n'); }catch(e){return '';} })() },
     'casa-geral': { action:'saveCasa',
       info_img:v('img-info'),
       boas_vindas:v('c-bv'),
