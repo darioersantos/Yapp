@@ -2032,7 +2032,7 @@ function dynRender(key) {
       + '<button class="dyn-del-btn" onclick="dynDel(\'' + key + '\',' + i + ')">×</button>'
       + '</div>'
       + '<textarea class="dyn-text-area" id="dyn-' + key + '-c-' + i + '"' + (key === 'chk' ? ' style="display:none;"' : '') + '>' + esc(card.text||'') + '</textarea>'
-      + (key === 'svc' ? '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;"><img id="dyn-' + key + '-img-prev-' + i + '" src="' + esc(card.img||'') + '" style="width:48px;height:36px;object-fit:cover;border-radius:5px;border:1px solid var(--bd);background:#f5f5f5;flex-shrink:0;" onerror="this.style.display=\'none\'"/><input class="inp" id="dyn-' + key + '-img-' + i + '" value="' + esc(card.img||'') + '" placeholder="URL da imagem (opcional)" style="font-size:.75rem;" oninput="(function(v,id){var p=document.getElementById(id);if(p){p.src=v;p.style.display=v?\'block\':\'none\';}})(this.value,\'dyn-' + key + '-img-prev-' + i + '\')"/></div>' : '')'
+      + (key === 'svc' ? '<div style="margin-top:6px;"><input class="inp" id="dyn-' + key + '-img-' + i + '" value="' + esc(card.img||'') + '" placeholder="URL da imagem (opcional)" style="font-size:.75rem;"/></div>' : '')
       + '</div>';
   });
   html += '</div>'
