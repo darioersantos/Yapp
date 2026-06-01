@@ -2506,7 +2506,13 @@ function fillCasa(c) {
     chk:  '[{"title":"Fechar todas as janelas e portas","text":""},{"title":"Desligar ar condicionado e aquecimento","text":""},{"title":"Desligar luzes em todos os compartimentos","text":""},{"title":"Retirar todos os pertences pessoais","text":""},{"title":"Colocar toalhas usadas no chão da casa de banho","text":""},{"title":"Verificar frigorífico e tirar alimentos","text":""},{"title":"Fechar torneiras","text":""},{"title":"Separar lixo e colocar nos contentores","text":""},{"title":"Trancar o portão do jardim","text":""},{"title":"Entregar as chaves ao proprietário","text":""}]'
   };
   ['sala','wc','coz','chur','pisc','info','ext','svc','chk'].forEach(function(key) {
-    dynLoad(key, c[key + '_json'] || dynDefaults[key] || '[]');
+    var jsonVal = c[key + '_json'] || dynDefaults[key] || '[]';
+    dynLoad(key, jsonVal);
+    // Ponte para a app dos hóspedes: escreve no localStorage partilhado ao carregar dados do Sheets
+    try {
+      if (key === 'info') localStorage.setItem('yapp_info_json', jsonVal);
+      if (key === 'svc')  localStorage.setItem('yapp_svc_json', jsonVal);
+    } catch(e) {}
   });
   s('chur-utens', c.churrasco_utens);
   s('coz-el', c.cozinha_eletros); s('coz-cafe', c.cozinha_cafe); s('coz-det', c.cozinha_det);
@@ -2657,6 +2663,16 @@ function saveSection(sec) {
   var fields = maps[sec];
   if (fields === null || fields === 'dynamic') { savePatrocinadores(); return; }
   if (!fields) { showOk('ok-'+sec); toast('Guardado localmente.'); return; }
+  // Ponte localStorage partilhada com a app dos hóspedes
+  // (mesmo domínio = mesmo localStorage; garante que a app vê os dados mesmo antes do Sheets responder)
+  try {
+    if (sec === 'info-uteis' && fields.info_json) {
+      localStorage.setItem('yapp_info_json', fields.info_json);
+    }
+    if (sec === 'servicos' && fields.svc_json) {
+      localStorage.setItem('yapp_svc_json', fields.svc_json);
+    }
+  } catch(e) {}
   showLoading('A guardar na servidor...');
   apiWrite(fields, function() { hideLoading(); showOk('ok-'+sec); toast('✓ Guardado na servidor!'); });
 }
