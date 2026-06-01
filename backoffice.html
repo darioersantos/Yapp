@@ -329,7 +329,6 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
       <div style="font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#4da6ff;margin-bottom:.3rem;">Versão demonstração</div>
       <div style="font-size:.82rem;color:rgba(255,255,255,.7);line-height:1.5;">Clique em <strong style="color:#4da6ff;">Entrar</strong> para explorar o backoffice completo</div>
     </div>
-    <input class="li" id="lpass" type="password" placeholder="Password de acesso" autocomplete="current-password"/>
     <button class="lbtn" onclick="doLogin()">Entrar no backoffice</button>
     <div class="lerr" id="lerr"></div>
   </div>
@@ -2203,18 +2202,7 @@ function voltarApp() {
 }
 
 // ── AUTH ────────────────────────────────────────
-function togglePass() {
-  var inp = document.getElementById('lpass');
-  inp.type = inp.type === 'password' ? 'text' : 'password';
-}
 function doLogin() {
-  var inp = document.getElementById('lpass');
-  var entered = inp ? inp.value.trim() : '';
-  if (entered !== BO_PASS) {
-    var err = document.getElementById('lerr');
-    if (err) err.textContent = 'Password incorreta.';
-    return;
-  }
   localStorage.setItem(BO_KEY, '1');
   document.getElementById('login').classList.add('off');
   document.getElementById('app').style.display = 'block';
@@ -2223,8 +2211,6 @@ function doLogin() {
 function initApp() { loadAll(); }
 function doLogout() { localStorage.removeItem(BO_KEY); location.reload(); }
 window.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('lpass').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
-
   // Fetch property name to show on login screen (even before auth)
   if (API) {
     jsonpCall({ action: 'config' }, function(err, d) {
@@ -2247,11 +2233,9 @@ window.addEventListener('DOMContentLoaded', function() {
     document.getElementById('app').style.display = 'block';
     loadAll();
   }
-  // Restore local fields — nunca restaurar o campo password
+  // Restore local fields
   var local = localStorage.getItem(LS_KEY);
   if (local) { try { restoreLocal(JSON.parse(local)); } catch(e) {} }
-  // Garantir que o campo password fica sempre limpo
-  var lp = document.getElementById('lpass'); if (lp) lp.value = '';
 
   // Offline detection
   function checkOnline() {
@@ -2500,7 +2484,7 @@ function fillCasa(c) {
     coz:  '[{"title":"Café","text":"Cápsulas Nespresso no armário superior esquerdo."},{"title":"Detergentes","text":"Armário debaixo do lava-loiça. Pastilhas incluídas."}]',
     chur: '[{"title":"Preparação","text":"Carvão e acendalha no armário exterior. Utilizar no local designado no jardim."},{"title":"Utilização","text":"Grelha na prateleira inferior. Pinça e espátula no gancho à direita."},{"title":"Limpeza","text":"Aguardar arrefecimento. Cinzas no balde metálico."}]',
     pisc: '[{"title":"⚠️ Atenção","text":"Mantenha as crianças sempre sob vigilância!"},{"title":"Informação","text":"Profundidade 1,50m"},{"title":"Equipamento","text":"Espreguiçadeiras e guarda-sol disponíveis. Toalhas no armário do corredor."}]',
-    info: '[{"title":"Estacionamento","text":"Dois lugares cobertos no lado esquerdo do portão."},{"title":"Água potável","text":"A água da torneira é potável e tratada."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior."},{"title":"Regras da casa","text":"Silêncio entre as 22h e as 08h. Animais permitidos, não entram na piscina. Proibido fumar dentro da casa."},{"title":"Reciclagem","text":"Verde=vidro · Azul=papel · Amarelo=plástico · Preto=indiferenciado. Contentores no exterior da propriedade."},{"title":"Quadro elétrico","text":"Corredor da entrada, armário branco à direita. Se a luz cair: desligue os aparelhos e levante o disjuntor falhado."}]',
+    info: '[{"title":"Regras da casa","text":"Silêncio: Respeitar silêncio entre as 22h00 e as 08h00. Piscina encerra às 21h00.\nAnimais: Animais permitidos. Não devem entrar na piscina.\nTabaco: Proibido fumar dentro da casa. Área exterior permitida."},{"title":"Reciclagem","text":"🔵 Azul: Jornais, revistas, caixas de cartão\n🟡 Amarelo: Garrafas PET, embalagens, latas\n⚫ Preto: Resíduos não recicláveis. Recolha terças e sextas."},{"title":"Quadro elétrico","text":"1. Desligue os aparelhos.\n2. Levante o disjuntor falhado.\n3. Se repetir, contacte o Carlos."},{"title":"Estacionamento","text":"Dois lugares cobertos no lado esquerdo do portão."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Água potável","text":"A água da torneira é potável e tratada, contudo recomenda-se o uso de água engarrafada para consumo."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior."}]',
     ext:  '[{"title":"Jardim & terraço","text":"Jardim com relva natural e terraço coberto com vista para a serra."},{"title":"Equipamento exterior","text":"Mesa de jardim para 6 pessoas, churrasqueira e zona de lazer."},{"title":"Notas","text":"Portão do jardim trancar sempre que sair."}]',
     svc:  '[{"title":"Limpeza extra","text":"Serviço disponível das 10h às 16h. Pedido confirmado por WhatsApp."},{"title":"Aluguer de bicicletas","text":"Montanha €12/dia · Estrada €10/dia · E-Bike €20/dia. Reserva por WhatsApp."},{"title":"Compras locais","text":"Supermercado 0,8km · Padaria 0,5km · Talho 1,2km."},{"title":"Transportes","text":"Autocarro Gerês–Braga: 07h30, 12h00, 17h45. Operador TUB."}]',
     chk:  '[{"title":"Fechar todas as janelas e portas","text":""},{"title":"Desligar ar condicionado e aquecimento","text":""},{"title":"Desligar luzes em todos os compartimentos","text":""},{"title":"Retirar todos os pertences pessoais","text":""},{"title":"Colocar toalhas usadas no chão da casa de banho","text":""},{"title":"Verificar frigorífico e tirar alimentos","text":""},{"title":"Fechar torneiras","text":""},{"title":"Separar lixo e colocar nos contentores","text":""},{"title":"Trancar o portão do jardim","text":""},{"title":"Entregar as chaves ao proprietário","text":""}]'
