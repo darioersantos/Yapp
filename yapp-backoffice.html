@@ -3279,29 +3279,58 @@ function hideLoading() { document.getElementById('loading').classList.remove('sh
 .sbi.dragging{opacity:0.35;}
 </style>
 <script>
-/* ── DRAG-TO-REORDER sidebar nav ─────────────────────────────────── */
+/* ── DRAG-TO-REORDER sidebar — apenas dentro de cada grupo ───────── */
 (function(){
-  var NAV_ORDER_KEY = 'yapp_bo_nav_order';
+  var NAV_ORDER_KEY = 'yapp_bo_nav_order_v2';
   var nav = document.querySelector('.sbnav');
   if (!nav) return;
 
-  var dragEl = null;
+  // Mapeia cada .sbi ao grupo (sbsec) a que pertence
+  function getGroup(el) {
+    var prev = el.previousElementSibling;
+    while (prev) {
+      if (prev.classList.contains('sbsec')) return prev.textContent.trim();
+      prev = prev.previousElementSibling;
+    }
+    return '__top__';
+  }
 
-  // Apply saved order on load
+  // Guarda ordem: { grupo: [sec, sec, ...] }
+  function saveOrder() {
+    var order = {};
+    nav.querySelectorAll('.sbi[data-sec]').forEach(function(el) {
+      var g = getGroup(el);
+      if (!order[g]) order[g] = [];
+      order[g].push(el.getAttribute('data-sec'));
+    });
+    try { localStorage.setItem(NAV_ORDER_KEY, JSON.stringify(order)); } catch(e){}
+  }
+
+  // Restaura ordem dentro de cada grupo
   function applyOrder() {
-    var saved; try { saved = JSON.parse(localStorage.getItem(NAV_ORDER_KEY)||'[]'); } catch(e){ return; }
-    if (!saved || !saved.length) return;
-    saved.forEach(function(sec) {
-      var el = nav.querySelector('.sbi[data-sec="'+sec+'"]');
-      if (el) nav.appendChild(el);
+    var saved; try { saved = JSON.parse(localStorage.getItem(NAV_ORDER_KEY)||'{}'); } catch(e){ return; }
+    if (!saved || !Object.keys(saved).length) return;
+    // Para cada sbsec, reordenar os sbi que lhe seguem
+    var sections = Array.from(nav.querySelectorAll('.sbsec'));
+    sections.forEach(function(sec) {
+      var groupName = sec.textContent.trim();
+      var order = saved[groupName];
+      if (!order || !order.length) return;
+      // Anchor: insert after the sbsec header
+      var anchor = sec;
+      order.forEach(function(secId) {
+        var el = nav.querySelector('.sbi[data-sec="'+secId+'"]');
+        if (!el) return;
+        // Check this item actually belongs to this group
+        if (getGroup(el) !== groupName) return;
+        anchor.insertAdjacentElement('afterend', el);
+        anchor = el;
+      });
     });
   }
   applyOrder();
 
-  function saveOrder() {
-    var order = Array.from(nav.querySelectorAll('.sbi[data-sec]')).map(function(el){ return el.getAttribute('data-sec'); });
-    try { localStorage.setItem(NAV_ORDER_KEY, JSON.stringify(order)); } catch(e){}
-  }
+  var dragEl = null;
 
   function clearStates() {
     nav.querySelectorAll('.sbi').forEach(function(el){
@@ -3323,7 +3352,8 @@ function hideLoading() { document.getElementById('loading').classList.remove('sh
     var target = e.target.closest('.sbi[data-sec]');
     clearStates();
     dragEl.classList.add('dragging');
-    if (!target || target === dragEl) return;
+    // Only allow drop within same group
+    if (!target || target === dragEl || getGroup(target) !== getGroup(dragEl)) return;
     var rect = target.getBoundingClientRect();
     if (e.clientY < rect.top + rect.height / 2) {
       target.classList.add('drag-over-top');
@@ -3357,7 +3387,7 @@ function hideLoading() { document.getElementById('loading').classList.remove('sh
     var target = under ? under.closest('.sbi[data-sec]') : null;
     clearStates();
     touchEl.classList.add('dragging');
-    if (!target || target === touchEl) return;
+    if (!target || target === touchEl || getGroup(target) !== getGroup(touchEl)) return;
     var rect = target.getBoundingClientRect();
     if (t.clientY < rect.top + rect.height/2) nav.insertBefore(touchEl, target);
     else nav.insertBefore(touchEl, target.nextSibling);
