@@ -620,33 +620,33 @@ body.aviso-active #notif-banner{top:2.2rem;}
         <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&auto=format&fit=crop&q=75" alt="Info" style="height:110px;"/>
         <div class="svc-card-body"><div class="svc-card-label">Informações úteis</div><div class="svc-card-sub">Bem-vindos, leia antes de explorar</div></div>
       </div>
-      <!-- 2 colunas -->
-      <div class="services-grid" style="margin-bottom:0.75rem;">
-        <div class="svc-card" onclick="showModal('m-quartos')">
+      <!-- 2 colunas — drag para reordenar -->
+      <div class="services-grid" id="services-drag-grid" style="margin-bottom:0.75rem;">
+        <div class="svc-card" data-card-id="quartos" onclick="showModal('m-quartos')">
           <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&auto=format&fit=crop&q=75" alt="Quartos"/>
           <div class="svc-card-body"><div class="svc-card-label">Quartos</div><div class="svc-card-sub" id="quartos-count-sub">3 quartos</div></div>
         </div>
-        <div class="svc-card" onclick="showModal('m-sala')">
+        <div class="svc-card" data-card-id="sala" onclick="showModal('m-sala')">
           <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&auto=format&fit=crop&q=75" alt="Sala"/>
-          <div class="svc-card-body"><div class="svc-card-label">Sala de estar</div><div class="svc-card-sub">TV & lareira</div></div>
+          <div class="svc-card-body"><div class="svc-card-label">Sala de estar</div><div class="svc-card-sub">TV &amp; lareira</div></div>
         </div>
-        <div class="svc-card" onclick="showModal('m-cozinha')">
+        <div class="svc-card" data-card-id="cozinha" onclick="showModal('m-cozinha')">
           <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=400&auto=format&fit=crop&q=75" alt="Cozinha"/>
-          <div class="svc-card-body"><div class="svc-card-label">Cozinha</div><div class="svc-card-sub">Utensílios & eletros</div></div>
+          <div class="svc-card-body"><div class="svc-card-label">Cozinha</div><div class="svc-card-sub">Utensílios &amp; eletros</div></div>
         </div>
-        <div class="svc-card" onclick="showModal('m-wc')">
+        <div class="svc-card" data-card-id="wc" onclick="showModal('m-wc')">
           <img src="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=400&auto=format&fit=crop&q=75" alt="WC"/>
           <div class="svc-card-body"><div class="svc-card-label">WC</div><div class="svc-card-sub">WC + máquina de lavar</div></div>
         </div>
-        <div class="svc-card" onclick="showModal('m-piscina')">
+        <div class="svc-card" data-card-id="piscina" onclick="showModal('m-piscina')">
           <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=400&auto=format&fit=crop&q=75" alt="Piscina"/>
-          <div class="svc-card-body"><div class="svc-card-label">Piscina</div><div class="svc-card-sub">Regras & equipamento</div></div>
+          <div class="svc-card-body"><div class="svc-card-label">Piscina</div><div class="svc-card-sub">Regras &amp; equipamento</div></div>
         </div>
-        <div class="svc-card" onclick="showModal('m-churrasco')">
+        <div class="svc-card" data-card-id="churrasco" onclick="showModal('m-churrasco')">
           <img src="churrasco-real.jpg" alt="Churrasqueira"/>
           <div class="svc-card-body"><div class="svc-card-label">Churrasqueira</div><div class="svc-card-sub">Como utilizar</div></div>
         </div>
-        <div class="svc-card svc-card-full" onclick="showModal('m-exterior')" style="grid-column:1/-1;">
+        <div class="svc-card svc-card-full" data-card-id="exterior" onclick="showModal('m-exterior')" style="grid-column:1/-1;">
           <img id="exterior-card-img" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop&q=75" alt="Espaço exterior" style="height:110px;"/>
           <div class="svc-card-body"><div class="svc-card-label">Espaço exterior</div><div class="svc-card-sub">Jardim, terraço e vistas</div></div>
         </div>
@@ -2422,8 +2422,30 @@ function applyCasa(c) {
   if (c.pisc_json)  renderDynSection('pisc-dynamic', c.pisc_json, true);
   if (c.ext_json)   renderDynSection('ext-dynamic', c.ext_json, false);
   if (c.servicos_json) renderServicos(c.servicos_json);
+  // Build info accordion: start from info_json, then enrich/add items from individual API fields
   var infoJsonDefault = '[{"title":"Estacionamento","text":"O empreendimento possui estacionamento privado e gratuito, dotado de cancela automática, através da utilização do comando que lhe será fornecido no momento do check-in."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Água potável","text":"A água da torneira é potável e tratada, contudo recomenda-se o uso de água engarrafada para consumo."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior."},{"title":"Regras da casa","text":"Silêncio entre as 22h e as 08h. Animais permitidos, não entram na piscina. Proibido fumar dentro da casa."},{"title":"Reciclagem","text":"Verde=vidro · Azul=papel · Amarelo=plástico · Preto=indiferenciado. Contentores no exterior da propriedade."},{"title":"Quadro elétrico","text":"Corredor da entrada, armário branco à direita. Se a luz cair: desligue os aparelhos e levante o disjuntor falhado."}]';
-  renderInfoDyn(c.info_json || infoJsonDefault);
+  var infoItems;
+  try { infoItems = JSON.parse(c.info_json || infoJsonDefault); } catch(e) { infoItems = JSON.parse(infoJsonDefault); }
+  // Map of individual API fields → accordion title
+  var infoFieldMap = [
+    { key:'reg_silencio', title:'Regras da casa',
+      build: function(v){ return 'Silêncio: ' + v + (c.reg_animais ? '\nAnimais: ' + c.reg_animais : '') + (c.reg_tabaco ? '\nTabaco: ' + c.reg_tabaco : ''); } },
+    { key:'rec_verde', title:'Reciclagem',
+      build: function(){ return (c.rec_verde ? '🟢 Verde (vidro): ' + c.rec_verde + '\n' : '') + (c.rec_azul ? '🔵 Azul (papel): ' + c.rec_azul + '\n' : '') + (c.rec_amarelo ? '🟡 Amarelo (plástico): ' + c.rec_amarelo + '\n' : '') + (c.rec_preto ? '⚫ Preto (indiferenciado): ' + c.rec_preto : ''); } },
+    { key:'fus_como', title:'Quadro elétrico',
+      build: function(v){ return v; } }
+  ];
+  infoFieldMap.forEach(function(m) {
+    if (!c[m.key]) return;
+    var newText = m.build(c[m.key]);
+    if (!newText.trim()) return;
+    var found = false;
+    for (var i = 0; i < infoItems.length; i++) {
+      if (infoItems[i].title === m.title) { infoItems[i].text = newText; found = true; break; }
+    }
+    if (!found) infoItems.push({ title: m.title, text: newText });
+  });
+  renderInfoDyn(JSON.stringify(infoItems));
 
   // Churrasqueira utensílios (comma-separated → chips)
   if (c.churrasco_utens) {
@@ -3041,5 +3063,185 @@ function pedidoBicicletas() {
 <!-- ADMIN PANEL: redireciona para o backoffice com auto-login -->
 <!-- (iframe bloqueado pelo GitHub Pages — usamos redirect) -->
 
+<script>
+/* ── DRAG-TO-REORDER — cards da página inicial ────────────────────
+   Mostra um handle ⠿ no canto esquerdo de cada card ao entrar no
+   modo de ordenação. Toque longo (500ms) ou clique no handle inicia
+   o drag. Ordem guardada em localStorage como array de data-card-id.
+─────────────────────────────────────────────────────────────────── */
+(function() {
+  var STORE_KEY = 'yapp_card_order';
+  var grid = document.getElementById('services-drag-grid');
+  if (!grid) return;
+
+  // ── CSS do handle e estado drag ───────────────────────
+  var style = document.createElement('style');
+  style.textContent = [
+    '.svc-card{position:relative;}',
+    '.drag-handle{position:absolute;top:50%;left:0;transform:translateY(-50%);',
+    'width:24px;height:100%;display:none;align-items:center;justify-content:center;',
+    'cursor:grab;z-index:10;background:rgba(255,255,255,0.85);border-radius:var(--radius-sm) 0 0 var(--radius-sm);',
+    'touch-action:none;-webkit-user-select:none;user-select:none;}',
+    '.drag-handle svg{opacity:0.5;width:14px;height:14px;}',
+    '.drag-mode .drag-handle{display:flex;}',
+    '.drag-mode .svc-card{cursor:default;}',
+    '.drag-ghost{opacity:0.35;pointer-events:none;}',
+    '.drag-over{outline:2px dashed var(--forest);outline-offset:2px;}',
+    '#drag-mode-btn{position:fixed;bottom:80px;right:14px;z-index:300;',
+    'background:var(--forest);color:#fff;border:none;border-radius:50px;',
+    'padding:9px 16px;font-family:"DM Sans",sans-serif;font-size:.78rem;',
+    'font-weight:600;cursor:pointer;display:none;box-shadow:0 3px 10px rgba(0,0,0,.2);',
+    'display:flex;align-items:center;gap:6px;}',
+    '#drag-mode-btn svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;}'
+  ].join('');
+  document.head.appendChild(style);
+
+  // ── Botão para activar modo ordenação ─────────────────
+  var btn = document.createElement('button');
+  btn.id = 'drag-mode-btn';
+  btn.innerHTML = '<svg viewBox="0 0 24 24"><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg><span>Ordenar</span>';
+  document.body.appendChild(btn);
+
+  var dragMode = false;
+  function toggleDragMode() {
+    dragMode = !dragMode;
+    grid.classList.toggle('drag-mode', dragMode);
+    btn.querySelector('span').textContent = dragMode ? 'Concluído' : 'Ordenar';
+    btn.style.background = dragMode ? '#c0392b' : 'var(--forest)';
+  }
+  btn.addEventListener('click', toggleDragMode);
+
+  // Mostrar botão quando estamos na página casa e app pronta
+  function checkPage() {
+    var casaPage = document.getElementById('page-casa');
+    var isReady = document.body.classList.contains('app-ready');
+    if (casaPage && isReady) {
+      btn.style.display = casaPage.classList.contains('active') ? 'flex' : 'none';
+    } else {
+      btn.style.display = 'none';
+    }
+  }
+  // Observe page changes
+  setInterval(checkPage, 500);
+
+  // ── Adicionar handles a cada card ─────────────────────
+  function addHandles() {
+    var cards = grid.querySelectorAll('.svc-card');
+    cards.forEach(function(card) {
+      if (card.querySelector('.drag-handle')) return;
+      var handle = document.createElement('div');
+      handle.className = 'drag-handle';
+      handle.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>';
+      handle.setAttribute('draggable', 'false');
+      card.insertBefore(handle, card.firstChild);
+    });
+  }
+  addHandles();
+
+  // ── Drag state ─────────────────────────────────────────
+  var dragSrc = null;
+
+  function getCards() {
+    return Array.from(grid.querySelectorAll('.svc-card'));
+  }
+
+  function saveOrder() {
+    var order = getCards().map(function(c) { return c.getAttribute('data-card-id'); }).filter(Boolean);
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(order)); } catch(e) {}
+  }
+
+  function applyOrder() {
+    var saved;
+    try { saved = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch(e) { return; }
+    if (!saved || !saved.length) return;
+    var cards = getCards();
+    var map = {};
+    cards.forEach(function(c) { map[c.getAttribute('data-card-id')] = c; });
+    saved.forEach(function(id) {
+      if (map[id]) grid.appendChild(map[id]);
+    });
+    // append any cards not in saved order
+    cards.forEach(function(c) {
+      if (!saved.includes(c.getAttribute('data-card-id'))) grid.appendChild(c);
+    });
+  }
+  applyOrder();
+
+  // ── Mouse drag ────────────────────────────────────────
+  grid.addEventListener('dragstart', function(e) {
+    if (!dragMode) { e.preventDefault(); return; }
+    dragSrc = e.target.closest('.svc-card');
+    if (!dragSrc) return;
+    e.dataTransfer.effectAllowed = 'move';
+    setTimeout(function() { dragSrc.classList.add('drag-ghost'); }, 0);
+  });
+  grid.addEventListener('dragend', function() {
+    getCards().forEach(function(c) { c.classList.remove('drag-ghost','drag-over'); });
+    saveOrder();
+    dragSrc = null;
+  });
+  grid.addEventListener('dragover', function(e) {
+    if (!dragMode || !dragSrc) return;
+    e.preventDefault();
+    var target = e.target.closest('.svc-card');
+    if (!target || target === dragSrc) return;
+    getCards().forEach(function(c) { c.classList.remove('drag-over'); });
+    target.classList.add('drag-over');
+    var rect = target.getBoundingClientRect();
+    var mid = rect.top + rect.height / 2;
+    if (e.clientY < mid) grid.insertBefore(dragSrc, target);
+    else grid.insertBefore(dragSrc, target.nextSibling);
+  });
+
+  // Make cards draggable when in drag mode
+  grid.addEventListener('mousedown', function(e) {
+    var handle = e.target.closest('.drag-handle');
+    if (handle && dragMode) {
+      var card = handle.closest('.svc-card');
+      if (card) card.setAttribute('draggable', 'true');
+    }
+  });
+  grid.addEventListener('mouseup', function() {
+    getCards().forEach(function(c) { c.setAttribute('draggable', 'false'); });
+  });
+
+  // ── Touch drag ────────────────────────────────────────
+  var touchCard = null, touchStartY = 0, touchStartX = 0;
+  grid.addEventListener('touchstart', function(e) {
+    if (!dragMode) return;
+    var handle = e.target.closest('.drag-handle');
+    if (!handle) return;
+    touchCard = handle.closest('.svc-card');
+    touchStartY = e.touches[0].clientY;
+    touchStartX = e.touches[0].clientX;
+    touchCard.classList.add('drag-ghost');
+    e.preventDefault();
+  }, { passive: false });
+
+  grid.addEventListener('touchmove', function(e) {
+    if (!dragMode || !touchCard) return;
+    e.preventDefault();
+    var t = e.touches[0];
+    var el = document.elementFromPoint(t.clientX, t.clientY);
+    var target = el ? el.closest('.svc-card') : null;
+    if (!target || target === touchCard) return;
+    getCards().forEach(function(c) { c.classList.remove('drag-over'); });
+    target.classList.add('drag-over');
+    var rect = target.getBoundingClientRect();
+    var mid = rect.top + rect.height / 2;
+    if (t.clientY < mid) grid.insertBefore(touchCard, target);
+    else grid.insertBefore(touchCard, target.nextSibling);
+  }, { passive: false });
+
+  grid.addEventListener('touchend', function() {
+    if (!touchCard) return;
+    touchCard.classList.remove('drag-ghost');
+    getCards().forEach(function(c) { c.classList.remove('drag-over'); });
+    saveOrder();
+    touchCard = null;
+  });
+
+})();
+</script>
 </body>
 </html>
