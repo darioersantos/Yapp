@@ -3106,6 +3106,7 @@ function saveTema() {
 
 // ── NOTIFICAÇÕES ─────────────────────────────────────────────────
 var _notifHistory = [];
+var _lastNotifTs = '';
 
 document.getElementById('n-dest').addEventListener('change', function() {
   var wrap = document.getElementById('n-user-wrap');
@@ -3184,13 +3185,16 @@ function renderNotifHistory() {
     el.innerHTML = '<div style="font-size:.82rem;color:var(--txl);">Sem notificações enviadas.</div>';
     return;
   }
-  el.innerHTML = _notifHistory.slice(0,10).map(function(n) {
+  el.innerHTML = _notifHistory.slice(0,10).map(function(n, i) {
     var d = new Date(n.ts);
     var ds = d.toLocaleDateString('pt-PT') + ' ' + d.toLocaleTimeString('pt-PT', {hour:'2-digit',minute:'2-digit'});
     return '<div style="border-bottom:1px solid var(--bd);padding:.6rem 0;">'
-      + '<div style="display:flex;justify-content:space-between;align-items:center;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;">'
       + '<strong style="font-size:.85rem;">' + esc(n.titulo) + '</strong>'
-      + '<span style="font-size:.72rem;color:var(--txl);">' + ds + '</span></div>'
+      + '<div style="display:flex;align-items:center;gap:.5rem;flex-shrink:0;">'
+      + '<span style="font-size:.72rem;color:var(--txl);">' + ds + '</span>'
+      + '<button onclick="deleteNotif(' + i + ')" title="Eliminar" style="background:none;border:1px solid rgba(192,57,43,0.3);border-radius:6px;cursor:pointer;padding:2px 7px;color:#c0392b;font-size:.75rem;line-height:1.4;">✕</button>'
+      + '</div></div>'
       + '<div style="font-size:.78rem;color:var(--txm);margin-top:3px;">' + esc(n.msg) + '</div>'
       + '<div style="font-size:.72rem;color:var(--txl);margin-top:2px;">Para: ' + (n.dest === 'all' ? 'Todos' : n.dest === 'custom' ? n.user : n.dest) + '</div>'
       + '</div>';
@@ -3198,8 +3202,48 @@ function renderNotifHistory() {
 }
 
 // Load notif templates from API config
+function deleteNotif(idx) {
+  var n = _notifHistory[idx];
+  if (!n) return;
+  // Check if this is the active notification (matches notif_ts in sheet)
+  var isActive = n.ts && n.ts === _lastNotifTs;
+  if (isActive) {
+    // Clear from Sheets — set notif_ativo to false
+    showLoading('A eliminar...');
+    apiWrite({
+      action: 'saveConfig',
+      notif_titulo: '',
+      notif_msg: '',
+      notif_url: '',
+      notif_dest: '',
+      notif_user: '',
+      notif_ts: '',
+      notif_ativo: 'false'
+    }, function() {
+      hideLoading();
+      _notifHistory.splice(idx, 1);
+      renderNotifHistory();
+      toast('✓ Notificação eliminada.');
+    });
+  } else {
+    // Just remove from local history (older notifications aren't in Sheet)
+    _notifHistory.splice(idx, 1);
+    renderNotifHistory();
+    toast('✓ Removido do histórico.');
+  }
+}
+
 function fillNotifTemplates(c) {
   function sv(id, key) { var el=document.getElementById(id); if(el && c[key]) el.value=c[key]; }
+  _lastNotifTs = c.notif_ts || '';
+  // Populate history from active notification in Sheets if not already there
+  if (c.notif_titulo && c.notif_ts) {
+    var already = _notifHistory.some(function(n){ return n.ts === c.notif_ts; });
+    if (!already) {
+      _notifHistory.unshift({ titulo:c.notif_titulo, msg:c.notif_msg||'', url:c.notif_url||'', dest:c.notif_dest||'all', user:c.notif_user||'', ts:c.notif_ts });
+      renderNotifHistory();
+    }
+  }
   sv('n-auto-co1', 'notif_tmpl_co1');
   sv('n-auto-co0', 'notif_tmpl_co0');
   sv('n-auto-bv',  'notif_tmpl_bv');
