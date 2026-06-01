@@ -2377,6 +2377,7 @@ function loadAll() {
     }, 10000);
     if (d.config) { DB.config = d.config; fillConfig(d.config); fillNotifTemplates(d.config); }
     if (d.casa)   { fillCasa(d.casa); DB.servicos = d.casa; }
+    if (d.contacto) { fillContacto(d.contacto); }
     if (d.patrocinadores && d.patrocinadores.length) {
       _pats = d.patrocinadores.map(function(p) {
         return { nome:p.nome||'', badge:p.badge||'', cta:p.cta||'', url:p.url||'#', img:p.img||'' };
@@ -2423,6 +2424,16 @@ function parseGuests(data) {
 }
 
 // ── FILL CONFIG FIELDS ───────────────────────────
+function fillContacto(c) {
+  if (!c) return;
+  function s(id, val) { var el=document.getElementById(id); if(el && val!==undefined && val!=='') el.value=val; }
+  s('ct-nome', c.proprietario_nome);
+  s('ct-wa',   c.proprietario_whatsapp);
+  s('ct-tel',  c.proprietario_telefone);
+  s('ct-email',c.proprietario_email);
+  s('ct-prop', c.prop_nome || c.proprietario_nome);
+}
+
 function fillConfig(c) {
   c = c || DB.config;
   function s(id, key) { var el = document.getElementById(id); if (el && c[key] !== undefined) el.value = c[key]; }
@@ -2433,7 +2444,7 @@ function fillConfig(c) {
   s('c-aviso-txt','aviso_texto'); s('c-codesc','codigo_desconto');
   s('c-ig','instagram_url'); s('c-fb','facebook_url'); s('c-grev','google_reviews_url');
   s('w-ssid1','wifi_ssid'); s('w-pass1','wifi_pass'); s('w-ssid2','wifi_ssid2'); s('w-pass2','wifi_pass2');
-  s('ct-nome','proprietario_nome'); s('ct-wa','proprietario_whatsapp'); s('ct-tel','proprietario_telefone'); s('ct-email','proprietario_email');
+  // contacto fields loaded from Contacto sheet via fillContacto() — not from Config
   var av = document.getElementById('c-aviso-ativo');
   if (av && c['aviso_ativo'] !== undefined) av.value = String(c['aviso_ativo']);
   if (c['propriedade_nome']) {
@@ -2615,7 +2626,6 @@ function saveSection(sec) {
     'servicos': { action:'saveCasa', svc_json:dynGet('svc') },
     'contacto': { action:'saveContacto',
       proprietario_nome:v('ct-nome'),
-      prop_nome:v('ct-nome'),
       proprietario_whatsapp:v('ct-wa'),
       proprietario_telefone:v('ct-tel'),
       proprietario_email:v('ct-email'),
