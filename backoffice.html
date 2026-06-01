@@ -565,7 +565,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
             <source id="prev-splash-vid-src" src="" type="video/mp4"/>
           </video>
           <div style="flex:1;">
-            <input class="photo-url" id="c-splash-vid" placeholder="URL do vídeo .mp4 (Google Drive, Dropbox, etc.)" oninput="(function(v){var s=document.getElementById('prev-splash-vid-src');if(s){s.src=v;document.getElementById('prev-splash-vid').load();document.getElementById('prev-splash-vid').play();}})(this.value)"/>
+            <input class="photo-url" id="c-splash-vid" placeholder="URL do vídeo .mp4 (Google Drive, Dropbox, etc.)" oninput="(function(v){var s=document.getElementById('prev-splash-vid-src');if(s){s.src=v;var v2=document.getElementById('prev-splash-vid');v2.load();var p=v2.play();if(p&&p.catch)p.catch(function(){});}})(this.value)"/>
             <div class="photo-hint">URL directo do ficheiro .mp4. Para Google Drive: partilha como "qualquer pessoa com o link" e usa o link directo.</div>
           </div>
         </div>
@@ -2013,7 +2013,8 @@ function renderReceitas() {
 var _dynData = {}; // { sectionKey: [{title, text}] }
 
 function dynLoad(key, jsonStr) {
-  try { _dynData[key] = JSON.parse(jsonStr || '[]'); } catch(e) { _dynData[key] = []; }
+  if (!jsonStr) { _dynData[key] = [{title:'',text:''}]; dynRender(key); return; }
+  try { _dynData[key] = JSON.parse(jsonStr); } catch(e) { _dynData[key] = []; }
   if (!_dynData[key].length) _dynData[key] = [{title:'',text:''}];
   dynRender(key);
 }
@@ -2365,7 +2366,7 @@ function loadAll() {
       if (!err && nd && nd.data && nd.data.length) { DB.newsletter = nd.data; renderNewsletter(); }
     }, 10000);
     if (d.config) { DB.config = d.config; fillConfig(d.config); fillNotifTemplates(d.config); }
-    if (d.casa)   fillCasa(d.casa);
+    if (d.casa)   { fillCasa(d.casa); DB.servicos = d.casa; }
     if (d.patrocinadores && d.patrocinadores.length) {
       _pats = d.patrocinadores.map(function(p) {
         return { nome:p.nome||'', badge:p.badge||'', cta:p.cta||'', url:p.url||'#', img:p.img||'' };
@@ -2394,7 +2395,7 @@ function loadAll() {
       document.getElementById('save-restaurantes-btn').style.display = 'inline-flex';
     }
     updateDashboard();
-    loadReservas();
+    try { loadReservas(); } catch(e) { console.error('loadReservas error:', e); }
     renderCalendar();
     } catch(fillErr) {
       console.error('fillAll error:', fillErr);
