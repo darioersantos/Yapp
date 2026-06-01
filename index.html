@@ -1021,6 +1021,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
       <!-- Logout button with safe area for Safari bottom bar -->
       <div style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom, 20px));margin-top:.5rem;">
         <button onclick="if(confirm('Terminar sessão?')){ clearSession(); location.reload(); }" style="width:100%;background:transparent;border:1px solid rgba(192,57,43,0.3);color:#c0392b;border-radius:50px;padding:11px;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;">Terminar sessão</button>
+        <div id="session-guest-name" style="text-align:center;margin-top:.6rem;font-size:.75rem;color:var(--text-light);opacity:.6;"></div>
       </div>
       <a href="https://yapp.pt" target="_blank" class="yapp-footer" style="display:block;text-decoration:none;">
         <svg width="90" height="66" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto 6px;">
@@ -1436,6 +1437,11 @@ function goToApp() {
   document.getElementById('app').style.display = 'block';
   setTimeout(function(){ document.body.classList.add('app-ready'); }, 50);
   document.getElementById('bottom-nav').style.display = 'flex';
+
+  // Show guest name below logout button
+  var s = getSession();
+  var nameEl = document.getElementById('session-guest-name');
+  if (nameEl && s) nameEl.textContent = s.name || s.user || '';
 
   // Apply saved theme immediately before API responds
   var _st = localStorage.getItem('yapp_tema') || 'natureza';
