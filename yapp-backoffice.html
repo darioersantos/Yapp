@@ -379,46 +379,46 @@ body{font-family:'DM Sans',sans-serif;background:#e8f0fb;color:var(--tx);min-hei
     <nav class="sbnav">
 
       <div class="sbsec">Gestão</div>
-      <div class="sbi" onclick="go('ocupacao',this)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendário</div>
-      <div class="sbi" onclick="go('receitas',this)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="8" cy="15" r="1" fill="currentColor"/><circle cx="12" cy="15" r="1" fill="currentColor"/></svg>Reservas</div>
-      <div class="sbi" onclick="go('financeiro',this)"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Receitas</div>
+      <div class="sbi" data-sec="ocupacao" draggable="true" onclick="go('ocupacao',this)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendário</div>
+      <div class="sbi" data-sec="receitas" draggable="true" onclick="go('receitas',this)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="8" cy="15" r="1" fill="currentColor"/><circle cx="12" cy="15" r="1" fill="currentColor"/></svg>Reservas</div>
+      <div class="sbi" data-sec="financeiro" draggable="true" onclick="go('financeiro',this)"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Receitas</div>
       <div class="sbsec">Geral</div>
       <div class="sbi on" onclick="go('dashboard',this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
 
       <div class="sbsec">Utilizadores app</div>
-      <div class="sbi" onclick="go('hospedes',this)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Utilizadores app</div>
-      <div class="sbi" onclick="go('notificacoes',this)"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>Notificações</div>
+      <div class="sbi" data-sec="hospedes" draggable="true" onclick="go('hospedes',this)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Utilizadores app</div>
+      <div class="sbi" data-sec="notificacoes" draggable="true" onclick="go('notificacoes',this)"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>Notificações</div>
 
       <div class="sbsec">Propriedade</div>
-      <div class="sbi" onclick="go('info-uteis',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Informações úteis</div>
-      <div class="sbi" onclick="go('config',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Info & Splash</div>
-      <div class="sbi" onclick="go('wifi',this)"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>Wi-Fi</div>
-      <div class="sbi" onclick="go('casa-regras',this)"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Regras & Check-out</div>
-      <div class="sbi" onclick="go('servicos',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Serviços</div>
+      <div class="sbi" data-sec="info-uteis" draggable="true" onclick="go('info-uteis',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Informações úteis</div>
+      <div class="sbi" data-sec="config" draggable="true" onclick="go('config',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Info & Splash</div>
+      <div class="sbi" data-sec="wifi" draggable="true" onclick="go('wifi',this)"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>Wi-Fi</div>
+      <div class="sbi" data-sec="casa-regras" draggable="true" onclick="go('casa-regras',this)"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Regras & Check-out</div>
+      <div class="sbi" data-sec="servicos" draggable="true" onclick="go('servicos',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Serviços</div>
 
       <div class="sbsec">Divisões</div>
-      <div class="sbi" onclick="go('casa-quartos',this)"><svg viewBox="0 0 24 24"><path d="M2 4v16M22 4v16M2 12h20M12 4v8"/></svg>Quartos</div>
-      <div class="sbi" onclick="go('casa-wc',this)"><svg viewBox="0 0 24 24"><path d="M4 4h16v4H4zM4 12h16M4 20h16"/></svg>Casa de banho</div>
-      <div class="sbi" onclick="go('casa-cozinha',this)"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2l-3 8h3"/></svg>Cozinha & Churrasqueira</div>
-      <div class="sbi" onclick="go('casa-sala',this)"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>Sala & TV</div>
-      <div class="sbi" onclick="go('casa-piscina',this)"><svg viewBox="0 0 24 24"><path d="M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg>Piscina & Exterior</div>
+      <div class="sbi" data-sec="casa-quartos" draggable="true" onclick="go('casa-quartos',this)"><svg viewBox="0 0 24 24"><path d="M2 4v16M22 4v16M2 12h20M12 4v8"/></svg>Quartos</div>
+      <div class="sbi" data-sec="casa-wc" draggable="true" onclick="go('casa-wc',this)"><svg viewBox="0 0 24 24"><path d="M4 4h16v4H4zM4 12h16M4 20h16"/></svg>Casa de banho</div>
+      <div class="sbi" data-sec="casa-cozinha" draggable="true" onclick="go('casa-cozinha',this)"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2l-3 8h3"/></svg>Cozinha & Churrasqueira</div>
+      <div class="sbi" data-sec="casa-sala" draggable="true" onclick="go('casa-sala',this)"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>Sala & TV</div>
+      <div class="sbi" data-sec="casa-piscina" draggable="true" onclick="go('casa-piscina',this)"><svg viewBox="0 0 24 24"><path d="M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg>Piscina & Exterior</div>
 
       <div class="sbsec">Descobrir</div>
-      <div class="sbi" onclick="go('atracoes',this)"><svg viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Atrações</div>
-      <div class="sbi" onclick="go('restaurantes',this)"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Restaurantes</div>
-      <div class="sbi" onclick="go('contacto',this)"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.07 1.17 2 2 0 012 .92h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>Contactos</div>
-      <div class="sbi" onclick="go('patrocinadores',this)"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Patrocinadores</div>
+      <div class="sbi" data-sec="atracoes" draggable="true" onclick="go('atracoes',this)"><svg viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Atrações</div>
+      <div class="sbi" data-sec="restaurantes" draggable="true" onclick="go('restaurantes',this)"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Restaurantes</div>
+      <div class="sbi" data-sec="contacto" draggable="true" onclick="go('contacto',this)"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.07 1.17 2 2 0 012 .92h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>Contactos</div>
+      <div class="sbi" data-sec="patrocinadores" draggable="true" onclick="go('patrocinadores',this)"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Patrocinadores</div>
 
       <div class="sbsec">Dados</div>
-      <div class="sbi" onclick="go('feedbacks',this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Feedbacks</div>
-      <div class="sbi" onclick="go('newsletter',this)"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Newsletter</div>
+      <div class="sbi" data-sec="feedbacks" draggable="true" onclick="go('feedbacks',this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Feedbacks</div>
+      <div class="sbi" data-sec="newsletter" draggable="true" onclick="go('newsletter',this)"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Newsletter</div>
 
 
       <div class="sbsec">Tema</div>
-      <div class="sbi" onclick="go('tema',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>Tema visual</div>
+      <div class="sbi" data-sec="tema" draggable="true" onclick="go('tema',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>Tema visual</div>
 
       <div class="sbsec">Ajuda</div>
-      <div class="sbi" onclick="go('tutorial',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>Tutorial</div>
+      <div class="sbi" data-sec="tutorial" draggable="true" onclick="go('tutorial',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>Tutorial</div>
 
     </nav>
     <div class="sbfoot">
@@ -3270,6 +3270,106 @@ var tt;
 function toast(msg) { var el = document.getElementById('toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(tt); tt = setTimeout(function() { el.classList.remove('show'); }, 3500); }
 function showLoading(msg) { var lo = document.getElementById('loading'); lo.classList.add('show'); if (msg) document.getElementById('loading-txt').textContent = msg; }
 function hideLoading() { document.getElementById('loading').classList.remove('show'); }
+</script>
+
+<style>
+.sbi[draggable]{cursor:grab;}
+.sbi.drag-over-top{border-top:2px solid var(--sb-accent,#3b7dd8)!important;}
+.sbi.drag-over-bot{border-bottom:2px solid var(--sb-accent,#3b7dd8)!important;}
+.sbi.dragging{opacity:0.35;}
+</style>
+<script>
+/* ── DRAG-TO-REORDER sidebar nav ─────────────────────────────────── */
+(function(){
+  var NAV_ORDER_KEY = 'yapp_bo_nav_order';
+  var nav = document.querySelector('.sbnav');
+  if (!nav) return;
+
+  var dragEl = null;
+
+  // Apply saved order on load
+  function applyOrder() {
+    var saved; try { saved = JSON.parse(localStorage.getItem(NAV_ORDER_KEY)||'[]'); } catch(e){ return; }
+    if (!saved || !saved.length) return;
+    saved.forEach(function(sec) {
+      var el = nav.querySelector('.sbi[data-sec="'+sec+'"]');
+      if (el) nav.appendChild(el);
+    });
+  }
+  applyOrder();
+
+  function saveOrder() {
+    var order = Array.from(nav.querySelectorAll('.sbi[data-sec]')).map(function(el){ return el.getAttribute('data-sec'); });
+    try { localStorage.setItem(NAV_ORDER_KEY, JSON.stringify(order)); } catch(e){}
+  }
+
+  function clearStates() {
+    nav.querySelectorAll('.sbi').forEach(function(el){
+      el.classList.remove('dragging','drag-over-top','drag-over-bot');
+    });
+  }
+
+  nav.addEventListener('dragstart', function(e) {
+    var el = e.target.closest('.sbi[data-sec]');
+    if (!el) return;
+    dragEl = el;
+    e.dataTransfer.effectAllowed = 'move';
+    setTimeout(function(){ el.classList.add('dragging'); }, 0);
+  });
+
+  nav.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    if (!dragEl) return;
+    var target = e.target.closest('.sbi[data-sec]');
+    clearStates();
+    dragEl.classList.add('dragging');
+    if (!target || target === dragEl) return;
+    var rect = target.getBoundingClientRect();
+    if (e.clientY < rect.top + rect.height / 2) {
+      target.classList.add('drag-over-top');
+      nav.insertBefore(dragEl, target);
+    } else {
+      target.classList.add('drag-over-bot');
+      nav.insertBefore(dragEl, target.nextSibling);
+    }
+  });
+
+  nav.addEventListener('dragend', function() {
+    clearStates();
+    saveOrder();
+    dragEl = null;
+  });
+
+  // Touch drag
+  var touchEl = null;
+  nav.addEventListener('touchstart', function(e) {
+    var el = e.target.closest('.sbi[data-sec]');
+    if (!el) return;
+    touchEl = el;
+    el.classList.add('dragging');
+  }, {passive:true});
+
+  nav.addEventListener('touchmove', function(e) {
+    if (!touchEl) return;
+    e.preventDefault();
+    var t = e.touches[0];
+    var under = document.elementFromPoint(t.clientX, t.clientY);
+    var target = under ? under.closest('.sbi[data-sec]') : null;
+    clearStates();
+    touchEl.classList.add('dragging');
+    if (!target || target === touchEl) return;
+    var rect = target.getBoundingClientRect();
+    if (t.clientY < rect.top + rect.height/2) nav.insertBefore(touchEl, target);
+    else nav.insertBefore(touchEl, target.nextSibling);
+  }, {passive:false});
+
+  nav.addEventListener('touchend', function() {
+    if (!touchEl) return;
+    clearStates();
+    saveOrder();
+    touchEl = null;
+  });
+})();
 </script>
 </body>
 </html>
