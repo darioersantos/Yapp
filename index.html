@@ -154,119 +154,43 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
 .parallax-section{transform:translateY(0);transition:transform 0.1s linear;}
 
 /* ── DESKTOP layout ────────────────────────────────────────────── */
-/* ── DESKTOP: iPhone mockup ─────────────────────────────────────── */
+/* ── DESKTOP layout ────────────────────────────────────────────── */
 @media(min-width:768px){
-  html, body{
-    background:#0a0f0a;
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-  }
-  body::before{
-    content:'';
-    position:fixed;inset:0;z-index:0;pointer-events:none;
-    background:
-      radial-gradient(ellipse 80% 60% at 20% 40%, rgba(45,74,30,0.45) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 80% at 80% 60%, rgba(26,58,14,0.3) 0%, transparent 60%);
-  }
+  body{background:#1e2d14;}
 
-  /* Splash escondida */
-  #splash{ display:none!important; }
-
-  /* Wrapper iPhone — posicionado pelo body flexbox */
-  #app-iphone-wrapper{
-    position:relative;
-    width:393px;
-    height:852px;
-    flex-shrink:0;
-    z-index:10;
+  #splash{
+    position:fixed;top:0;left:0;
+    width:40%;height:100vh;z-index:1;
   }
+  #splash .hero-content{padding:2rem 2.5rem 3rem;}
+  #splash .hero-title{font-size:3.5rem;}
+  #splash .hero-top{padding:2rem 2rem;}
 
-  /* Moldura exterior */
-  #app-iphone-wrapper::before{
-    content:'';
-    position:absolute;inset:-12px;
-    background:#1c1c1e;
-    border-radius:62px;
-    box-shadow:
-      0 0 0 2px #3a3a3a,
-      0 0 0 3px #222,
-      0 40px 100px rgba(0,0,0,0.9),
-      0 10px 30px rgba(0,0,0,0.6),
-      inset 0 0 0 1px rgba(255,255,255,0.07);
-    z-index:-1;
-  }
-
-  /* Dynamic Island */
-  #app-iphone-wrapper::after{
-    content:'';
-    position:absolute;
-    top:8px;left:50%;transform:translateX(-50%);
-    width:118px;height:34px;
-    background:#0a0a0a;
-    border-radius:20px;
-    z-index:200;
-  }
-
-  /* App dentro da moldura */
   #app{
-    width:393px;
-    height:852px;
-    overflow-y:auto;
-    overflow-x:hidden;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-    border-radius:50px;
-    position:relative;
-  }
-  #app::-webkit-scrollbar{ display:none; }
-
-  /* Login */
-  #login-screen{
-    border-radius:50px;
-    overflow:hidden;
+    margin-left:40%;
+    padding-bottom:0;
+    min-height:100vh;
+    background:var(--cream);
+    position:relative;z-index:2;
+    box-shadow:-6px 0 40px rgba(0,0,0,0.35);
   }
 
-  /* Botões laterais */
-  #app-btn-vol{
-    position:absolute;
-    left:-16px;top:150px;
-    width:4px;height:36px;
-    background:#2a2a2a;
-    border-radius:3px 0 0 3px;
-    box-shadow:0 52px 0 #2a2a2a, 0 100px 0 #2a2a2a;
-  }
-  #app-btn-pwr{
-    position:absolute;
-    right:-16px;top:220px;
-    width:4px;height:70px;
-    background:#2a2a2a;
-    border-radius:0 3px 3px 0;
-  }
+  .nav-bar{position:sticky;top:0;border-radius:0;z-index:100;}
 
-  /* Fixed elements */
-  #bottom-nav{ position:absolute;bottom:0;left:0;right:0;width:auto; }
-  #bottom-nav.hidden-nav{ transform:translateY(100%); }
-  .modal-overlay{ position:absolute;inset:0; }
-  #notif-banner,#inapp-notif{ position:absolute;top:0;left:0;right:0; }
+  .page{min-height:calc(100vh - 60px);}
+  .section{padding:2rem 2.5rem 1.5rem;max-width:580px;margin:0 auto;}
 
-  /* YAPP branding à esquerda */
-  #desktop-yapp-brand{
-    position:fixed;
-    left:calc(50vw - 393px/2 - 60px);
-    transform:translateX(-100%);
-    top:50%;
-    margin-top:-120px;
-    z-index:20;
-    text-align:right;
+  #page-meteo{padding:0!important;}
+  #meteo-full{height:calc(100vh - 60px);}
+
+  #atracoes-dynamic,
+  #restaurantes-dynamic{
+    display:grid;grid-template-columns:1fr 1fr;gap:.75rem;
   }
+  #atracoes-dynamic .img-card,
+  #restaurantes-dynamic .img-card{margin-bottom:0;}
 
-  .page{ min-height:calc(852px - 60px); }
-  #page-meteo{ padding:0!important; }
-  #meteo-full{ height:calc(852px - 60px); }
-  .services-grid{ grid-template-columns:1fr 1fr; }
+  .services-grid{grid-template-columns:1fr 1fr;}
 }
 .section-tag{font-size:10px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;color:var(--sage);margin-bottom:5px;}
 .section-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--forest);line-height:1.15;}
@@ -536,10 +460,72 @@ body.aviso-active #notif-banner{top:2.2rem;}
 
 </head>
 <body>
-<!-- Desktop iPhone wrapper -->
-<div id="app-iphone-wrapper">
-  <div id="app-btn-vol"></div>
-  <div id="app-btn-pwr"></div>
+
+<!-- ── DESKTOP LANDING — só visível em ecrãs >= 768px ─────────────── -->
+<div id="desktop-only">
+  <style>
+    #desktop-only{font-family:'DM Sans',sans-serif;}
+    .do-bg{position:absolute;inset:0;background:
+      radial-gradient(ellipse 60% 80% at 10% 50%, rgba(42,74,28,0.6) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 60% at 90% 30%, rgba(26,58,14,0.4) 0%, transparent 50%),
+      linear-gradient(160deg,#0d1a0a 0%,#111d0c 40%,#0a150a 100%);z-index:0;}
+    .do-content{position:relative;z-index:1;display:flex;align-items:center;gap:80px;max-width:1100px;padding:0 60px;}
+    .do-left{flex:1;max-width:480px;}
+    .do-right{flex:0 0 auto;display:flex;gap:24px;align-items:flex-end;}
+    .do-logo{display:flex;align-items:center;gap:12px;margin-bottom:48px;}
+    .do-logo-text{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.5rem;font-weight:600;color:#fff;letter-spacing:.06em;}
+    .do-headline{font-family:'Cormorant Garamond',Georgia,serif;font-size:3.6rem;font-weight:600;color:#fff;line-height:1.12;margin:0 0 20px;letter-spacing:-.01em;}
+    .do-headline em{font-style:normal;color:#a8c97a;}
+    .do-sub{font-size:.95rem;color:rgba(255,255,255,0.5);line-height:1.75;margin:0 0 40px;max-width:380px;}
+    .do-badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:48px;}
+    .do-badge{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:50px;padding:7px 16px;font-size:.75rem;color:rgba(255,255,255,0.6);letter-spacing:.04em;}
+    .do-badge.green{background:rgba(168,201,122,0.1);border-color:rgba(168,201,122,0.3);color:#a8c97a;}
+    .do-cta{display:flex;align-items:center;gap:20px;}
+    .do-qr{width:84px;height:84px;background:#fff;border-radius:12px;padding:6px;flex-shrink:0;}
+    .do-qr img{width:100%;height:100%;display:block;}
+    .do-cta-text{font-size:.78rem;color:rgba(255,255,255,0.45);line-height:1.6;}
+    .do-cta-text strong{display:block;color:rgba(255,255,255,0.8);font-size:.88rem;margin-bottom:4px;}
+    .do-phone{width:220px;height:476px;background:#1c1c1e;border-radius:36px;box-shadow:0 0 0 1.5px #3a3a3a,0 0 0 8px #1a1a1a,0 0 0 10px #333,0 40px 80px rgba(0,0,0,0.8),0 10px 30px rgba(0,0,0,0.5);overflow:hidden;position:relative;flex-shrink:0;}
+    .do-phone::before{content:'';position:absolute;top:8px;left:50%;transform:translateX(-50%);width:80px;height:22px;background:#0a0a0a;border-radius:14px;z-index:10;}
+    .do-phone img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;}
+    .do-phone.b{width:190px;height:412px;margin-bottom:32px;opacity:0.7;filter:brightness(0.75);}
+    .do-phone.c{width:190px;height:412px;margin-bottom:-32px;opacity:0.55;filter:brightness(0.6);}
+    @keyframes fu{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    .do-logo{animation:fu .6s ease both;}
+    .do-headline{animation:fu .7s .1s ease both;}
+    .do-sub{animation:fu .7s .2s ease both;}
+    .do-badges{animation:fu .7s .3s ease both;}
+    .do-cta{animation:fu .7s .4s ease both;}
+    .do-right{animation:fu .9s .15s ease both;}
+  </style>
+  <div class="do-bg"></div>
+  <div class="do-content">
+    <div class="do-left">
+      <div class="do-logo">
+        <svg width="42" height="30" viewBox="0 0 220 158" fill="none"><circle cx="65" cy="95" r="62" fill="#4da6ff"/><circle cx="115" cy="60" r="50" fill="#4da6ff"/><circle cx="170" cy="75" r="45" fill="#4da6ff"/><circle cx="155" cy="108" r="42" fill="#4da6ff"/></svg>
+        <span class="do-logo-text">YAPP</span>
+      </div>
+      <h1 class="do-headline">O guia digital<br>do seu <em>alojamento</em><br>no bolso dos hóspedes.</h1>
+      <p class="do-sub">Uma app personalizada com as informações da casa, dicas locais, serviços e contacto directo. Os hóspedes acedem por QR Code no check-in, sem instalar nada.</p>
+      <div class="do-badges">
+        <span class="do-badge green">Disponível apenas em mobile</span>
+        <span class="do-badge">Sem instalação</span>
+        <span class="do-badge">Personalizado para si</span>
+      </div>
+      <div class="do-cta">
+        <div class="do-qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&format=png&data=https%3A%2F%2Fdarioersantos.github.io%2FYapp%2F" alt="QR"/></div>
+        <div class="do-cta-text"><strong>Aponte a câmara do telemóvel</strong>Leia o QR Code para abrir a<br>demonstração no seu telemóvel.</div>
+      </div>
+    </div>
+    <div class="do-right">
+      <div class="do-phone b"><img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=440&auto=format&fit=crop&q=80" alt=""/></div>
+      <div class="do-phone"><img src="https://lh3.googleusercontent.com/d/1xaFoVQGstwyBgZWibK6tnwISXRajS7oL" alt="Casa de Paros"/></div>
+      <div class="do-phone c"><img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=440&auto=format&fit=crop&q=80" alt=""/></div>
+    </div>
+  </div>
+</div>
+<!-- ── FIM DESKTOP LANDING ───────────────────────────────────────── -->
+
 <script>
 (function(){
   try {
@@ -3185,16 +3171,6 @@ function pedidoBicicletas() {
   </div>
 </div>
 
-
-</div><!-- /app-iphone-wrapper -->
-
-<!-- YAPP branding desktop -->
-<div id="desktop-yapp-brand">
-  <div style="font-family:Georgia,serif;color:rgba(255,255,255,0.85);font-size:3rem;font-weight:700;letter-spacing:-0.02em;line-height:1;">YAPP</div>
-  <div style="width:36px;height:2px;background:rgba(168,201,122,0.6);margin:14px 0 14px auto;border-radius:2px;"></div>
-  <div style="color:rgba(168,201,122,0.75);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px;">Guia Digital</div>
-  <div style="color:rgba(255,255,255,0.35);font-size:.72rem;line-height:1.7;">Para alojamento local</div>
-</div>
 
 </body>
 </html>
