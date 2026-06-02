@@ -2,14 +2,17 @@
 <html>
 <head>
 <meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+</head>
+<body>
 <script>
-var mobile = window.innerWidth < 768 || /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-if (mobile) {
-  window.location.replace('./app.html');
+var ua = navigator.userAgent || '';
+var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua);
+if (isMobile) {
+  window.location.href = 'app.html';
 } else {
-  window.location.replace('./landing.html');
+  window.location.href = 'landing.html';
 }
 </script>
-</head>
-<body></body>
+</body>
 </html>
