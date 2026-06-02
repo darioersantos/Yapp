@@ -156,11 +156,7 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
 /* ── DESKTOP layout ────────────────────────────────────────────── */
 /* ── DESKTOP: iPhone mockup ─────────────────────────────────────── */
 @media(min-width:768px){
-
-  #splash{ display:none!important; }
-
-  html{ background:#0a0f0a; }
-  body{
+  html, body{
     background:#0a0f0a;
     min-height:100vh;
     display:flex;
@@ -168,65 +164,53 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
     justify-content:center;
     overflow:hidden;
   }
-
   body::before{
     content:'';
-    position:fixed;inset:0;
+    position:fixed;inset:0;z-index:0;pointer-events:none;
     background:
       radial-gradient(ellipse 80% 60% at 20% 40%, rgba(45,74,30,0.45) 0%, transparent 60%),
       radial-gradient(ellipse 60% 80% at 80% 60%, rgba(26,58,14,0.3) 0%, transparent 60%);
-    pointer-events:none;z-index:0;
   }
 
-  /* Moldura iPhone */
-  #iphone-frame{
+  /* Splash escondida */
+  #splash{ display:none!important; }
+
+  /* Wrapper iPhone — posicionado pelo body flexbox */
+  #app-iphone-wrapper{
     position:relative;
     width:393px;
     height:852px;
-    background:#1a1a1a;
-    border-radius:54px;
+    flex-shrink:0;
+    z-index:10;
+  }
+
+  /* Moldura exterior */
+  #app-iphone-wrapper::before{
+    content:'';
+    position:absolute;inset:-12px;
+    background:#1c1c1e;
+    border-radius:62px;
     box-shadow:
       0 0 0 2px #3a3a3a,
-      0 0 0 10px #1a1a1a,
-      0 0 0 12px #3a3a3a,
-      0 50px 120px rgba(0,0,0,0.85),
-      0 20px 40px rgba(0,0,0,0.5),
-      inset 0 0 0 1px rgba(255,255,255,0.05);
-    z-index:10;
-    flex-shrink:0;
-    overflow:hidden;
+      0 0 0 3px #222,
+      0 40px 100px rgba(0,0,0,0.9),
+      0 10px 30px rgba(0,0,0,0.6),
+      inset 0 0 0 1px rgba(255,255,255,0.07);
+    z-index:-1;
   }
 
   /* Dynamic Island */
-  #iphone-frame::before{
+  #app-iphone-wrapper::after{
     content:'';
     position:absolute;
-    top:12px;left:50%;transform:translateX(-50%);
-    width:120px;height:34px;
+    top:8px;left:50%;transform:translateX(-50%);
+    width:118px;height:34px;
     background:#0a0a0a;
     border-radius:20px;
-    z-index:100;
+    z-index:200;
   }
 
-  /* Botão lateral */
-  #iphone-frame::after{
-    content:'';
-    position:absolute;
-    right:-4px;top:180px;
-    width:4px;height:70px;
-    background:#2a2a2a;
-    border-radius:0 3px 3px 0;
-    box-shadow:0 110px 0 #2a2a2a;
-  }
-
-  /* Ecrã */
-  #iphone-screen{
-    position:absolute;
-    inset:0;
-    border-radius:54px;
-    overflow:hidden;
-  }
-
+  /* App dentro da moldura */
   #app{
     width:393px;
     height:852px;
@@ -234,21 +218,50 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
     overflow-x:hidden;
     -webkit-overflow-scrolling:touch;
     scrollbar-width:none;
+    border-radius:50px;
     position:relative;
   }
   #app::-webkit-scrollbar{ display:none; }
 
+  /* Login */
   #login-screen{
-    width:393px;
-    left:0;right:0;inset:0;
-    border-radius:54px;
+    border-radius:50px;
     overflow:hidden;
   }
 
-  .modal-overlay{ width:393px;left:0;right:0; }
-  #bottom-nav{ width:393px;left:0;right:0; }
+  /* Botões laterais */
+  #app-btn-vol{
+    position:absolute;
+    left:-16px;top:150px;
+    width:4px;height:36px;
+    background:#2a2a2a;
+    border-radius:3px 0 0 3px;
+    box-shadow:0 52px 0 #2a2a2a, 0 100px 0 #2a2a2a;
+  }
+  #app-btn-pwr{
+    position:absolute;
+    right:-16px;top:220px;
+    width:4px;height:70px;
+    background:#2a2a2a;
+    border-radius:0 3px 3px 0;
+  }
+
+  /* Fixed elements */
+  #bottom-nav{ position:absolute;bottom:0;left:0;right:0;width:auto; }
   #bottom-nav.hidden-nav{ transform:translateY(100%); }
-  #notif-banner,#inapp-notif{ width:393px;left:0;right:0; }
+  .modal-overlay{ position:absolute;inset:0; }
+  #notif-banner,#inapp-notif{ position:absolute;top:0;left:0;right:0; }
+
+  /* YAPP branding à esquerda */
+  #desktop-yapp-brand{
+    position:fixed;
+    left:calc(50vw - 393px/2 - 60px);
+    transform:translateX(-100%);
+    top:50%;
+    margin-top:-120px;
+    z-index:20;
+    text-align:right;
+  }
 
   .page{ min-height:calc(852px - 60px); }
   #page-meteo{ padding:0!important; }
@@ -523,6 +536,10 @@ body.aviso-active #notif-banner{top:2.2rem;}
 
 </head>
 <body>
+<!-- Desktop iPhone wrapper -->
+<div id="app-iphone-wrapper">
+  <div id="app-btn-vol"></div>
+  <div id="app-btn-pwr"></div>
 <script>
 (function(){
   try {
@@ -3169,59 +3186,15 @@ function pedidoBicicletas() {
 </div>
 
 
-<!-- ADMIN PANEL: redireciona para o backoffice com auto-login -->
-<!-- (iframe bloqueado pelo GitHub Pages — usamos redirect) -->
+</div><!-- /app-iphone-wrapper -->
 
-<script>
-/* ── iPhone mockup wrapper — só em desktop ─────────────────────── */
-(function() {
-  if (window.innerWidth < 768) return;
+<!-- YAPP branding desktop -->
+<div id="desktop-yapp-brand">
+  <div style="font-family:Georgia,serif;color:rgba(255,255,255,0.85);font-size:3rem;font-weight:700;letter-spacing:-0.02em;line-height:1;">YAPP</div>
+  <div style="width:36px;height:2px;background:rgba(168,201,122,0.6);margin:14px 0 14px auto;border-radius:2px;"></div>
+  <div style="color:rgba(168,201,122,0.75);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px;">Guia Digital</div>
+  <div style="color:rgba(255,255,255,0.35);font-size:.72rem;line-height:1.7;">Para alojamento local</div>
+</div>
 
-  var app    = document.getElementById('app');
-  var login  = document.getElementById('login-screen');
-  if (!app) return;
-
-  // Criar moldura
-  var frame  = document.createElement('div'); frame.id  = 'iphone-frame';
-  var screen = document.createElement('div'); screen.id = 'iphone-screen';
-
-  // Mover app e login para dentro do ecrã
-  app.parentNode.insertBefore(frame, app);
-  frame.appendChild(screen);
-  screen.appendChild(app);
-  if (login) screen.appendChild(login);
-
-  // Mover modais e bottom-nav para dentro do ecrã
-  ['bottom-nav','offline-banner','notif-banner','inapp-notif','rec-modal-overlay'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) screen.appendChild(el);
-  });
-  document.querySelectorAll('.modal-overlay').forEach(function(el) {
-    screen.appendChild(el);
-  });
-
-  // Branding à esquerda
-  var brand = document.createElement('div');
-  brand.id = 'desktop-brand';
-  brand.innerHTML = '<div style="font-family:Georgia,serif;color:rgba(255,255,255,0.9);font-size:2.8rem;font-weight:700;line-height:1;margin-bottom:12px;letter-spacing:-0.02em;">YAPP</div>'
-    + '<div style="width:32px;height:2px;background:rgba(168,201,122,0.6);margin-bottom:16px;border-radius:2px;"></div>'
-    + '<div style="color:rgba(168,201,122,0.8);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px;">Guia Digital</div>'
-    + '<div style="color:rgba(255,255,255,0.4);font-size:.75rem;line-height:1.7;">Para alojamento local</div>';
-  document.body.appendChild(brand);
-
-  // Info à direita
-  var info = document.createElement('div');
-  info.id = 'desktop-info';
-  info.innerHTML = '<div style="color:rgba(255,255,255,0.18);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;writing-mode:vertical-lr;transform:rotate(180deg);">darioersantos.github.io/Yapp</div>';
-  document.body.appendChild(info);
-
-  // Resize handler
-  window.addEventListener('resize', function() {
-    if (window.innerWidth < 768 && document.getElementById('iphone-frame')) {
-      location.reload();
-    }
-  });
-})();
-</script>
 </body>
 </html>
