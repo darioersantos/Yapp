@@ -493,7 +493,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
 /* ═══════════════════════════════════════════════════════
    LANDING PAGE DESKTOP — só visível em desktop (≥ 768px)
    ═══════════════════════════════════════════════════════ */
-#desktop-landing{display:none;}
+#desktop-landing{display:none!important;}
 
 @media(min-width:768px){
   /* Esconde toda a app */
@@ -552,7 +552,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
 <!-- ═══════════════════════════════════════════════════
      LANDING PAGE — só visível em desktop
      ═══════════════════════════════════════════════════ -->
-<div id="desktop-landing">
+<div id="desktop-landing" style="display:none;">
   <div class="dl-bg"></div>
   <div class="dl-wrap">
     <div class="dl-left">
@@ -5218,5 +5218,22 @@ function pedidoBicicletas() {
 }
 </script>
 
+<script>
+// Garantir que a landing só aparece em desktop
+(function(){
+  var landing = document.getElementById('desktop-landing');
+  if (!landing) return;
+  if (window.innerWidth < 768) {
+    landing.style.display = 'none';
+    landing.style.visibility = 'hidden';
+  }
+  window.addEventListener('resize', function(){
+    if (window.innerWidth < 768) {
+      landing.style.display = 'none';
+      landing.style.visibility = 'hidden';
+    }
+  });
+})();
+</script>
 </body>
 </html>
