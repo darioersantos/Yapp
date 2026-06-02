@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<script>
+var mobile = window.innerWidth < 768 || /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+if (mobile) {
+  window.location.replace('./app.html');
+} else {
+  window.location.replace('./landing.html');
+}
+</script>
+</head>
+<body></body>
+</html>
