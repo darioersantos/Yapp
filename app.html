@@ -2,6 +2,11 @@
 <html lang="pt">
 <head>
 <meta charset="UTF-8"/>
+<!-- v202606031844 -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+<!-- v202606031832 -->
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
   <meta name="x-skip" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
 <meta name="theme-color" id="theme-meta" content="#0f1908"/>
@@ -154,10 +159,10 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
 .parallax-section{transform:translateY(0);transition:transform 0.1s linear;}
 
 /* ── DESKTOP layout ────────────────────────────────────────────── */
-/* ── DESKTOP layout ────────────────────────────────────────────── */
 @media(min-width:768px){
   body{background:#1e2d14;}
 
+  /* Splash fixa à esquerda */
   #splash{
     position:fixed;top:0;left:0;
     width:40%;height:100vh;z-index:1;
@@ -166,6 +171,7 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
   #splash .hero-title{font-size:3.5rem;}
   #splash .hero-top{padding:2rem 2rem;}
 
+  /* App (páginas) painel direito com scroll */
   #app{
     margin-left:40%;
     padding-bottom:0;
@@ -175,14 +181,18 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
     box-shadow:-6px 0 40px rgba(0,0,0,0.35);
   }
 
+  /* Nav bar sticky no painel direito */
   .nav-bar{position:sticky;top:0;border-radius:0;z-index:100;}
 
+  /* Conteúdo centrado e com padding */
   .page{min-height:calc(100vh - 60px);}
   .section{padding:2rem 2.5rem 1.5rem;max-width:580px;margin:0 auto;}
 
+  /* Meteorologia */
   #page-meteo{padding:0!important;}
   #meteo-full{height:calc(100vh - 60px);}
 
+  /* Img cards 2 colunas */
   #atracoes-dynamic,
   #restaurantes-dynamic{
     display:grid;grid-template-columns:1fr 1fr;gap:.75rem;
@@ -190,7 +200,18 @@ body.app-ready #page-casa{opacity:1;pointer-events:auto;transition:opacity .3s e
   #atracoes-dynamic .img-card,
   #restaurantes-dynamic .img-card{margin-bottom:0;}
 
+  /* Serviços grid */
   .services-grid{grid-template-columns:1fr 1fr;}
+
+  /* Info 4 colunas */
+  .info-grid{grid-template-columns:repeat(4,1fr);}
+
+  /* Modais só no painel direito */
+  .modal-overlay{left:40%;width:60%;}
+  .modal-sheet{border-radius:20px 20px 0 0;max-height:88vh;max-width:100%;}
+
+  /* Guestbook 2 colunas */
+  #guestbook-list{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
 }
 .section-tag{font-size:10px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;color:var(--sage);margin-bottom:5px;}
 .section-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--forest);line-height:1.15;}
@@ -460,9 +481,6 @@ body.aviso-active #notif-banner{top:2.2rem;}
 
 </head>
 <body>
-
-
-
 <script>
 (function(){
   try {
@@ -749,14 +767,7 @@ body.aviso-active #notif-banner{top:2.2rem;}
         </div>
         <div class="acc-body"><div class="acc-inner"><div class="form-stack"><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:8px;">Autocarro Gerês–Braga</div><div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:4px;"><span style="color:var(--text-mid);">Partida Gerês</span><span style="font-weight:500;">07h30 · 12h00 · 17h45</span></div><div style="font-size:0.72rem;color:var(--text-light);">Operador: TUB · Paragem 50m da entrada</div></div></div></div></div>
       </div>
-<div class="acc-item" id="acc-checkout">
-        <div class="acc-header" onclick="toggleAcc('acc-checkout');renderChecklist()">
-          <img loading="lazy" class="acc-header-img" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&auto=format&fit=crop&q=75" alt="Check-out"/>
-          <div class="acc-header-text"><div class="acc-header-label">Check-list de saída</div><div class="acc-header-sub">Antes de partir</div></div>
-          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
-        <div class="acc-body"><div class="acc-inner"><p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:0.75rem;line-height:1.5;">Marca cada item antes de sair. Check-out até às 11h00.</p><div id="checklist-items-acc"></div><button class="form-btn" style="margin-top:0.75rem;" onclick="resetChecklistAcc()">Reiniciar lista</button></div></div>
-      </div>
+
 
       <!-- Limpeza extra -->
       
@@ -1074,7 +1085,21 @@ body.aviso-active #notif-banner{top:2.2rem;}
 <div class="acc-item" id="info-dyn-3" style="border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;"><div class="acc-header" onclick="toggleAcc('info-dyn-3')" style="padding:.75rem 1rem;"><div class="acc-header-text"><div class="acc-header-label">Estacionamento</div></div><svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="acc-body"><div class="acc-inner" style="padding:.6rem 1rem .85rem;"><p style="font-size:.85rem;color:var(--text-mid);line-height:1.65;">Dois lugares cobertos no lado esquerdo do portão.</p></div></div></div>
 <div class="acc-item" id="info-dyn-4" style="border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;"><div class="acc-header" onclick="toggleAcc('info-dyn-4')" style="padding:.75rem 1rem;"><div class="acc-header-text"><div class="acc-header-label">Alarme</div></div><svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="acc-body"><div class="acc-inner" style="padding:.6rem 1rem .85rem;"><p style="font-size:.85rem;color:var(--text-mid);line-height:1.65;">Código no envelope junto às chaves. Activar ao sair.</p></div></div></div>
 <div class="acc-item" id="info-dyn-5" style="border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;"><div class="acc-header" onclick="toggleAcc('info-dyn-5')" style="padding:.75rem 1rem;"><div class="acc-header-text"><div class="acc-header-label">Água potável</div></div><svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="acc-body"><div class="acc-inner" style="padding:.6rem 1rem .85rem;"><p style="font-size:.85rem;color:var(--text-mid);line-height:1.65;">A água da torneira é potável e tratada, contudo recomenda-se o uso de água engarrafada para consumo.</p></div></div></div>
-</div>
+<div class="acc-item" id="info-dyn-6" style="border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;"><div class="acc-header" onclick="toggleAcc('info-dyn-6')" style="padding:.75rem 1rem;"><div class="acc-header-text"><div class="acc-header-label">Cofre</div></div><svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="acc-body"><div class="acc-inner" style="padding:.6rem 1rem .85rem;"><p style="font-size:.85rem;color:var(--text-mid);line-height:1.65;">Disponível no quarto principal. Código definido por si à chegada.</p></div></div></div>
+<div class="acc-item" id="info-dyn-7" style="border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;"><div class="acc-header" onclick="toggleAcc('info-dyn-7')" style="padding:.75rem 1rem;"><div class="acc-header-text"><div class="acc-header-label">Corrente elétrica</div></div><svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="acc-body"><div class="acc-inner" style="padding:.6rem 1rem .85rem;"><p style="font-size:.85rem;color:var(--text-mid);line-height:1.65;">Tomadas tipo F (220V). Quadro elétrico no corredor da entrada.</p></div></div></div>
+<div class="acc-item" id="info-dyn-8" style="border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;"><div class="acc-header" onclick="toggleAcc('info-dyn-8')" style="padding:.75rem 1rem;"><div class="acc-header-text"><div class="acc-header-label">Drones</div></div><svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="acc-body"><div class="acc-inner" style="padding:.6rem 1rem .85rem;"><p style="font-size:.85rem;color:var(--text-mid);line-height:1.65;">Uso de drones permitido no exterior.</p></div></div></div>
+
+<div style="margin-top:1rem;border-top:1px solid var(--card-border);padding-top:1rem;">
+<div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--forest);margin-bottom:.75rem;">Checklist de saída</div>
+<div class="acc-item" id="acc-checkout">
+        <div class="acc-header" onclick="toggleAcc('acc-checkout');renderChecklist()">
+          <img loading="lazy" class="acc-header-img" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&auto=format&fit=crop&q=75" alt="Check-out"/>
+          <div class="acc-header-text"><div class="acc-header-label">Check-list de saída</div><div class="acc-header-sub">Antes de partir</div></div>
+          <svg class="acc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body"><div class="acc-inner"><p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:0.75rem;line-height:1.5;">Marca cada item antes de sair. Check-out até às 11h00.</p><div id="checklist-items-acc"></div><button class="form-btn" style="margin-top:0.75rem;" onclick="resetChecklistAcc()">Reiniciar lista</button></div></div>
+      </div>
+</div></div>
 </div></div></div>
 
 <div class="modal-overlay" id="m-piscina" onclick="cm('m-piscina')"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-handle" data-modal="m-piscina"></div><img loading="lazy" class="modal-img" src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600&auto=format&fit=crop&q=75" alt="Piscina"/><div class="modal-title" data-api="piscina_titulo">Piscina</div><div class="form-stack" id="pisc-dynamic"><div class="card" style="background:rgba(192,57,43,0.06);border-color:rgba(192,57,43,0.2);"><div style="font-size:0.85rem;font-weight:600;color:#c0392b;margin-bottom:5px;">⚠️ Atenção</div><p style="font-size:0.85rem;color:var(--text-mid);line-height:1.6;font-weight:500;" data-api="piscina_criancas">Mantenha as crianças sempre sob vigilância!</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;">Informação</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;">Profundidade 1,50m</p></div><div class="card"><div style="font-size:0.82rem;font-weight:600;color:var(--forest);margin-bottom:5px;" data-api="piscina_equip_label">Equipamento</div><p style="font-size:0.8rem;color:var(--text-mid);line-height:1.5;" data-api="piscina_equip">Espreguiçadeiras e guarda-sol disponíveis junto à piscina. Toalhas no armário do corredor.</p></div></div></div></div>
@@ -1163,30 +1188,22 @@ function isExpired(co) {
 // ═══════════════════════════════════════════════════════════════
 // SERVICE WORKER — Offline + Notificações
 // ═══════════════════════════════════════════════════════════════
+if ('caches' in window) {
+  caches.keys().then(function(keys) { keys.forEach(function(k) { caches.delete(k); }); });
+}
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('./sw.js').then(function(reg) {
-      // Forçar verificação de nova versão a cada abertura
-      reg.update();
-      reg.addEventListener('updatefound', function() {
-        var nw = reg.installing;
-        if (nw) {
-          nw.addEventListener('statechange', function() {
-            if (nw.state === 'installed' && navigator.serviceWorker.controller) {
-              nw.postMessage({ type: 'SKIP_WAITING' });
-              window.location.reload();
-            }
-          });
-        }
-      });
-      if ('Notification' in window && Notification.permission === 'default') {
-        setTimeout(function() {
-          var nb = document.getElementById('notif-banner');
-          if (nb) nb.style.display = 'block';
-        }, 5000);
-      }
-    }).catch(function(e) { console.log('SW erro:', e); });
-  });
+  navigator.serviceWorker.getRegistrations().then(function(regs) {
+    return Promise.all(regs.map(function(r) { return r.unregister(); }));
+  }).then(function() {
+    return navigator.serviceWorker.register('./sw.js?v=202606031832');
+  }).then(function(reg) {
+    if ('Notification' in window && Notification.permission === 'default') {
+      setTimeout(function() {
+        var nb = document.getElementById('notif-banner');
+        if (nb) nb.style.display = 'block';
+      }, 5000);
+    }
+  }).catch(function(e) { console.log('SW:', e); });
 }
 
 // Offline/Online detection
@@ -1211,8 +1228,9 @@ function requestNotifPermission() {
       // Send welcome notification
       if (navigator.serviceWorker.controller) {
         navigator.serviceWorker.ready.then(function(reg) {
-          reg.showNotification('YAPP — Casa do Gerês', {
-            body: 'Notificações activadas. Vais receber avisos importantes durante a sua estadia.',
+          var _propN = localStorage.getItem('yapp_prop_nome') || 'Yapp';
+          reg.showNotification(_propN, {
+            body: 'Notificações activadas. Irá receber avisos importantes durante a sua estadia.',
             icon: './favicon.svg'
           });
         });
@@ -1358,7 +1376,6 @@ window.addEventListener('DOMContentLoaded', function() {
   // (não espera pela API — garante que o modal tem sempre conteúdo)
   (function() {
     var infoJsonDefault = '[{"title":"Regras da casa","text":"Silêncio: Respeitar silêncio entre as 22h00 e as 08h00. Piscina encerra às 21h00.\nAnimais: Animais permitidos. Não devem entrar na piscina.\nTabaco: Proibido fumar dentro da casa. Área exterior permitida."},{"title":"Reciclagem","text":"🔵 Azul: Jornais, revistas, caixas de cartão\n🟡 Amarelo: Garrafas PET, embalagens, latas\n⚫ Preto: Resíduos não recicláveis. Recolha terças e sextas."},{"title":"Quadro elétrico","text":"1. Desligue os aparelhos.\n2. Levante o disjuntor falhado.\n3. Se repetir, contacte o Carlos."},{"title":"Estacionamento","text":"Dois lugares cobertos no lado esquerdo do portão."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Água potável","text":"A água da torneira é potável e tratada, contudo recomenda-se o uso de água engarrafada para consumo."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior."}]';
-    // Usar localStorage só como fallback offline — API tem sempre prioridade
     var saved = localStorage.getItem('yapp_info_json');
     renderInfoDyn(saved || infoJsonDefault);
   })();
@@ -1898,7 +1915,7 @@ function renderGuestbook() {
       + '<div style="font-size:0.78rem;color:var(--text-mid);line-height:1.4;">' + e.text + '</div></div>';
   }
   var preview = document.getElementById('guestbook-preview');
-  if (preview) preview.innerHTML = allEntries.slice(0,2).map(entryHTML).join('');
+  if (preview) preview.innerHTML = allEntries.slice(0,4).map(entryHTML).join('');
   var list = document.getElementById('guestbook-list');
   if (list) list.innerHTML = allEntries.map(entryHTML).join('') || '<div style="font-size:0.82rem;color:var(--text-light);text-align:center;padding:1rem;">Ainda não há registos.</div>';
 }
@@ -2000,7 +2017,9 @@ function applyData(d, fromCache) {
     }
   }
   if (d.feedbacks && d.feedbacks.length) {
-    STATIC_ENTRIES = d.feedbacks.filter(function(f){ return f.approved; });
+        var apiFeedbacks = d.feedbacks.filter(function(f){ return f.approved; });
+    // Merge: static primeiro, depois API por cima
+    if (apiFeedbacks.length) STATIC_ENTRIES = STATIC_ENTRIES.concat(apiFeedbacks);
     renderGuestbook();
   }
   // Render Descobrir lists
@@ -2307,11 +2326,11 @@ function renderInfoDyn(jsonStr) {
   try { cards = JSON.parse(jsonStr); } catch(e) { cards = null; }
   // Se vazio ou inválido, tenta o cache do localStorage (guardado pelo backoffice)
   if (!cards || !cards.length) {
-    // Don't override jsonStr with localStorage here — caller already handles priority
+    try { cards = JSON.parse(localStorage.getItem('yapp_info_json') || ''); } catch(e) { cards = null; }
   }
   if (!cards || !cards.length) return;
   // Guarda no cache local para próxima sessão
-  // localStorage update handled by caller
+  try { localStorage.setItem('yapp_info_json', JSON.stringify(cards)); } catch(e) {}
   var style = 'border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:.4rem;overflow:hidden;';
   acc.innerHTML = cards.map(function(card, i) {
     var id = 'info-dyn-' + i;
@@ -2381,9 +2400,8 @@ function sendWANotification(msg) {
     var cached = localStorage.getItem('yapp_data_cache');
     if (!cached) return;
     var d = JSON.parse(cached);
-    var waNum = (d.contacto && d.contacto.proprietario_whatsapp) ? d.contacto.proprietario_whatsapp.replace(/[^0-9]/g,'')
-      : (d.contacto && d.contacto.prop_whatsapp) ? d.contacto.prop_whatsapp.replace(/[^0-9]/g,'')
-      : (d.config && d.config.proprietario_whatsapp) ? d.config.proprietario_whatsapp.replace(/[^0-9]/g,'') : '';
+    var waNum = (d.contacto && d.contacto.prop_whatsapp) ? d.contacto.prop_whatsapp.replace(/[^0-9]/g,'') : '';
+    if (!waNum) waNum = (d.config && d.config.proprietario_whatsapp) ? d.config.proprietario_whatsapp.replace(/[^0-9]/g,'') : '';
     if (!waNum) return;
     var s = getSession();
     var guest = s ? s.user : 'Hóspede';
@@ -2490,11 +2508,9 @@ function applyCasa(c) {
   if (svcJson) renderServicos(svcJson);
   var infoJsonDefault = '[{"title":"Regras da casa","text":"Silêncio: Respeitar silêncio entre as 22h00 e as 08h00. Piscina encerra às 21h00.\nAnimais: Animais permitidos. Não devem entrar na piscina.\nTabaco: Proibido fumar dentro da casa. Área exterior permitida."},{"title":"Reciclagem","text":"🔵 Azul: Jornais, revistas, caixas de cartão\n🟡 Amarelo: Garrafas PET, embalagens, latas\n⚫ Preto: Resíduos não recicláveis. Recolha terças e sextas."},{"title":"Quadro elétrico","text":"1. Desligue os aparelhos.\n2. Levante o disjuntor falhado.\n3. Se repetir, contacte o Carlos."},{"title":"Estacionamento","text":"Dois lugares cobertos no lado esquerdo do portão."},{"title":"Alarme","text":"Código no envelope junto às chaves. Activar ao sair."},{"title":"Água potável","text":"A água da torneira é potável e tratada, contudo recomenda-se o uso de água engarrafada para consumo."},{"title":"Cofre","text":"Disponível no quarto principal. Código definido por si à chegada."},{"title":"Corrente elétrica","text":"Tomadas tipo F (220V). Quadro elétrico no corredor da entrada."},{"title":"Drones","text":"Uso de drones permitido no exterior."}]';
   // Cadeia de fallback: Sheets → localStorage (guardado pelo backoffice) → default hardcoded
-  // API tem sempre prioridade — guardar no localStorage para uso offline
-  var infoJson = c.info_json || infoJsonDefault;
-  if (c.info_json) {
-    try { localStorage.setItem('yapp_info_json', c.info_json); } catch(e) {}
-  }
+  var infoJson = c.info_json
+    || localStorage.getItem('yapp_info_json')
+    || infoJsonDefault;
   renderInfoDyn(infoJson);
 
   // Churrasqueira utensílios (comma-separated → chips)
@@ -2590,10 +2606,8 @@ function applyServicos(c) {
 function applyContacto(c) {
   // WhatsApp
   var _wa = c.proprietario_whatsapp || c.prop_whatsapp;
-  if (_wa) {
-    c.prop_whatsapp = _wa;
-    var waLink = document.getElementById('contact-wa-link');
-    if (waLink) waLink.href = 'https://wa.me/' + _wa.replace(/[^0-9]/g,'');
+  if (_wa) { var waLnk=document.getElementById('contact-wa-link'); if(waLnk) waLnk.href='https://wa.me/'+_wa.replace(/[^0-9]/g,''); c.prop_whatsapp=_wa; }
+  if (c.prop_whatsapp) {
     var wa = document.querySelector('a[href*="wa.me"]');
     if (wa) wa.href = 'https://wa.me/' + c.prop_whatsapp.replace(/[^0-9]/g,'');
   }
@@ -2608,12 +2622,10 @@ function applyContacto(c) {
     });
   }
   var _tel = c.proprietario_telefone || c.prop_telefone;
-  if (_tel) {
-    c.prop_telefone = _tel;
-    var tel = document.getElementById('contact-tel-link');
-    if (tel) { tel.href = 'tel:' + _tel; }
-    var ts = document.getElementById('contact-tel-sub');
-    if (ts) ts.textContent = _tel;
+  if (_tel) { var tLnk=document.getElementById('contact-tel-link'); if(tLnk) tLnk.href='tel:'+_tel; var tSub=document.getElementById('contact-tel-sub'); if(tSub) tSub.textContent=_tel; c.prop_telefone=_tel; }
+  if (c.prop_telefone) {
+    var tel = document.querySelector('a[href*="tel:+351912345678"]');
+    if (tel) { tel.href = 'tel:' + c.prop_telefone; var ts = tel.querySelector('.contact-sub'); if (ts) ts.textContent = c.prop_telefone; }
   }
   if (c.prop_email) {
     var em = document.querySelector('a[href*="mailto:"]');
@@ -3001,7 +3013,7 @@ function _doCopy(txt) {
 function _getWA() {
   var d = window._appData || {};
   var n = (d.contacto && d.contacto.proprietario_whatsapp) ? d.contacto.proprietario_whatsapp
-        : (d.contacto && d.contacto.prop_whatsapp) ? d.contacto.prop_whatsapp : '';
+        : (d.contacto && d.contacto.prop_whatsapp) ? d.contacto.prop_whatsapp : '351914713808';
   return n.replace(/[^0-9]/g,'');
 }
 function pedidoLimpeza() {
@@ -3117,6 +3129,9 @@ function pedidoBicicletas() {
   </div>
 </div>
 
+
+<!-- ADMIN PANEL: redireciona para o backoffice com auto-login -->
+<!-- (iframe bloqueado pelo GitHub Pages — usamos redirect) -->
 
 </body>
 </html>
